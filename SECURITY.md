@@ -4,7 +4,7 @@
 
 ## Supported Versions
 
-As an open source product, we will only provide security patches for the latest major version. Older versions will not receive retroactive security patches.
+As an open source product, we will only provide security patches for the latest version. Older versions will not receive retroactive security patches.
 
 ## Reporting Security Issues
 
