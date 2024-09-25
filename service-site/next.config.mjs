@@ -1,4 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import { withContentlayer } from 'next-contentlayer';
 
-export default nextConfig;
+/** @type {import('next').NextConfig} */
+const nextConfig = { reactStrictMode: true, images: { domains: ['localhost'] } };
+
+export default withContentlayer(nextConfig)
