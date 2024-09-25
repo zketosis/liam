@@ -1,0 +1,13 @@
+@import url('destyle.css');
+@import url('./variables.css');
+
+@import url('./variables.tokens-dark.css');
+@import url('./variables.tokens-typography.css');
+
+
+body {
+  color: var(--global-foreground);
+  background: var(--global-background);
+  font-family: var(--main-font);
+  font-weight: var(--text-weight-en-regular);
+}

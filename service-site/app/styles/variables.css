@@ -1,0 +1,7 @@
+:root {
+  --message-font: Montserrat, sans-serif;
+  --body-font: Inter, sans-serif;
+  --font-weight-regular: 300;
+  --default-timing-function: ease-out;
+  --default-hover-animation-duration: 100ms;
+}

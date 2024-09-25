@@ -23,18 +23,18 @@
   gap: 16px;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
+  color: var(--global-foreground);
   transition: color 0.1s ease-out;
 
   &:hover {
-    color: var(--background);
-    background-color: var(--foreground);
+    color: var(--global-background);
+    background-color: var(--global-foreground);
     transition: color 0.1s ease-out;
   }
 }
 
 .title {
-  font-size: var(--s-fontSize-10, 24px);
+  font-size: var(--font-size-10, 24px);
   font-style: normal;
   font-weight: 400;
   line-height: 120%; 
@@ -43,7 +43,7 @@
 }
 
 .writer {
-  font-size: var(--s-fontSize-6, 16px);
+  font-size: var(--font-size-6, 16px);
   font-style: normal;
   font-weight: 400;
   line-height: 120%;
@@ -66,7 +66,7 @@
 .topCards > :nth-child(8) {
 
   .title {
-    font-size: var(--s-fontSize-18, 48px);
+    font-size: var(--font-size-18, 48px);
     font-style: normal;
     font-weight: 400;
     line-height: 120%;
@@ -82,14 +82,14 @@
     font-style: normal;
     font-weight: 400;
     line-height: 160%;
-    border-left: 1px solid var(--foreground);
+    border-left: 1px solid var(--global-foreground);
     padding-left: 16px;
     margin-left: 50%;
   }
 
   &:hover {
     .introduction {
-      border-color: var(--background);
+      border-color: var(--global-background);
     }
   }
 }
