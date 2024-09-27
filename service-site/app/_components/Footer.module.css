@@ -1,0 +1,17 @@
+.footer {
+  max-width: var(--default-page-width-with-margin);
+  margin: 0 auto;
+  display: flex;
+  padding: var(--spacing-8, 32px) var(--spacing-20, 80px);
+  align-items: flex-end;
+  gap: var(--spacing-12, 48px);
+}
+
+.text {
+  color: var(--foreground);
+  font-family: var(--main-font-en);
+  font-size: var(--font-size-2);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}

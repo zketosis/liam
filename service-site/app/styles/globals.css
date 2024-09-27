@@ -11,3 +11,9 @@ body {
   font-family: var(--main-font);
   font-weight: var(--text-weight-en-regular);
 }
+
+.main {
+  max-width: var(--default-page-width-with-margin);
+  margin: 0 auto;
+  padding: var(--spacing-10, 40px) var(--spacing-20, 80px);
+}

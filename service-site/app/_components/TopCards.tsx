@@ -22,14 +22,21 @@ export function TopCards({ posts }: TopCardsProps) {
                 />
               </div>
             )}
-            <h2 className={styles.title}>
-              {post.title}
-            </h2>
-            <p className={styles.writer}>
-              Text by {post.writer}
-            </p>
-            <div className={styles.introduction}>
-              {post.introduction}
+            <div className={styles.textContainer}>
+              <div className={styles.tags}>
+                {post.tags.map((tag) => (
+                  <span key={tag} className={styles.tag}>( {tag} )</span>
+                ))}
+              </div>
+              <h2 className={styles.title}>
+                {post.title}
+              </h2>
+              <p className={styles.writer}>
+                Text by {post.writer}
+              </p>
+              <div className={styles.introduction}>
+                {post.introduction}
+              </div>
             </div>
           </div>
         </Link>
