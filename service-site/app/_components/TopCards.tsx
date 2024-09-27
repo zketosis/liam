@@ -1,5 +1,6 @@
 import { Post } from "@/.contentlayer/generated";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./TopCards.module.css";
 interface TopCardsProps {
   posts: Post[];
@@ -13,12 +14,13 @@ export function TopCards({ posts }: TopCardsProps) {
           <div className={styles.topCard}>
             {post.image && (
               <div className={styles.imageContainer}>
-                <img
+                <Image
                   src={post.image}
                   alt={`Image of ${post.title}`}
                   width={300}
                   height={200}
                   className={styles.image}
+                  quality={100}
                 />
               </div>
             )}
