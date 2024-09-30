@@ -3,8 +3,16 @@
   margin: 0 auto;
   display: flex;
   padding: var(--spacing-8, 32px) var(--spacing-20, 80px);
-  align-items: flex-end;
+  justify-content: space-between;
   gap: var(--spacing-12, 48px);
+  align-items: flex-end;
+}
+
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: var(--spacing-4, 16px);
 }
 
 .text {
@@ -14,4 +22,37 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+}
+
+.linksContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4, 16px);
+}
+
+.textLink {
+  color: var(--overlay-70);
+  font-family: var(--main-font);
+  font-size: var(--font-size-4);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  transition: color var(--default-hover-animation-duration) var(--default-timing-function);
+  padding: var(--spacing-2, 8px);
+
+  &:hover {
+    color: var(--foreground);
+  }
+}
+
+.snsLink {
+  & path {
+    fill: var(--overlay-70);
+    transition: fill var(--default-hover-animation-duration) var(--default-timing-function);
+  }
+
+  &:hover path {
+    fill: white;
+    /* hover時にpath側にCSS variablesを渡せないのでwhiteで固定 */
+  }
 }
