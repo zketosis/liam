@@ -112,7 +112,7 @@
     margin-top: 40px;
     display: block;
     width: 50%;
-    font-family: var(--body-font);
+    font-family: var(--main-font);
     font-size: var(--s-fontSize-5, 14px);
 
     font-weight: 400;

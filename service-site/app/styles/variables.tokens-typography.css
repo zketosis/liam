@@ -3,6 +3,8 @@
  */
 
  :root {
+  --main-font-ja: Hiragino Sans;
+  --message-font: Montserrat;
   --main-font: Inter;
   --text-weight-ja-bold: W6;
   --text-weight-ja-regular: W3;

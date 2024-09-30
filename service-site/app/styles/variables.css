@@ -1,6 +1,6 @@
 :root {
-  --message-font: Montserrat, sans-serif;
-  --body-font: Inter, sans-serif;
+  --message-font: var(--message-font), sans-serif;
+  --main-font: var(--main-font), sans-serif;
   --font-weight-regular: 300;
   --default-timing-function: ease-out;
   --default-hover-animation-duration: 100ms;
