@@ -53,6 +53,6 @@
 
   &:hover path {
     fill: white;
-    /* hover時にpath側にCSS variablesを渡せないのでwhiteで固定 */
+    /* CSS variables cannot be passed to the path side when hovering, so they were set in WHITE. */
   }
 }
