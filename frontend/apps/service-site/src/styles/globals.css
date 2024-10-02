@@ -4,7 +4,6 @@
 @import url('./variables.tokens-dark.css');
 @import url('./variables.tokens-typography.css');
 
-
 body {
   color: var(--global-foreground);
   background: var(--global-background);

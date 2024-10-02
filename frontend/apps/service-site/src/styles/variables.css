@@ -6,6 +6,9 @@
   --default-hover-animation-duration: 100ms;
   --default-page-width: 1588px;
   --default-page-margin: 80px;
-  --default-page-width-with-margin: calc(var(--default-page-width) + calc(2* var(--default-page-margin)));
+  --default-page-width-with-margin: calc(
+    var(--default-page-width) +
+    calc(2 * var(--default-page-margin))
+  );
   --default-header-height: 64px;
 }

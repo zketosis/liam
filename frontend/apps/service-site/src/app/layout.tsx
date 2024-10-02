@@ -1,26 +1,25 @@
-import type { Metadata } from "next";
-import "../styles/globals.css";
-import { Header, Footer } from "../components";
+import type { Metadata } from 'next'
+import '@/styles/globals.css'
+import { Footer, Header } from '@/components'
+import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
-  title: "Liam",
-  description: "Liam blog",
-};
+  title: 'Liam',
+  description: 'Liam blog',
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode
 }>) {
   return (
     <html lang="en">
       <body>
-        <Header></Header>
-        <main>
-          {children}
-        </main>
-        <Footer></Footer>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
-  );
+  )
 }

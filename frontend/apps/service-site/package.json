@@ -10,7 +10,7 @@
     "lint:biome": "biome check .",
     "lint:next": "next lint",
     "fmt": "conc -c auto pnpm:fmt:*",
-    "fmt:biome": "biome format --write ."
+    "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
     "contentlayer": "^0.3.4",
