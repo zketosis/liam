@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "conc -c auto pnpm:lint:*",
+    "lint:biome": "biome check .",
+    "lint:next": "next lint",
+    "fmt": "conc -c auto pnpm:fmt:*",
+    "fmt:biome": "biome format --write ."
   },
   "dependencies": {
     "contentlayer": "^0.3.4",
@@ -22,9 +26,12 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@packages/biome-config": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "concurrently": "^9.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "typescript": "^5"
