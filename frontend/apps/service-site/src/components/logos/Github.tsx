@@ -26,6 +26,5 @@ export const Github: FC<Props> = (props) => {
         </clipPath>
       </defs>
     </svg>
-    
   )
 }
