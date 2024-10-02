@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "conc -c auto pnpm:dev:*",
+    "dev:next": "next dev",
+    "dev:storybook": "storybook dev -h localhost -p 6006 --no-open",
     "build": "next build",
     "start": "next start",
     "lint": "conc -c auto pnpm:lint:*",
@@ -28,12 +30,15 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/biome-config": "workspace:*",
+    "@storybook/nextjs": "^8.3.4",
+    "@storybook/react": "^8.3.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "concurrently": "^9.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
+    "storybook": "^8.3.4",
     "typescript": "^5"
   }
 }
