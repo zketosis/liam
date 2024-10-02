@@ -1,6 +1,6 @@
 import Link from 'next/link'
+import { Github, LiamLogoMark, X } from '../logos'
 import styles from './Footer.module.css'
-import { Github, LiamLogoMark, X } from './logos'
 
 export const Footer = () => {
   return (
