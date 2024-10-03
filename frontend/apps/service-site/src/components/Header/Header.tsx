@@ -1,6 +1,6 @@
 import Link from 'next/link'
+import { LiamLogo } from '../logos'
 import styles from './Header.module.css'
-import { LiamLogo } from './logos'
 
 export const Header = () => {
   return (
