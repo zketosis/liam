@@ -47,7 +47,7 @@
 .title {
   font-size: var(--font-size-10, 24px);
   font-weight: 400;
-  line-height: 120%; 
+  line-height: 120%;
   font-family: var(--message-font);
 }
 
@@ -71,7 +71,6 @@
 }
 
 .topCards > :not(:first-child):not(:nth-child(2)) {
-
   .title {
     line-clamp: 4;
     -webkit-line-clamp: 4;
@@ -84,7 +83,6 @@
 
 .topCards > :first-child,
 .topCards > :nth-child(2) {
-  
   .textContainer {
     margin: var(--spacing-20, 80px) 0;
     justify-content: flex-start;
@@ -105,7 +103,7 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: auto
+    height: auto;
   }
 
   .introduction {
@@ -142,10 +140,9 @@
 }
 
 .topCards > :first-child {
-
   .topCard {
     padding-left: 0;
-    margin-left: calc(-1 * var(--spacing-20, 80px)); 
+    margin-left: calc(-1 * var(--spacing-20, 80px));
   }
 
   .textContainer {
@@ -153,12 +150,10 @@
   }
 }
 
-
 .topCards > :nth-child(2) {
-
   .topCard {
     padding-right: 0;
-    margin-right: - var(--spacing-20, 80px);
+    margin-right: calc(-1 * var(--spacing-20, 80px));
   }
 
   .textContainer {

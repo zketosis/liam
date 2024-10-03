@@ -1,4 +1,3 @@
-
 import type { ComponentPropsWithoutRef, FC } from 'react'
 
 type Props = ComponentPropsWithoutRef<'svg'>

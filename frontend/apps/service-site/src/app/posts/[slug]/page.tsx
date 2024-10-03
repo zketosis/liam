@@ -1,20 +1,21 @@
-import { format, parseISO } from 'date-fns'
 import { allPosts } from 'contentlayer/generated'
+import { format, parseISO } from 'date-fns'
 
 export const getPost = (slug: string) => {
-  return allPosts.find((post) => post.href === slug);
-};
+  return allPosts.find((post) => post.href === slug)
+}
 
-export const generateStaticParams = async () => allPosts.map((post) => ({ slug: post._raw.flattenedPath }))
+export const generateStaticParams = async () =>
+  allPosts.map((post) => ({ slug: post._raw.flattenedPath }))
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-  const post = getPost(`/posts/${params.slug}`);
+  const post = getPost(`/posts/${params.slug}`)
   if (!post) throw new Error(`Post not found for slug: ${params.slug}`)
   return { title: post.title }
 }
 
 const PostLayout = ({ params }: { params: { slug: string } }) => {
-  const post = getPost(`/posts/${params.slug}`);
+  const post = getPost(`/posts/${params.slug}`)
   if (!post) throw new Error(`Post not found for slug: ${params.slug}`)
   return (
     <article>
@@ -24,6 +25,7 @@ const PostLayout = ({ params }: { params: { slug: string } }) => {
         </time>
         <h1>{post.title}</h1>
       </div>
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
       <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
     </article>
   )

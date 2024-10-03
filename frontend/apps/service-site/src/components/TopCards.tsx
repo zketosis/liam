@@ -1,9 +1,9 @@
-import { Post } from "@/.contentlayer/generated";
-import Link from "next/link";
-import Image from "next/image";
-import styles from "./TopCards.module.css";
+import type { Post } from 'contentlayer/generated'
+import Image from 'next/image'
+import Link from 'next/link'
+import styles from './TopCards.module.css'
 interface TopCardsProps {
-  posts: Post[];
+  posts: Post[]
 }
 
 export function TopCards({ posts }: TopCardsProps) {
@@ -27,22 +27,18 @@ export function TopCards({ posts }: TopCardsProps) {
             <div className={styles.textContainer}>
               <div className={styles.tags}>
                 {post.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>( {tag} )</span>
+                  <span key={tag} className={styles.tag}>
+                    ( {tag} )
+                  </span>
                 ))}
               </div>
-              <h2 className={styles.title}>
-                {post.title}
-              </h2>
-              <p className={styles.writer}>
-                Text by {post.writer}
-              </p>
-              <div className={styles.introduction}>
-                {post.introduction}
-              </div>
+              <h2 className={styles.title}>{post.title}</h2>
+              <p className={styles.writer}>Text by {post.writer}</p>
+              <div className={styles.introduction}>{post.introduction}</div>
             </div>
           </div>
         </Link>
       ))}
     </div>
-  );
+  )
 }
