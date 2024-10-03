@@ -1,0 +1,13 @@
+.header {
+  max-width: var(--default-page-width-with-margin);
+  height: var(--default-header-height);
+  padding: 0 var(--default-page-margin);
+  margin: 0 auto;
+  background-color: var(--background);
+  display: flex;
+  align-items: center;
+}
+
+.h1 {
+  color: var(--foreground);
+}

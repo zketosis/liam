@@ -1,0 +1,11 @@
+:root {
+  --message-font: var(--message-font), sans-serif;
+  --main-font: var(--main-font), sans-serif;
+  --font-weight-regular: 300;
+  --default-timing-function: ease-out;
+  --default-hover-animation-duration: 100ms;
+  --default-page-width: 1588px;
+  --default-page-margin: 80px;
+  --default-page-width-with-margin: calc(var(--default-page-width) + calc(2* var(--default-page-margin)));
+  --default-header-height: 64px;
+}
