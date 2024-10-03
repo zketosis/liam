@@ -29,9 +29,6 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
-  "files": {
-    "ignore": ["mockServiceWorker.js"]
-  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
