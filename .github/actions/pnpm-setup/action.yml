@@ -1,0 +1,24 @@
+name: pnpm-setup
+
+inputs:
+  working-directory:
+    required: true
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        package_json_file: ${{ inputs.working-directory }}/package.json
+    - name: Setup node env
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ${{ inputs.working-directory }}/.node-version
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile --prefer-offline
+      working-directory: ${{ inputs.working-directory }}
