@@ -7,6 +7,7 @@
     "dev:next": "next dev",
     "dev:storybook": "storybook dev -h localhost -p 6006 --no-open",
     "build": "next build",
+    "build:storybook": "storybook build",
     "start": "next start",
     "lint": "conc -c auto pnpm:lint:*",
     "lint:biome": "biome check .",
