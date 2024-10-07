@@ -1,6 +1,6 @@
 import type { PageProps } from '@/app/types'
-import { langSchema, langs } from '@/i18n'
-import { filterPostsByLang } from '@/utils/posts'
+import { langSchema, langs, useTranslation } from '@/features/i18n'
+import { filterPostsByLang } from '@/features/posts'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
 import Link from 'next/link'
@@ -32,6 +32,8 @@ const paramsSchema = object({
 export default function Page({ params }: PageProps) {
   const { lang } = parse(paramsSchema, params)
 
+  const { t } = useTranslation(lang)
+
   const posts = filterPostsByLang(lang)
   const sortedPosts = posts.sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date)),
@@ -39,7 +41,7 @@ export default function Page({ params }: PageProps) {
 
   return (
     <div>
-      <h1>Posts</h1>
+      <h1>{t('posts.title')}</h1>
       {sortedPosts.map((post) => (
         <PostCard key={post.slug} {...post} />
       ))}
