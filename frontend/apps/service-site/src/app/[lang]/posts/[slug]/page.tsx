@@ -1,5 +1,5 @@
 import type { PageProps } from '@/app/types'
-import { fallbackLang } from '@/i18n'
+import { langSchema } from '@/i18n'
 import { findPostByLangAndSlug } from '@/utils/posts'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
@@ -9,8 +9,8 @@ export const generateStaticParams = async () =>
   allPosts.map((post) => ({ slug: post.slug }))
 
 export const generateMetadata = ({ params }: PageProps) => {
-  const { slug } = parse(paramsSchema, params)
-  const post = findPostByLangAndSlug({ lang: fallbackLang, slug })
+  const { lang, slug } = parse(paramsSchema, params)
+  const post = findPostByLangAndSlug({ lang, slug })
 
   if (!post) throw new Error(`Post not found for slug: ${slug}`)
 
@@ -18,13 +18,14 @@ export const generateMetadata = ({ params }: PageProps) => {
 }
 
 const paramsSchema = object({
+  lang: langSchema,
   slug: string(),
 })
 
 export default function Page({ params }: PageProps) {
-  const { slug } = parse(paramsSchema, params)
+  const { lang, slug } = parse(paramsSchema, params)
 
-  const post = findPostByLangAndSlug({ lang: fallbackLang, slug })
+  const post = findPostByLangAndSlug({ lang, slug })
   if (!post) throw new Error(`Post not found for slug: ${slug}`)
 
   return (

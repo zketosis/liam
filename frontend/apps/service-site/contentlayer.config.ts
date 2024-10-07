@@ -25,14 +25,6 @@ export const Post = defineDocumentType(() => ({
     introduction: { type: 'string', required: true },
   },
   computedFields: {
-    href: {
-      type: 'string',
-      resolve: (post) => {
-        // ex. segments = [ 'posts', '1', 'en' ]
-        const segments = post._raw.flattenedPath.split('/')
-        return `/${segments[2]}/posts/${segments[1]}`
-      },
-    },
     lang: {
       type: 'string',
       resolve: (post) => {
