@@ -3,6 +3,7 @@ import { langSchema, langs } from '@/i18n'
 import { findPostByLangAndSlug } from '@/utils/posts'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
+import { notFound } from 'next/navigation'
 import { object, parse, string } from 'valibot'
 
 export const generateStaticParams = async () => {
@@ -15,7 +16,7 @@ export const generateMetadata = ({ params }: PageProps) => {
   const { lang, slug } = parse(paramsSchema, params)
   const post = findPostByLangAndSlug({ lang, slug })
 
-  if (!post) throw new Error(`Post not found for slug: ${slug}`)
+  if (!post) notFound()
 
   return { title: post.title }
 }
@@ -29,7 +30,7 @@ export default function Page({ params }: PageProps) {
   const { lang, slug } = parse(paramsSchema, params)
 
   const post = findPostByLangAndSlug({ lang, slug })
-  if (!post) throw new Error(`Post not found for slug: ${slug}`)
+  if (!post) notFound()
 
   return (
     <article>
