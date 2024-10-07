@@ -1,6 +1,6 @@
 import { TopCards } from '@/components'
-import { langSchema, langs } from '@/i18n'
-import { filterPostsByLang } from '@/utils/posts'
+import { langSchema, langs } from '@/features/i18n'
+import { filterPostsByLang } from '@/features/posts'
 import { compareDesc } from 'date-fns'
 import { object, parse } from 'valibot'
 import type { PageProps } from '../types'

@@ -1,6 +1,6 @@
 import type { PageProps } from '@/app/types'
-import { fallbackLang } from '@/i18n'
-import { findPostByLangAndSlug } from '@/utils/posts'
+import { fallbackLang } from '@/features/i18n'
+import { findPostByLangAndSlug } from '@/features/posts'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'
