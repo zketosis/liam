@@ -1,17 +1,20 @@
 import type { PageProps } from '@/app/types'
-import { fallbackLang } from '@/i18n'
+import { langSchema, langs } from '@/i18n'
 import { findPostByLangAndSlug } from '@/utils/posts'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'
 import { object, parse, string } from 'valibot'
 
-export const generateStaticParams = async () =>
-  allPosts.map((post) => ({ slug: post.slug }))
+export const generateStaticParams = async () => {
+  return langs.map((lang) => {
+    return allPosts.map((post) => ({ slug: post.slug, lang }))
+  })
+}
 
 export const generateMetadata = ({ params }: PageProps) => {
-  const { slug } = parse(paramsSchema, params)
-  const post = findPostByLangAndSlug({ lang: fallbackLang, slug })
+  const { lang, slug } = parse(paramsSchema, params)
+  const post = findPostByLangAndSlug({ lang, slug })
 
   if (!post) notFound()
 
@@ -19,13 +22,14 @@ export const generateMetadata = ({ params }: PageProps) => {
 }
 
 const paramsSchema = object({
+  lang: langSchema,
   slug: string(),
 })
 
 export default function Page({ params }: PageProps) {
-  const { slug } = parse(paramsSchema, params)
+  const { lang, slug } = parse(paramsSchema, params)
 
-  const post = findPostByLangAndSlug({ lang: fallbackLang, slug })
+  const post = findPostByLangAndSlug({ lang, slug })
   if (!post) notFound()
 
   return (

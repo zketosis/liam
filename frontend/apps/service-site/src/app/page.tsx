@@ -1,11 +1,13 @@
-import { allPosts } from 'contentlayer/generated'
+import { TopCards } from '@/components'
+import { fallbackLang } from '@/i18n'
+import { filterPostsByLang } from '@/utils/posts'
 import { compareDesc } from 'date-fns'
-import { TopCards } from '../components'
 
-export default function Home() {
-  const posts = allPosts.sort((a, b) =>
+export default function Page() {
+  const posts = filterPostsByLang(fallbackLang)
+  const sortedPosts = posts.sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date)),
   )
 
-  return <TopCards posts={posts.slice(0, 14)} />
+  return <TopCards posts={sortedPosts.slice(0, 14)} />
 }

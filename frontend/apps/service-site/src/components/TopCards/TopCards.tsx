@@ -1,16 +1,21 @@
+import type { Lang } from '@/i18n'
 import type { Post } from 'contentlayer/generated'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './TopCards.module.css'
 interface TopCardsProps {
   posts: Post[]
+  lang?: Lang
 }
 
-export function TopCards({ posts }: TopCardsProps) {
+export function TopCards({ posts, lang }: TopCardsProps) {
   return (
     <div className={styles.topCards}>
       {posts.map((post) => (
-        <Link href={post.href} key={post.href}>
+        <Link
+          href={lang ? `/${lang}/posts/${post.slug}` : `/posts/${post.slug}`}
+          key={post.slug}
+        >
           <div className={styles.topCard}>
             {post.image && (
               <div className={styles.imageContainer}>

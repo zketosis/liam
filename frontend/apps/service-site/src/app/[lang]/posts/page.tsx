@@ -1,14 +1,16 @@
-import { fallbackLang } from '@/i18n'
+import type { PageProps } from '@/app/types'
+import { langSchema, langs } from '@/i18n'
 import { filterPostsByLang } from '@/utils/posts'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
 import Link from 'next/link'
+import { object, parse } from 'valibot'
 
 function PostCard(post: Post) {
   return (
     <div>
       <h2>
-        <Link href={`/posts/${post.slug}`}>{post.title}</Link>
+        <Link href={`/${post.lang}/posts/${post.slug}`}>{post.title}</Link>
       </h2>
       <time dateTime={post.date}>
         {format(parseISO(post.date), 'LLLL d, yyyy')}
@@ -19,8 +21,18 @@ function PostCard(post: Post) {
   )
 }
 
-export default function Page() {
-  const posts = filterPostsByLang(fallbackLang)
+export const generateStaticParams = async () => {
+  return langs.map((lang) => ({ lang }))
+}
+
+const paramsSchema = object({
+  lang: langSchema,
+})
+
+export default function Page({ params }: PageProps) {
+  const { lang } = parse(paramsSchema, params)
+
+  const posts = filterPostsByLang(lang)
   const sortedPosts = posts.sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date)),
   )
