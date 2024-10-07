@@ -1,9 +1,13 @@
 import { TopCards } from '@/components'
-import { langSchema } from '@/i18n'
+import { langSchema, langs } from '@/i18n'
 import { filterPostsByLang } from '@/utils/posts'
 import { compareDesc } from 'date-fns'
 import { object, parse } from 'valibot'
 import type { PageProps } from '../types'
+
+export const generateStaticParams = async () => {
+  return langs.map((lang) => ({ lang }))
+}
 
 const paramsSchema = object({
   lang: langSchema,

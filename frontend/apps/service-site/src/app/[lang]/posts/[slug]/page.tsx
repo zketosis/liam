@@ -1,12 +1,15 @@
 import type { PageProps } from '@/app/types'
-import { langSchema } from '@/i18n'
+import { langSchema, langs } from '@/i18n'
 import { findPostByLangAndSlug } from '@/utils/posts'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import { object, parse, string } from 'valibot'
 
-export const generateStaticParams = async () =>
-  allPosts.map((post) => ({ slug: post.slug }))
+export const generateStaticParams = async () => {
+  return langs.map((lang) => {
+    return allPosts.map((post) => ({ slug: post.slug, lang }))
+  })
+}
 
 export const generateMetadata = ({ params }: PageProps) => {
   const { lang, slug } = parse(paramsSchema, params)

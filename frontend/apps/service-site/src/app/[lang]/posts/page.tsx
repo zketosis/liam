@@ -1,5 +1,5 @@
 import type { PageProps } from '@/app/types'
-import { langSchema } from '@/i18n'
+import { langSchema, langs } from '@/i18n'
 import { filterPostsByLang } from '@/utils/posts'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
@@ -19,6 +19,10 @@ function PostCard(post: Post) {
       <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
     </div>
   )
+}
+
+export const generateStaticParams = async () => {
+  return langs.map((lang) => ({ lang }))
 }
 
 const paramsSchema = object({
