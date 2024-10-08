@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm -F \"service-site\" dev",
+    "lint:turbo": "turbo lint",
     "lint:packageVersion": "syncpack list-mismatches",
     "service-site": "pnpm -F \"service-site\"",
     "gen:turbo": "turbo gen"
