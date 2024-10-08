@@ -31,7 +31,6 @@ export default function Page({ params }: PageProps) {
 
   return (
     <article>
-      {/* <Callout /> */}
       <div>
         <time dateTime={post.date}>
           {format(parseISO(post.date), 'LLLL d, yyyy')}
