@@ -1,8 +1,11 @@
-@import url('destyle.css');
-@import url('./variables.css');
+@import 'destyle.css';
+@import './variables.css';
+@import './variables.tokens-dark.css';
+@import './variables.tokens-typography.css';
 
-@import url('./variables.tokens-dark.css');
-@import url('./variables.tokens-typography.css');
+:root {
+  --main-padding: var(--spacing-10, 40px);
+}
 
 body {
   color: var(--global-foreground);
@@ -14,5 +17,11 @@ body {
 main {
   max-width: var(--default-page-width-with-margin);
   margin: 0 auto;
-  padding: var(--spacing-10, 40px) var(--spacing-20, 80px);
+  padding: var(--main-padding) 0;
+}
+
+@media screen and (max-width: 1024px) {
+  main {
+    padding: 0;
+  }
 }

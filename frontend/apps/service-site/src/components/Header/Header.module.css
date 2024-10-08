@@ -8,6 +8,12 @@
   align-items: center;
 }
 
+@media screen and (max-width: 1024px) {
+  .header {
+    padding: 0 var(--spacing-10, 40px);
+  }
+}
+
 .h1 {
   color: var(--foreground);
 }
