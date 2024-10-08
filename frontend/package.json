@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "pnpm -F \"service-site\" dev",
+    "dev": "turbo dev",
     "lint:turbo": "turbo lint",
     "lint:packageVersion": "syncpack list-mismatches",
     "service-site": "pnpm -F \"service-site\"",
