@@ -1,15 +1,13 @@
 import type { PageProps } from '@/app/types'
 import { getTranslation, langSchema, langs } from '@/features/i18n'
 import { filterPostsByLang } from '@/features/posts'
+import { MDXContent } from '@packages/mdx-components'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
-import { useMDXComponent } from 'next-contentlayer/hooks'
 import Link from 'next/link'
 import { object, parse } from 'valibot'
 
 function PostCard(post: Post) {
-  const MDXContent = useMDXComponent(post.body.code)
-
   return (
     <div>
       <h2>
@@ -18,7 +16,7 @@ function PostCard(post: Post) {
       <time dateTime={post.date}>
         {format(parseISO(post.date), 'LLLL d, yyyy')}
       </time>
-      <MDXContent />
+      <MDXContent code={post.body.code} />
     </div>
   )
 }

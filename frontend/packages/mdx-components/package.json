@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@packages/biome-config": "workspace:*",
+    "@packages/configs": "workspace:*",
     "@types/mdx": "^2.0.13",
     "@types/react": "^18",
     "@types/react-dom": "^18",
