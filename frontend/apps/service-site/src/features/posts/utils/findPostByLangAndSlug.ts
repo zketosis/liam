@@ -1,4 +1,4 @@
-import type { Lang } from '@/i18n'
+import type { Lang } from '@/features/i18n'
 import { allPosts } from 'contentlayer/generated'
 
 type Params = {

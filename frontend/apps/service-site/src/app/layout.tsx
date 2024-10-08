@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import '@/styles/globals.css'
 import { Footer, Header } from '@/components'
-import type { Lang } from '@/i18n'
+import type { Lang } from '@/features/i18n'
 import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {

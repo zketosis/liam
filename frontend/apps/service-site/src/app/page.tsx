@@ -1,6 +1,6 @@
 import { TopCards } from '@/components'
-import { fallbackLang } from '@/i18n'
-import { filterPostsByLang } from '@/utils/posts'
+import { fallbackLang } from '@/features/i18n'
+import { filterPostsByLang } from '@/features/posts'
 import { compareDesc } from 'date-fns'
 
 export default function Page() {

@@ -1,4 +1,4 @@
-import type { Lang } from '@/i18n'
+import type { Lang } from '@/features/i18n'
 import type { Post } from 'contentlayer/generated'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,5 +1,5 @@
-import { fallbackLang } from '@/i18n'
-import { filterPostsByLang } from '@/utils/posts'
+import { fallbackLang, getTranslation } from '@/features/i18n'
+import { filterPostsByLang } from '@/features/posts'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
 import Link from 'next/link'
@@ -20,6 +20,8 @@ function PostCard(post: Post) {
 }
 
 export default function Page() {
+  const { t } = getTranslation(fallbackLang)
+
   const posts = filterPostsByLang(fallbackLang)
   const sortedPosts = posts.sort((a, b) =>
     compareDesc(new Date(a.date), new Date(b.date)),
@@ -27,7 +29,7 @@ export default function Page() {
 
   return (
     <div>
-      <h1>Posts</h1>
+      <h1>{t('posts.title')}</h1>
       {sortedPosts.map((post) => (
         <PostCard key={post.slug} {...post} />
       ))}
