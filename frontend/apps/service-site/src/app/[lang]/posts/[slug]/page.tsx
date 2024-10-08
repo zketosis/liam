@@ -3,6 +3,7 @@ import { langSchema, langs } from '@/features/i18n'
 import { findPostByLangAndSlug } from '@/features/posts'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
+import { useMDXComponent } from 'next-contentlayer/hooks'
 import { notFound } from 'next/navigation'
 import { object, parse, string } from 'valibot'
 
@@ -32,6 +33,8 @@ export default function Page({ params }: PageProps) {
   const post = findPostByLangAndSlug({ lang, slug })
   if (!post) notFound()
 
+  const MDXContent = useMDXComponent(post.body.code)
+
   return (
     <article>
       <div>
@@ -40,8 +43,7 @@ export default function Page({ params }: PageProps) {
         </time>
         <h1>{post.title}</h1>
       </div>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
-      <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
+      <MDXContent />
     </article>
   )
 }
