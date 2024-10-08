@@ -29,7 +29,7 @@
       "mode": "auto"
     }
   ],
-  "biome.lspBin": "./frontend/packages/biome-config/node_modules/.bin/biome",
+  "biome.lspBin": "./frontend/packages/configs/node_modules/.bin/biome",
   "cSpell.enabled": true,
   "cSpell.words": ["biomejs"],
   "cSpell.allowCompoundWords": true,
