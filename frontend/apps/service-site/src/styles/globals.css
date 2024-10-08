@@ -18,6 +18,7 @@ main {
   max-width: var(--default-page-width-with-margin);
   margin: 0 auto;
   padding: var(--main-padding) 0;
+  margin-top: var(--default-header-height);
 }
 
 @media screen and (max-width: 1024px) {
