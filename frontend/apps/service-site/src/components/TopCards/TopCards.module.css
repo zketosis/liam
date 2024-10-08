@@ -11,6 +11,18 @@
   padding: 0 56px;
 }
 
+@media screen and (max-width: 1024px) {
+  .topCards {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+}
+
+.topCards > * {
+  display: flex;
+  flex-grow: 1;
+}
+
 .topCard {
   padding: var(--card-padding);
   gap: var(--spacing-4, 16px);
@@ -83,7 +95,8 @@
   height: calc(var(--font-size-10, 24px) * var(--max-lines) * var(--line-height));
 }
 
-.largeCard {
+.topCards > :first-child,
+.topCards > :nth-child(8) {
   .textContainer {
     margin: var(--large-card-margin) 0;
     justify-content: flex-start;
@@ -126,7 +139,6 @@
 }
 
 .topCards > :first-child {
-  @extend .largeCard;
   grid-column: span 2;
   grid-row: span 3;
   padding-left: 0;
@@ -142,7 +154,6 @@
 }
 
 .topCards > :nth-child(8) {
-  @extend .largeCard;
   order: 14;
   grid-column: 3 / span 2;
   grid-row: 4 / span 3;
@@ -159,11 +170,6 @@
 }
 
 @media screen and (max-width: 1024px) {
-  .topCards {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
-  }
-
   .topCard {
     padding: var(--tablet-card-padding);
   }
@@ -186,7 +192,13 @@
     padding-right: var(--tablet-card-padding);
   }
 
-  .largeCard {
+  .topCards > :nth-child(8) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .topCards > :first-child,
+  .topCards > :nth-child(8) {
     .textContainer {
       margin: var(--tablet-large-card-padding) 0;
     }
@@ -210,7 +222,6 @@
   .topCards > :nth-child(8) {
     order: initial;
     margin-right: 0;
-    margin-left: 0;
 
     .topCard {
       padding-right: 0;
