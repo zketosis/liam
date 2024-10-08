@@ -1,5 +1,5 @@
 import type { PageProps } from '@/app/types'
-import { langSchema, langs, useTranslation } from '@/features/i18n'
+import { getTranslation, langSchema, langs } from '@/features/i18n'
 import { filterPostsByLang } from '@/features/posts'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
@@ -32,7 +32,7 @@ const paramsSchema = object({
 export default function Page({ params }: PageProps) {
   const { lang } = parse(paramsSchema, params)
 
-  const { t } = useTranslation(lang)
+  const { t } = getTranslation(lang)
 
   const posts = filterPostsByLang(lang)
   const sortedPosts = posts.sort((a, b) =>

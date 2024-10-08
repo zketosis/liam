@@ -1,4 +1,4 @@
-import { fallbackLang, useTranslation } from '@/features/i18n'
+import { fallbackLang, getTranslation } from '@/features/i18n'
 import { filterPostsByLang } from '@/features/posts'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
@@ -20,7 +20,7 @@ function PostCard(post: Post) {
 }
 
 export default function Page() {
-  const { t } = useTranslation(fallbackLang)
+  const { t } = getTranslation(fallbackLang)
 
   const posts = filterPostsByLang(fallbackLang)
   const sortedPosts = posts.sort((a, b) =>
