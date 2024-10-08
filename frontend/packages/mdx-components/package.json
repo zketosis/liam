@@ -1,0 +1,35 @@
+{
+  "name": "@packages/mdx-components",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "conc -c auto pnpm:dev:*",
+    "dev:css": "tcm src --watch",
+    "lint": "conc -c auto pnpm:lint:*",
+    "lint:biome": "biome check .",
+    "lint:tsc": "tsc --noEmit",
+    "fmt": "conc -c auto pnpm:fmt:*",
+    "fmt:biome": "biome check --write --unsafe ."
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "next-contentlayer": "^0.3.4",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@packages/biome-config": "workspace:*",
+    "@types/mdx": "^2.0.13",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "concurrently": "^9.0.1",
+    "typed-css-modules": "^0.9.1",
+    "typescript": "^5"
+  }
+}
