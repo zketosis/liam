@@ -27,3 +27,6 @@ next-env.d.ts
 
 # turborepo
 .turbo
+
+# typed-css-modules
+*.css.d.ts
