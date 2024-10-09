@@ -1,0 +1,22 @@
+.icon path {
+  fill: var(--link-default);
+}
+
+.button {
+  display: inline-flex;
+  padding: var(--spacing-2, 8px);
+  align-items: center;
+  /* border-radius: var(--border-radius-full); */
+  /* Fix after export fixed variabes.tokens-dark.css */
+  border-radius: 100%;
+  background: var(--pane-background);
+  transition: color 0.1s ease-out, background-color 0.1s ease-out;
+
+  &:hover {
+    background: var(--pane-background-hover);
+
+    .icon path {
+      fill: var(--global-foreground)
+    }
+  }
+}
