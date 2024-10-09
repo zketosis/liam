@@ -4,7 +4,7 @@
   --tablet-card-padding: var(--spacing-5, 20px);
   --tablet-large-card-padding: var(--spacing-10, 40px);
   --mobile-card-padding: var(--spacing-2, 8px);
-  --mobile-large-card-padding: var(--spacing-4, 16px);  
+  --mobile-large-card-padding: var(--spacing-4, 16px);
 
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -67,7 +67,7 @@
 
 @media screen and (max-width: 768px) {
   .tag,
-  .writer  {
+  .writer {
     font-size: var(--font-size-3, 12px);
   }
 }
@@ -84,7 +84,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .title  {
+  .title {
     font-size: var(--font-size-5, 14px);
   }
 }
@@ -115,7 +115,11 @@
   -webkit-line-clamp: var(--max-lines);
   line-clamp: var(--max-lines);
   overflow: hidden;
-  height: calc(var(--font-size-10, 24px) * var(--max-lines) * var(--line-height));
+  height: calc(
+    var(--font-size-10, 24px) *
+    var(--max-lines) *
+    var(--line-height)
+  );
 }
 
 /* Styles for first and eighth cards */
@@ -228,13 +232,13 @@
   }
 
   /* Adjust left and right padding for cards */
-  .topCards > :nth-child(2n):not(:nth-child(8)):nth-child(-n+7),
-  .topCards > :nth-child(2n+9) {
+  .topCards > :nth-child(2n):not(:nth-child(8)):nth-child(-n + 7),
+  .topCards > :nth-child(2n + 9) {
     padding-left: var(--tablet-card-padding);
   }
 
-  .topCards > :nth-child(2n+1):not(:first-child):nth-child(-n+7),
-  .topCards > :nth-child(2n+10) {
+  .topCards > :nth-child(2n + 1):not(:first-child):nth-child(-n + 7),
+  .topCards > :nth-child(2n + 10) {
     padding-right: var(--tablet-card-padding);
   }
 
@@ -294,13 +298,13 @@
   }
 
   /* Adjust left and right padding for cards */
-  .topCards > :nth-child(2n):not(:nth-child(8)):nth-child(-n+7),
-  .topCards > :nth-child(2n+9) {
+  .topCards > :nth-child(2n):not(:nth-child(8)):nth-child(-n + 7),
+  .topCards > :nth-child(2n + 9) {
     padding-left: var(--mobile-card-padding);
   }
 
-  .topCards > :nth-child(2n+1):not(:first-child):nth-child(-n+7),
-  .topCards > :nth-child(2n+10) {
+  .topCards > :nth-child(2n + 1):not(:first-child):nth-child(-n + 7),
+  .topCards > :nth-child(2n + 10) {
     padding-right: var(--mobile-card-padding);
   }
 
