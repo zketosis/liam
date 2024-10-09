@@ -1,0 +1,46 @@
+name: frontend-ci
+
+on:
+  pull_request:
+  merge_group:
+
+env:
+  working-directory: frontend
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      has-changes: ${{ steps.changes.outputs.has-changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            has-changes:
+              - '.github/workflows/frontend-ci.yml'
+              - '.github/actions/pnpm-setup/**'
+              - './frontend/**'
+
+  frontend-lint:
+    needs: [setup-job]
+    if: ${{ needs.setup-job.outputs.has-changes == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/pnpm-setup
+        with:
+          working-directory: ${{ env.working-directory }}
+      - run: pnpm lint

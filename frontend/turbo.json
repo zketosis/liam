@@ -5,8 +5,12 @@
       "cache": false,
       "persistent": true
     },
+    "gen": {
+      "dependsOn": ["^gen"],
+      "outputs": ["./**/contentlayer/**/*"]
+    },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["gen", "^lint"]
     }
   }
 }
