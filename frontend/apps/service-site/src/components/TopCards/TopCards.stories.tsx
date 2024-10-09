@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { TopCards } from './'
+import { DocumentContentType } from 'contentlayer2/source-files';
 
 const commonPostData = (postId: number) => ({
   id: `${postId}`,
@@ -32,7 +33,7 @@ const meta = {
         sourceFilePath: '', 
         sourceFileName: '', 
         sourceFileDir: '', 
-        contentType: 'post' as const, 
+        contentType: 'post' as DocumentContentType, 
         flattenedPath: '' 
       }, 
       type: 'Post' as const, 
