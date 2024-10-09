@@ -1,8 +1,7 @@
 import type { PageProps } from '@/app/types'
 import { fallbackLang } from '@/features/i18n'
-import { findPostByLangAndSlug } from '@/features/posts'
+import { PostDetailPage, findPostByLangAndSlug } from '@/features/posts'
 import { allPosts } from 'contentlayer/generated'
-import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'
 import { object, parse, string } from 'valibot'
 
@@ -25,19 +24,5 @@ const paramsSchema = object({
 export default function Page({ params }: PageProps) {
   const { slug } = parse(paramsSchema, params)
 
-  const post = findPostByLangAndSlug({ lang: fallbackLang, slug })
-  if (!post) notFound()
-
-  return (
-    <article>
-      <div>
-        <time dateTime={post.date}>
-          {format(parseISO(post.date), 'LLLL d, yyyy')}
-        </time>
-        <h1>{post.title}</h1>
-      </div>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
-      <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
-    </article>
-  )
+  return <PostDetailPage lang={fallbackLang} slug={slug} />
 }
