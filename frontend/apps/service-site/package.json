@@ -11,7 +11,6 @@
     "gen:css": "tcm src",
     "build": "pnpm gen && next build",
     "build:storybook": "storybook build",
-    "gen": "conc -c auto pnpm:gen:*",
     "gen:contentlayer": "contentlayer2 build",
     "start": "next start",
     "lint": "conc -c auto pnpm:lint:*",
