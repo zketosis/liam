@@ -1,0 +1,23 @@
+.heading {
+  color: var(--global-foreground, #fff);
+  font-family: var(--message-font, Montserrat);
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+}
+
+.h2 {
+  font-size: var(--font-size-10, 1.5rem);
+}
+
+.h3 {
+  font-size: var(--font-size-8, 1.25rem);
+}
+
+.h4 {
+  font-size: var(--font-size-7, 1.125rem);
+}
+
+.h5 {
+  font-size: var(--font-size-6, 1rem);
+}
