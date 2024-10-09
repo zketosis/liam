@@ -1,8 +1,24 @@
 .topCards {
+  --card-padding: var(--spacing-6, 24px);
+  --large-card-margin: var(--spacing-20, 80px);
+  --tablet-card-padding: var(--spacing-5, 20px);
+  --tablet-large-card-padding: var(--spacing-10, 40px);
+  --mobile-card-padding: var(--spacing-2, 8px);
+  --mobile-large-card-padding: var(--spacing-4, 16px);  
+
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, auto);
   gap: 0;
+  padding: 0 56px;
+}
+
+@media screen and (max-width: 1024px) {
+  .topCards {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    padding: 0;
+  }
 }
 
 .topCards > * {
@@ -11,17 +27,22 @@
 }
 
 .topCard {
-  padding: 24px;
-  gap: 16px;
+  padding: var(--card-padding);
+  gap: var(--spacing-4, 16px);
   display: flex;
   flex-direction: column;
   color: var(--global-foreground);
-  transition: color 0.1s ease-out;
+  transition: color 0.1s ease-out, background-color 0.1s ease-out;
+}
 
-  &:hover {
-    color: var(--global-background);
-    background-color: var(--global-foreground);
-    transition: color 0.1s ease-out;
+.topCard:hover {
+  color: var(--global-background);
+  background-color: var(--global-foreground);
+}
+
+@media screen and (max-width: 768px) {
+  .topCard {
+    padding: var(--mobile-card-padding);
   }
 }
 
@@ -37,11 +58,22 @@
   display: none;
 }
 
-.tag {
+.tag,
+.writer {
   font-family: var(--message-font);
   font-size: var(--font-size-6, 16px);
-  font-weight: 500;
   line-height: 120%;
+}
+
+@media screen and (max-width: 768px) {
+  .tag,
+  .writer  {
+    font-size: var(--font-size-3, 12px);
+  }
+}
+
+.tag {
+  font-weight: 500;
 }
 
 .title {
@@ -51,11 +83,14 @@
   font-family: var(--message-font);
 }
 
+@media screen and (max-width: 768px) {
+  .title  {
+    font-size: var(--font-size-5, 14px);
+  }
+}
+
 .writer {
-  font-size: var(--font-size-6, 16px);
   font-weight: 400;
-  line-height: 120%;
-  font-family: var(--message-font);
   align-items: flex-end;
 }
 
@@ -70,93 +105,242 @@
   object-fit: cover;
 }
 
-.topCards > :not(:first-child):not(:nth-child(2)) {
-  .title {
-    line-clamp: 4;
-    -webkit-line-clamp: 4;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: calc(var(--font-size-10, 24px) * 4 * 1.2);
+/* Title line limit */
+.topCards > :not(:first-child):not(:nth-child(8)) .title {
+  --line-height: 1.2;
+  --max-lines: 4;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--max-lines);
+  line-clamp: var(--max-lines);
+  overflow: hidden;
+  height: calc(var(--font-size-10, 24px) * var(--max-lines) * var(--line-height));
+}
+
+/* Styles for first and eighth cards */
+.topCards > :is(:first-child, :nth-child(8)) .textContainer {
+  margin: var(--large-card-margin) 0;
+  justify-content: flex-start;
+}
+
+.topCards > :is(:first-child, :nth-child(8)) .tags {
+  display: flex;
+  gap: var(--spacing-3, 12px);
+  flex-wrap: wrap;
+}
+
+.topCards > :is(:first-child, :nth-child(8)) .title {
+  font-size: var(--font-size-18, 48px);
+  font-weight: 400;
+  line-height: 120%;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: auto;
+}
+
+.topCards > :is(:first-child, :nth-child(8)) .introduction {
+  margin-top: var(--spacing-10, 40px);
+  display: block;
+  width: 50%;
+  font-family: var(--main-font);
+  font-size: var(--s-fontSize-5, 14px);
+  font-weight: 400;
+  line-height: 160%;
+  border-left: 1px solid var(--global-foreground);
+  padding-left: var(--spacing-4, 16px);
+  margin-left: 50%;
+}
+
+.topCards > :is(:first-child, :nth-child(8)):hover .introduction {
+  border-color: var(--global-background);
+}
+
+@media screen and (max-width: 1024px) {
+  .topCards > :is(:first-child, :nth-child(8)) .introduction {
+    margin-top: var(--spacing-6, 24px);
   }
 }
 
-.topCards > :first-child,
-.topCards > :nth-child(2) {
-  .textContainer {
-    margin: var(--spacing-20, 80px) 0;
-    justify-content: flex-start;
+@media screen and (max-width: 768px) {
+  .topCards > :is(:first-child, :nth-child(8)) .title {
+    font-size: var(--font-size-8, 16px);
   }
 
-  .tags {
-    display: flex;
-    gap: var(--spacing-3, 12px);
-  }
-
-  .title {
-    font-size: var(--font-size-18, 48px);
-
-    font-weight: 400;
-    line-height: 120%;
-    line-clamp: 4;
-    -webkit-line-clamp: 4;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    height: auto;
-  }
-
-  .introduction {
-    margin-top: 40px;
-    display: block;
-    width: 50%;
-    font-family: var(--main-font);
-    font-size: var(--s-fontSize-5, 14px);
-
-    font-weight: 400;
-    line-height: 160%;
-    border-left: 1px solid var(--global-foreground);
-    padding-left: var(--spacing-4, 16px);
-    margin-left: 50%;
-  }
-
-  &:hover {
-    .introduction {
-      border-color: var(--global-background);
-    }
+  .topCards > :is(:first-child, :nth-child(8)) .introduction {
+    margin-top: 0;
+    width: 100%;
+    margin-left: 0;
+    font-size: var(--font-size-3, 12px);
   }
 }
 
+/* Grid layout for the first card */
 .topCards > :first-child {
   grid-column: span 2;
   grid-row: span 3;
+  padding-left: 0;
 }
 
-.topCards > :nth-child(2) {
+.topCards > :first-child .topCard {
+  padding-left: 0;
+  margin-left: -56px;
+  gap: 0;
+}
+
+.topCards > :first-child .textContainer {
+  padding-left: var(--large-card-margin);
+}
+
+/* Grid layout for the eighth card */
+.topCards > :nth-child(8) {
   order: 14;
   grid-column: 3 / span 2;
   grid-row: 4 / span 3;
-  margin-right: calc(-1 * var(--spacing-20, 80px));
+  padding-right: 0;
 }
 
-.topCards > :first-child {
+.topCards > :nth-child(8) .topCard {
+  padding-right: 0;
+  margin-right: -56px;
+  gap: 0;
+}
+
+.topCards > :nth-child(8) .textContainer {
+  padding-right: var(--large-card-margin);
+}
+
+/* Tablet styles */
+@media screen and (max-width: 1024px) {
   .topCard {
+    padding: var(--tablet-card-padding);
+  }
+
+  .textContainer {
+    flex-grow: 0;
+  }
+
+  .topCards > :not(:first-child):not(:nth-child(8)) .title {
+    --max-lines: auto;
+  }
+
+  /* Adjust left and right padding for cards */
+  .topCards > :nth-child(2n):not(:nth-child(8)):nth-child(-n+7),
+  .topCards > :nth-child(2n+9) {
+    padding-left: var(--tablet-card-padding);
+  }
+
+  .topCards > :nth-child(2n+1):not(:first-child):nth-child(-n+7),
+  .topCards > :nth-child(2n+10) {
+    padding-right: var(--tablet-card-padding);
+  }
+
+  .topCards > :nth-child(8) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Adjust layout for first and eighth cards */
+  .topCards > :is(:first-child, :nth-child(8)) {
+    grid-column: span 2;
+    grid-row: auto;
+  }
+
+  .topCards > :is(:first-child, :nth-child(8)) .textContainer {
+    margin: var(--tablet-large-card-padding) 0;
+  }
+
+  .topCards > :first-child .topCard {
     padding-left: 0;
-    margin-left: calc(-1 * var(--spacing-20, 80px));
+    margin-left: 0;
+    padding-right: var(--tablet-large-card-padding);
   }
 
-  .textContainer {
-    padding-left: var(--spacing-20, 80px);
+  .topCards > :first-child .textContainer {
+    padding-left: var(--tablet-large-card-padding);
+  }
+
+  .topCards > :nth-child(8) {
+    order: initial;
+    margin-right: 0;
+  }
+
+  .topCards > :nth-child(8) .topCard {
+    padding-right: 0;
+    margin-right: 0;
+    padding-left: var(--tablet-large-card-padding);
+  }
+
+  .topCards > :nth-child(8) .textContainer {
+    padding-right: var(--tablet-large-card-padding);
   }
 }
 
-.topCards > :nth-child(2) {
+/* Mobile styles */
+@media screen and (max-width: 768px) {
   .topCard {
-    padding-right: 0;
-    margin-right: calc(-1 * var(--spacing-20, 80px));
+    padding: var(--spacing-4, 16px) var(--mobile-card-padding);
   }
 
   .textContainer {
-    padding-right: var(--spacing-20, 80px);
+    flex-grow: 0;
+  }
+
+  .topCards > :not(:first-child):not(:nth-child(8)) .title {
+    --max-lines: auto;
+  }
+
+  /* Adjust left and right padding for cards */
+  .topCards > :nth-child(2n):not(:nth-child(8)):nth-child(-n+7),
+  .topCards > :nth-child(2n+9) {
+    padding-left: var(--mobile-card-padding);
+  }
+
+  .topCards > :nth-child(2n+1):not(:first-child):nth-child(-n+7),
+  .topCards > :nth-child(2n+10) {
+    padding-right: var(--mobile-card-padding);
+  }
+
+  .topCards > :nth-child(8) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Adjust layout for first and eighth cards */
+  .topCards > :is(:first-child, :nth-child(8)) {
+    grid-column: span 2;
+    grid-row: auto;
+  }
+
+  .topCards > :is(:first-child, :nth-child(8)) .textContainer {
+    margin: var(--mobile-large-card-padding) 0;
+  }
+
+  .topCards > :first-child .topCard {
+    padding-left: 0;
+    margin-left: 0;
+    padding-right: var(--mobile-large-card-padding);
+  }
+
+  .topCards > :first-child .textContainer {
+    padding-left: var(--mobile-large-card-padding);
+  }
+
+  .topCards > :nth-child(8) {
+    order: initial;
+    margin-right: 0;
+  }
+
+  .topCards > :nth-child(8) .topCard {
+    padding-right: 0;
+    margin-right: 0;
+    padding-left: var(--mobile-large-card-padding);
+  }
+
+  .topCards > :nth-child(8) .textContainer {
+    padding-right: var(--mobile-large-card-padding);
   }
 }
