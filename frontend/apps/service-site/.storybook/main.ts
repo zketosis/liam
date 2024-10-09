@@ -3,7 +3,13 @@ import type { StorybookConfig } from '@storybook/nextjs'
 
 const config: StorybookConfig = {
   framework: '@storybook/nextjs',
-  stories: ['../src/**/*.stories.@(ts|tsx)'],
+  stories: [
+    '../src/**/*.stories.@(ts|tsx)',
+    {
+      directory: path.resolve(__dirname, '../../../packages/ui/src'),
+      titlePrefix: 'UI',
+    },
+  ],
   features: {
     experimentalRSC: true,
   },

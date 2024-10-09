@@ -21,6 +21,7 @@
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "@packages/ui": "workspace:*",
     "clsx": "^2.1.1",
     "contentlayer2": "^0.5.1",
     "date-fns": "^4.1.0",
