@@ -6,7 +6,7 @@ export const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.logoContainer}>
-        <Link href="/" className={styles.logo}>
+        <Link href="/">
           <LiamLogoMark />
         </Link>
         <p className={styles.text}>&copy; 2024 Liam</p>

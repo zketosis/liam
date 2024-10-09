@@ -1,6 +1,7 @@
 import type { PageProps } from '@/app/types'
 import { langSchema, langs } from '@/features/i18n'
 import { findPostByLangAndSlug } from '@/features/posts'
+import { MDXContent } from '@/libs/contentlayer'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'
@@ -40,8 +41,7 @@ export default function Page({ params }: PageProps) {
         </time>
         <h1>{post.title}</h1>
       </div>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
-      <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
+      <MDXContent code={post.body.code} />
     </article>
   )
 }

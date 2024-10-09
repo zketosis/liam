@@ -1,0 +1,11 @@
+.wrapper {
+  width: 100%;
+  padding: var(--spacing-4, 1rem);
+  color: var(--callout-default-text, #bebfc1);
+  background: var(--callout-default-background, rgba(255, 255, 255, 0.05));
+}
+
+.danger {
+  color: var(--callout-danger-text, #ea928e);
+  background: var(--callout-danger-background, rgba(247, 80, 73, 0.1));
+}
