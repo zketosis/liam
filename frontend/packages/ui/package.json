@@ -2,6 +2,8 @@
   "name": "@packages/ui",
   "main": "src/index.ts",
   "scripts": {
+    "dev": "conc -c auto pnpm:dev:*",
+    "dev:css": "tcm src --watch",
     "gen": "conc -c auto pnpm:gen:*",
     "gen:css": "tcm src",
     "lint": "conc -c auto pnpm:lint:*",
