@@ -1,7 +1,7 @@
 import { Callout } from '@/contents/components'
 import type { MDXComponents } from 'mdx/types'
 // eslint-disable-next-line no-restricted-imports
-import { useMDXComponent } from 'next-contentlayer/hooks'
+import { useMDXComponent } from 'next-contentlayer2/hooks'
 import type { FC } from 'react'
 
 const mdxComponents: MDXComponents = {
