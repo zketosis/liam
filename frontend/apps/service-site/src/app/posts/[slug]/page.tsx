@@ -1,7 +1,7 @@
 import type { PageProps } from '@/app/types'
 import { fallbackLang } from '@/features/i18n'
 import { findPostByLangAndSlug } from '@/features/posts'
-import { MDXContent } from '@packages/mdx-components'
+import { MDXContent } from '@/libs/contentlayer'
 import { allPosts } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'

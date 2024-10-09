@@ -18,7 +18,7 @@ export function TopCards({ posts, lang }: TopCardsProps) {
         >
           <div className={styles.topCard}>
             {post.image && (
-              <div className={styles.imageContainer}>
+              <div>
                 <Image
                   src={post.image}
                   alt={`Image of ${post.title}`}

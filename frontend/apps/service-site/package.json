@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "conc -c auto pnpm:dev:*",
     "dev:next": "next dev",
+    "dev:css": "tcm src --watch",
     "dev:storybook": "storybook dev -h localhost -p 6006 --no-open",
     "build": "next build",
     "build:storybook": "storybook build",
@@ -17,6 +18,7 @@
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "contentlayer": "^0.3.4",
     "date-fns": "^4.1.0",
     "destyle.css": "^4.0.1",
@@ -33,9 +35,9 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/configs": "workspace:*",
-    "@packages/mdx-components": "workspace:*",
     "@storybook/nextjs": "^8.3.4",
     "@storybook/react": "^8.3.4",
+    "@types/mdx": "^2.0.13",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -43,6 +45,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "storybook": "^8.3.4",
+    "typed-css-modules": "^0.9.1",
     "typescript": "^5"
   }
 }

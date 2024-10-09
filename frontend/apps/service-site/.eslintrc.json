@@ -8,7 +8,7 @@
           {
             "name": "next-contentlayer/hooks",
             "importNames": ["useMDXComponent"],
-            "message": "Please use `import { MDXContent } from \"@packages/mdx-components\"`"
+            "message": "Please use `import { MDXContent } from \"@/libs/contentlayer\"`"
           }
         ]
       }

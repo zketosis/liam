@@ -1,7 +1,8 @@
+import { Callout } from '@/contents/components'
 import type { MDXComponents } from 'mdx/types'
+// eslint-disable-next-line no-restricted-imports
 import { useMDXComponent } from 'next-contentlayer/hooks'
 import type { FC } from 'react'
-import { Callout } from './Callout'
 
 const mdxComponents: MDXComponents = {
   Callout: (props) => <Callout {...props} />,

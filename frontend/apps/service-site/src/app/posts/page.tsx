@@ -1,6 +1,6 @@
 import { fallbackLang, getTranslation } from '@/features/i18n'
 import { filterPostsByLang } from '@/features/posts'
-import { MDXContent } from '@packages/mdx-components'
+import { MDXContent } from '@/libs/contentlayer'
 import type { Post } from 'contentlayer/generated'
 import { compareDesc, format, parseISO } from 'date-fns'
 import Link from 'next/link'

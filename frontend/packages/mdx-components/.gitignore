@@ -1,5 +1,0 @@
-# build
-dist
-
-# typed-css-modules
-*.css.d.ts
