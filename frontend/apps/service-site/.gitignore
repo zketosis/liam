@@ -41,3 +41,5 @@ next-env.d.ts
 # Storybook
 storybook-static
 
+# typed-css-modules
+*.css.d.ts
