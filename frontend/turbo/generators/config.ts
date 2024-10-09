@@ -33,6 +33,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
         choices: [
           ...listDirectories('apps/service-site/src/features'),
           ...listDirectories('apps/service-site/src/components'),
+          ...listDirectories('packages/ui/src/components'),
         ],
       },
       {
