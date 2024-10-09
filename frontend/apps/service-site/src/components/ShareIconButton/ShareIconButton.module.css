@@ -16,7 +16,7 @@
     background: var(--pane-background-hover);
 
     .icon path {
-      fill: var(--global-foreground)
+      fill: var(--global-foreground);
     }
   }
 }
