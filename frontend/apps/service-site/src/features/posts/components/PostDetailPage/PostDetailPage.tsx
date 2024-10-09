@@ -1,5 +1,5 @@
 import type { Lang } from '@/features/i18n'
-import { MDXContent } from '@packages/mdx-components'
+import { MDXContent } from '@/libs/contentlayer'
 import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
