@@ -15,7 +15,10 @@ const commonPostData = (postId: number) => ({
   categories: ['Technology', 'Business'],
   body: {
     type: 'mdx',
-    content: "No-code platforms are revolutionizing the way we think about software development. By enabling non-programmers to build applications, they are democratizing access to technology and fostering innovation across various sectors."
+    code: '',
+    content: "No-code platforms are revolutionizing the way we think about software development. By enabling non-programmers to build applications, they are democratizing access to technology and fostering innovation across various sectors.",
+    raw: '',
+    html: ''
   },
   lang: 'en',
   slug: `dummy-${postId}`,
@@ -35,11 +38,11 @@ const meta = {
       }, 
       type: 'Post' as const, 
       body: {
+        ...commonPostData(i + 1).body,
         raw: '',
         html: '',
-        ...commonPostData(i + 1).body
       }
-    })),
+    }))
   }
 } satisfies Meta<typeof TopCards>
 
