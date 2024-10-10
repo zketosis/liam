@@ -1,3 +1,4 @@
+import { remarkLinkCard } from '@/libs/remark'
 import { defineDocumentType, makeSource } from 'contentlayer2/source-files'
 import rehypePrettyCode from 'rehype-pretty-code'
 import remarkBreaks from 'remark-breaks'
@@ -52,7 +53,7 @@ export default makeSource({
   contentDirPath: 'src/contents',
   documentTypes: [Post],
   mdx: {
-    remarkPlugins: [remarkGfm, remarkBreaks],
+    remarkPlugins: [remarkGfm, remarkBreaks, remarkLinkCard],
     rehypePlugins: [rehypePrettyCode],
   },
 })
