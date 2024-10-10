@@ -1,7 +1,15 @@
 import type { InferOutput } from 'valibot'
-import type { enDictionary, jaDictionary } from './locales'
 import type { langSchema } from './schema'
 
 export type Lang = InferOutput<typeof langSchema>
 
-export type Dictionary = typeof enDictionary | typeof jaDictionary
+export type Dictionary = Record<
+  | 'posts.title'
+  | 'posts.share.copyLink'
+  | 'posts.share.x'
+  | 'posts.share.facebook'
+  | 'posts.share.linkedin',
+  string
+>
+
+export type TranslationFn = <K extends keyof Dictionary>(key: K) => string
