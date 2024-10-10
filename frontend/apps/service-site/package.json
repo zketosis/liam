@@ -26,6 +26,7 @@
     "contentlayer2": "^0.5.1",
     "date-fns": "^4.1.0",
     "destyle.css": "^4.0.1",
+    "lucide-react": "^0.451.0",
     "next": "14.2.13",
     "next-contentlayer2": "^0.5.1",
     "react": "^18",
