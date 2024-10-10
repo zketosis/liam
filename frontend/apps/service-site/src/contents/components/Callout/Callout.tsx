@@ -22,7 +22,7 @@ export const Callout: FC<PropsWithChildren<Props>> = ({
 
   return (
     <div className={clsx(styles.wrapper, typeClassName)}>
-      <InfoIcon />
+      <InfoIcon className={styles.icon} />
       <div className={styles.body}>{children}</div>
     </div>
   )
