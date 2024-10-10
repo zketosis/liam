@@ -19,5 +19,8 @@
     "@types/react": "^18",
     "typed-css-modules": "^0.9.1",
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@radix-ui/react-tooltip": "^1.1.3"
   }
 }

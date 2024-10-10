@@ -11,4 +11,8 @@
     calc(2 * var(--default-page-margin))
   );
   --default-header-height: 64px;
+  --z-index-popup-button: 10;
+  --z-index-toast: 100;
+  --z-index-hover-card: 2;
+  --z-index-tooltip: 200;
 }
