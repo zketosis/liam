@@ -1,3 +1,4 @@
+import { ShareIconButton } from '@/components/ShareIconButton'
 import type { Lang } from '@/features/i18n'
 import { MDXContent } from '@/libs/contentlayer'
 import { format, parseISO } from 'date-fns'
@@ -21,6 +22,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
           {format(parseISO(post.date), 'LLLL d, yyyy')}
         </time>
         <h1>{post.title}</h1>
+        <ShareIconButton />
       </div>
       <MDXContent code={post.body.code} />
     </article>
