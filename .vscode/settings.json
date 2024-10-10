@@ -23,6 +23,12 @@
       "source.fixAll.stylelint": "always"
     }
   },
+  "[mdx]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "always"
+    }
+  },
   "prettier.requireConfig": false,
   "eslint.workingDirectories": [
     {
