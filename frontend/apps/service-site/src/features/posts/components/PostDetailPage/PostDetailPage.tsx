@@ -15,7 +15,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
   if (!post) notFound()
 
   return (
-    <article>
+    <article style={{ padding: '0 120px' }}>
       <div>
         <time dateTime={post.date}>
           {format(parseISO(post.date), 'LLLL d, yyyy')}
