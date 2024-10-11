@@ -1,5 +1,8 @@
-.icon path {
-  fill: var(--link-default);
+.icon {
+  color: var(--link-default);
+  transition: color var(--default-hover-animation-duration)
+    var(--default-timing-function), background-color
+    var(--default-hover-animation-duration) var(--default-timing-function);
 }
 
 .button {
@@ -15,8 +18,8 @@
   &:hover {
     background: var(--pane-background-hover);
 
-    .icon path {
-      fill: var(--global-foreground);
+    .icon {
+      color: var(--global-foreground);
     }
   }
 }
