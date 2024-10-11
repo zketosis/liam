@@ -1,5 +1,5 @@
 import { Callout } from '@/contents/components'
-import { Code, Heading } from '@/features/posts'
+import { Code, Heading, LinkCard } from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
 // eslint-disable-next-line no-restricted-imports
 import { useMDXComponent } from 'next-contentlayer2/hooks'
@@ -20,6 +20,7 @@ const mdxComponents: MDXComponents = {
     )
   },
   code: ({ children }) => <Code>{children}</Code>,
+  LinkCard: (props) => <LinkCard {...props} />,
   Callout: (props) => <Callout {...props} />,
 }
 
