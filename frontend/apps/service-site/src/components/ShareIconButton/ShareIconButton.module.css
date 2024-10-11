@@ -8,7 +8,7 @@
   align-items: center;
   border-radius: var(--border-radius-full);
   background: var(--pane-background);
-  transition: color 0.1s ease-out, background-color 0.1s ease-out;
+  transition: color var(--default-hover-animation-duration) var(--default-timing-function), background-color var(--default-hover-animation-duration) var(--default-timing-function);
 
   &:hover {
     background: var(--pane-background-hover);
