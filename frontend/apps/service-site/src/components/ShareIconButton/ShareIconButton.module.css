@@ -8,7 +8,9 @@
   align-items: center;
   border-radius: var(--border-radius-full);
   background: var(--pane-background);
-  transition: color var(--default-hover-animation-duration) var(--default-timing-function), background-color var(--default-hover-animation-duration) var(--default-timing-function);
+  transition: color var(--default-hover-animation-duration)
+    var(--default-timing-function), background-color
+    var(--default-hover-animation-duration) var(--default-timing-function);
 
   &:hover {
     background: var(--pane-background-hover);
