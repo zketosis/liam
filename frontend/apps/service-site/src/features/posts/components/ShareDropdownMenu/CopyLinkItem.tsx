@@ -31,8 +31,7 @@ export const CopyLinkItem: FC<Props> = ({ t, onOpenChange }) => {
 
   const handleCopyLink = useCallback(async (event: Event) => {
     event.preventDefault()
-    const url = encodeURIComponent(window.location.href)
-    navigator.clipboard.writeText(url).then(() => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
       setShow(true)
     })
   }, [])
