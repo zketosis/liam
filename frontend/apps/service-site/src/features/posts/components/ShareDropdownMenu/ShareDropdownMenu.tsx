@@ -9,8 +9,8 @@ import {
   LinkedInIcon,
   XIcon,
 } from '@packages/ui'
-import { CopyIcon } from 'lucide-react'
-import type { FC, PropsWithChildren } from 'react'
+import { type FC, type PropsWithChildren, useState } from 'react'
+import { CopyLinkItem } from './CopyLinkItem'
 import styles from './ShareDropdownMenu.module.css'
 
 type Props = PropsWithChildren<{
@@ -18,20 +18,16 @@ type Props = PropsWithChildren<{
 }>
 
 export const ShareDropdownMenu: FC<Props> = ({ children, lang }) => {
+  const [open, setOpen] = useState(false)
   const { t } = getTranslation(lang)
 
   return (
-    <DropdownMenuRoot>
+    <DropdownMenuRoot open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
 
       <DropdownMenuPortal>
         <DropdownMenuContent sideOffset={5} align="start">
-          <DropdownMenuItem
-            leftIcon={<CopyIcon className={styles.icon} />}
-            onSelect={() => alert('Item 1 clicked')}
-          >
-            <span>{t('posts.share.copyLink')}</span>
-          </DropdownMenuItem>
+          <CopyLinkItem t={t} onOpenChange={setOpen} />
           <DropdownMenuItem
             leftIcon={<XIcon className={styles.icon} />}
             onSelect={() => alert('Item 2 clicked')}
