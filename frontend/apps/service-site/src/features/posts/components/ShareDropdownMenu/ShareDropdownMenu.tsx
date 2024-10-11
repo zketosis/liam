@@ -1,4 +1,4 @@
-import type { TranslationFn } from '@/features/i18n'
+import { type Lang, getTranslation } from '@/features/i18n'
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,10 +14,12 @@ import type { FC, PropsWithChildren } from 'react'
 import styles from './ShareDropdownMenu.module.css'
 
 type Props = PropsWithChildren<{
-  t: TranslationFn
+  lang: Lang
 }>
 
-export const ShareDropdownMenu: FC<Props> = ({ children, t }) => {
+export const ShareDropdownMenu: FC<Props> = ({ children, lang }) => {
+  const { t } = getTranslation(lang)
+
   return (
     <DropdownMenuRoot>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
