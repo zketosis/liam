@@ -76,7 +76,7 @@ export const DropdownMenuItem = forwardRef<
         {leftIcon && (
           <span className={clsx(styles.icon, styles.leftIcon)}>{leftIcon}</span>
         )}
-        <div>{children}</div>
+        {children}
       </Item>
     )
   },
