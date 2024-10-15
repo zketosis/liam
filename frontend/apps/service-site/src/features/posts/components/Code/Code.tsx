@@ -1,7 +1,7 @@
-import type { FC, HTMLAttributes, PropsWithChildren } from 'react'
+import type { ComponentProps, FC, PropsWithChildren } from 'react'
 import styles from './Code.module.css'
 
-type Props = PropsWithChildren & HTMLAttributes<HTMLElement>
+type Props = PropsWithChildren & ComponentProps<'code'>
 
 export const Code: FC<Props> = ({ children, ...props }) => {
   return (
