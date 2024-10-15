@@ -1,5 +1,6 @@
 import { type Lang, fallbackLang } from '@/features/i18n'
 import { LinkHeading } from '@/features/posts/components/LinkHeading'
+import { PostCategories } from '@/features/posts/components/PostCategories'
 import { PostHero } from '@/features/posts/components/PostHero'
 import { MDXContent } from '@/libs/contentlayer'
 import { notFound } from 'next/navigation'
@@ -25,7 +26,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
   const nextPost = getNextPost({ lang: lang ?? fallbackLang, targetPost: post })
 
   return (
-    <article className={TOC_TARGET_CLASS_NAME} style={{ padding: '0 120px' }}>
+    <article className={TOC_TARGET_CLASS_NAME}>
       <PostHero post={post} />
       <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
       {/* FIXME: Add href props after implementing categories single page */}
@@ -42,6 +43,18 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
             <NavNextPost lang={lang} post={nextPost} />
           </div>
         )}
+      <div className={styles.container}>
+        <div className={styles.left}>
+          <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
+        </div>
+        <div className={styles.center}>
+          <MDXContent code={post.body.code} />
+        </div>
+        <div className={styles.right}>
+          <PostCategories
+            categories={post.categories.map((category) => ({ name: category }))}
+          />
+        </div>
       </div>
     </article>
   )

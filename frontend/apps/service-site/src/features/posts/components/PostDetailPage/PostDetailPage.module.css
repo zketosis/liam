@@ -27,3 +27,26 @@
     grid-area: 1 / 2;
   }
 }
+
+.container {
+  padding: 0 var(--spacing-20, 80px);
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-10, 40px);
+  gap: var(--spacing-10, 40px);
+}
+
+.left {
+  width: 274px;
+  position: sticky;
+  top: 0;
+}
+
+.center {
+  width: 880px;
+  padding: var(--spacing-6, 24px);
+}
+
+.right {
+  width: 274px;
+}

@@ -1,0 +1,8 @@
+.list {
+  margin-top: var(--spacing-5, 20px);
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-4, 16px);
+  flex-wrap: wrap;
+  row-gap: var(--spacing-3, 12px);
+}
