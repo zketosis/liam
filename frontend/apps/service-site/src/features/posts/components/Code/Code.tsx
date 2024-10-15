@@ -1,8 +1,12 @@
-import type { FC, PropsWithChildren } from 'react'
+import type { ComponentProps, FC, PropsWithChildren } from 'react'
 import styles from './Code.module.css'
 
-type Props = PropsWithChildren
+type Props = PropsWithChildren & ComponentProps<'code'>
 
-export const Code: FC<Props> = ({ children }) => {
-  return <code className={styles.code}>{children}</code>
+export const Code: FC<Props> = ({ children, ...props }) => {
+  return (
+    <code {...props} className={styles.code}>
+      {children}
+    </code>
+  )
 }
