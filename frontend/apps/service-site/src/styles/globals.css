@@ -1,7 +1,7 @@
 @import 'destyle.css';
 @import './variables.css';
-@import './variables.tokens-dark.css';
-@import './variables.tokens-typography.css';
+@import './Dark/variables.css';
+@import './Mode 1/variables.css';
 
 :root {
   --main-padding: var(--spacing-10, 40px);
