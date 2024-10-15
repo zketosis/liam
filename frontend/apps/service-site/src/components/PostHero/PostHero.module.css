@@ -25,33 +25,32 @@
   gap: var(--spacing-4, 16px);
 }
 
-@media screen and (max-width: 1024px) {
-  .postHero {
-    grid-template-columns: 1fr;
-    padding: var(--tablet-large-card-padding) 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-  }
+.image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
 
-  .imageContainer,
-  .textContainer {
-    grid-column: 1 / -1;
-  }
-
-  .imageContainer {
-    padding-right: var(--tablet-large-card-padding);
-  }
-
-  .textContainer {
-    padding: var(--tablet-large-card-padding);
-  }
+.tags {
+  font-weight: 500;
+  display: flex;
+  gap: var(--spacing-3, 12px);
+  flex-wrap: wrap;
 }
 
 .tag,
 .writer,
 .date {
+  font-family: var(--message-font);
   font-size: var(--font-size-6, 16px);
+  line-height: 120%;
+}
+
+.title {
+  font-family: var(--message-font);
+  font-size: var(--font-size-18, 48px);
+  font-weight: 400;
   line-height: 120%;
 }
 
@@ -83,27 +82,6 @@
   gap: var(--spacing-1, 4px);
 }
 
-.image {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.tags {
-  font-weight: 500;
-  display: flex;
-  gap: var(--spacing-3, 12px);
-  flex-wrap: wrap;
-}
-
-.title {
-  font-family: var(--message-font);
-  font-size: var(--font-size-18, 48px);
-  font-weight: 400;
-  line-height: 120%;
-}
-
 .introduction {
   margin-top: var(--spacing-10, 40px);
   width: 60%;
@@ -114,4 +92,77 @@
   border-left: 1px solid var(--global-foreground);
   padding-left: var(--spacing-4, 16px);
   margin-left: 40%;
+}
+
+@media screen and (max-width: 1024px) {
+  .postHero {
+    grid-template-columns: 1fr;
+    padding: var(--tablet-large-card-padding) 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .imageContainer,
+  .textContainer {
+    grid-column: 1 / -1;
+  }
+
+  .imageContainer {
+    padding-right: var(--tablet-large-card-padding);
+  }
+
+  .textContainer {
+    padding: var(--tablet-large-card-padding);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .postHero {
+    padding: var(--mobile-large-card-padding) 0;
+  }
+
+  .imageContainer,
+  .textContainer {
+    grid-column: 1 / -1;
+  }
+
+  .imageContainer {
+    padding-right: var(--mobile-large-card-padding);
+  }
+
+  .textContainer {
+    padding: var(--mobile-large-card-padding);
+  }
+
+  .tag,
+  .writer,
+  .date {
+    font-size: var(--font-size-4, 12px);
+  }
+
+  .tags {
+    gap: var(--spacing-1, 4px);
+  }
+
+  .title {
+    font-size: var(--font-size-8, 24px);
+  }
+
+  .writerAndDate {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dateAndShare {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .introduction {
+    margin-top: 0;
+    width: 100%;
+    margin-left: 0;
+    font-size: var(--font-size-3, 12px);
+  }
 }
