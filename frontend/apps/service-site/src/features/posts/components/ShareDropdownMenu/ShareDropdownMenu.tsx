@@ -24,8 +24,8 @@ const handleSelect = (url: string) => () => {
 export const ShareDropdownMenu: FC<Props> = ({ children, lang }) => {
   const [open, setOpen] = useState(false)
   const { t } = getTranslation(lang)
-  const url = window.location.href
-  const title = document.title
+  const url = encodeURIComponent(window.location.href)
+  const title = encodeURIComponent(document.title)
 
   return (
     <DropdownMenuRoot open={open} onOpenChange={setOpen}>
