@@ -1,6 +1,7 @@
 import { remarkLinkCard } from '@/libs/remark'
 import { defineDocumentType, makeSource } from 'contentlayer2/source-files'
 import rehypePrettyCode from 'rehype-pretty-code'
+import rehypeSlug from 'rehype-slug'
 import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
 
@@ -54,6 +55,6 @@ export default makeSource({
   documentTypes: [Post],
   mdx: {
     remarkPlugins: [remarkGfm, remarkBreaks, remarkLinkCard],
-    rehypePlugins: [rehypePrettyCode],
+    rehypePlugins: [rehypeSlug, rehypePrettyCode],
   },
 })
