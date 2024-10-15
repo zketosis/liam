@@ -8,16 +8,13 @@
   height: 24px;
   padding: 1px 0;
   gap: var(--spacing-1, 4px);
-}
-
-.heading a {
   transition: color var(--default-hover-animation-duration)
     var(--default-timing-function), background-color
     var(--default-hover-animation-duration) var(--default-timing-function);
-}
 
-.heading a:hover {
-  color: var(--global-foreground, #fff);
-  border-bottom: 1px solid
-    var(--callout-default-underline, rgba(255, 255, 255, 0.4));
+  &:hover {
+    color: var(--global-foreground, #fff);
+    border-bottom: 1px solid
+      var(--callout-default-underline, rgba(255, 255, 255, 0.4));
+  }
 }

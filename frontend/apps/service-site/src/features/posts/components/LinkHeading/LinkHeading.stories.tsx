@@ -12,14 +12,8 @@ export default {
   component: StoryComponent,
 } satisfies Meta<typeof StoryComponent>
 
-export const WithHref: StoryObj<typeof StoryComponent> = {
+export const Default: StoryObj<typeof StoryComponent> = {
   args: {
     href: '#categories',
-  },
-}
-
-export const WithoutHref: StoryObj<typeof StoryComponent> = {
-  args: {
-    href: undefined,
   },
 }
