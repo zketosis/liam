@@ -1,5 +1,5 @@
-import { PostHero } from '@/components/PostHero'
 import type { Lang } from '@/features/i18n'
+import { PostHero } from '@/features/posts/components/PostHero'
 import { MDXContent } from '@/libs/contentlayer'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
