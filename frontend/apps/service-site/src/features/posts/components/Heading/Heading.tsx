@@ -1,13 +1,14 @@
 import clsx from 'clsx'
-import type { FC, PropsWithChildren } from 'react'
+import type { FC, HTMLAttributes, PropsWithChildren } from 'react'
 import { match } from 'ts-pattern'
 import styles from './Heading.module.css'
 
-type Props = PropsWithChildren & {
-  as: 'h2' | 'h3' | 'h4' | 'h5'
-}
+type Props = HTMLAttributes<HTMLHeadingElement> &
+  PropsWithChildren & {
+    as: 'h2' | 'h3' | 'h4' | 'h5'
+  }
 
-export const Heading: FC<Props> = ({ as, children }) => {
+export const Heading: FC<Props> = ({ as, children, ...props }) => {
   const Tag = as
 
   const asClassName = match(as)
@@ -17,5 +18,9 @@ export const Heading: FC<Props> = ({ as, children }) => {
     .with('h5', () => styles.h5)
     .exhaustive()
 
-  return <Tag className={clsx(styles.heading, asClassName)}>{children}</Tag>
+  return (
+    <Tag {...props} className={clsx(styles.heading, asClassName)}>
+      {children}
+    </Tag>
+  )
 }
