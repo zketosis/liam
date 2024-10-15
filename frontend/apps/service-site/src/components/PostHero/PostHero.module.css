@@ -1,8 +1,6 @@
 .postHero {
   --card-padding: var(--spacing-6, 24px);
-  --tablet-card-padding: var(--spacing-5, 20px);
   --tablet-large-card-padding: var(--spacing-10, 40px);
-  --mobile-card-padding: var(--spacing-2, 8px);
   --mobile-large-card-padding: var(--spacing-4, 16px);
   color: var(--global-foreground);
   display: grid;
@@ -25,6 +23,29 @@
   padding-right: var(--spacing-20, 80px);
   padding-left: 56px;
   gap: var(--spacing-4, 16px);
+}
+
+@media screen and (max-width: 1024px) {
+  .postHero {
+    grid-template-columns: 1fr;
+    padding: var(--tablet-large-card-padding) 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .imageContainer,
+  .textContainer {
+    grid-column: 1 / -1;
+  }
+
+  .imageContainer {
+    padding-right: var(--tablet-large-card-padding);
+  }
+
+  .textContainer {
+    padding: var(--tablet-large-card-padding);
+  }
 }
 
 .tag,
