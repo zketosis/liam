@@ -37,7 +37,7 @@ export const PostHero = ({ post }: { post: Post }) => {
             <p className={styles.dateAndShareText}>
               <span className={styles.dateText}>Published</span>
               <time dateTime={post.date} className={styles.date}>
-                {format(parseISO(post.date), 'LLLL d, yyyy')}
+                {format(parseISO(post.date), 'MMM d, yyyy')}
               </time>
             </p>
             <ShareIconButton />
