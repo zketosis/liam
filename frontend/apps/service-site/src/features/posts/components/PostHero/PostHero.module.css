@@ -86,7 +86,7 @@
   margin-top: var(--spacing-10, 40px);
   width: 60%;
   font-family: var(--main-font);
-  font-size: var(--s-fontSize-5, 14px);
+  font-size: var(--font-size-5, 14px);
   font-weight: 400;
   line-height: 160%;
   border-left: 1px solid var(--global-foreground);
