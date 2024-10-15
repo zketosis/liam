@@ -27,7 +27,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
       </div>
 
       {/* FIXME: Add href props after implementing categories single page */}
-      <LinkHeading>Categories</LinkHeading>
+      <LinkHeading href="/">Categories</LinkHeading>
 
       <MDXContent code={post.body.code} />
     </article>
