@@ -2,6 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { PostHero } from '.'
 
+export interface MDX {
+  type: string
+  code: string
+  content: string
+  raw: string
+  html: string
+}
+
 const meta = {
   component: PostHero,
 } satisfies Meta<typeof PostHero>
@@ -30,12 +38,11 @@ export const Default: Story = {
       categories: ['Technology', 'Business'],
       body: {
         type: 'mdx',
-        code: '',
-        content:
-          'No-code platforms are revolutionizing the way we think about software development. By enabling non-programmers to build applications, they are democratizing access to technology and fostering innovation across various sectors.',
-        raw: '',
-        html: '',
-      },
+        code: '# Markdown contents',
+        content: 'Markdown contents',
+        raw: '# Markdown contents',
+        html: '<h1>Markdown contents</h1>',
+      } as MDX,
       lang: 'en',
       slug: 'dummy-1',
       _raw: {
