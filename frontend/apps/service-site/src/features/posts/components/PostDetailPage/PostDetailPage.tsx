@@ -1,7 +1,6 @@
-import { ShareIconButton } from '@/components/ShareIconButton'
 import type { Lang } from '@/features/i18n'
+import { PostHero } from '@/features/posts/components/PostHero'
 import { MDXContent } from '@/libs/contentlayer'
-import { format, parseISO } from 'date-fns'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { findPostByLangAndSlug } from '../../utils'
@@ -20,14 +19,8 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
 
   return (
     <article className={TOC_TARGET_CLASS_NAME} style={{ padding: '0 120px' }}>
+      <PostHero post={post} />
       <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
-      <div>
-        <time dateTime={post.date}>
-          {format(parseISO(post.date), 'LLLL d, yyyy')}
-        </time>
-        <h1>{post.title}</h1>
-        <ShareIconButton />
-      </div>
       <MDXContent code={post.body.code} />
     </article>
   )
