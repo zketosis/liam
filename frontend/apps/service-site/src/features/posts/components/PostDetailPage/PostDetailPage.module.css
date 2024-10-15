@@ -49,4 +49,7 @@
 
 .right {
   width: 274px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10, 40px);
 }

@@ -1,6 +1,7 @@
 import { type Lang, fallbackLang } from '@/features/i18n'
 import { PostCategories } from '@/features/posts/components/PostCategories'
 import { PostHero } from '@/features/posts/components/PostHero'
+import { PostTags } from '@/features/posts/components/PostTags'
 import { MDXContent } from '@/libs/contentlayer'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -50,6 +51,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
           <PostCategories
             categories={post.categories.map((category) => ({ name: category }))}
           />
+          <PostTags tags={post.tags.map((tag) => ({ name: tag }))} />
         </div>
       </div>
     </article>
