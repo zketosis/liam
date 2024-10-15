@@ -28,7 +28,7 @@ jobs:
       - uses: ./.github/actions/pnpm-setup
         with:
           working-directory: ${{ env.working-directory }}
-      - run: pnpm --filter @packages/figma-to-css-variables gen --output '../../apps/service-site/src/styles' --filter-modes "Dark,Mode 1"
+      - run: pnpm --filter @packages/figma-to-css-variables sync --output '../../apps/service-site/src/styles' --filter-modes "Dark,Mode 1"
         env:
           FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
           FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
