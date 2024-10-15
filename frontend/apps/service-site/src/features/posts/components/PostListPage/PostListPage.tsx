@@ -1,10 +1,10 @@
 import { type Lang, getTranslation } from '@/features/i18n'
 import { MDXContent } from '@/libs/contentlayer'
 import type { Post } from 'contentlayer/generated'
-import { compareDesc, format, parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import type { FC } from 'react'
-import { filterPostsByLang } from '../../utils'
+import { filterPostsByLang, sortPostsByDate } from '../../utils'
 
 function PostCard(post: Post) {
   return (
@@ -28,9 +28,7 @@ export const PostListPage: FC<Props> = ({ lang }) => {
   const { t } = getTranslation(lang)
 
   const posts = filterPostsByLang(lang)
-  const sortedPosts = posts.sort((a, b) =>
-    compareDesc(new Date(a.date), new Date(b.date)),
-  )
+  const sortedPosts = sortPostsByDate(posts)
 
   return (
     <div>
