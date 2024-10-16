@@ -31,28 +31,28 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
       <div className={styles.container}>
         <div className={styles.left}>
           <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
-          </div>
-          <div className={styles.center}>
-            <MDXContent code={post.body.code} />
-            <div className={styles.navPostWrapper}>
-              {prevPost && (
-                <div className={styles.navPrev}>
-                  <NavPreviousPost lang={lang} post={prevPost} />
-                </div>
-              )}
-              {nextPost && (
-          <div className={styles.navNext}>
-            <NavNextPost lang={lang} post={nextPost} />
-                </div>
-              )}
-            </div>
-          </div>
-          <div className={styles.right}>
-            <PostCategories
-              categories={post.categories.map((category) => ({ name: category }))}
-            />
+        </div>
+        <div className={styles.center}>
+          <MDXContent code={post.body.code} />
+          <div className={styles.navPostWrapper}>
+            {prevPost && (
+              <div className={styles.navPrev}>
+                <NavPreviousPost lang={lang} post={prevPost} />
+              </div>
+            )}
+            {nextPost && (
+              <div className={styles.navNext}>
+                <NavNextPost lang={lang} post={nextPost} />
+              </div>
+            )}
           </div>
         </div>
+        <div className={styles.right}>
+          <PostCategories
+            categories={post.categories.map((category) => ({ name: category }))}
+          />
+        </div>
+      </div>
     </article>
   )
 }

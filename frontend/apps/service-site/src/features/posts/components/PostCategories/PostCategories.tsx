@@ -1,6 +1,5 @@
 import { Badge } from '@/components/Badge'
 import type { PropsWithChildren } from 'react'
-import { LinkHeading } from '../LinkHeading'
 import styles from './PostCategories.module.css'
 
 type Props = PropsWithChildren<{
@@ -8,11 +7,11 @@ type Props = PropsWithChildren<{
   categories: Array<{ name: string }>
 }>
 
-export const PostCategories = ({ href = '/', categories }: Props) => {
+export const PostCategories = ({ categories }: Props) => {
   return (
     <div>
       {/* FIXME: Add href props after implementing categories single page */}
-      <LinkHeading href={href}>Categories</LinkHeading>
+      <p className={styles.title}>Categories</p>
       <ul className={styles.list}>
         {categories?.map((category) => (
           <li key={category.name}>
