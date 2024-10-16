@@ -20,15 +20,18 @@ type Props = {
   lang: Lang
 }
 
-const handleSelect = (url: string) => () => {
-  window.open(url, '_blank', 'noreferrer')
-}
+const handleSelect =
+  (generator: (url: string, title: string) => string) => () => {
+    const url = encodeURIComponent(window.location.href)
+    const title = encodeURIComponent(document.title)
+    const shareUrl = generator(url, title)
+
+    window.open(shareUrl, '_blank', 'noreferrer')
+  }
 
 export const ShareDropdownMenu: FC<Props> = ({ lang }) => {
   const [open, setOpen] = useState(false)
   const { t } = getTranslation(lang)
-  const url = encodeURIComponent(window.location.href)
-  const title = encodeURIComponent(document.title)
 
   return (
     <DropdownMenuRoot open={open} onOpenChange={setOpen}>
@@ -42,7 +45,8 @@ export const ShareDropdownMenu: FC<Props> = ({ lang }) => {
           <DropdownMenuItem
             leftIcon={<XIcon className={styles.icon} />}
             onSelect={handleSelect(
-              `http://twitter.com/share?url=${url}&text=${title}`,
+              (url, title) =>
+                `http://twitter.com/share?url=${url}&text=${title}`,
             )}
           >
             <span>{t('posts.share.x')}</span>
@@ -50,7 +54,7 @@ export const ShareDropdownMenu: FC<Props> = ({ lang }) => {
           <DropdownMenuItem
             leftIcon={<FacebookIcon className={styles.icon} />}
             onSelect={handleSelect(
-              `http://www.facebook.com/share.php?u=${url}`,
+              (url) => `http://www.facebook.com/share.php?u=${url}`,
             )}
           >
             <span>{t('posts.share.facebook')}</span>
@@ -58,7 +62,8 @@ export const ShareDropdownMenu: FC<Props> = ({ lang }) => {
           <DropdownMenuItem
             leftIcon={<LinkedInIcon className={styles.icon} />}
             onSelect={handleSelect(
-              `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+              (url) =>
+                `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
             )}
           >
             <span>{t('posts.share.linkedin')}</span>
