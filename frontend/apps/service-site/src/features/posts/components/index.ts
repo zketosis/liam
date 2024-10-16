@@ -7,6 +7,7 @@ export * from './NavPreviousPost'
 export * from './TableOfContents'
 export * from './PostHero'
 export * from './PostCategories'
+export * from './PostTags'
 
 export * from './PostDetailPage'
 export * from './PostListPage'
