@@ -1,0 +1,29 @@
+.navPostWrapper {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: var(--spacing-8);
+}
+
+.navPrev {
+  grid-area: 0 / 2;
+}
+
+.navNext {
+  grid-area: 0 / 2;
+}
+
+@media screen and (min-width: 768px) {
+  .navPostWrapper {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: none;
+    gap: var(--spacing-10);
+  }
+
+  .navPrev {
+    grid-area: 0 / 1;
+  }
+
+  .navNext {
+    grid-area: 1 / 2;
+  }
+}
