@@ -1,11 +1,12 @@
 import type { Lang } from '@/features/i18n'
+import { createPostDetailLink } from '@/features/posts'
 import type { Post } from 'contentlayer/generated'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from './TopCards.module.css'
 interface TopCardsProps {
   posts: Post[]
-  lang?: Lang
+  lang?: Lang | undefined
 }
 
 export function TopCards({ posts, lang }: TopCardsProps) {
@@ -13,7 +14,7 @@ export function TopCards({ posts, lang }: TopCardsProps) {
     <div className={styles.topCards}>
       {posts.map((post) => (
         <Link
-          href={lang ? `/${lang}/posts/${post.slug}` : `/posts/${post.slug}`}
+          href={createPostDetailLink({ lang, slug: post.slug })}
           key={post.slug}
         >
           <div className={styles.topCard}>

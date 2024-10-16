@@ -24,5 +24,5 @@ const paramsSchema = object({
 export default function Page({ params }: PageProps) {
   const { slug } = parse(paramsSchema, params)
 
-  return <PostDetailPage lang={fallbackLang} slug={slug} />
+  return <PostDetailPage slug={slug} />
 }

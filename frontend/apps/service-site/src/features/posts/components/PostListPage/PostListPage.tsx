@@ -1,16 +1,22 @@
-import { type Lang, getTranslation } from '@/features/i18n'
+import { type Lang, fallbackLang, getTranslation } from '@/features/i18n'
 import { MDXContent } from '@/libs/contentlayer'
 import type { Post } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import type { FC } from 'react'
-import { filterPostsByLang, sortPostsByDate } from '../../utils'
+import {
+  createPostDetailLink,
+  filterPostsByLang,
+  sortPostsByDate,
+} from '../../utils'
 
-function PostCard(post: Post) {
+function PostCard(post: Post, lang?: Lang) {
   return (
     <div>
       <h2>
-        <Link href={`/${post.lang}/posts/${post.slug}`}>{post.title}</Link>
+        <Link href={createPostDetailLink({ lang, slug: post.slug })}>
+          {post.title}
+        </Link>
       </h2>
       <time dateTime={post.date}>
         {format(parseISO(post.date), 'LLLL d, yyyy')}
@@ -21,13 +27,13 @@ function PostCard(post: Post) {
 }
 
 type Props = {
-  lang: Lang
+  lang?: Lang
 }
 
 export const PostListPage: FC<Props> = ({ lang }) => {
-  const { t } = getTranslation(lang)
+  const { t } = getTranslation(lang ?? fallbackLang)
 
-  const posts = filterPostsByLang(lang)
+  const posts = filterPostsByLang(lang ?? fallbackLang)
   const sortedPosts = sortPostsByDate(posts)
 
   return (
