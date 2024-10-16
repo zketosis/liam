@@ -26,7 +26,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
 
   return (
     <article className={TOC_TARGET_CLASS_NAME} style={{ padding: '0 120px' }}>
-      <PostHero post={post} />
+      <PostHero lang={lang ?? fallbackLang} post={post} />
       <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
       {/* FIXME: Add href props after implementing categories single page */}
       <LinkHeading href="/">Categories</LinkHeading>

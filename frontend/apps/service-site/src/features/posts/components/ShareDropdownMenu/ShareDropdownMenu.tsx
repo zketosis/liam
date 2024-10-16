@@ -1,3 +1,6 @@
+'use client'
+
+import { ShareIcon } from '@/components'
 import { type Lang, getTranslation } from '@/features/i18n'
 import {
   DropdownMenuContent,
@@ -9,19 +12,19 @@ import {
   LinkedInIcon,
   XIcon,
 } from '@packages/ui'
-import { type FC, type PropsWithChildren, useState } from 'react'
+import { type FC, useState } from 'react'
 import { CopyLinkItem } from './CopyLinkItem'
 import styles from './ShareDropdownMenu.module.css'
 
-type Props = PropsWithChildren<{
+type Props = {
   lang: Lang
-}>
+}
 
 const handleSelect = (url: string) => () => {
   window.open(url, '_blank', 'noreferrer')
 }
 
-export const ShareDropdownMenu: FC<Props> = ({ children, lang }) => {
+export const ShareDropdownMenu: FC<Props> = ({ lang }) => {
   const [open, setOpen] = useState(false)
   const { t } = getTranslation(lang)
   const url = encodeURIComponent(window.location.href)
@@ -29,7 +32,9 @@ export const ShareDropdownMenu: FC<Props> = ({ children, lang }) => {
 
   return (
     <DropdownMenuRoot open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <DropdownMenuTrigger>
+        <ShareIcon />
+      </DropdownMenuTrigger>
 
       <DropdownMenuPortal>
         <DropdownMenuContent sideOffset={5} align="start">
