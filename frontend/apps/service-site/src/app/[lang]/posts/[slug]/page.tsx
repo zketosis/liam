@@ -1,13 +1,16 @@
 import type { PageProps } from '@/app/types'
 import { langSchema, langs } from '@/features/i18n'
-import { PostDetailPage, findPostByLangAndSlug } from '@/features/posts'
-import { allPosts } from 'contentlayer/generated'
+import {
+  PostDetailPage,
+  allPosts,
+  findPostByLangAndSlug,
+} from '@/features/posts'
 import { notFound } from 'next/navigation'
 import { object, parse, string } from 'valibot'
 
 export const generateStaticParams = async () => {
   return langs.map((lang) => {
-    return allPosts.map((post) => ({ slug: post.slug, lang }))
+    return allPosts(lang).map((post) => ({ slug: post.slug, lang }))
   })
 }
 

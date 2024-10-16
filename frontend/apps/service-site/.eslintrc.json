@@ -9,6 +9,11 @@
             "name": "next-contentlayer/hooks",
             "importNames": ["useMDXComponent"],
             "message": "Please use `import { MDXContent } from \"@/libs/contentlayer\"`"
+          },
+          {
+            "name": "contentlayer/generated",
+            "importNames": ["allPosts"],
+            "message": "Please use `import { MDXContent } from \"@/features/posts\"`"
           }
         ]
       }
