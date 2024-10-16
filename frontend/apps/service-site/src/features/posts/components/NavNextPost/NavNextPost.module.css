@@ -20,7 +20,7 @@
   display: grid;
   grid-auto-flow: column;
   gap: var(--spacing-half);
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
 .icon {
@@ -44,8 +44,8 @@
   font-size: var(--font-size-7);
   line-height: 120%;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   transition: color var(--default-hover-animation-duration)
     var(--default-timing-function);
 }
