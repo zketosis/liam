@@ -27,7 +27,6 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
   return (
     <article className={TOC_TARGET_CLASS_NAME}>
       <PostHero post={post} />
-      <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
       <div className={styles.container}>
         <div className={styles.left}>
           <TableOfContents contentSelector={TOC_TARGET_CLASS_NAME} />
