@@ -8,7 +8,7 @@
     "dev:css": "tcm src --watch",
     "dev:storybook": "storybook dev -h localhost -p 6006 --no-open",
     "build": "pnpm gen && next build",
-    "build:storybook": "storybook build",
+    "build:storybook": "pnpm gen && storybook build",
     "gen": "conc -c auto pnpm:gen:*",
     "gen:css": "tcm src",
     "gen:contentlayer": "contentlayer2 build",

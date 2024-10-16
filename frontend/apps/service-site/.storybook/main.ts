@@ -18,6 +18,10 @@ const config: StorybookConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@': path.resolve(__dirname, '../src'),
+        'contentlayer/generated': path.resolve(
+          __dirname,
+          '../.contentlayer/generated',
+        ),
       }
     }
     return config
