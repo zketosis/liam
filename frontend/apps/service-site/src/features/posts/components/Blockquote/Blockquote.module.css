@@ -1,0 +1,43 @@
+.wrapper {
+  padding: var(--spacing-10, 40px);
+  border: 1px solid var(--global-border, #383a3b);
+  background-image: url('/images/svg/Cross.svg');
+  background-repeat: repeat;
+  margin: var(--spacing-5, 20px) 0;
+}
+
+.wrapper cite {
+  font-family: var(--main-font, Inter);
+  font-size: var(--font-size-4, 13px);
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--global-mute-text, #bebfc1);
+  text-align: right;
+  display: block;
+  margin-top: var(--spacing-2, 8px);
+}
+
+.blockquote {
+  display: inline-block;
+  font-size: var(--font-size-7, 18px);
+  color: var(--global-mute-text, #bebfc1);
+  font-family: var(--message-font, Montserrat);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%;
+}
+
+.blockquote a {
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .wrapper {
+    font-size: var(--font-size-5, 14px);
+  }
+}
