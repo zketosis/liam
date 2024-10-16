@@ -11,7 +11,11 @@ export const Post = defineDocumentType(() => ({
   contentType: 'mdx',
   fields: {
     title: { type: 'string', required: true },
-    date: { type: 'date', required: true },
+    publishedAt: {
+      type: 'date',
+      required: true,
+      description: 'ISO string: "2024-10-16T08:44:14.716Z"',
+    },
     tags: {
       type: 'list',
       of: {

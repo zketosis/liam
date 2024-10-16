@@ -43,8 +43,8 @@ export const PostHero: FC<Props> = ({ post, lang }) => {
           <div className={styles.dateAndShare}>
             <p className={styles.dateAndShareText}>
               <span className={styles.dateText}>Published</span>
-              <time dateTime={post.date} className={styles.date}>
-                {format(parseISO(post.date), 'MMM d, yyyy')}
+              <time dateTime={post.publishedAt} className={styles.date}>
+                {format(parseISO(post.publishedAt), 'MMM d, yyyy')}
               </time>
             </p>
             <ShareDropdownMenu lang={lang} />

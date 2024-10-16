@@ -18,8 +18,8 @@ function PostCard(post: Post, lang?: Lang) {
           {post.title}
         </Link>
       </h2>
-      <time dateTime={post.date}>
-        {format(parseISO(post.date), 'LLLL d, yyyy')}
+      <time dateTime={post.publishedAt}>
+        {format(parseISO(post.publishedAt), 'LLLL d, yyyy')}
       </time>
       <MDXContent code={post.body.code} />
     </div>
