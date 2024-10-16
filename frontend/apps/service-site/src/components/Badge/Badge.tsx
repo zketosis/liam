@@ -16,5 +16,5 @@ export const Badge: FC<PropsWithChildren<Props>> = ({
     .with('outline', () => styles.outline)
     .exhaustive()
 
-  return <span className={clsx(typeClassName)}>{children}</span>
+  return <span className={clsx(styles.badge, typeClassName)}>{children}</span>
 }
