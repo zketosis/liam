@@ -1,2 +1,6 @@
+export * from './createPostDetailLink'
 export * from './filterPostsByLang'
 export * from './findPostByLangAndSlug'
+export * from './getNextPost'
+export * from './getPrevPost'
+export * from './sortPostsByDate'
