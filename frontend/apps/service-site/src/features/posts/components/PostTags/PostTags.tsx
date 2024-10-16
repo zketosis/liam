@@ -1,6 +1,5 @@
 import { Badge } from '@/components/Badge'
 import type { PropsWithChildren } from 'react'
-import { LinkHeading } from '../LinkHeading'
 import styles from './PostTags.module.css'
 
 type Props = PropsWithChildren<{
@@ -8,11 +7,10 @@ type Props = PropsWithChildren<{
   tags: Array<{ name: string }>
 }>
 
-export const PostTags = ({ href = '/', tags }: Props) => {
+export const PostTags = ({ tags }: Props) => {
   return (
     <div>
-      {/* FIXME: Add href props after implementing tags single page */}
-      <LinkHeading href={href}>Tags</LinkHeading>
+      <p className={styles.title}>Tags</p>
       <ul className={styles.list}>
         {tags?.map((tag) => (
           <li key={tag.name}>
