@@ -7,16 +7,16 @@ import {
 } from '@packages/ui'
 import clsx from 'clsx'
 import { Share } from '../Icons'
-import styles from './ShareIconButton.module.css'
+import styles from './ShareIcon.module.css'
 
-export const ShareIconButton = () => {
+export const ShareIcon = () => {
   return (
     <TooltipProvider>
       <TooltipRoot>
         <TooltipTrigger asChild>
-          <button type="button" className={clsx(styles.button)}>
+          <span className={clsx(styles.wrapper)}>
             <Share className={clsx(styles.icon)} />
-          </button>
+          </span>
         </TooltipTrigger>
         <TooltipPortal>
           <TooltipContent sideOffset={8} side="top">

@@ -1,1 +1,1 @@
-export * from './ShareIconButton'
+export * from './ShareIcon'

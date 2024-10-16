@@ -5,7 +5,7 @@
     var(--default-hover-animation-duration) var(--default-timing-function);
 }
 
-.button {
+.wrapper {
   display: inline-flex;
   padding: var(--spacing-2, 8px);
   align-items: center;
