@@ -1,10 +1,17 @@
-import { ShareIconButton } from '@/components/ShareIconButton'
+import type { Lang } from '@/features/i18n'
 import type { Post } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import Image from 'next/image'
+import type { FC } from 'react'
+import { ShareDropdownMenu } from '../ShareDropdownMenu'
 import styles from './PostHero.module.css'
 
-export const PostHero = ({ post }: { post: Post }) => {
+type Props = {
+  lang: Lang
+  post: Post
+}
+
+export const PostHero: FC<Props> = ({ post, lang }) => {
   return (
     <div className={styles.postHero}>
       {post.image && (
@@ -40,7 +47,7 @@ export const PostHero = ({ post }: { post: Post }) => {
                 {format(parseISO(post.date), 'MMM d, yyyy')}
               </time>
             </p>
-            <ShareIconButton />
+            <ShareDropdownMenu lang={lang} />
           </div>
         </div>
         <div className={styles.introduction}>{post.introduction}</div>
