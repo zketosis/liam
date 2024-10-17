@@ -1,6 +1,6 @@
 .p {
   color: var(--global-body-text, #d1d2d3);
-  font-family: var(----main-font, Inter);
+  font-family: var(--main-font, Inter);
   font-size: var(--font-size-6, 16px);
   font-style: normal;
   font-weight: 400;
