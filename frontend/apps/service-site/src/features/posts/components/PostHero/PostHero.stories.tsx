@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
+    lang: 'en',
     post: aPost(),
   },
 }
