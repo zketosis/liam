@@ -8,8 +8,8 @@ type Props = PropsWithChildren<{
 
 export const LinkHeading = ({ children, href }: Props) => {
   return (
-    <h2 className={styles.heading}>
+    <div className={styles.heading}>
       <Link href={href ?? '/'}>{children}</Link>
-    </h2>
+    </div>
   )
 }
