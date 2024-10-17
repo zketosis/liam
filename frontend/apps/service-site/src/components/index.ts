@@ -1,5 +1,5 @@
 export * from './Header'
 export * from './Footer'
 export * from './TopCards'
-export * from './ShareIconButton'
+export * from './ShareIcon'
 export * from './Icons'
