@@ -7,7 +7,7 @@
   margin: var(--wrapper-margin) 0;
 }
 
-.blockquote {
+.blockquote p {
   --blockquote-font-size: var(--font-size-7, 18px);
   display: inline-block;
   font-size: var(--blockquote-font-size);

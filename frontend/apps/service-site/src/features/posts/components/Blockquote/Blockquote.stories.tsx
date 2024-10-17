@@ -11,7 +11,15 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    children:
-      '"You never change things by fighting the existing reality. To change something, build a new model that makes the existing model obsolete."',
+    children: (
+      <>
+        <p>
+          &ldquo;You never change things by fighting the existing reality. To
+          change something, build a new model that makes the existing model
+          obsolete.&rdquo;
+        </p>
+        <cite>- Buckminster Fuller</cite>
+      </>
+    ),
   },
 }
