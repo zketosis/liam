@@ -3,7 +3,6 @@ import type { PropsWithChildren } from 'react'
 import styles from './PostTags.module.css'
 
 type Props = PropsWithChildren<{
-  href?: string | undefined
   tags: Array<{ name: string }>
 }>
 
