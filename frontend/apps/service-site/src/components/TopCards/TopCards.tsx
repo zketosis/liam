@@ -32,7 +32,7 @@ export function TopCards({ posts, lang }: TopCardsProps) {
             )}
             <div className={styles.textContainer}>
               <div className={styles.tags}>
-                {post.tags.map((tag) => (
+                {post.tags.slice(0, 5).map((tag) => (
                   <span key={tag} className={styles.tag}>
                     ( {tag} )
                   </span>
