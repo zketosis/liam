@@ -43,7 +43,7 @@
   }
 
   .blockquote {
-    --blockquote-font-size: var(--s-fontSize-6, 16px);
+    --blockquote-font-size: var(--font-size-6, 16px);
   }
 
   .blockquote cite {
