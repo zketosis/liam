@@ -4,7 +4,7 @@ import { TopPage } from '@/features/top'
 import { object, parse } from 'valibot'
 import type { PageProps } from '../types'
 
-export const revalidate = 60
+export const revalidate = 3600
 
 export const generateStaticParams = async () => {
   return langs.map((lang) => ({ lang }))
