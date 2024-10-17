@@ -62,6 +62,9 @@ export async function runStyleDictionary(
       const subDirInput = path.join(inputDir, subDir)
       const subDirOutput = `${path.join(outputPath, subDir)}/`
 
+      /**
+       * @type {import('style-dictionary').Config}
+       */
       const config = {
         source: [source(subDirInput)],
         platforms: {
@@ -87,6 +90,11 @@ export async function runStyleDictionary(
               'color/css',
               'number/px',
             ],
+            options: {
+              formatting: {
+                fileHeaderTimestamp: true,
+              },
+            },
           },
         },
         log: {
