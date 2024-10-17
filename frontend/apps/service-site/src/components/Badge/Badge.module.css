@@ -1,0 +1,23 @@
+.badge {
+  display: inline-flex;
+  padding: var(--spacing-half, 2px) var(--spacing-2, 8px);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-1, 4px);
+  border-radius: var(--border-radius-full, 9999px);
+  color: var(--overlay-70, rgba(255, 255, 255, 0.7));
+  font-family: var(----main-font, Inter);
+  font-size: var(--font-size-2, 11px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.default {
+  background: var(--overlay-10, rgba(255, 255, 255, 0.1));
+  border: 1px solid transparent;
+}
+
+.outline {
+  border: 1px solid var(--overlay-20, rgba(255, 255, 255, 0.2));
+}
