@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { ShareIconButton } from './'
+import { ShareIcon } from '.'
 
 const meta = {
-  component: ShareIconButton,
-} satisfies Meta<typeof ShareIconButton>
+  component: ShareIcon,
+} satisfies Meta<typeof ShareIcon>
 
 export default meta
 type Story = StoryObj<typeof meta>

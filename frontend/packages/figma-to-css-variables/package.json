@@ -2,7 +2,7 @@
   "name": "@packages/figma-to-css-variables",
   "main": "bin/index.mjs",
   "scripts": {
-    "gen": "node bin/index.mjs",
+    "sync": "node bin/index.mjs",
     "lint": "conc -c auto pnpm:lint:*",
     "lint:biome": "biome check .",
     "fmt": "conc -c auto pnpm:fmt:*",

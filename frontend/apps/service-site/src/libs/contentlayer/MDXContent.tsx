@@ -1,5 +1,5 @@
 import { Callout } from '@/contents/components'
-import { Blockquote, Code, Heading, LinkCard } from '@/features/posts'
+import { Blockquote, BodyText, Code, Heading, LinkCard } from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
 // eslint-disable-next-line no-restricted-imports
 import { useMDXComponent } from 'next-contentlayer2/hooks'
@@ -26,6 +26,7 @@ const mdxComponents: MDXComponents = {
       {children}
     </Heading>
   ),
+  p: ({ children, ...props }) => <BodyText {...props}>{children}</BodyText>,
   pre: (props) => {
     const child = Children.only(props.children) as ReactElement
 

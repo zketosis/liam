@@ -19,6 +19,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
+    lang: 'en',
     post: {
       title:
         '1 The No-Code Revolution: A New Era Where Non-Programmers Can Build Apps',
