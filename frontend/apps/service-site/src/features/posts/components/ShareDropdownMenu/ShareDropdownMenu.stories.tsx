@@ -6,7 +6,6 @@ const meta = {
   component: ShareDropdownMenu,
   args: {
     lang: 'en',
-    children: <button type="button">Share</button>,
   },
 } satisfies Meta<typeof ShareDropdownMenu>
 
