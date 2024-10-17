@@ -8,6 +8,7 @@ export * from './TableOfContents'
 export * from './PostHero'
 export * from './BodyText'
 export * from './PostCategories'
+export * from './PostTags'
 
 export * from './PostDetailPage'
 export * from './PostListPage'
