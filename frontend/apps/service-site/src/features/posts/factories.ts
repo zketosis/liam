@@ -20,6 +20,9 @@ export const aPost = (override?: Params): Post => {
     categories: ['Technology', 'App Development'],
     writer: 'Skyler Knox',
     image: '/images/posts/14/image.png',
+    writerProfile:
+      'A seasoned technical writer with over five years of experience, providing in-depth insights on the latest technology trends and innovations. She specializes in analyzing emerging technologies, translating complex concepts into accessible content for a broad audience, and contributing to various industry-leading publications.',
+    lastEditedOn: '2024-09-12',
     introduction:
       'No-code platforms are revolutionizing the way businesses approach application development by empowering users to create software without traditional coding skills. In this post, we explore the profound impact of no-code platforms on the tech industry and what the future holds.  First, the emergence of no-code platforms has democratized software development, making it accessible to a much wider audience beyond those with specialized programming knowledge. This shift has significantly lowered the barriers to innovation, enabling a diverse range of ideas to come to fruition. By providing intuitive, visual interfaces and pre-built components, these platforms allow individuals from various backgrounds to transform their concepts into functional applications',
     body: {
