@@ -1,8 +1,9 @@
 import type { Post } from 'contentlayer/generated'
 
-export const aPost = (): Post => {
+type Params = Pick<Post, '_id' | 'title'>
+export const aPost = (override?: Params): Post => {
   return {
-    _id: 'posts/14/en.mdx',
+    _id: override?._id || 'posts/14/en.mdx',
     _raw: {
       sourceFilePath: 'posts/14/en.mdx',
       sourceFileName: 'en.mdx',
@@ -12,8 +13,9 @@ export const aPost = (): Post => {
     },
     type: 'Post',
     title:
+      override?.title ||
       'Managing Data with No-Code: The Best Tools for Complex Business Needs',
-    date: '2024-09-12T00:00:00.000Z',
+    publishedAt: '2024-09-12T00:00:00.000Z',
     tags: ['No-code', 'App Development', 'Tech Trends'],
     categories: ['Technology', 'App Development'],
     writer: 'Skyler Knox',

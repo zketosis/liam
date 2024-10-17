@@ -4,11 +4,7 @@ import type { Post } from 'contentlayer/generated'
 import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import type { FC } from 'react'
-import {
-  createPostDetailLink,
-  filterPostsByLang,
-  sortPostsByDate,
-} from '../../utils'
+import { createPostDetailLink } from '../../utils'
 
 function PostCard(post: Post, lang?: Lang) {
   return (
@@ -18,8 +14,8 @@ function PostCard(post: Post, lang?: Lang) {
           {post.title}
         </Link>
       </h2>
-      <time dateTime={post.date}>
-        {format(parseISO(post.date), 'LLLL d, yyyy')}
+      <time dateTime={post.publishedAt}>
+        {format(parseISO(post.publishedAt), 'LLLL d, yyyy')}
       </time>
       <MDXContent code={post.body.code} />
     </div>
@@ -28,18 +24,16 @@ function PostCard(post: Post, lang?: Lang) {
 
 type Props = {
   lang?: Lang
+  posts: Post[]
 }
 
-export const PostListPage: FC<Props> = ({ lang }) => {
+export const PostListPage: FC<Props> = ({ lang, posts }) => {
   const { t } = getTranslation(lang ?? fallbackLang)
-
-  const posts = filterPostsByLang(lang ?? fallbackLang)
-  const sortedPosts = sortPostsByDate(posts)
 
   return (
     <div>
       <h1>{t('posts.title')}</h1>
-      {sortedPosts.map((post) => (
+      {posts.map((post) => (
         <PostCard key={post.slug} {...post} />
       ))}
     </div>

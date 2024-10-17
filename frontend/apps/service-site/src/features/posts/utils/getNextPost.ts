@@ -1,7 +1,6 @@
 import type { Lang } from '@/features/i18n'
 import type { Post } from 'contentlayer/generated'
-import { filterPostsByLang } from './filterPostsByLang'
-import { sortPostsByDate } from './sortPostsByDate'
+import { allPosts } from './allPosts'
 
 type Params = {
   lang: Lang
@@ -9,16 +8,13 @@ type Params = {
 }
 
 export function getNextPost({ lang, targetPost }: Params) {
-  const posts = filterPostsByLang(lang)
-  const sortedPosts = sortPostsByDate(posts)
+  const posts = allPosts(lang)
 
-  const targetIndex = sortedPosts.findIndex(
-    (post) => post._id === targetPost._id,
-  )
+  const targetIndex = posts.findIndex((post) => post._id === targetPost._id)
 
-  if (targetIndex === -1 || targetIndex === sortedPosts.length - 1) {
+  if (targetIndex === -1 || targetIndex === posts.length - 1) {
     return undefined
   }
 
-  return sortedPosts[targetIndex + 1]
+  return posts[targetIndex + 1]
 }
