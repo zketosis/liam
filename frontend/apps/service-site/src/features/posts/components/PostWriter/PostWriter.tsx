@@ -17,14 +17,14 @@ export const PostWriter: FC<Props> = ({ post }) => {
       {post.writerProfile && (
         <p className={styles.writerProfile}>{post.writerProfile}</p>
       )}
-      {post.lastEditedOn ? (
+      {post.lastEditedOn && (
         <p className={styles.lastEdited}>
           <span>Last edited on</span>
           <time dateTime={post.lastEditedOn}>
             {format(parseISO(post.lastEditedOn), 'MMM d, yyyy')}
           </time>
         </p>
-      ) : null}
+      )}
     </div>
   )
 }
