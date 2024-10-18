@@ -2,6 +2,7 @@ import { type Lang, fallbackLang } from '@/features/i18n'
 import { PostCategories } from '@/features/posts/components/PostCategories'
 import { PostHero } from '@/features/posts/components/PostHero'
 import { PostTags } from '@/features/posts/components/PostTags'
+import { PostWriter } from '@/features/posts/components/PostWriter'
 import { MDXContent } from '@/libs/contentlayer'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -34,6 +35,7 @@ export const PostDetailPage: FC<Props> = ({ lang, slug }) => {
         </div>
         <div className={styles.center}>
           <MDXContent code={post.body.code} />
+          <PostWriter post={post} />
           <div className={styles.navPostWrapper}>
             {prevPost && (
               <div className={styles.navPrev}>

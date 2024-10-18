@@ -10,6 +10,7 @@ export * from './PostHero'
 export * from './BodyText'
 export * from './PostCategories'
 export * from './PostTags'
+export * from './PostWriter'
 export * from './OrderList'
 
 export * from './PostDetailPage'
