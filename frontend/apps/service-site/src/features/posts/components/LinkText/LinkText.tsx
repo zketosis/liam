@@ -5,9 +5,14 @@ type Props = PropsWithChildren & {
   href: string
 }
 
-export const LinkText = ({ children, ...props }: Props) => {
+export const LinkText = ({ children, href }: Props) => {
   return (
-    <a {...props} className={styles.link} href={props.href}>
+    <a
+      href={href}
+      target="_blank"
+      className={styles.link}
+      rel="noopener noreferrer"
+    >
       {children}
     </a>
   )

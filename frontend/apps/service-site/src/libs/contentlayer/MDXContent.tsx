@@ -53,13 +53,7 @@ const mdxComponents: MDXComponents = {
   ol: ({ children, ...props }) => {
     return <OrderList {...props}>{children}</OrderList>
   },
-  a: ({ children, href = '#', ...props }) => {
-    return (
-      <LinkText href={href} {...props}>
-        {children}
-      </LinkText>
-    )
-  },
+  a: ({ href = '#', ...props }) => <LinkText {...props} href={href} />,
 }
 
 type Props = {
