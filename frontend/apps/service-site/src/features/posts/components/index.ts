@@ -12,6 +12,7 @@ export * from './PostCategories'
 export * from './PostTags'
 export * from './PostWriter'
 export * from './OrderList'
+export * from './UnOrderList'
 
 export * from './PostDetailPage'
 export * from './PostListPage'

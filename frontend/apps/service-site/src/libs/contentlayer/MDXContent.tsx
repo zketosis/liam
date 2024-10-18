@@ -6,6 +6,7 @@ import {
   Heading,
   LinkCard,
   OrderList,
+  UnOrderList,
 } from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
 // eslint-disable-next-line no-restricted-imports
@@ -51,6 +52,9 @@ const mdxComponents: MDXComponents = {
   },
   ol: ({ children, ...props }) => {
     return <OrderList {...props}>{children}</OrderList>
+  },
+  ul: ({ children, ...props }) => {
+    return <UnOrderList {...props}>{children}</UnOrderList>
   },
 }
 
