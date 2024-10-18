@@ -5,6 +5,7 @@ import {
   Code,
   Heading,
   LinkCard,
+  LinkText,
   OrderList,
 } from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
@@ -51,6 +52,13 @@ const mdxComponents: MDXComponents = {
   },
   ol: ({ children, ...props }) => {
     return <OrderList {...props}>{children}</OrderList>
+  },
+  a: ({ children, href = '#', ...props }) => {
+    return (
+      <LinkText href={href} {...props}>
+        {children}
+      </LinkText>
+    )
   },
 }
 
