@@ -33,7 +33,7 @@ export const Post = defineDocumentType(() => ({
     image: { type: 'string', required: true },
     writer: { type: 'string', required: true },
     writerProfile: { type: 'string' },
-    lastEditedOn: { type: 'date' },
+    lastEditedAt: { type: 'date' },
     introduction: { type: 'string', required: true },
   },
   computedFields: {
