@@ -1,5 +1,12 @@
 import { Callout } from '@/contents/components'
-import { Blockquote, BodyText, Code, Heading, LinkCard } from '@/features/posts'
+import {
+  Blockquote,
+  BodyText,
+  Code,
+  Heading,
+  LinkCard,
+  OrderList,
+} from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
 // eslint-disable-next-line no-restricted-imports
 import { useMDXComponent } from 'next-contentlayer2/hooks'
@@ -41,6 +48,9 @@ const mdxComponents: MDXComponents = {
   Callout: (props) => <Callout {...props} />,
   blockquote: ({ children, ...props }) => {
     return <Blockquote {...props}>{children}</Blockquote>
+  },
+  ol: ({ children, ...props }) => {
+    return <OrderList {...props}>{children}</OrderList>
   },
 }
 
