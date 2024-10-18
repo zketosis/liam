@@ -14,9 +14,9 @@ export const PostWriter: FC<Props> = ({ post }) => {
         <span className={styles.writerText}>Text by</span>
         {post.writer}
       </p>
-      {post.writerProfile ? (
+      {post.writerProfile && (
         <p className={styles.writerProfile}>{post.writerProfile}</p>
-      ) : null}
+      )}
       {post.lastEditedOn ? (
         <p className={styles.lastEdited}>
           <span>Last edited on</span>
