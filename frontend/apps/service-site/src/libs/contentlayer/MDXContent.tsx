@@ -7,6 +7,7 @@ import {
   LinkCard,
   LinkText,
   OrderList,
+  Table,
   UnOrderList,
 } from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
@@ -58,6 +59,9 @@ const mdxComponents: MDXComponents = {
     return <UnOrderList {...props}>{children}</UnOrderList>
   },
   a: ({ href = '#', ...props }) => <LinkText {...props} href={href} />,
+  table: ({ children, ...props }) => {
+    return <Table {...props}>{children}</Table>
+  },
 }
 
 type Props = {
