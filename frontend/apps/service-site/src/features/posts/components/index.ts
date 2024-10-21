@@ -14,6 +14,7 @@ export * from './PostWriter'
 export * from './OrderList'
 export * from './UnOrderList'
 export * from './Table'
+export * from './CodeBlock'
 
 export * from './PostDetailPage'
 export * from './PostListPage'

@@ -2,7 +2,6 @@
 @import './variables.css';
 @import './Dark/variables.css';
 @import './Mode 1/variables.css';
-@import './syntax-highlighting.css';
 
 :root {
   --main-padding: var(--spacing-10, 40px);
