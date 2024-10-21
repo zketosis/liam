@@ -11,7 +11,12 @@ type Props = {
 
 export const LinkCard: FC<Props> = ({ title, href, image, domain }) => {
   return (
-    <a href={href} target="_blank" className={styles.link} rel="noreferrer">
+    <a
+      href={href}
+      target="_blank"
+      className={styles.link}
+      rel="noopener noreferrer"
+    >
       <div className={styles.textWrapper}>
         <p className={styles.title}>{title}</p>
         <div className={styles.domain}>
