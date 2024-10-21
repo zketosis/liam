@@ -4,6 +4,7 @@ import {
   BodyText,
   Code,
   Heading,
+  Image,
   LinkCard,
   OrderList,
   Table,
@@ -12,7 +13,7 @@ import {
 import type { MDXComponents } from 'mdx/types'
 // eslint-disable-next-line no-restricted-imports
 import { useMDXComponent } from 'next-contentlayer2/hooks'
-import { Children, type FC, type ReactElement } from 'react'
+import React, { Children, type FC, type ReactElement } from 'react'
 
 const mdxComponents: MDXComponents = {
   h2: ({ children, ...props }) => (
@@ -35,7 +36,19 @@ const mdxComponents: MDXComponents = {
       {children}
     </Heading>
   ),
-  p: ({ children, ...props }) => <BodyText {...props}>{children}</BodyText>,
+  p: ({ children, ...props }) => {
+    // Check if children contain a <figure> element
+    const hasNestedFigure = Children.toArray(children).some((child) =>
+      React.isValidElement(child),
+    )
+
+    // Use <div> if it contains a <figure>, otherwise use <p>
+    return hasNestedFigure ? (
+      <div {...props}>{children}</div>
+    ) : (
+      <BodyText {...props}>{children}</BodyText>
+    )
+  },
   pre: (props) => {
     const child = Children.only(props.children) as ReactElement
 
@@ -59,6 +72,10 @@ const mdxComponents: MDXComponents = {
   },
   table: ({ children, ...props }) => {
     return <Table {...props}>{children}</Table>
+  },
+  img: (props) => {
+    const { alt = '', src = '', ...restProps } = props
+    return <Image alt={alt} src={src} {...restProps} />
   },
 }
 
