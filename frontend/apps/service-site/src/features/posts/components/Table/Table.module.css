@@ -2,7 +2,7 @@
   --table-border: 1px solid var(--global-border, #383a3b);
   --table-padding: var(--spacing-5, 20px) var(--spacing-6, 24px);
   --table-text-color: var(--global-body-text, #d1d2d3);
-  
+
   border: var(--table-border);
   border-radius: var(--border-radius-md, 6px);
   overflow: hidden;
@@ -51,8 +51,8 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 
-    &::-webkit-scrollbar{
-      display:none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 
