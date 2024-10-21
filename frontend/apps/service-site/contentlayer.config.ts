@@ -61,6 +61,14 @@ export default makeSource({
   documentTypes: [Post],
   mdx: {
     remarkPlugins: [remarkGfm, remarkBreaks, remarkLinkCard],
-    rehypePlugins: [rehypeSlug, rehypePrettyCode],
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypePrettyCode,
+        {
+          theme: 'github-dark-high-contrast',
+        },
+      ],
+    ],
   },
 })

@@ -116,3 +116,24 @@ New businesses can rapidly prototype and test their ideas by building MVPs (Mini
 
 > "You never change things by fighting the existing reality. To change something, build a new model that makes the existing model obsolete. [link](https://www.google.com)"
 > <cite>- Buckminster Fuller</cite>
+
+
+## Syntax Highlighting
+
+```js showLineNumbers title="dummy.config.mjs" {3},{10-12}
+export default defineConfig({
+  site: siteUrl,
+  prefetch: {
+    prefetchAll: true
+  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "src/styles/mixin.scss";`
+        }
+      }
+    }
+  }
+})
+```
