@@ -6,6 +6,7 @@ import {
   Heading,
   Image,
   LinkCard,
+  LinkText,
   OrderList,
   Table,
   UnOrderList,
@@ -70,6 +71,7 @@ const mdxComponents: MDXComponents = {
   ul: ({ children, ...props }) => {
     return <UnOrderList {...props}>{children}</UnOrderList>
   },
+  a: ({ href = '#', ...props }) => <LinkText {...props} href={href} />,
   table: ({ children, ...props }) => {
     return <Table {...props}>{children}</Table>
   },
