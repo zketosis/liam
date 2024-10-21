@@ -45,9 +45,20 @@
 
 @media screen and (max-width: 768px) {
   .table-scroll {
+    position: relative;
     overflow-x: scroll;
-    margin-right: calc(-1 * var(--spacing-4, 16px));
-    padding-right: var(--spacing-4, 16px);
+    margin: 0 calc(-1 * var(--spacing-4, 16px));
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar{
+      display:none;
+    }
+  }
+
+  .table-wrapper {
+    width: 800px;
+    padding: var(--spacing-4, 16px);
   }
 
   .table {
