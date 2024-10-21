@@ -1,0 +1,62 @@
+.table {
+  --table-border: 1px solid var(--global-border, #383a3b);
+  --table-padding: var(--spacing-5, 20px) var(--spacing-6, 24px);
+  --table-text-color: var(--global-body-text, #d1d2d3);
+  
+  border: var(--table-border);
+  border-radius: var(--border-radius-md, 6px);
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table tr {
+  border-bottom: var(--table-border);
+}
+
+.table th,
+.table td {
+  padding: var(--table-padding);
+  color: var(--table-text-color);
+  line-height: 160%;
+  vertical-align: middle;
+  border-left: var(--table-border);
+  border-bottom: var(--table-border);
+}
+
+.table thead th {
+  font-weight: 700;
+  background: var(--global-muted-background, #232526);
+}
+
+.table tbody td {
+  font-weight: 400;
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table th:first-child,
+.table td:first-child {
+  border-left: none;
+}
+
+@media screen and (max-width: 768px) {
+  .table-scroll {
+    overflow-x: scroll;
+    margin-right: calc(-1 * var(--spacing-4, 16px));
+    padding-right: var(--spacing-4, 16px);
+  }
+
+  .table {
+    width: 768px;
+  }
+
+  .table th,
+  .table td {
+    --table-padding: var(--spacing-3, 12px) var(--spacing-4, 16px);
+    font-size: var(--font-size-sm, 14px);
+  }
+}
