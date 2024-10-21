@@ -125,4 +125,24 @@ New businesses can rapidly prototype and test their ideas by building MVPs (Mini
 | Airtable | Project Management | Collaborative workspace and data integration |
 | Zapier | Automation | Connects various apps and services |
 
+## Syntax Highlighting
+
+```js showLineNumbers title="dummy.config.mjs" {3},{10-12}
+export default defineConfig({
+  site: siteUrl,
+  prefetch: {
+    prefetchAll: true
+  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "src/styles/mixin.scss";`
+        }
+      }
+    }
+  }
+})
+```
+
 ![Empowering the next generation of creators through no-code solutions.](/images/posts/2/image.png)

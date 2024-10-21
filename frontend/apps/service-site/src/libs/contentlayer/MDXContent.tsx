@@ -3,6 +3,7 @@ import {
   Blockquote,
   BodyText,
   Code,
+  CodeBlock,
   Heading,
   Image,
   LinkCard,
@@ -59,6 +60,9 @@ const mdxComponents: MDXComponents = {
       </pre>
     )
   },
+  figure: ({ children, ...props }) => (
+    <CodeBlock {...props}>{children}</CodeBlock>
+  ),
   code: ({ children, ...props }) => <Code {...props}>{children}</Code>,
   LinkCard: (props) => <LinkCard {...props} />,
   Callout: (props) => <Callout {...props} />,
