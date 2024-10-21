@@ -6,6 +6,7 @@ import {
   Heading,
   LinkCard,
   OrderList,
+  Table,
   UnOrderList,
 } from '@/features/posts'
 import type { MDXComponents } from 'mdx/types'
@@ -55,6 +56,9 @@ const mdxComponents: MDXComponents = {
   },
   ul: ({ children, ...props }) => {
     return <UnOrderList {...props}>{children}</UnOrderList>
+  },
+  table: ({ children, ...props }) => {
+    return <Table {...props}>{children}</Table>
   },
 }
 

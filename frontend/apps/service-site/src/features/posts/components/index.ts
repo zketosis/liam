@@ -13,6 +13,7 @@ export * from './PostTags'
 export * from './PostWriter'
 export * from './OrderList'
 export * from './UnOrderList'
+export * from './Table'
 
 export * from './PostDetailPage'
 export * from './PostListPage'
