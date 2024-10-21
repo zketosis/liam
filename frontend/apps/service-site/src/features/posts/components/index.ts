@@ -15,6 +15,7 @@ export * from './OrderList'
 export * from './LinkText'
 export * from './UnOrderList'
 export * from './Table'
+export * from './Image'
 
 export * from './PostDetailPage'
 export * from './PostListPage'
