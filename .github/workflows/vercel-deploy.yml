@@ -2,8 +2,13 @@ name: Vercel Deployment
 on:
   push:
     branches:
-      - main
-  pull_request:
+      - pause
+# TODO: Change the settings when development starts.
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

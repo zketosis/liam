@@ -1,6 +1,0 @@
-export * from './Header'
-export * from './Footer'
-export * from './TopCards'
-export * from './ShareIcon'
-export * from './Icons'
-export * from './Badge'
