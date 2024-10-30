@@ -6,8 +6,7 @@
       "persistent": true
     },
     "gen": {
-      "dependsOn": ["^gen"],
-      "outputs": ["./**/contentlayer/**/*"]
+      "dependsOn": ["^gen"]
     },
     "lint": {
       "dependsOn": ["gen", "^lint"]
