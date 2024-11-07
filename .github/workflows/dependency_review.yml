@@ -1,0 +1,9 @@
+name: Dependency Review
+
+on:
+  merge_group:
+  pull_request:
+
+jobs:
+  dependency_review:
+    uses: route06/actions/.github/workflows/dependency_review.yml@v2
