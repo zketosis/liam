@@ -1,0 +1,21 @@
+{
+  "name": "@liam/erd-core",
+  "main": "src/index.ts",
+  "version": "0.0.1",
+  "scripts": {
+    "lint": "conc -c auto pnpm:lint:*",
+    "lint:biome": "biome check .",
+    "lint:tsc": "tsc --noEmit",
+    "fmt": "conc -c auto pnpm:fmt:*",
+    "fmt:biome": "biome check --write --unsafe ."
+  },
+  "dependencies": {
+    "react": "^18"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@packages/configs": "workspace:*",
+    "@types/react": "^18",
+    "typescript": "^5"
+  }
+}

@@ -1,5 +1,7 @@
+import { ERDRenderer } from '@liam/erd-core'
+
 function App() {
-  return <p>Hello World!</p>
+  return <ERDRenderer />
 }
 
 export default App

@@ -14,6 +14,7 @@
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "@liam/erd-core": "workspace:*",
     "react": "^18",
     "react-dom": "^18"
   },
