@@ -1,12 +1,12 @@
 # @liam/cli
 
-`liam-cli` is a command-line tool designed to generate a web application that displays ER diagrams.
+Command-line tool designed to generate a web application that displays ER diagrams.
 
 ```bash
-$ liam-cli build --input {your .sql}
+$ liam build --input {your .sql}
 # Outputs the web application to the ./public and ./dist directories
 
-$ liam-cli preview
+$ liam preview
 # Launches the web application for preview
 ```
 
@@ -25,7 +25,7 @@ After building, you can invoke it locally with:
 node ./dist-cli/bin/cli.js build --input ./fixtures/input.sql
 ```
 
-To make it globally accessible as `liam-cli`, use:
+To make it globally accessible as `liam`, use:
 
 ```bash
 pnpm link --global

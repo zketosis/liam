@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "bin": {
-    "liam-cli": "./dist-cli/bin/cli.js"
+    "liam": "./dist-cli/bin/cli.js"
   },
   "scripts": {
     "dev": "pnpm run build:cli && node ./dist-cli/bin/cli.js dev --input ./fixtures/input.sql",

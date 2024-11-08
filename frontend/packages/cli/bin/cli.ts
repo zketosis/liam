@@ -37,7 +37,7 @@ function runPreprocess(inputPath: string | null) {
 const program = new Command()
 
 program
-  .name('liam-cli')
+  .name('liam')
   .description('CLI for running build and dev commands')
   .version('0.0.0')
 
