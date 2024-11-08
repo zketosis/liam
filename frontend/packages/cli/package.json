@@ -17,14 +17,15 @@
     "@liam/erd-core": "workspace:*",
     "commander": "^12.1.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "vite": "^5.4.10"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
+    "@types/node": "^22.9.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.3",
-    "typescript": "^5",
-    "vite": "^5.4.10"
+    "typescript": "^5"
   }
 }
