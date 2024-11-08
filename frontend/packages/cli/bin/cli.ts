@@ -36,12 +36,13 @@ function runPreprocess(inputPath: string | null) {
 
 const program = new Command()
 
-program
-  .name('liam')
-  .description('CLI for running build and dev commands')
-  .version('0.0.0')
+program.name('liam').description('CLI tool for Liam').version('0.0.0')
 
-program
+const erdCommand = new Command('erd').description('ERD commands')
+
+program.addCommand(erdCommand)
+
+erdCommand
   .command('build')
   .description('Run Vite build')
   .option('--input <path>', 'Path to the .sql file')
@@ -63,7 +64,7 @@ program
     }
   })
 
-program
+erdCommand
   .command('dev')
   .description('Run Vite dev server')
   .option('--input <path>', 'Path to the .sql file')
@@ -82,7 +83,7 @@ program
     }
   })
 
-program
+erdCommand
   .command('preview')
   .description('Preview the production build')
   .action(async () => {

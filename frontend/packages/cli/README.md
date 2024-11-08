@@ -3,10 +3,10 @@
 Command-line tool designed to generate a web application that displays ER diagrams.
 
 ```bash
-$ liam build --input {your .sql}
+$ liam erd build --input {your .sql}
 # Outputs the web application to the ./public and ./dist directories
 
-$ liam preview
+$ liam erd preview
 # Launches the web application for preview
 ```
 
@@ -22,7 +22,7 @@ pnpm run build:cli
 After building, you can invoke it locally with:
 
 ```bash
-node ./dist-cli/bin/cli.js build --input ./fixtures/input.sql
+node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.sql
 ```
 
 To make it globally accessible as `liam`, use:

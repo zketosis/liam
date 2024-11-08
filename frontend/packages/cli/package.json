@@ -7,9 +7,9 @@
     "liam": "./dist-cli/bin/cli.js"
   },
   "scripts": {
-    "dev": "pnpm run build:cli && node ./dist-cli/bin/cli.js dev --input ./fixtures/input.sql",
-    "build": "pnpm run build:cli && node ./dist-cli/bin/cli.js build --input ./fixtures/input.sql",
-    "preview": "pnpm run build:cli && node ./dist-cli/bin/cli.js preview",
+    "dev": "pnpm run build:cli && node ./dist-cli/bin/cli.js erd dev --input ./fixtures/input.sql",
+    "build": "pnpm run build:cli && node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.sql",
+    "preview": "pnpm run build:cli && node ./dist-cli/bin/cli.js erd preview",
     "build:cli": "tsc -p tsconfig.node.json",
     "lint": "conc -c auto pnpm:lint:*",
     "lint:biome": "biome check .",
