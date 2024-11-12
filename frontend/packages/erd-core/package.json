@@ -3,6 +3,10 @@
   "main": "src/index.ts",
   "version": "0.0.1",
   "scripts": {
+    "dev": "conc -c auto pnpm:dev:*",
+    "dev:css": "tcm src --watch",
+    "gen": "conc -c auto pnpm:gen:*",
+    "gen:css": "tcm src",
     "lint": "conc -c auto pnpm:lint:*",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
@@ -10,12 +14,14 @@
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "@xyflow/react": "^12.3.5",
     "react": "^18"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/configs": "workspace:*",
     "@types/react": "^18",
+    "typed-css-modules": "^0.9.1",
     "typescript": "^5"
   }
 }

@@ -4,7 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "conc -c auto pnpm:dev:*",
+    "dev:app": "vite",
+    "dev:css": "tcm src --watch",
+    "gen": "conc -c auto pnpm:gen:*",
+    "gen:css": "tcm src",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "conc -c auto pnpm:lint:*",
@@ -15,6 +19,7 @@
   },
   "dependencies": {
     "@liam/erd-core": "workspace:*",
+    "destyle.css": "^4.0.1",
     "react": "^18",
     "react-dom": "^18"
   },
@@ -23,6 +28,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.3",
+    "typed-css-modules": "^0.9.1",
     "typescript": "^5",
     "vite": "^5.4.10"
   }
