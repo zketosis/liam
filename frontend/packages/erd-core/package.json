@@ -14,6 +14,7 @@
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
+    "@liam/db-structure": "workspace:*",
     "@xyflow/react": "^12.3.5",
     "react": "^18"
   },

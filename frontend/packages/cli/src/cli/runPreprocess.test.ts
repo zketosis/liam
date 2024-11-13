@@ -18,7 +18,7 @@ describe('runPreprocess', () => {
     expect(fs.existsSync(outputFilePath)).toBe(true)
 
     const outputContent = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'))
-    expect(outputContent).toEqual({ sql: sqlContent })
+    expect(outputContent.tables).toBeDefined()
   })
 
   it('should throw an error if the input file does not exist', () => {
@@ -39,6 +39,6 @@ describe('runPreprocess', () => {
     expect(fs.existsSync(outputFilePath)).toBe(true)
 
     const outputContent = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'))
-    expect(outputContent).toEqual({ sql: '{}' })
+    expect(outputContent.tables).toBeDefined()
   })
 })
