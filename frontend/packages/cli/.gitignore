@@ -25,3 +25,7 @@ dist-ssr
 
 # typed-css-modules
 *.css.d.ts
+
+
+dist-cli
+public/schema.json
