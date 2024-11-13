@@ -1,0 +1,7 @@
+@import url('destyle.css');
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
