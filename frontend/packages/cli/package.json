@@ -23,11 +23,13 @@
     "test": "pnpm vitest"
   },
   "dependencies": {
+    "@liam/db-structure": "workspace:*",
     "@liam/erd-core": "workspace:*",
     "commander": "^12.1.0",
     "destyle.css": "^4.0.1",
     "react": "^18",
     "react-dom": "^18",
+    "valibot": "^1.0.0-beta.5",
     "vite": "^5.4.10"
   },
   "devDependencies": {

@@ -2,31 +2,11 @@ import { Background, Controls, type Node, ReactFlow } from '@xyflow/react'
 import type { FC } from 'react'
 import styles from './ERDContent.module.css'
 
-const nodes: Node[] = [
-  {
-    id: '1',
-    data: { label: 'An input node' },
-    position: { x: 0, y: 50 },
-  },
-  {
-    id: '2',
-    data: {},
-    style: { border: '1px solid #777', padding: 10 },
-    position: { x: 300, y: 50 },
-  },
-  {
-    id: '3',
-    data: { label: 'Output A' },
-    position: { x: 650, y: 25 },
-  },
-  {
-    id: '4',
-    data: { label: 'Output B' },
-    position: { x: 650, y: 100 },
-  },
-]
+interface ERDContentProps {
+  nodes: Node[]
+}
 
-export const ERDContent: FC = () => {
+export const ERDContent: FC<ERDContentProps> = ({ nodes }) => {
   return (
     <div className={styles.wrapper}>
       <ReactFlow

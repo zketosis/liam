@@ -10,7 +10,7 @@
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
-    "valibot": "1.0.0-beta.3"
+    "valibot": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",

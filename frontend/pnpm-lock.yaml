@@ -23,6 +23,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@liam/db-structure':
+        specifier: workspace:*
+        version: link:../db-structure
       '@liam/erd-core':
         specifier: workspace:*
         version: link:../erd-core
@@ -38,6 +41,9 @@ importers:
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
+      valibot:
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.6.2)
       vite:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@22.9.0)
@@ -79,8 +85,8 @@ importers:
   packages/db-structure:
     dependencies:
       valibot:
-        specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(typescript@5.6.2)
+        specifier: ^1.0.0-beta.5
+        version: 1.0.0-beta.5(typescript@5.6.2)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.3
@@ -94,6 +100,9 @@ importers:
 
   packages/erd-core:
     dependencies:
+      '@liam/db-structure':
+        specifier: workspace:*
+        version: link:../db-structure
       '@xyflow/react':
         specifier: ^12.3.5
         version: 12.3.5(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3223,8 +3232,8 @@ packages:
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
-  valibot@1.0.0-beta.3:
-    resolution: {integrity: sha512-PRknKVj2249cF8Pxqil1dahkVHgyaPDq++Y8sA96R5lx4nYnVazs11kefOsRVD3PSygYJG5q2MEdEm7kuSWa+g==}
+  valibot@1.0.0-beta.5:
+    resolution: {integrity: sha512-YrU03cSLH8+UIMMAOnYCpD9+c6k/VDlxu13aVDokt/YwtROICC6kkbQeRbamcEuh/+CbFa4pbqOptiNNbHFSog==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -6588,7 +6597,7 @@ snapshots:
 
   v8-compile-cache-lib@3.0.1: {}
 
-  valibot@1.0.0-beta.3(typescript@5.6.2):
+  valibot@1.0.0-beta.5(typescript@5.6.2):
     optionalDependencies:
       typescript: 5.6.2
 
