@@ -1,7 +1,13 @@
 import * as v from 'valibot'
 
+const fieldNameSchema = v.string()
+
+const tableNameSchema = v.string()
+
+const relationshipNameSchema = v.string()
+
 const fieldSchema = v.object({
-  name: v.string(),
+  name: fieldNameSchema,
   type: v.string(),
   default: v.string(),
   check: v.string(),
@@ -19,7 +25,7 @@ const indexSchema = v.object({
 })
 
 const tableSchema = v.object({
-  name: v.string(),
+  name: tableNameSchema,
   x: v.number(),
   y: v.number(),
   fields: v.array(fieldSchema),
@@ -29,19 +35,19 @@ const tableSchema = v.object({
 })
 
 const relationshipSchema = v.object({
-  name: v.string(),
-  startTableName: v.number(),
-  startFieldName: v.number(),
-  endTableName: v.number(),
-  endFieldName: v.number(),
+  name: relationshipNameSchema,
+  startTableName: tableNameSchema,
+  startFieldName: fieldNameSchema,
+  endTableName: tableNameSchema,
+  endFieldName: fieldNameSchema,
   cardinality: v.string(),
   updateConstraint: v.string(),
   deleteConstraint: v.string(),
 })
 
-const tablesSchema = v.record(v.string(), tableSchema) // Key is table name
+const tablesSchema = v.record(tableNameSchema, tableSchema)
 
-const relationshipsSchema = v.record(v.string(), relationshipSchema) // Key is relationship name
+const relationshipsSchema = v.record(relationshipNameSchema, relationshipSchema)
 
 export const dbStructureSchema = v.object({
   tables: tablesSchema,
