@@ -14,20 +14,20 @@ describe('CLI Smoke Test', () => {
     try {
       const { stdout, stderr } = await execAsync('npx --no-install . help')
       expect(stderr).toBe('')
-      expect(stdout).toEqual(
-        `Usage: liam [options] [command]
+      expect(stdout).toMatchInlineSnapshot(`
+        "Usage: liam [options] [command]
 
-CLI tool for Liam
+        CLI tool for Liam
 
-Options:
-  -V, --version   output the version number
-  -h, --help      display help for command
+        Options:
+          -V, --version   output the version number
+          -h, --help      display help for command
 
-Commands:
-  erd             ERD commands
-  help [command]  display help for command
-`,
-      )
+        Commands:
+          erd             ERD commands
+          help [command]  display help for command
+        "
+      `)
     } catch (error) {
       // Fail the test if an error occurs
       expect(error).toBeNull()
