@@ -3,7 +3,7 @@ import type { Node } from '@xyflow/react'
 
 export const convertDBStructureToNodes = (dbStructure: DBStructure): Node[] => {
   // TODO: Implement this function
-  const tableNames = dbStructure.tables.slice(0, 4).map((table) => table.name)
+  const tableNames = Object.keys(dbStructure.tables)
 
   return [
     {

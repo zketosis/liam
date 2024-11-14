@@ -3,15 +3,13 @@ import path from 'node:path'
 
 // TODO: remove this
 const fixtureObject = {
-  tables: [
-    {
-      id: 1,
+  tables: {
+    users: {
       name: 'users',
       x: 100,
       y: 200,
       fields: [
         {
-          id: 1,
           name: 'id',
           type: 'integer',
           default: '',
@@ -23,7 +21,6 @@ const fixtureObject = {
           comment: 'Primary key',
         },
         {
-          id: 2,
           name: 'username',
           type: 'varchar',
           default: '',
@@ -38,7 +35,6 @@ const fixtureObject = {
       comment: 'Table storing user data',
       indices: [
         {
-          id: 1,
           name: 'idx_users_username',
           unique: true,
           fields: ['username'],
@@ -46,14 +42,12 @@ const fixtureObject = {
       ],
       color: '#ffcc00',
     },
-    {
-      id: 2,
+    posts: {
       name: 'posts',
       x: 300,
       y: 400,
       fields: [
         {
-          id: 1,
           name: 'id',
           type: 'integer',
           default: '',
@@ -65,7 +59,6 @@ const fixtureObject = {
           comment: 'Primary key',
         },
         {
-          id: 2,
           name: 'title',
           type: 'varchar',
           default: '',
@@ -80,7 +73,6 @@ const fixtureObject = {
       comment: 'Table storing posts data',
       indices: [
         {
-          id: 1,
           name: 'idx_posts_title',
           unique: false,
           fields: ['title'],
@@ -88,8 +80,8 @@ const fixtureObject = {
       ],
       color: '#99ccff',
     },
-  ],
-  relationships: [],
+  },
+  relationships: {},
 }
 
 export function runPreprocess(inputPath: string | null, publicDir: string) {
