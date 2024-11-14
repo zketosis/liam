@@ -43,9 +43,13 @@ const relationshipSchema = v.object({
   deleteConstraint: v.string(),
 })
 
+const tablesSchema = v.record(v.string(), tableSchema)
+
+const relationshipsSchema = v.record(v.string(), relationshipSchema)
+
 export const dbStructureSchema = v.object({
-  tables: v.array(tableSchema),
-  relationships: v.array(relationshipSchema),
+  tables: tablesSchema,
+  relationships: relationshipsSchema,
 })
 
 export type DBStructure = v.InferOutput<typeof dbStructureSchema>
