@@ -1,1 +1,3 @@
-export { default } from './parser'
+import schemaRbParser from './parser'
+
+export { schemaRbParser }
