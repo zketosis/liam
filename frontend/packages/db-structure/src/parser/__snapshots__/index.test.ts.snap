@@ -1,0 +1,75 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Schema Parser > should parse schema.rb to JSON correctly 1`] = `
+{
+  "relationships": {},
+  "tables": {
+    "xero_users": {
+      "comment": null,
+      "fields": [
+        {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "id",
+          "notNull": false,
+          "primary": false,
+          "type": "varchar",
+          "unique": false,
+        },
+        {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "email_address",
+          "notNull": false,
+          "primary": false,
+          "type": "string",
+          "unique": false,
+        },
+      ],
+      "indices": [],
+      "name": "xero_users",
+    },
+  },
+}
+`;
+
+exports[`parse > should parse schema.rb to JSON correctly 1`] = `
+{
+  "relationships": {},
+  "tables": {
+    "xero_users": {
+      "comment": null,
+      "fields": [
+        {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "id",
+          "notNull": false,
+          "primary": false,
+          "type": "varchar",
+          "unique": false,
+        },
+        {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "email_address",
+          "notNull": false,
+          "primary": false,
+          "type": "string",
+          "unique": false,
+        },
+      ],
+      "indices": [],
+      "name": "xero_users",
+    },
+  },
+}
+`;
