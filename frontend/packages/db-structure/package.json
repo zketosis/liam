@@ -7,14 +7,18 @@
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "fmt": "conc -c auto pnpm:fmt:*",
-    "fmt:biome": "biome check --write --unsafe ."
+    "fmt:biome": "biome check --write --unsafe .",
+    "test": "vitest"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
+    "pluralize": "^8.0.0",
     "valibot": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/configs": "workspace:*",
-    "typescript": "^5"
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.4"
   }
 }

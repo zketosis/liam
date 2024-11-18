@@ -84,6 +84,12 @@ importers:
 
   packages/db-structure:
     dependencies:
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      pluralize:
+        specifier: ^8.0.0
+        version: 8.0.0
       valibot:
         specifier: ^1.0.0-beta.5
         version: 1.0.0-beta.5(typescript@5.6.2)
@@ -95,8 +101,11 @@ importers:
         specifier: workspace:*
         version: link:../configs
       typescript:
-        specifier: ^5
+        specifier: ^5.6.2
         version: 5.6.2
+      vitest:
+        specifier: ^2.1.4
+        version: 2.1.4(@types/node@22.9.0)
 
   packages/erd-core:
     dependencies:
@@ -2574,6 +2583,10 @@ packages:
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
+
+  pluralize@8.0.0:
+    resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
+    engines: {node: '>=4'}
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -5902,6 +5915,8 @@ snapshots:
   picocolors@1.1.0: {}
 
   picomatch@2.3.1: {}
+
+  pluralize@8.0.0: {}
 
   possible-typed-array-names@1.0.0: {}
 
