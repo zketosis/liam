@@ -121,7 +121,7 @@
       endpoints[0].fieldNames = [columnName];
       const columnField = fromTable.fields.find(field => field.name === columnName);
       if (!columnField) {
-        // TODO: handle erro
+        // TODO: handle error
         // throw {
         //   message: `Field ${columnName} not found in table ${endpoints[0].table}`
         // }
@@ -365,7 +365,7 @@ primary_key "primary key" = "primary_key"
 version = "version"
 do = "do"
 end = "end"
-lambda_function "lambda function" = "=>" / "->"
+lambda_function "lambda function" = "->"
 other_class_prop = variable whateters endline?
 
 // normal syntax
