@@ -1,4 +1,4 @@
-import type { DBStructure, Table } from 'src/schema/database'
+import type { DBStructure, Table } from 'src/schema'
 import { schemaRbParser } from './schemarb'
 
 type SupportedFormat = 'schemarb' | 'postgres'
@@ -24,6 +24,9 @@ const convertToDBStructure = (data: any): DBStructure => {
         })),
         indices: [],
         name: table.name,
+        x: 0,
+        y: 0,
+        color: null,
       }
       return acc
     }, {}),

@@ -5,6 +5,7 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
   "relationships": {},
   "tables": {
     "xero_users": {
+      "color": null,
       "comment": null,
       "fields": [
         {
@@ -32,6 +33,8 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
       ],
       "indices": [],
       "name": "xero_users",
+      "x": 0,
+      "y": 0,
     },
   },
 }
