@@ -1,3 +1,14 @@
 {
-  "extends": ["../../packages/configs/biome.jsonc"]
+  "extends": ["../../packages/configs/biome.jsonc"],
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "suspicious": {
+        "noExplicitAny": "off"
+      }
+    }
+  },
+  "files": {
+    "ignore": ["src/parser/schemarb/*"]
+  }
 }

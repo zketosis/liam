@@ -1,7 +1,10 @@
 {
   "extends": "@packages/configs/tsconfig/base.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noImplicitAny": false,
+    "allowJs": true,
+    "checkJs": false
   },
   "include": ["src/**/*"]
 }
