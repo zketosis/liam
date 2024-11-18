@@ -1,0 +1,34 @@
+{
+  "tables": {
+    "xero_users": {
+      "comment": null,
+      "fields": [
+        {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "id",
+          "notNull": false,
+          "primary": false,
+          "type": "varchar",
+          "unique": false
+        },
+        {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "email_address",
+          "notNull": false,
+          "primary": false,
+          "type": "string",
+          "unique": false
+        }
+      ],
+      "indices": [],
+      "name": "xero_users"
+    }
+  },
+  "relationships": {}
+}
