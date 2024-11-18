@@ -3,11 +3,14 @@ import schemarbParser from './schemarb'
 
 type SupportedFormat = 'schemarb' | 'postgres'
 
+// biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
 const convertToDBStructure = (data: any): DBStructure => {
   return {
+    // biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
     tables: data.tables.reduce((acc: Record<string, Table>, table: any) => {
       acc[table.name] = {
         comment: null,
+        // biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
         fields: table.fields.map((field: any) => ({
           check: null,
           comment: null,
@@ -28,6 +31,7 @@ const convertToDBStructure = (data: any): DBStructure => {
   }
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
 const selectParser = (format: SupportedFormat): any => {
   switch (format) {
     case 'schemarb':

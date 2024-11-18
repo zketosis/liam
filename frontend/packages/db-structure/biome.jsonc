@@ -1,13 +1,5 @@
 {
   "extends": ["../../packages/configs/biome.jsonc"],
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "suspicious": {
-        "noExplicitAny": "off"
-      }
-    }
-  },
   "files": {
     "ignore": [
       "src/parser/schemarb/parser.js" // Because it's generated
