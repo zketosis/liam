@@ -9,6 +9,8 @@
     }
   },
   "files": {
-    "ignore": ["src/parser/schemarb/*"]
+    "ignore": [
+      "src/parser/schemarb/parser.js" // Because it's generated
+    ]
   }
 }
