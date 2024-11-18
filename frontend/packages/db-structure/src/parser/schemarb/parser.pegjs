@@ -18,7 +18,8 @@
 
 {
   var pluralize = require('pluralize');
-  var lodash = require('lodash');
+  var isEqual = require('lodash/isEqual');
+  var sortBy = require('lodash/sortBy');
 
   let data = {
     tables: [],
@@ -67,7 +68,7 @@
 
   function isSameEndpoints (endpoint1, endpoint2) {
     return endpoint1.tableName == endpoint2.tableName &&
-      lodash.isEqual(lodash.sortBy(endpoint1.fieldNames), lodash.sortBy(endpoint2.fieldNames))
+      isEqual(sortBy(endpoint1.fieldNames), sortBy(endpoint2.fieldNames))
   }
 
   function isSameEndpointsPairs (endpointsPair1, endpointsPair2) {
