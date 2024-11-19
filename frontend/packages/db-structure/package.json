@@ -8,11 +8,13 @@
     "lint:tsc": "tsc --noEmit",
     "fmt": "conc -c auto pnpm:fmt:*",
     "fmt:biome": "biome check --write --unsafe .",
-    "test": "vitest"
+    "test": "vitest",
+    "parser:gen": "peggy src/parser/schemarb/parser.pegjs"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
     "lodash.sortby": "^4.7.0",
+    "peggy": "^4.1.1",
     "pluralize": "^8.0.0",
     "valibot": "^1.0.0-beta.5"
   },
