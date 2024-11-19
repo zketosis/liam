@@ -357,7 +357,7 @@ field_type_syntax = type:field_type sp+ name:name props:option_props* {
 
 option_props = default_syntax / null_syntax
 
-default_syntax = comma sp+ default sp+ value:name { return { isDefault: true, value } }
+default_syntax = comma sp+ default sp+ value:value { return { isDefault: true, value } }
 
 null_syntax = comma sp+ null sp+ value:boolean { return { isNull: true, value } }
 
@@ -392,9 +392,10 @@ symbol = ":" c:character* { return c.join("") }
 variable = c:(character+) { return c.join("") }
 field_type = character"."c:(character+) { return c.join("") }
 not_whitespace = !whitespace . {return text()}
-number = [0-9]i
+number = n:[0-9]+ { return parseInt(n.join(""), 10); }
 boolean = "true" { return true } / "false" { return false }
 character "letter, number or underscore" = [a-z0-9_.]i
+value = number / name / boolean
 end_line = whitespace* end endline?
 whatever_line = whitespace* (whateters ! end) endline?
 comment_line "comment line" = whitespace* "#" whateters endline?
