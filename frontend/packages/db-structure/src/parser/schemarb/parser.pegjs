@@ -338,15 +338,28 @@ table_field_syntax
   / field:field_type_syntax { return ({ field, isField: true }) }
 
 field_index_syntax = index sp+ whateters
+
 field_reference_syntax = references sp+ reference:reference_value {
     return reference;
   }
-field_type_syntax = type:field_type sp+ name:name {
+
+field_type_syntax = type:field_type sp+ name:name props:option_props* {
+    const defaultProp = props.find(p => p.isDefault);
+    const nullableProp = props.find(p => p.isNull);
+
     return ({
       name: name,
       type: {type_name: type},
+      default: defaultProp ? defaultProp.value : null,
+      nullable: nullableProp ? nullableProp.value : null,
     })
   }
+
+option_props = default_syntax / null_syntax
+
+default_syntax = comma sp+ default sp+ value:name { return { isDefault: true, value } }
+
+null_syntax = comma sp+ null sp+ value:boolean { return { isNull: true, value } }
 
 reference_value = ":"reference:variable { return reference }
   / reference:name { return reference }
@@ -359,6 +372,8 @@ schema_define "schema define" = "ActiveRecord::Schema.define"
 create_table "create table" = "create_table"i
 end_create_table "do |t|" = do sp+ abs character abs endline
 index "index" = character ".index"
+default "default" = "default:"
+null "null" = "null:"
 references "references" = character ".references"
 add_foreign_key "add foreign key" = "add_foreign_key"i
 column "column" = "column"
@@ -378,6 +393,7 @@ variable = c:(character+) { return c.join("") }
 field_type = character"."c:(character+) { return c.join("") }
 not_whitespace = !whitespace . {return text()}
 number = [0-9]i
+boolean = "true" { return true } / "false" { return false }
 character "letter, number or underscore" = [a-z0-9_.]i
 end_line = whitespace* end endline?
 whatever_line = whitespace* (whateters ! end) endline?
@@ -396,4 +412,5 @@ endline = sp* newline;
 comment "comment" = "//" [^\n]?
 newline "newline" = "\r\n"  / "\n"
 whitespace "whitespace" = [ \t\r\n\r]
+comma = ","
 sp = " "

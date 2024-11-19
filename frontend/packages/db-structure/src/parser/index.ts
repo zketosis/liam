@@ -14,10 +14,10 @@ const convertToDBStructure = (data: any): DBStructure => {
         fields: table.fields.map((field: any) => ({
           check: null,
           comment: null,
-          default: null,
+          default: 'default' in field ? field.default : null,
           increment: false,
           name: field.name,
-          notNull: false,
+          notNull: 'nullable' in field ? !field.nullable : null,
           primary: false,
           type: field.type.type_name,
           unique: false,
