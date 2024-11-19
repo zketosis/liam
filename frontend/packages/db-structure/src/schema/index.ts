@@ -29,10 +29,12 @@ const tableSchema = v.object({
   x: v.number(),
   y: v.number(),
   fields: v.array(fieldSchema),
-  comment: v.string(),
+  comment: v.nullable(v.string()),
   indices: v.array(indexSchema),
-  color: v.string(),
+  color: v.nullable(v.string()),
 })
+
+export type Table = v.InferOutput<typeof tableSchema>
 
 const relationshipSchema = v.object({
   name: relationshipNameSchema,
