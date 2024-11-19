@@ -9,7 +9,7 @@
     "fmt": "conc -c auto pnpm:fmt:*",
     "fmt:biome": "biome check --write --unsafe .",
     "test": "vitest",
-    "parser:gen": "peggy src/parser/schemarb/parser.pegjs"
+    "gen:parser": "peggy src/parser/schemarb/parser.pegjs"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
