@@ -21,14 +21,14 @@ pnpm run test
 To build the CLI for development purposes, run:
 
 ```bash
-pnpm run build:cli
+pnpm run build
 # The executable will be output to dist-cli/bin/cli.js.
 ```
 
 After building, you can invoke it locally with:
 
 ```bash
-node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.sql
+node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.schema.rb
 ```
 
 To make it globally accessible as `liam`, use:
@@ -43,26 +43,26 @@ pnpm link --global
 
 1. **Build**
    ```bash
-   pnpm run build
+   pnpm run command:build
    ```
-   - Internally, `./fixtures/input.sql` is passed as the `build --input` argument.
+   - Internally, `./fixtures/input.schema.rb` is passed as the `build --input` argument.
    - Runs Vite's build process.
 
 2. **Dev**
    ```bash
-   pnpm run dev
+   pnpm run command:dev
    ```
-   - Internally, `./fixtures/input.sql` is passed as the `dev --input` argument.
+   - Internally, `./fixtures/input.schema.rb` is passed as the `dev --input` argument.
    - Starts the Vite development server.
 
 3. **Preview**
    ```bash
-   pnpm run preview
+   pnpm run command:preview
    ```
    - Previews the production build using Vite's built-in preview functionality.
 
 ## File Structure
 
 - **bin/cli.ts**: The main CLI script.
-- **fixtures/input.sql**: A sample `.sql` file for testing purposes.
+- **fixtures/input.schema.rb**: A sample `.sql` file for testing purposes.
 - **src/**: The web application that displays ER diagrams.

@@ -6,7 +6,7 @@ const execAsync = promisify(exec)
 
 beforeAll(async () => {
   await execAsync('rm -rf ./dist-cli/ ./node_modules/.tmp')
-  await execAsync('pnpm run build:cli')
+  await execAsync('pnpm run build')
 })
 
 describe('CLI Smoke Test', () => {
@@ -38,7 +38,7 @@ describe('CLI Smoke Test', () => {
     await execAsync('rm -rf ./dist')
     try {
       const { stdout, stderr } = await execAsync(
-        'npx --no-install . erd build --input fixtures/input.sql',
+        'npx --no-install . erd build --input fixtures/input.schema.rb',
       )
       expect(stderr).toBe('')
       expect(stdout).toContain('building for production')

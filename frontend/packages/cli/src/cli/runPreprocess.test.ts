@@ -26,7 +26,7 @@ describe('runPreprocess', () => {
     const nonExistentPath = path.join(tmpDir, 'non-existent.sql')
 
     expect(() => runPreprocess(nonExistentPath, tmpDir)).toThrow(
-      'Invalid input path. Please provide a valid .sql file.',
+      'Invalid input path. Please provide a valid file.',
     )
   })
 
