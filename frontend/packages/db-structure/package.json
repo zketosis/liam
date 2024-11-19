@@ -14,13 +14,13 @@
   "dependencies": {
     "lodash.isequal": "^4.5.0",
     "lodash.sortby": "^4.7.0",
-    "peggy": "^4.1.1",
     "pluralize": "^8.0.0",
     "valibot": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/configs": "workspace:*",
+    "peggy": "^4.1.1",
     "typescript": "^5",
     "vitest": "^2.1.4"
   }
