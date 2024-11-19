@@ -2,6 +2,7 @@
   "name": "@liam/erd-core",
   "main": "src/index.ts",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "dev": "conc -c auto pnpm:dev:*",
     "dev:css": "tcm src --watch",
