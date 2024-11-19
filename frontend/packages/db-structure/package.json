@@ -8,7 +8,8 @@
     "lint:tsc": "tsc --noEmit",
     "fmt": "conc -c auto pnpm:fmt:*",
     "fmt:biome": "biome check --write --unsafe .",
-    "test": "vitest"
+    "test": "vitest",
+    "gen:parser": "peggy src/parser/schemarb/parser.pegjs"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/configs": "workspace:*",
+    "peggy": "^4.1.1",
     "typescript": "^5",
     "vitest": "^2.1.4"
   }
