@@ -17,7 +17,7 @@ const convertToDBStructure = (data: any): DBStructure => {
           default: 'default' in field ? field.default : null,
           increment: false,
           name: field.name,
-          notNull: 'nullable' in field ? !field.nullable : null,
+          notNull: 'nullable' in field ? !field.nullable : false,
           primary: false,
           type: field.type.type_name,
           unique: false,
