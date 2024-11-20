@@ -43,7 +43,7 @@ jobs:
       - uses: ./.github/actions/pnpm-setup
         with:
           working-directory: ${{ env.working-directory }}
-      - run: pnpm build && pnpm lint
+      - run: pnpm lint
 
   frontend-ci:
     needs: [setup-job]
