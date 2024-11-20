@@ -10,7 +10,6 @@
     "command:dev": "pnpm run build && node ./dist-cli/bin/cli.js erd dev --input ./fixtures/input.schema.rb",
     "command:build": "pnpm run build && node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.schema.rb",
     "command:preview": "pnpm run build && node ./dist-cli/bin/cli.js erd preview",
-    "prebuild": "pnpm --filter @liam/db-structure run build",
     "build": "tsc -p tsconfig.node.json",
     "dev:app": "vite",
     "dev:css": "tcm src --watch",
@@ -21,7 +20,7 @@
     "lint:tsc": "tsc --noEmit",
     "fmt": "conc -c auto pnpm:fmt:*",
     "fmt:biome": "biome check --write --unsafe .",
-    "test": "pnpm prebuild && pnpm vitest --watch=false"
+    "test": "pnpm vitest --watch=false"
   },
   "dependencies": {
     "@liam/db-structure": "workspace:*",
