@@ -12,6 +12,7 @@
     "gen:parser": "peggy src/parser/schemarb/parser.pegjs"
   },
   "dependencies": {
+    "@pgsql/types": "^15.0.2",
     "lodash.isequal": "^4.5.0",
     "lodash.sortby": "^4.7.0",
     "pgsql-parser": "^13.16.0",

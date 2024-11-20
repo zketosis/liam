@@ -84,6 +84,9 @@ importers:
 
   packages/db-structure:
     dependencies:
+      '@pgsql/types':
+        specifier: ^15.0.2
+        version: 15.0.2
       lodash.isequal:
         specifier: ^4.5.0
         version: 4.5.0
@@ -605,6 +608,9 @@ packages:
 
   '@pgsql/types@13.9.0':
     resolution: {integrity: sha512-R26mn0zMkwfR8imEQ1Q4NedHwG9gTUfgVnLJUBqPn33JyhOUi2H6iEVTcC9kHAm7gQGpwSBKfuCItWgenAlm9g==}
+
+  '@pgsql/types@15.0.2':
+    resolution: {integrity: sha512-K3gtnbqbSUuUVmPm143qx5Gy2EmKuooshV95yMD48EUQ1256sgZBriEfY61OWJnlzdREdqHTIOxQqpZAb7XdZg==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -4099,6 +4105,8 @@ snapshots:
       semver: 7.6.3
 
   '@pgsql/types@13.9.0': {}
+
+  '@pgsql/types@15.0.2': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
