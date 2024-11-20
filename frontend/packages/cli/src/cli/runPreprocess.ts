@@ -2,12 +2,12 @@ import fs, { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { parse } from '@liam/db-structure'
 
-export function runPreprocess(inputPath: string | null, publicDir: string) {
-  if (inputPath && !fs.existsSync(inputPath)) {
+export function runPreprocess(inputPath: string, publicDir: string) {
+  if (!fs.existsSync(inputPath)) {
     throw new Error('Invalid input path. Please provide a valid file.')
   }
 
-  const input = inputPath ? readFileSync(inputPath, 'utf8') : ''
+  const input = readFileSync(inputPath, 'utf8')
 
   // TODO: Expand support to additional formats, e.g., 'postgres'
   const format = 'schemarb'
