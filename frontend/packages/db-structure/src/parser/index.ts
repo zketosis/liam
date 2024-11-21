@@ -1,5 +1,5 @@
-import type { DBStructure } from 'src/schema'
-import { schemaRbConverter, schemaRbParser } from './schemarb'
+import type { DBStructure } from 'src/schema/index.js'
+import { schemaRbConverter, schemaRbParser } from './schemarb/index.js'
 import { postgresConverter, postgresParser } from './sql'
 
 type SupportedFormat = 'schemarb' | 'postgres'

@@ -7,10 +7,10 @@
     "liam": "./dist-cli/bin/cli.js"
   },
   "scripts": {
-    "dev": "pnpm run build:cli && node ./dist-cli/bin/cli.js erd dev --input ./fixtures/input.sql",
-    "build": "pnpm run build:cli && node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.sql",
-    "preview": "pnpm run build:cli && node ./dist-cli/bin/cli.js erd preview",
-    "build:cli": "tsc -p tsconfig.node.json",
+    "command:dev": "pnpm run build && node ./dist-cli/bin/cli.js erd dev --input ./fixtures/input.schema.rb",
+    "command:build": "pnpm run build && node ./dist-cli/bin/cli.js erd build --input ./fixtures/input.schema.rb",
+    "command:preview": "pnpm run build && node ./dist-cli/bin/cli.js erd preview",
+    "build": "tsc -p tsconfig.node.json",
     "dev:app": "vite",
     "dev:css": "tcm src --watch",
     "gen": "conc -c auto pnpm:gen:*",
@@ -20,7 +20,7 @@
     "lint:tsc": "tsc --noEmit",
     "fmt": "conc -c auto pnpm:fmt:*",
     "fmt:biome": "biome check --write --unsafe .",
-    "test": "pnpm vitest"
+    "test": "pnpm vitest --watch=false"
   },
   "dependencies": {
     "@liam/db-structure": "workspace:*",

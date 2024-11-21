@@ -19,6 +19,11 @@ function App() {
         result.success
           ? setSchemaJsonContent(result.output)
           : console.info(result.issues)
+
+        // This is a temporary workaround.
+        // For demo purposes, we ignore the validation result and set the schema content directly.
+        // TODO: remove this line.
+        setSchemaJsonContent(data)
       } catch (error) {
         console.error('Error loading schema content:', error)
       }

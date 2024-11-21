@@ -1,6 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist", "dist-cli"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
@@ -9,11 +13,14 @@
       "dependsOn": ["^gen"]
     },
     "lint": {
-      "dependsOn": ["gen", "^lint"]
+      "dependsOn": ["gen", "^build", "^lint"]
     },
     "fmt": {},
     "test": {
       "outputs": []
+    },
+    "@liam/cli#test": {
+      "dependsOn": ["^build"]
     }
   }
 }

@@ -1,15 +1,18 @@
 {
   "name": "@liam/db-structure",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "build": "tsc",
     "lint": "conc -c auto pnpm:lint:*",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "fmt": "conc -c auto pnpm:fmt:*",
     "fmt:biome": "biome check --write --unsafe .",
-    "test": "vitest",
-    "gen:parser": "peggy src/parser/schemarb/parser.pegjs"
+    "test": "vitest --watch=false",
+    "gen:parser": "./scripts/generateParser.sh"
   },
   "dependencies": {
     "@pgsql/types": "^15.0.2",
@@ -22,7 +25,9 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@packages/configs": "workspace:*",
+    "lodash-es": "^4.17.21",
     "peggy": "^4.1.1",
+    "pluralize-esm": "^9.0.5",
     "typescript": "^5",
     "vitest": "^2.1.4"
   }

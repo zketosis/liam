@@ -3,7 +3,9 @@
 //
 // https://peggyjs.org/
 
-"use strict";
+import pluralize from "pluralize-esm";
+import { isEqual } from "lodash-es";
+import { sortBy } from "lodash-es";
 
 
 function peg$subclass(child, parent) {
@@ -2303,10 +2305,6 @@ function peg$parse(input, options) {
   }
 
 
-  var pluralize = require('pluralize');
-  var isEqual = require('lodash/isEqual');
-  var sortBy = require('lodash/sortBy');
-
   let data = {
     tables: [],
     refs: []
@@ -2578,8 +2576,12 @@ function peg$parse(input, options) {
   }
 }
 
-module.exports = {
-  StartRules: ["schema"],
-  SyntaxError: peg$SyntaxError,
-  parse: peg$parse
+const peg$allowedStartRules = [
+  "schema"
+];
+
+export {
+  peg$allowedStartRules as StartRules,
+  peg$SyntaxError as SyntaxError,
+  peg$parse as parse
 };

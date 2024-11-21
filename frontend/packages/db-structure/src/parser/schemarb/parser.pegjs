@@ -17,10 +17,6 @@
 // limitations under the License.
 
 {
-  var pluralize = require('pluralize');
-  var isEqual = require('lodash/isEqual');
-  var sortBy = require('lodash/sortBy');
-
   let data = {
     tables: [],
     refs: []
