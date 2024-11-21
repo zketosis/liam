@@ -13,4 +13,14 @@ describe(parse, () => {
     const result = parse(schemaText, 'schemarb')
     expect(result).toMatchSnapshot()
   })
+
+  it('should parse postgresql to JSON correctly', () => {
+    const schemaText = fs.readFileSync(
+      path.resolve(__dirname, './sql/input/postgresql_schema1.in.sql'),
+      'utf-8',
+    )
+
+    const result = parse(schemaText, 'postgres')
+    expect(result).toMatchSnapshot()
+  })
 })
