@@ -1,7 +1,14 @@
 {
   "extends": "@packages/configs/tsconfig/base.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "outDir": "dist",
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "node"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

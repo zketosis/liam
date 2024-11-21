@@ -1,3 +1,3 @@
-import schemaRbParser from './parser'
+import * as parser from './parser.js'
 
-export { schemaRbParser }
+export { parser }

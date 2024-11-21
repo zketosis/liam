@@ -1,5 +1,5 @@
-import type { DBStructure, Table } from 'src/schema'
-import { schemaRbParser } from './schemarb'
+import type { DBStructure, Table } from 'src/schema/index.js'
+import * as schemaRbParser from './schemarb/index.js'
 
 type SupportedFormat = 'schemarb' | 'postgres'
 
@@ -38,7 +38,7 @@ const convertToDBStructure = (data: any): DBStructure => {
 const selectParser = (format: SupportedFormat): any => {
   switch (format) {
     case 'schemarb':
-      return schemaRbParser
+      return schemaRbParser.parser
     default:
       throw new Error(`Unsupported format: ${format}`)
   }

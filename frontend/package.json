@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "build": "turbo build",
     "dev": "turbo dev",
     "lint": "conc -c auto pnpm:lint:*",
     "lint:turbo": "turbo lint",

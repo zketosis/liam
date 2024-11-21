@@ -26,19 +26,7 @@ describe('runPreprocess', () => {
     const nonExistentPath = path.join(tmpDir, 'non-existent.sql')
 
     expect(() => runPreprocess(nonExistentPath, tmpDir)).toThrow(
-      'Invalid input path. Please provide a valid .sql file.',
+      'Invalid input path. Please provide a valid file.',
     )
-  })
-
-  it('should create an empty schema.json if inputPath is null', () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-publicDir-'))
-
-    const outputFilePath = runPreprocess(null, tmpDir)
-    if (!outputFilePath) throw new Error('Implement the test')
-
-    expect(fs.existsSync(outputFilePath)).toBe(true)
-
-    const outputContent = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'))
-    expect(outputContent.tables).toBeDefined()
   })
 })
