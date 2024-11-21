@@ -44,11 +44,6 @@ export const postgresConverter = {
         if (!createStmt || !createStmt.relation || !createStmt.tableElts)
           continue
 
-        const convertDefaultToString = (defaultValue: string | Node): string =>
-          typeof defaultValue === 'string'
-            ? defaultValue
-            : JSON.stringify(defaultValue)
-
         const tableName = createStmt.relation.relname
         const fields = createStmt.tableElts
           .filter(
@@ -63,12 +58,7 @@ export const postgresConverter = {
                   ?.filter(isStringNode)
                   .map((n) => n.String.sval)
                   .join(' ') || '',
-              default: convertDefaultToString(
-                colDef.constraints
-                  ?.filter(isConstraintNode)
-                  .find((c) => c.Constraint.contype === 'CONSTR_DEFAULT')
-                  ?.Constraint.raw_expr || '',
-              ),
+              default: '', // TODO
               check: '', // TODO
               primary:
                 colDef.constraints

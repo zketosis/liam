@@ -87,7 +87,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         {
           "check": "",
           "comment": "",
-          "default": "{"SQLValueFunction":{"op":"SVFOP_CURRENT_TIMESTAMP","typmod":-1,"location":719}}",
+          "default": "",
           "increment": false,
           "name": "created_at",
           "notNull": false,
@@ -184,7 +184,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         {
           "check": "",
           "comment": "",
-          "default": "{"SQLValueFunction":{"op":"SVFOP_CURRENT_TIMESTAMP","typmod":-1,"location":440}}",
+          "default": "",
           "increment": false,
           "name": "created_at",
           "notNull": false,
@@ -195,7 +195,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         {
           "check": "",
           "comment": "",
-          "default": "{"SQLValueFunction":{"op":"SVFOP_CURRENT_TIMESTAMP","typmod":-1,"location":492}}",
+          "default": "",
           "increment": false,
           "name": "updated_at",
           "notNull": false,
@@ -249,7 +249,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         {
           "check": "",
           "comment": "",
-          "default": "{"SQLValueFunction":{"op":"SVFOP_CURRENT_TIMESTAMP","typmod":-1,"location":239}}",
+          "default": "",
           "increment": false,
           "name": "created_at",
           "notNull": false,
