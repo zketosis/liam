@@ -1,4 +1,4 @@
-import { schemaRbConverter } from './converter'
-import * as schemaRbParser from './parser.js'
+import * as converter from './converter.js'
+import * as parser from './parser.js'
 
-export { schemaRbParser, schemaRbConverter }
+export { converter, parser }

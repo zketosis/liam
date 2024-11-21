@@ -1,6 +1,6 @@
 import type { DBStructure } from 'src/schema/index.js'
-import { schemaRbConverter, schemaRbParser } from './schemarb/index.js'
-import { postgresConverter, postgresParser } from './sql'
+import * as schemaRbParserAndConverter from './schemarb/index.js'
+import * as postgresParserAndConverter from './sql/index.js'
 
 type SupportedFormat = 'schemarb' | 'postgres'
 
@@ -8,9 +8,9 @@ type SupportedFormat = 'schemarb' | 'postgres'
 const selectParser = (format: SupportedFormat): any => {
   switch (format) {
     case 'schemarb':
-      return schemaRbParser
+      return schemaRbParserAndConverter.parser
     case 'postgres':
-      return postgresParser
+      return postgresParserAndConverter.perserAndConverter.parser
     default:
       throw new Error(`Unsupported format: ${format}`)
   }
@@ -20,9 +20,9 @@ const selectParser = (format: SupportedFormat): any => {
 const selectConverter = (format: SupportedFormat): any => {
   switch (format) {
     case 'schemarb':
-      return schemaRbConverter
+      return schemaRbParserAndConverter.converter
     case 'postgres':
-      return postgresConverter
+      return postgresParserAndConverter.perserAndConverter.converter
     default:
       throw new Error(`Unsupported format: ${format}`)
   }
@@ -36,6 +36,6 @@ export const parse = (str: string, format: SupportedFormat): DBStructure => {
     const dbStructure = converter.convertToDBStructure(parsedSchema)
     return dbStructure
   } catch (_error) {
-    throw new Error('Failed to parse schema')
+    throw new Error(`Failed to parse schema:${_error}`)
   }
 }

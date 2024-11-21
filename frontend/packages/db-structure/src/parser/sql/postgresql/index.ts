@@ -1,4 +1,4 @@
-import { postgresConverter } from './converter'
-import { postgresParser } from './parser'
+import * as converter from './converter.js'
+import * as parser from './parser.js'
 
-export { postgresParser, postgresConverter }
+export { converter, parser }

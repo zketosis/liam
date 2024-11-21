@@ -1,11 +1,10 @@
 import type { RawStmt } from '@pgsql/types'
-import { parse } from 'pgsql-parser'
+import { parse as postgresParse } from 'pgsql-parser'
 
-export const postgresParser = {
-  parse(str: string): RawStmtWrapper[] {
-    return parse(str)
-  },
+export const parse = (str: string): RawStmtWrapper[] => {
+  return postgresParse(str)
 }
+
 export interface RawStmtWrapper {
   RawStmt: RawStmt
 }
