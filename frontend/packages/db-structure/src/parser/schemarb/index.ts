@@ -1,4 +1,8 @@
-import * as converter from './converter.js'
-import * as parser from './parser.js'
+import type { Processor } from '../types.js'
+import { convertToDBStructure } from './converter.js'
+import { parse } from './parser.js'
 
-export { converter, parser }
+export const processor: Processor = (str) => {
+  const parsed = parse(str)
+  return convertToDBStructure(parsed)
+}
