@@ -8,10 +8,6 @@ import type {
 import type { DBStructure, Table } from 'src/schema'
 import type { RawStmtWrapper } from './parser'
 
-export interface CreateStmtWrapper {
-  CreateStmt: CreateStmt
-}
-
 // Transform function for AST to DBStructure
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   const tables: Record<string, Table> = {}
