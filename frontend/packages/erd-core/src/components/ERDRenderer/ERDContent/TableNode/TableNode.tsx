@@ -16,9 +16,9 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
     <div className={styles.wrapper}>
       <div>{table.name}</div>
       <ul>
-        {table.fields.map((field) => (
-          <li key={field.name}>
-            <span>{field.name}</span>
+        {table.columns.map((column) => (
+          <li key={column.name}>
+            <span>{column.name}</span>
           </li>
         ))}
       </ul>

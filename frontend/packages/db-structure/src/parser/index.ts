@@ -11,7 +11,7 @@ const convertToDBStructure = (data: any): DBStructure => {
       acc[table.name] = {
         comment: null,
         // biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
-        fields: table.fields.map((field: any) => ({
+        columns: table.fields.map((field: any) => ({
           check: null,
           comment: null,
           default: 'default' in field ? field.default : null,
