@@ -1,13 +1,8 @@
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { Command } from 'commander'
-import { buildCommand, devCommand, previewCommand } from './commands/index.js'
+import { buildCommand } from './commands/index.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const root = path.resolve(__dirname, '../../..')
-const publicDir = path.join(process.cwd(), 'public')
-const outDir = path.join(process.cwd(), 'dist')
+const distDir = path.join(process.cwd(), 'dist')
 
 const program = new Command()
 
@@ -18,19 +13,8 @@ program.addCommand(erdCommand)
 
 erdCommand
   .command('build')
-  .description('Run Vite build')
+  .description('Build ERD html assets')
   .option('--input <path>', 'Path to the .sql file')
-  .action((options) => buildCommand(options.input, publicDir, root, outDir))
-
-erdCommand
-  .command('dev')
-  .description('Run Vite dev server')
-  .option('--input <path>', 'Path to the .sql file')
-  .action((options) => devCommand(options.input, publicDir, root))
-
-erdCommand
-  .command('preview')
-  .description('Preview the production build')
-  .action(() => previewCommand(publicDir, root, outDir))
+  .action((options) => buildCommand(options.input, distDir))
 
 export { program }
