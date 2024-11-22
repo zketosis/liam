@@ -1,5 +1,5 @@
 {
-  "name": "@packages/ui",
+  "name": "@liam/ui",
   "main": "src/index.ts",
   "scripts": {
     "dev": "conc -c auto pnpm:dev:*",
@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@packages/configs": "workspace:*",
+    "@liam/configs": "workspace:*",
     "@storybook/react": "^8.3.4",
     "@types/react": "^18",
     "typed-css-modules": "^0.9.1",

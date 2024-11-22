@@ -103,7 +103,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@packages/configs':
+      '@liam/configs':
         specifier: workspace:*
         version: link:../configs
       lodash-es:
@@ -134,12 +134,12 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
+      '@liam/configs':
+        specifier: workspace:*
+        version: link:../configs
       '@liam/db-structure':
         specifier: workspace:*
         version: link:../db-structure
-      '@packages/configs':
-        specifier: workspace:*
-        version: link:../configs
       '@types/react':
         specifier: ^18
         version: 18.3.12
@@ -159,7 +159,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@packages/configs':
+      '@liam/configs':
         specifier: workspace:*
         version: link:../configs
 
@@ -184,7 +184,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@packages/configs':
+      '@liam/configs':
         specifier: workspace:*
         version: link:../configs
       '@storybook/react':
