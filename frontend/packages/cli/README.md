@@ -37,32 +37,22 @@ To make it globally accessible as `liam`, use:
 pnpm link --global
 ```
 
-## Explanation of npm Scripts for Development
+## Development npm Scripts Explanation
 
-### Commands
+### ER Diagram App Development with Vite
 
-1. **Build**
+- **Dev Command**
    ```bash
-   pnpm run command:build
+   pnpm dev
    ```
-   - Internally, `./fixtures/input.schema.rb` is passed as the `build --input` argument.
-   - Runs Vite's build process.
+   This command currently performs the following actions:
+   - Builds the CLI.
+   - Executes the CLI with the command `erd build --input ./fixtures/input.schema.rb`.
+   - Copies the generated `schema.json` to the `public/` directory and launches the Vite development server.
 
-2. **Dev**
-   ```bash
-   pnpm run command:dev
-   ```
-   - Internally, `./fixtures/input.schema.rb` is passed as the `dev --input` argument.
-   - Starts the Vite development server.
+## Project File Structure
 
-3. **Preview**
-   ```bash
-   pnpm run command:preview
-   ```
-   - Previews the production build using Vite's built-in preview functionality.
-
-## File Structure
-
-- **bin/cli.ts**: The main CLI script.
-- **fixtures/input.schema.rb**: A sample `.sql` file for testing purposes.
-- **src/**: The web application that displays ER diagrams.
+- **`bin/cli.ts`**: This is the main CLI script.
+- **`src/cli/`**: Contains the source code for the CLI.
+- **`fixtures/input.schema.rb`**: A sample input file used for testing and development purposes.
+- **`src/{App,main}.tsx`**, **`index.html`**: These files constitute the web application's entry point, which displays ER diagrams.
