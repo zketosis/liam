@@ -30,7 +30,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       relationships: {},
     }
   }
-  // const statements = Array.isArray(ast.RawStmt) ? ast.RawStmt : [ast.RawStmt];
+
   for (const statement of ast) {
     if (statement?.RawStmt.stmt === undefined) continue
     const stmt = statement.RawStmt.stmt
