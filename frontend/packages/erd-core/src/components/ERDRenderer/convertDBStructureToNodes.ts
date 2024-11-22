@@ -6,7 +6,8 @@ export const convertDBStructureToNodes = (dbStructure: DBStructure): Node[] => {
   return tables.map((table, index) => {
     return {
       id: table.name,
-      data: { label: table.name },
+      type: 'table',
+      data: { table },
       // TODO: layout the nodes
       position: { x: index * 300, y: 50 },
     }
