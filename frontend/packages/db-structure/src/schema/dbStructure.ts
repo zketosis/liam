@@ -9,13 +9,13 @@ const relationshipNameSchema = v.string()
 const fieldSchema = v.object({
   name: fieldNameSchema,
   type: v.string(),
-  default: v.string(),
-  check: v.string(),
+  default: v.nullable(v.string()),
+  check: v.nullable(v.string()),
   primary: v.boolean(),
   unique: v.boolean(),
   notNull: v.boolean(),
   increment: v.boolean(),
-  comment: v.string(),
+  comment: v.nullable(v.string()),
 })
 
 const indexSchema = v.object({
