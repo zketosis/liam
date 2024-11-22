@@ -1,0 +1,7 @@
+---
+- - :permit
+  - MIT
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/MIT
+    :versions: []
+    :when: 2024-11-22 08:47:26.167960000 Z
