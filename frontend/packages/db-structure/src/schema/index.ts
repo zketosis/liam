@@ -18,6 +18,9 @@ const columnSchema = v.object({
   comment: v.nullable(v.string()),
 })
 
+const columnsSchema = v.record(columnNameSchema, columnSchema)
+export type Columns = v.InferOutput<typeof columnsSchema>
+
 const indexSchema = v.object({
   name: v.string(),
   unique: v.boolean(),
@@ -28,7 +31,7 @@ const tableSchema = v.object({
   name: tableNameSchema,
   x: v.number(),
   y: v.number(),
-  columns: v.array(columnSchema),
+  columns: columnsSchema,
   comment: v.nullable(v.string()),
   indices: v.array(indexSchema),
   color: v.nullable(v.string()),
