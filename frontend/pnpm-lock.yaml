@@ -87,18 +87,9 @@ importers:
       '@pgsql/types':
         specifier: ^15.0.2
         version: 15.0.2
-      lodash.isequal:
-        specifier: ^4.5.0
-        version: 4.5.0
-      lodash.sortby:
-        specifier: ^4.7.0
-        version: 4.7.0
       pgsql-parser:
         specifier: ^13.16.0
         version: 13.16.0(encoding@0.1.13)
-      pluralize:
-        specifier: ^8.0.0
-        version: 8.0.0
       valibot:
         specifier: ^1.0.0-beta.5
         version: 1.0.0-beta.5(typescript@5.6.2)
@@ -2419,12 +2410,6 @@ packages:
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
 
-  lodash.isequal@4.5.0:
-    resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-
-  lodash.sortby@4.7.0:
-    resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
-
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
@@ -2845,10 +2830,6 @@ packages:
   pluralize-esm@9.0.5:
     resolution: {integrity: sha512-Kb2dcpMsIutFw2hYrN0EhsAXOUJTd6FVMIxvNAkZCMQLVt9NGZqQczvGpYDxNWCZeCWLHUPxQIBudWzt1h7VVA==}
     engines: {node: '>=14.0.0'}
-
-  pluralize@8.0.0:
-    resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
-    engines: {node: '>=4'}
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -6077,10 +6058,6 @@ snapshots:
 
   lodash.get@4.4.2: {}
 
-  lodash.isequal@4.5.0: {}
-
-  lodash.sortby@4.7.0: {}
-
   lodash@4.17.21: {}
 
   log-symbols@3.0.0:
@@ -6553,8 +6530,6 @@ snapshots:
   picomatch@2.3.1: {}
 
   pluralize-esm@9.0.5: {}
-
-  pluralize@8.0.0: {}
 
   possible-typed-array-names@1.0.0: {}
 
