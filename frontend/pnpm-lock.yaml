@@ -96,9 +96,6 @@ importers:
 
   packages/db-structure:
     dependencies:
-      '@pgsql/types':
-        specifier: ^15.0.2
-        version: 15.0.2
       pgsql-parser:
         specifier: ^13.16.0
         version: 13.16.0(encoding@0.1.13)
@@ -112,6 +109,9 @@ importers:
       '@packages/configs':
         specifier: workspace:*
         version: link:../configs
+      '@pgsql/types':
+        specifier: ^15.0.2
+        version: 15.0.2
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
