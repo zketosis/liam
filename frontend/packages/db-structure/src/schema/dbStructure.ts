@@ -17,6 +17,7 @@ const fieldSchema = v.object({
   increment: v.boolean(),
   comment: v.nullable(v.string()),
 })
+export type Field = v.InferOutput<typeof fieldSchema>
 
 const indexSchema = v.object({
   name: v.string(),
@@ -48,6 +49,7 @@ const relationshipSchema = v.object({
 })
 
 const tablesSchema = v.record(tableNameSchema, tableSchema)
+export type Tables = v.InferOutput<typeof tablesSchema>
 
 const relationshipsSchema = v.record(relationshipNameSchema, relationshipSchema)
 
