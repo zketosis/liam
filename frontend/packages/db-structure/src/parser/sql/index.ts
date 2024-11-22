@@ -1,1 +1,1 @@
-export * as perserAndConverter from './postgresql/index.js'
+export { processor } from './postgresql/index.js'
