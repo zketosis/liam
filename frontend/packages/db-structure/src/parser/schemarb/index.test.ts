@@ -16,7 +16,7 @@ describe(processor, () => {
       })
 
     it('not null', () => {
-      const result = processor(`
+      const result = processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", null: false
         end
@@ -30,7 +30,7 @@ describe(processor, () => {
     })
 
     it('nullable', () => {
-      const result = processor(`
+      const result = processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", null: true
         end
@@ -44,7 +44,7 @@ describe(processor, () => {
     })
 
     it('defalt value', () => {
-      const result = processor(`
+      const result = processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", default: "new user", null: true
         end
