@@ -19,6 +19,8 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
         {Object.values(table.columns).map((column) => (
           <li key={column.name}>
             <span>{column.name}</span>
+            <span> </span>
+            <span>{column.type}</span>
           </li>
         ))}
       </ul>
