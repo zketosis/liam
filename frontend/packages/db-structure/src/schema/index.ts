@@ -1,34 +1,37 @@
 import * as v from 'valibot'
 
-const fieldNameSchema = v.string()
+const columnNameSchema = v.string()
 
 const tableNameSchema = v.string()
 
 const relationshipNameSchema = v.string()
 
-const fieldSchema = v.object({
-  name: fieldNameSchema,
+const columnSchema = v.object({
+  name: columnNameSchema,
   type: v.string(),
-  default: v.string(),
-  check: v.string(),
+  default: v.nullable(v.string()),
+  check: v.nullable(v.string()),
   primary: v.boolean(),
   unique: v.boolean(),
   notNull: v.boolean(),
   increment: v.boolean(),
-  comment: v.string(),
+  comment: v.nullable(v.string()),
 })
+
+const columnsSchema = v.record(columnNameSchema, columnSchema)
+export type Columns = v.InferOutput<typeof columnsSchema>
 
 const indexSchema = v.object({
   name: v.string(),
   unique: v.boolean(),
-  fields: v.array(v.string()),
+  columns: v.array(v.string()),
 })
 
 const tableSchema = v.object({
   name: tableNameSchema,
   x: v.number(),
   y: v.number(),
-  fields: v.array(fieldSchema),
+  columns: columnsSchema,
   comment: v.nullable(v.string()),
   indices: v.array(indexSchema),
   color: v.nullable(v.string()),
@@ -39,9 +42,9 @@ export type Table = v.InferOutput<typeof tableSchema>
 const relationshipSchema = v.object({
   name: relationshipNameSchema,
   startTableName: tableNameSchema,
-  startFieldName: fieldNameSchema,
+  startColumnName: columnNameSchema,
   endTableName: tableNameSchema,
-  endFieldName: fieldNameSchema,
+  endColumnName: columnNameSchema,
   cardinality: v.string(),
   updateConstraint: v.string(),
   deleteConstraint: v.string(),
