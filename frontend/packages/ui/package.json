@@ -1,5 +1,6 @@
 {
   "name": "@liam/ui",
+  "version": "0.0.0",
   "main": "src/index.ts",
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "2.1.2",

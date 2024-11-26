@@ -1,5 +1,6 @@
 {
   "name": "@liam/figma-to-css-variables",
+  "version": "0.0.0",
   "main": "bin/index.mjs",
   "dependencies": {
     "style-dictionary": "4.1.3"
