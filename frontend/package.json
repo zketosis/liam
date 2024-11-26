@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.1",
   "devDependencies": {
-    "@turbo/gen": "^2.1.2",
-    "syncpack": "^13.0.0",
-    "turbo": "^2.1.2"
+    "@turbo/gen": "2.1.2",
+    "syncpack": "13.0.0",
+    "turbo": "2.1.2"
   },
   "scripts": {
     "build": "turbo build",

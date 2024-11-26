@@ -16,6 +16,22 @@
     "packageManager"
   ],
   "sortPackages": true,
+  "semverGroups": [
+    {
+      "label": "Use exact version numbers",
+      "range": "",
+      "dependencyTypes": [
+        "prod",
+        "dev"
+      ],
+      "dependencies": [
+        "**"
+      ],
+      "packages": [
+        "**"
+      ]
+    }
+  ],
   "versionGroups": [
     {
       "label": "Use workspace protocol (workspace packages)",
