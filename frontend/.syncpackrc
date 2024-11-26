@@ -34,17 +34,8 @@
   ],
   "versionGroups": [
     {
-      "label": "Use workspace protocol (workspace packages)",
-      "dependencies": [
-        "@apps/*",
-        "@packages/*",
-        "@liam/*"
-      ],
-      "dependencyTypes": [
-        "prod",
-        "dev"
-      ],
-      "pinVersion": "workspace:*"
+      "dependencies": ["$LOCAL"],
+      "isIgnored": true
     }
   ]
 }
