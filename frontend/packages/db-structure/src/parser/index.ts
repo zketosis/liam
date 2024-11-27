@@ -28,9 +28,6 @@ const convertToDBStructure = (data: any): DBStructure => {
         columns,
         indices: [],
         name: table.name,
-        x: 0,
-        y: 0,
-        color: null,
       }
       return acc
     }, {}),

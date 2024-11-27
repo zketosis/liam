@@ -5,7 +5,6 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
   "relationships": {},
   "tables": {
     "users": {
-      "color": null,
       "columns": {
         "age": {
           "check": null,
@@ -88,8 +87,6 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
       "comment": null,
       "indices": [],
       "name": "users",
-      "x": 0,
-      "y": 0,
     },
   },
 }
