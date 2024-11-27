@@ -29,12 +29,9 @@ const indexSchema = v.object({
 
 const tableSchema = v.object({
   name: tableNameSchema,
-  x: v.number(),
-  y: v.number(),
   columns: columnsSchema,
   comment: v.nullable(v.string()),
   indices: v.array(indexSchema),
-  color: v.nullable(v.string()),
 })
 
 export type Table = v.InferOutput<typeof tableSchema>
