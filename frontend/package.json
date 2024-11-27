@@ -5,7 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "conc -c auto pnpm:lint:*",
+    "lint": "pnpm run '/^lint:.*/'",
     "lint:turbo": "turbo lint",
     "lint:packageVersion": "syncpack list-mismatches",
     "fmt:turbo": "turbo fmt",
