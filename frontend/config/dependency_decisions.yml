@@ -29,3 +29,9 @@
     :why: Compatible with Apache-2.0 license. See https://opensource.org/license/BSD-2-Clause
     :versions: []
     :when: 2024-11-28 07:38:25.201366000 Z
+- - :permit
+  - BSD 3-Clause
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/BSD-3-Clause
+    :versions: []
+    :when: 2024-11-28 07:39:06.925601000 Z
