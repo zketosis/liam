@@ -13,7 +13,7 @@
     "fmt:turbo": "turbo fmt",
     "gen:turbo": "turbo gen",
     "lint": "pnpm run '/^lint:.*/'",
-    "lint:packageVersion": "syncpack list-mismatches",
+    "lint:syncpack": "syncpack lint",
     "lint:turbo": "turbo lint",
     "test:turbo": "turbo test"
   },
