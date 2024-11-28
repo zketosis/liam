@@ -28,5 +28,5 @@ If no specific argument is provided, the script defaults to running all steps in
 To run the script, use the following command:
 
 ```sh
-FIGMA_FILE_KEY=FnK... FIGMA_ACCESS_TOKEN=figd_xxx pnpm --filter @packages/figma-to-css-variables sync --output '../../apps/service-site/src/styles' --filter-modes 'Dark,Mode 1'
+FIGMA_FILE_KEY=FnK... FIGMA_ACCESS_TOKEN=figd_xxx pnpm --filter @liam/figma-to-css-variables sync --output '../../apps/service-site/src/styles' --filter-modes 'Dark,Mode 1'
 ```

@@ -1,5 +1,5 @@
 import type { Table } from 'src/schema'
-import { aDBStructure, aField, aTable } from 'src/schema/factories'
+import { aColumn, aDBStructure, aTable } from 'src/schema/factories'
 import { describe, expect, it } from 'vitest'
 import { processor } from '.'
 
@@ -10,7 +10,10 @@ describe(processor, () => {
         tables: {
           users: aTable({
             name: 'users',
-            fields: [aField({ name: 'id' }), ...(override?.fields ?? [])],
+            columns: {
+              id: aColumn(),
+              ...override?.columns,
+            },
           }),
         },
       })
@@ -23,7 +26,14 @@ describe(processor, () => {
       `)
 
       const expected = userTable({
-        fields: [aField({ name: 'name', type: 'string', notNull: true })],
+        columns: {
+          id: aColumn(),
+          name: aColumn({
+            name: 'name',
+            type: 'string',
+            notNull: true,
+          }),
+        },
       })
 
       expect(result).toEqual(expected)
@@ -37,7 +47,14 @@ describe(processor, () => {
       `)
 
       const expected = userTable({
-        fields: [aField({ name: 'name', type: 'string', notNull: false })],
+        columns: {
+          id: aColumn(),
+          name: aColumn({
+            name: 'name',
+            type: 'string',
+            notNull: false,
+          }),
+        },
       })
 
       expect(result).toEqual(expected)
@@ -51,14 +68,15 @@ describe(processor, () => {
       `)
 
       const expected = userTable({
-        fields: [
-          aField({
+        columns: {
+          id: aColumn(),
+          name: aColumn({
             name: 'name',
             type: 'string',
             notNull: false,
             default: 'new user',
           }),
-        ],
+        },
       })
 
       expect(result).toEqual(expected)

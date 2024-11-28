@@ -1,20 +1,20 @@
 {
-  "name": "@packages/ui",
+  "name": "@liam/ui",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "conc -c auto pnpm:dev:*",
+    "dev": "pnpm run '/^dev:.*/'",
     "dev:css": "tcm src --watch",
-    "gen": "conc -c auto pnpm:gen:*",
+    "gen": "pnpm run '/^gen:.*/'",
     "gen:css": "tcm src",
-    "lint": "conc -c auto pnpm:lint:*",
+    "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "fmt": "conc -c auto pnpm:fmt:*",
+    "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe ."
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@packages/configs": "workspace:*",
+    "@liam/configs": "workspace:*",
     "@storybook/react": "^8.3.4",
     "@types/react": "^18",
     "typed-css-modules": "^0.9.1",

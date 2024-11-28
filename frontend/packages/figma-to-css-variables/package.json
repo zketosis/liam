@@ -1,16 +1,16 @@
 {
-  "name": "@packages/figma-to-css-variables",
+  "name": "@liam/figma-to-css-variables",
   "main": "bin/index.mjs",
   "scripts": {
     "sync": "node bin/index.mjs",
-    "lint": "conc -c auto pnpm:lint:*",
+    "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
-    "fmt": "conc -c auto pnpm:fmt:*",
+    "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe ."
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@packages/configs": "workspace:*"
+    "@liam/configs": "workspace:*"
   },
   "dependencies": {
     "style-dictionary": "^4.1.3"

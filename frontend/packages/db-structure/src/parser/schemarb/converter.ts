@@ -1,14 +1,13 @@
-import type { DBStructure, Table } from 'src/schema'
+import type { Columns, DBStructure, Table } from 'src/schema'
 
 // biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
 export const convertToDBStructure = (data: any): DBStructure => {
   return {
     // biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
     tables: data.tables.reduce((acc: Record<string, Table>, table: any) => {
-      acc[table.name] = {
-        comment: null,
-        // biome-ignore lint/suspicious/noExplicitAny: TODO: Generate types with pegjs
-        fields: table.fields.map((field: any) => ({
+      const columns: Columns = {}
+      for (const field of table.fields) {
+        columns[field.name] = {
           check: null,
           comment: null,
           default: 'default' in field ? field.default : null,
@@ -18,12 +17,14 @@ export const convertToDBStructure = (data: any): DBStructure => {
           primary: false,
           type: field.type.type_name,
           unique: false,
-        })),
+        }
+      }
+
+      acc[table.name] = {
+        comment: null,
+        columns,
         indices: [],
         name: table.name,
-        x: 0,
-        y: 0,
-        color: null,
       }
       return acc
     }, {}),

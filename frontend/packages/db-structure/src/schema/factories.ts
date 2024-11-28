@@ -1,6 +1,6 @@
-import type { DBStructure, Field, Table, Tables } from './dbStructure'
+import type { Column, DBStructure, Table, Tables } from './dbStructure'
 
-export const aField = (override?: Partial<Field>): Field => ({
+export const aColumn = (override?: Partial<Column>): Column => ({
   name: 'id',
   type: 'varchar',
   default: null,
@@ -15,13 +15,13 @@ export const aField = (override?: Partial<Field>): Field => ({
 
 export const aTable = (override?: Partial<Table>): Table => ({
   name: 'users',
-  x: 0,
-  y: 0,
   comment: null,
-  color: null,
   ...override,
   indices: [],
-  fields: override?.fields ?? [aField()],
+  columns: {
+    id: aColumn(),
+    ...override?.columns,
+  },
 })
 
 const tables = (override?: Tables): Tables => {
