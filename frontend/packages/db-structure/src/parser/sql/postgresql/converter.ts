@@ -1,10 +1,4 @@
-import type {
-  ColumnDef,
-  Constraint,
-  CreateStmt,
-  Node,
-  String as PgString,
-} from '@pgsql/types'
+import type { ColumnDef, Constraint, CreateStmt, Node } from '@pgsql/types'
 import type { Columns, DBStructure, Table } from 'src/schema'
 import type { RawStmtWrapper } from './parser'
 
@@ -12,8 +6,18 @@ import type { RawStmtWrapper } from './parser'
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   const tables: Record<string, Table> = {}
 
+  interface PgString {
+    sval: string
+    str: string
+  }
+
   function isStringNode(node: Node): node is { String: PgString } {
-    return (node as { String: { str: string } }).String !== undefined
+    return (
+      (node as { String: { sval: string; str: string } }).String !==
+        undefined &&
+      (node as { String: { sval: string; str: string } }).String.str !==
+        'pg_catalog'
+    )
   }
 
   function isConstraintNode(node: Node): node is { Constraint: Constraint } {
@@ -40,21 +44,18 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
 
       const tableName = createStmt.relation.relname
       const columns: Columns = {}
-      createStmt.tableElts
-        .filter(
-          (elt: Node): elt is { ColumnDef: ColumnDef } => 'ColumnDef' in elt,
-        )
-        .map((elt) => {
+      for (const elt of createStmt.tableElts) {
+        if ('ColumnDef' in elt) {
           const colDef = elt.ColumnDef
-          return {
+          columns[colDef.colname || ''] = {
             name: colDef.colname || '',
             type:
               colDef.typeName?.names
                 ?.filter(isStringNode)
-                .map((n) => n.String.sval)
-                .join(' ') || '',
-            default: '', // TODO
-            check: '', // TODO
+                .map((n) => n.String.str)
+                .join('') || '',
+            default: null, // TODO
+            check: null, // TODO
             primary:
               colDef.constraints
                 ?.filter(isConstraintNode)
@@ -77,9 +78,10 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
               colDef.typeName?.names
                 ?.filter(isStringNode)
                 .some((n) => n.String.sval === 'serial') || false,
-            comment: '', // TODO
+            comment: null, // TODO
           }
-        })
+        }
+      }
 
       if (tableName) {
         tables[tableName] = {
