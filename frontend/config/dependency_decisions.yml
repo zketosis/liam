@@ -17,3 +17,9 @@
     :why: Compatible with Apache-2.0 license. See https://opensource.org/license/isc-license-txt
     :versions: []
     :when: 2024-11-22 08:51:11.110071000 Z
+- - :permit
+  - BSD 0-Clause
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/0BSD
+    :versions: []
+    :when: 2024-11-28 07:37:37.471617000 Z
