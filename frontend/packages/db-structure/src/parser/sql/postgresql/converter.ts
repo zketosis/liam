@@ -15,10 +15,11 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
 
   function isStringNode(node: Node): node is { String: PgString } {
     return (
-      (node as { String: { sval: string; str: string } }).String !==
-        undefined &&
-      (node as { String: { sval: string; str: string } }).String.str !==
-        'pg_catalog'
+      'String' in node &&
+      typeof node.String === 'object' &&
+      node.String !== null &&
+      'str' in node.String &&
+      node.String.str !== 'pg_catalog'
     )
   }
 
