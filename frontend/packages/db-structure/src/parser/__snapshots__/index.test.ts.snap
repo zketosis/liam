@@ -1,5 +1,19 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`parse > should parse postgresql to JSON correctly 1`] = `
+{
+  "relationships": {},
+  "tables": {
+    "users": {
+      "columns": {},
+      "comment": null,
+      "indices": [],
+      "name": "users",
+    },
+  },
+}
+`;
+
 exports[`parse > should parse schema.rb to JSON correctly 1`] = `
 {
   "relationships": {},
