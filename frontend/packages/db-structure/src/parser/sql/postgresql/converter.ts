@@ -5,7 +5,7 @@ import type {
   Node,
   String as PgString,
 } from '@pgsql/types'
-import type { DBStructure, Table } from 'src/schema'
+import type { Columns, DBStructure, Table } from 'src/schema'
 import type { RawStmtWrapper } from './parser'
 
 // Transform function for AST to DBStructure
@@ -39,7 +39,8 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       if (!createStmt || !createStmt.relation || !createStmt.tableElts) continue
 
       const tableName = createStmt.relation.relname
-      const fields = createStmt.tableElts
+      const columns: Columns = {}
+      createStmt.tableElts
         .filter(
           (elt: Node): elt is { ColumnDef: ColumnDef } => 'ColumnDef' in elt,
         )
@@ -83,12 +84,9 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       if (tableName) {
         tables[tableName] = {
           name: tableName,
-          x: 0, // TODO: Default x position
-          y: 0, // TODO: Default y position
-          fields,
+          columns,
           comment: null, // TODO
           indices: [], // TODO
-          color: null, // TODO: Default color
         }
       }
     }

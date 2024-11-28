@@ -5,7 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "conc -c auto pnpm:lint:*",
+    "lint": "pnpm run '/^lint:.*/'",
     "lint:turbo": "turbo lint",
     "lint:packageVersion": "syncpack list-mismatches",
     "fmt:turbo": "turbo fmt",
@@ -14,9 +14,8 @@
   },
   "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b",
   "devDependencies": {
-    "syncpack": "^13.0.0",
-    "turbo": "^2.1.2",
     "@turbo/gen": "^2.1.2",
-    "concurrently": "^9.0.1"
+    "syncpack": "^13.0.0",
+    "turbo": "^2.1.2"
   }
 }

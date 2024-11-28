@@ -4,14 +4,14 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "conc -c auto pnpm:dev:*",
+    "dev": "pnpm run '/^dev:.*/'",
     "dev:css": "tcm src --watch",
-    "gen": "conc -c auto pnpm:gen:*",
+    "gen": "pnpm run '/^gen:.*/'",
     "gen:css": "tcm src",
-    "lint": "conc -c auto pnpm:lint:*",
+    "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "fmt": "conc -c auto pnpm:fmt:*",
+    "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe ."
   },
   "dependencies": {
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@liam/db-structure": "workspace:*",
-    "@packages/configs": "workspace:*",
+    "@liam/configs": "workspace:*",
     "@types/react": "^18",
     "typed-css-modules": "^0.9.1",
     "typescript": "^5"
