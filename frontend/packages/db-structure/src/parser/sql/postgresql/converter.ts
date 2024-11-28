@@ -1,4 +1,4 @@
-import type { ColumnDef, Constraint, CreateStmt, Node } from '@pgsql/types'
+import type { Constraint, CreateStmt, Node } from '@pgsql/types'
 import type { Columns, DBStructure, Table } from 'src/schema'
 import type { RawStmtWrapper } from './parser'
 
