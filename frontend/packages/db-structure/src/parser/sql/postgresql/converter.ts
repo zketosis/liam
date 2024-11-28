@@ -6,6 +6,8 @@ import type { RawStmtWrapper } from './parser'
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   const tables: Record<string, Table> = {}
 
+  // Creating a new variable str to hold the returned string value,
+  // as it's not a property of the String type.
   interface PgString {
     sval: string
     str: string
