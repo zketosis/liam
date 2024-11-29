@@ -69,14 +69,6 @@
     :versions:
     - 0.0.1
     :when: 2024-11-29 03:35:11.884802000 Z
-- - :approve
-  - libpg-query
-  - :who: OSPO @masutaka
-    :why: Its license is MIT, but it is mis-detected as a "LICENSE IN LICENSE" license.
-      See https://github.com/launchql/libpg-query-node/pull/85
-    :versions:
-    - 13.3.2
-    :when: 2024-11-29 04:34:33.688831000 Z
 - - :permit
   - LGPL-3.0-or-later
   - :who: OSPO @masutaka
