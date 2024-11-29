@@ -89,3 +89,11 @@
     :why: Compatible with Apache-2.0 license. See https://creativecommons.org/publicdomain/zero/1.0/
     :versions: []
     :when: 2024-11-29 08:56:44.903744000 Z
+- - :approve
+  - spawndamnit
+  - :who: OSPO @masutaka
+    :why: Its license is MIT, but it is mis-detected as a "SEE LICENSE IN LICENSE"
+      license. See https://github.com/jamiebuilds/spawndamnit/pull/11
+    :versions:
+    - 3.0.1
+    :when: 2024-11-29 09:06:33.106701000 Z
