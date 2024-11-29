@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "@liam/docs",
   "private": true,
   "version": "0.0.0",
   "dependencies": {
@@ -11,6 +11,7 @@
     "react-dom": "18"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.3",
     "@types/mdx": "2.0.13",
     "@types/node": "22.9.0",
     "@types/react": "18",
@@ -22,6 +23,12 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt:biome": "biome check --write --unsafe .",
+    "lint": "pnpm run '/^lint:.*/'",
+    "lint:biome": "biome check .",
+    "lint:next": "next lint",
+    "lint:tsc": "tsc --noEmit",
     "postinstall": "fumadocs-mdx",
     "start": "next start"
   }
