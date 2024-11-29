@@ -1,58 +1,71 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`parse > should parse schema.rb to JSON correctly 1`] = `
+exports[`parse > should parse postgresql to JSON correctly 1`] = `
 {
   "relationships": {},
   "tables": {
     "users": {
-      "color": null,
-      "comment": null,
-      "fields": [
-        {
-          "check": null,
-          "comment": null,
-          "default": null,
-          "increment": false,
-          "name": "id",
-          "notNull": false,
-          "primary": false,
-          "type": "varchar",
-          "unique": false,
-        },
-        {
-          "check": null,
-          "comment": null,
-          "default": null,
-          "increment": false,
-          "name": "company_id",
-          "notNull": true,
-          "primary": false,
-          "type": "uuid",
-          "unique": false,
-        },
-        {
+      "columns": {
+        "created_at": {
           "check": null,
           "comment": null,
           "default": null,
           "increment": false,
           "name": "created_at",
-          "notNull": true,
-          "primary": false,
-          "type": "datetime",
-          "unique": false,
-        },
-        {
-          "check": null,
-          "comment": null,
-          "default": "new user",
-          "increment": false,
-          "name": "name",
           "notNull": false,
           "primary": false,
-          "type": "string",
+          "type": "timestamp",
           "unique": false,
         },
-        {
+        "email": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "email",
+          "notNull": true,
+          "primary": false,
+          "type": "varchar",
+          "unique": true,
+        },
+        "id": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "id",
+          "notNull": true,
+          "primary": true,
+          "type": "serial",
+          "unique": false,
+        },
+        "username": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "username",
+          "notNull": true,
+          "primary": false,
+          "type": "varchar",
+          "unique": true,
+        },
+      },
+      "comment": null,
+      "indices": [],
+      "name": "users",
+    },
+  },
+}
+`;
+
+exports[`parse > should parse schema.rb to JSON correctly 1`] = `
+{
+  "relationships": {},
+  "tables": {
+    "users": {
+      "columns": {
+        "age": {
           "check": null,
           "comment": null,
           "default": 30,
@@ -63,7 +76,40 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
           "type": "string",
           "unique": false,
         },
-        {
+        "company_id": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "company_id",
+          "notNull": true,
+          "primary": false,
+          "type": "uuid",
+          "unique": false,
+        },
+        "created_at": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "created_at",
+          "notNull": true,
+          "primary": false,
+          "type": "datetime",
+          "unique": false,
+        },
+        "id": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "id",
+          "notNull": false,
+          "primary": false,
+          "type": "varchar",
+          "unique": false,
+        },
+        "is_deleted": {
           "check": null,
           "comment": null,
           "default": false,
@@ -74,7 +120,18 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
           "type": "string",
           "unique": false,
         },
-        {
+        "name": {
+          "check": null,
+          "comment": null,
+          "default": "new user",
+          "increment": false,
+          "name": "name",
+          "notNull": false,
+          "primary": false,
+          "type": "string",
+          "unique": false,
+        },
+        "user_name": {
           "check": null,
           "comment": null,
           "default": null,
@@ -85,11 +142,10 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
           "type": "string",
           "unique": false,
         },
-      ],
+      },
+      "comment": null,
       "indices": [],
       "name": "users",
-      "x": 0,
-      "y": 0,
     },
   },
 }

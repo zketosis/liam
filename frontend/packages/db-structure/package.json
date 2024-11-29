@@ -1,29 +1,31 @@
 {
   "name": "@liam/db-structure",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
   "version": "0.0.1",
-  "scripts": {
-    "build": "tsc",
-    "lint": "conc -c auto pnpm:lint:*",
-    "lint:biome": "biome check .",
-    "lint:tsc": "tsc --noEmit",
-    "fmt": "conc -c auto pnpm:fmt:*",
-    "fmt:biome": "biome check --write --unsafe .",
-    "test": "vitest --watch=false",
-    "gen:parser": "./scripts/generateParser.sh"
-  },
+  "type": "module",
+  "main": "dist/index.js",
   "dependencies": {
+    "pgsql-parser": "13.16.0",
     "valibot": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@packages/configs": "workspace:*",
-    "lodash-es": "^4.17.21",
-    "peggy": "^4.1.1",
-    "pluralize-esm": "^9.0.5",
-    "typescript": "^5",
-    "vitest": "^2.1.4"
-  }
+    "@liam/configs": "workspace:*",
+    "@pgsql/types": "15.0.2",
+    "lodash-es": "4.17.21",
+    "peggy": "4.1.1",
+    "pluralize-esm": "9.0.5",
+    "typescript": "5",
+    "vitest": "2.1.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt:biome": "biome check --write --unsafe .",
+    "gen:parser": "./scripts/generateParser.sh",
+    "lint": "pnpm run '/^lint:.*/'",
+    "lint:biome": "biome check .",
+    "lint:tsc": "tsc --noEmit",
+    "test": "vitest --watch=false"
+  },
+  "types": "dist/index.d.ts"
 }
