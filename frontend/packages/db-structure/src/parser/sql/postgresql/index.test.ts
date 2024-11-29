@@ -16,6 +16,7 @@ describe(processor, () => {
                 type: 'serial',
                 notNull: true,
                 primary: true,
+                increment: true,
               }),
               ...override?.columns,
             },
@@ -23,8 +24,8 @@ describe(processor, () => {
         },
       })
 
-    it('not null', () => {
-      const result = processor(/* PostgreSQL */ `
+    it('not null', async () => {
+      const result = await processor(/* PostgreSQL */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL
@@ -44,8 +45,8 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('nullable', () => {
-      const result = processor(/* PostgreSQL */ `
+    it('nullable', async () => {
+      const result = await processor(/* PostgreSQL */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
