@@ -77,3 +77,9 @@
     :versions:
     - 13.3.2
     :when: 2024-11-29 04:34:33.688831000 Z
+- - :permit
+  - LGPL-3.0-or-later
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/LGPL-3.0
+    :versions: []
+    :when: 2024-11-29 08:54:34.886267000 Z
