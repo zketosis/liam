@@ -1,11 +1,69 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`parse > should parse postgresql to JSON correctly 1`] = `
+{
+  "relationships": {},
+  "tables": {
+    "users": {
+      "columns": {
+        "created_at": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "created_at",
+          "notNull": false,
+          "primary": false,
+          "type": "timestamp",
+          "unique": false,
+        },
+        "email": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "email",
+          "notNull": true,
+          "primary": false,
+          "type": "varchar",
+          "unique": true,
+        },
+        "id": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "id",
+          "notNull": true,
+          "primary": true,
+          "type": "serial",
+          "unique": false,
+        },
+        "username": {
+          "check": null,
+          "comment": null,
+          "default": null,
+          "increment": false,
+          "name": "username",
+          "notNull": true,
+          "primary": false,
+          "type": "varchar",
+          "unique": true,
+        },
+      },
+      "comment": null,
+      "indices": [],
+      "name": "users",
+    },
+  },
+}
+`;
+
 exports[`parse > should parse schema.rb to JSON correctly 1`] = `
 {
   "relationships": {},
   "tables": {
     "users": {
-      "color": null,
       "columns": {
         "age": {
           "check": null,
@@ -88,8 +146,6 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
       "comment": null,
       "indices": [],
       "name": "users",
-      "x": 0,
-      "y": 0,
     },
   },
 }
