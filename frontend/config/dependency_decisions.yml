@@ -61,3 +61,11 @@
     :versions:
     - 2.0.1
     :when: 2024-11-28 08:54:56.971593000 Z
+- - :approve
+  - jsonify
+  - :who: OSPO @masutaka
+    :why: Public Domain is compatible with Apache-2.0. But it is not a software license.
+      See https://github.com/liam-hq/liam/issues/111
+    :versions:
+    - 0.0.1
+    :when: 2024-11-29 03:35:11.884802000 Z
