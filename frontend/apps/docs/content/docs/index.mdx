@@ -1,13 +1,42 @@
 ---
-title: Hello World
-description: Your first document
+title: Getting Started
+description: Getting Started with Liam ERD
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+import { Package, Globe } from "lucide-react";
 
-## What is Next?
+Welcome to **Liam ERD**, the open-source tool designed to simplify database design and visualization. Whether you're working on a public open-source project or managing private repositories, Liam ERD makes it easy to generate and share **beautiful, interactive ER diagrams**.
+
+## Why Choose Liam ERD?
+
+Liam ERD stands out with its:
+
+- **Open-Source**: Fully open for customization and contributions.
+- **Modern, Beautiful UI**: Enjoy a clean, interactive experience with features like pan, zoom, and Cmd+K search.
+- **Effortless Setup**: Get started faster than ever with zero configuration required.
+- **Scalability**: Handles large-scale database schemas, like 100-table structures, with ease.
+- **PostgreSQL and Popular ORMs Support**: Works seamlessly with PostgreSQL, Prisma, and Ruby on Rails.
+
+## How to Get Started
+
+Choose one of the following workflows depending on your needs:
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
+  <Card icon={<Globe />} title="URL-Based access" href="/docs/url-based-access">
+    Generate ER diagrams from your schema URL without any configuration. Ideal
+    for public repositories!
+  </Card>
+  <Card icon={<Package />} title="Static build" href="/docs/static-build/getting-started">
+    Use this method to secure your diagrams in private repositories or host them
+    within your internal environment.
+  </Card>
 </Cards>
+
+## Features in Action
+
+Liam ERD is built to streamline your workflow:
+
+- **Interactive UI**: Filter tables, explore relationships, and focus on what matters.
+- **Cmd+K Search**: Quickly locate specific tables or columns.
+- **Scalable Layouts**: Optimized for large databases with 100+ tables.
+- **No Maintenance Overhead**: Automatically update diagrams with your schema changes.
