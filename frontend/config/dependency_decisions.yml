@@ -97,3 +97,9 @@
     :versions:
     - 3.0.1
     :when: 2024-11-29 09:06:33.106701000 Z
+- - :permit
+  - Mozilla Public License 2.0
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/mpl-2-0
+    :versions: []
+    :when: 2024-11-29 09:12:22.146432000 Z
