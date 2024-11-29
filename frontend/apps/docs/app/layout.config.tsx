@@ -13,12 +13,5 @@ export const baseOptions: BaseLayoutProps = {
     title: <LiamLogo />,
     url: '/docs',
   },
-  links: [
-    {
-      text: 'Documentation',
-      url: '/docs',
-      active: 'nested-url',
-    },
-  ],
   githubUrl: 'https://github.com/liam-hq/liam',
 }
