@@ -1,4 +1,9 @@
-import type { Constraint, CreateStmt, Node } from '@pgsql/types'
+import type {
+  Constraint,
+  CreateStmt,
+  Node,
+  String as PgString,
+} from '@pgsql/types'
 import type { Columns, DBStructure, Table } from 'src/schema'
 import type { RawStmtWrapper } from './parser'
 
@@ -6,20 +11,13 @@ import type { RawStmtWrapper } from './parser'
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   const tables: Record<string, Table> = {}
 
-  // Creating a new variable str to hold the returned string value,
-  // as it's not a property of the String type.
-  interface PgString {
-    sval: string
-    str: string
-  }
-
   function isStringNode(node: Node): node is { String: PgString } {
     return (
       'String' in node &&
       typeof node.String === 'object' &&
       node.String !== null &&
-      'str' in node.String &&
-      node.String.str !== 'pg_catalog'
+      'sval' in node.String &&
+      node.String.sval !== 'pg_catalog'
     )
   }
 
@@ -38,9 +36,11 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     }
   }
 
-  for (const statement of ast) {
-    if (statement?.RawStmt.stmt === undefined) continue
-    const stmt = statement.RawStmt.stmt
+  // pg-query-emscripten does not have types, so we need to define them ourselves
+  // @ts-expect-error
+  for (const statement of ast.parse_tree.stmts) {
+    if (statement?.stmt === undefined) continue
+    const stmt = statement.stmt
     if (isCreateStmt(stmt)) {
       const createStmt = stmt.CreateStmt
       if (!createStmt || !createStmt.relation || !createStmt.tableElts) continue
@@ -55,7 +55,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
             type:
               colDef.typeName?.names
                 ?.filter(isStringNode)
-                .map((n) => n.String.str)
+                .map((n) => n.String.sval)
                 .join('') || '',
             default: null, // TODO
             check: null, // TODO

@@ -1,0 +1,38 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+env:
+  working-directory: frontend
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  id-token: write
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  create_release_pull_request_or_publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            ${{ env.working-directory }}
+      - uses: ./.github/actions/pnpm-setup
+        with:
+          working-directory: ${{ env.working-directory }}
+      - name: Create Release Pull Request or Publish to npm
+        uses: changesets/action@v1.4.9
+        with:
+          cwd: ${{ env.working-directory }}
+          publish: pnpm changeset publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

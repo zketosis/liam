@@ -10,8 +10,7 @@ beforeAll(async () => {
 }, 20000 /* 20 seconds for setup */)
 
 describe('CLI Smoke Test', () => {
-  // Skipping this test due to failing caused by changes in PR#90
-  it.skip('should run the CLI command without errors', async () => {
+  it('should run the CLI command without errors', async () => {
     try {
       const { stdout, stderr } = await execAsync('npx --no-install . help')
       expect(stderr).toBe('')
@@ -35,8 +34,7 @@ describe('CLI Smoke Test', () => {
     }
   })
 
-  // Skipping this test due to failing caused by changes in PR#90
-  it.skip('should run the CLI command without errors', async () => {
+  it('should run the CLI command without errors', async () => {
     await execAsync('rm -rf ./dist')
     try {
       const { stdout, stderr } = await execAsync(
