@@ -16,6 +16,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       'String' in node &&
       typeof node.String === 'object' &&
       node.String !== null &&
+      'sval' in node.String &&
       node.String.sval !== 'pg_catalog'
     )
   }
