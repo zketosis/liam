@@ -1,4 +1,5 @@
 import type { RawStmt } from '@pgsql/types'
+// pg-query-emscripten does not have types, so we need to define them ourselves
 // @ts-expect-error
 import Module from 'pg-query-emscripten'
 

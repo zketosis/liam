@@ -36,6 +36,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     }
   }
 
+  // pg-query-emscripten does not have types, so we need to define them ourselves
   // @ts-expect-error
   for (const statement of ast.parse_tree.stmts) {
     if (statement?.stmt === undefined) continue
