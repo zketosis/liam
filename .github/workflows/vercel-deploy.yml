@@ -2,13 +2,8 @@ name: Vercel Deployment
 on:
   push:
     branches:
-      - pause
-# TODO: Change the settings when development starts.
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
+      - main
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,7 +29,7 @@ jobs:
           filters: |
             src:
               - './.github/workflows/vercel-deploy.yml'
-              - './frontend/**'
+              - './frontend/apps/docs/**'
 
   deploy:
     name: Deploy
@@ -45,10 +40,8 @@ jobs:
     strategy:
       matrix:
         apps:
-          - name: service-site
-            vercel-project-id-key: VERCEL_PROJECT_ID
-          - name: service-site-storybook
-            vercel-project-id-key: VERCEL_PROJECT_ID_STORYBOOK
+          - name: docs
+            vercel-project-id-key: VERCEL_PROJECT_ID_DOCS
     environment:
       name: "${{ needs.setup-deployment.outputs.environment }} - ${{ matrix.apps.name }}"
       url: ${{ steps.deployment.outputs.deployment-url }}
