@@ -1,15 +1,12 @@
 import '@xyflow/react/dist/style.css'
-import type { DBStructure } from '@liam-hq/db-structure'
 import { ReactFlowProvider } from '@xyflow/react'
 import type { FC } from 'react'
+import { useDBStructureStore } from '../../stores'
 import { ERDContent } from './ERDContent'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
-interface ERDRendererProps {
-  dbStructure: DBStructure
-}
-
-export const ERDRenderer: FC<ERDRendererProps> = ({ dbStructure }) => {
+export const ERDRenderer: FC = () => {
+  const dbStructure = useDBStructureStore()
   const nodes = convertDBStructureToNodes(dbStructure)
   return (
     <ReactFlowProvider>
