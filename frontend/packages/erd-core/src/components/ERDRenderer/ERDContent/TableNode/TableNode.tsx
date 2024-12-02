@@ -1,5 +1,5 @@
-import type { Table } from '@liam/db-structure'
-import { KeyRound } from '@liam/ui'
+import type { Table } from '@liam-hq/db-structure'
+import { KeyRound } from '@liam-hq/ui'
 import type { Node, NodeProps } from '@xyflow/react'
 import type { FC } from 'react'
 import styles from './TableNode.module.css'

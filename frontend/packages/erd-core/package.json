@@ -1,5 +1,5 @@
 {
-  "name": "@liam/erd-core",
+  "name": "@liam-hq/erd-core",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -10,9 +10,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam/configs": "workspace:*",
-    "@liam/db-structure": "workspace:*",
-    "@liam/ui": "workspace:*",
+    "@liam-hq/configs": "workspace:*",
+    "@liam-hq/db-structure": "workspace:*",
+    "@liam-hq/ui": "workspace:*",
     "@types/react": "18",
     "typed-css-modules": "0.9.1",
     "typescript": "5"

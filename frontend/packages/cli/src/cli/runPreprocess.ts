@@ -1,6 +1,6 @@
 import fs, { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { parse } from '@liam/db-structure'
+import { parse } from '@liam-hq/db-structure'
 
 export function runPreprocess(inputPath: string, outputDir: string) {
   if (!fs.existsSync(inputPath)) {

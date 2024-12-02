@@ -1,5 +1,5 @@
 {
-  "name": "@liam/cli",
+  "name": "@liam-hq/cli",
   "license": "Apache-2.0",
   "private": true,
   "version": "0.0.0",
@@ -15,8 +15,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam/db-structure": "workspace:*",
-    "@liam/erd-core": "workspace:*",
+    "@liam-hq/db-structure": "workspace:*",
+    "@liam-hq/erd-core": "workspace:*",
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-typescript": "12.1.1",
     "@types/node": "22.9.0",
