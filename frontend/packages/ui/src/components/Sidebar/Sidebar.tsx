@@ -412,6 +412,12 @@ const SidebarMenuSubButton = forwardRef<
 })
 SidebarMenuSubButton.displayName = 'SidebarMenuSubButton'
 
+function getSidebarStateFromCookie(): boolean {
+  const cookies = document.cookie.split('; ').map((cookie) => cookie.split('='))
+  const cookie = cookies.find(([key]) => key === SIDEBAR_COOKIE_NAME)
+  return cookie ? cookie[1] === 'true' : false
+}
+
 export {
   Sidebar,
   SidebarContent,
@@ -433,4 +439,5 @@ export {
   SidebarRail,
   SidebarTrigger,
   useSidebar,
+  getSidebarStateFromCookie,
 }
