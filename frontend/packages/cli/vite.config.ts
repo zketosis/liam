@@ -7,7 +7,7 @@ const outDir = 'dist-cli/html'
 // https://vite.dev/config/
 export default defineConfig({
   build: {
-    chunkSizeWarningLimit: 1600,
+    chunkSizeWarningLimit: 5000, // TODO: Reduce this value if possible
     emptyOutDir: true,
     outDir,
     rollupOptions: {
