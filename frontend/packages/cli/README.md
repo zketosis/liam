@@ -1,4 +1,4 @@
-# @liam/cli
+# @liam-hq/cli
 
 Command-line tool designed to generate a web application that displays ER diagrams.
 

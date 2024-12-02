@@ -88,10 +88,10 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/db-structure':
+      '@liam-hq/db-structure':
         specifier: workspace:*
         version: link:../db-structure
-      '@liam/erd-core':
+      '@liam-hq/erd-core':
         specifier: workspace:*
         version: link:../erd-core
       '@rollup/plugin-node-resolve':
@@ -152,7 +152,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
       '@pgsql/types':
@@ -186,13 +186,13 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
-      '@liam/db-structure':
+      '@liam-hq/db-structure':
         specifier: workspace:*
         version: link:../db-structure
-      '@liam/ui':
+      '@liam-hq/ui':
         specifier: workspace:*
         version: link:../ui
       '@types/react':
@@ -214,7 +214,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
 
@@ -242,7 +242,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
       '@storybook/react':

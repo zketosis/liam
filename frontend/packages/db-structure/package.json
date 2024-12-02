@@ -1,5 +1,5 @@
 {
-  "name": "@liam/db-structure",
+  "name": "@liam-hq/db-structure",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam/configs": "workspace:*",
+    "@liam-hq/configs": "workspace:*",
     "@pgsql/types": "15.0.2",
     "lodash-es": "4.17.21",
     "peggy": "4.1.1",

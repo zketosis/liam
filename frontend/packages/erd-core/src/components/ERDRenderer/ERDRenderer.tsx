@@ -1,5 +1,5 @@
 import '@xyflow/react/dist/style.css'
-import type { DBStructure } from '@liam/db-structure'
+import type { DBStructure } from '@liam-hq/db-structure'
 import { ReactFlowProvider } from '@xyflow/react'
 import type { FC } from 'react'
 import { ERDContent } from './ERDContent'

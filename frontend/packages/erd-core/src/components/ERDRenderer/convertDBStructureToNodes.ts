@@ -1,4 +1,4 @@
-import type { DBStructure } from '@liam/db-structure'
+import type { DBStructure } from '@liam-hq/db-structure'
 import type { Node } from '@xyflow/react'
 
 export const convertDBStructureToNodes = (dbStructure: DBStructure): Node[] => {
