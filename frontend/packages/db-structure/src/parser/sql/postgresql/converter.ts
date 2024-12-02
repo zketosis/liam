@@ -116,9 +116,9 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
             const foreign = constraint.Constraint
             const primaryTableName = foreign.pktable?.relname
             const primaryColumnName =
-              foreign.pk_attrs && foreign.pk_attrs?.[0] && isStringNode(foreign.pk_attrs[0])
-                ? foreign.pk_attrs[0].String.sval ?? 'id'
-                : 'id';
+              foreign.pk_attrs?.[0] && isStringNode(foreign.pk_attrs[0])
+                ? (foreign.pk_attrs[0].String.sval ?? 'id')
+                : 'id'
             const foreignColumnName = colDef.colname
 
             if (primaryTableName && foreignColumnName && tableName) {
