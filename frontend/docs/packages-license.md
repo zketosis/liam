@@ -1,9 +1,9 @@
 # frontend
 
-As of December  2, 2024  9:14am. 990 total
+As of December  2, 2024  9:32am. 992 total
 
 ## Summary
-* 859 MIT
+* 861 MIT
 * 59 ISC
 * 28 Apache 2.0
 * 14 Simplified BSD
@@ -8560,6 +8560,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="proxy-compare"></a>
+### proxy-compare v3.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="proxy-from-env"></a>
 ### proxy-from-env v1.1.0
 #### 
@@ -10618,6 +10629,17 @@ Unknown manually approved
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
+<a name="valtio"></a>
+### valtio v2.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
