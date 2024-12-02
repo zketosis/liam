@@ -39,14 +39,15 @@ export type Table = v.InferOutput<typeof tableSchema>
 
 const relationshipSchema = v.object({
   name: relationshipNameSchema,
-  startTableName: tableNameSchema,
-  startColumnName: columnNameSchema,
-  endTableName: tableNameSchema,
-  endColumnName: columnNameSchema,
+  primaryTableName: tableNameSchema,
+  primaryColumnName: columnNameSchema,
+  foreignTableName: tableNameSchema,
+  foreignColumnName: columnNameSchema,
   cardinality: v.string(),
   updateConstraint: v.string(),
   deleteConstraint: v.string(),
 })
+export type Relationship = v.InferOutput<typeof relationshipSchema>
 
 const tablesSchema = v.record(tableNameSchema, tableSchema)
 export type Tables = v.InferOutput<typeof tablesSchema>

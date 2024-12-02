@@ -66,6 +66,35 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
+    it('should parse foreign keys to relationships', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+
+        CREATE TABLE posts (
+          id SERIAL PRIMARY KEY,
+          user_id INT REFERENCES users(id)
+        );
+      `)
+
+      const expectedRelationships = {
+        posts_user_id_to_users_id: {
+          name: 'posts_user_id_to_users_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'one_to_many',
+          updateConstraint: 'no action',
+          deleteConstraint: 'no action',
+        },
+      }
+
+      expect(result.relationships).toEqual(expectedRelationships)
+    })
+
     // TODO: Implement default value
   })
 })

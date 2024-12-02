@@ -4,12 +4,13 @@ import type {
   Node,
   String as PgString,
 } from '@pgsql/types'
-import type { Columns, DBStructure, Table } from 'src/schema'
+import type { Columns, DBStructure, Relationship, Table } from 'src/schema'
 import type { RawStmtWrapper } from './parser'
 
 // Transform function for AST to DBStructure
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   const tables: Record<string, Table> = {}
+  const relationships: Record<string, Relationship> = {}
 
   function isStringNode(node: Node): node is { String: PgString } {
     return (
@@ -83,6 +84,64 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
                 .some((n) => n.String.sval === 'serial') || false,
             comment: null, // TODO
           }
+
+          // Handle REFERENCES constraints for relationships
+
+          // Update or delete constraint for foreign key
+          // see: https://github.com/launchql/pgsql-parser/blob/main/packages/deparser/src/deparser.ts#L3101-L3141
+          const getConstraintAction = (action?: string): string => {
+            switch (action?.toLowerCase()) {
+              case 'r':
+                return 'restrict'
+              case 'c':
+                return 'cascade'
+              case 'n':
+                return 'set null'
+              case 'd':
+                return 'set default'
+              case 'a':
+                return 'no action'
+              default:
+                return 'no action' // Default to 'no action' for unknown or missing values
+            }
+          }
+
+          for (const constraint of (colDef.constraints ?? []).filter(
+            isConstraintNode,
+          )) {
+            if (constraint.Constraint.contype !== 'CONSTR_FOREIGN') {
+              continue
+            }
+
+            const foreign = constraint.Constraint
+            const primaryTableName = foreign.pktable?.relname
+            const primaryColumnName =
+              foreign.pk_attrs && foreign.pk_attrs?.[0] && isStringNode(foreign.pk_attrs[0])
+                ? foreign.pk_attrs[0].String.sval ?? 'id'
+                : 'id';
+            const foreignColumnName = colDef.colname
+
+            if (primaryTableName && foreignColumnName && tableName) {
+              const relationshipName = `${tableName}_${foreignColumnName}_to_${primaryTableName}_${primaryColumnName}`
+              const updateConstraint = getConstraintAction(
+                foreign.fk_upd_action,
+              )
+              const deleteConstraint = getConstraintAction(
+                foreign.fk_del_action,
+              )
+
+              relationships[relationshipName] = {
+                name: relationshipName,
+                primaryTableName,
+                primaryColumnName,
+                foreignTableName: tableName,
+                foreignColumnName,
+                cardinality: 'one_to_many',
+                updateConstraint,
+                deleteConstraint,
+              }
+            }
+          }
         }
       }
 
@@ -99,6 +158,6 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
 
   return {
     tables,
-    relationships: {},
+    relationships,
   }
 }
