@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./parser": "./dist/parser.js"
+  },
   "dependencies": {
     "@ruby/prism": "1.2.0",
     "pg-query-emscripten": "5.1.0",
