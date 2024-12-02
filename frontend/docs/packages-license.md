@@ -1,9 +1,9 @@
 # frontend
 
-As of November 29, 2024 10:30am. 981 total
+As of December  2, 2024 12:32am. 990 total
 
 ## Summary
-* 850 MIT
+* 859 MIT
 * 59 ISC
 * 28 Apache 2.0
 * 14 Simplified BSD
@@ -1743,6 +1743,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@ts-morph/common"></a>
+### @ts-morph/common v0.25.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@tsconfig/node10"></a>
 ### @tsconfig/node10 v1.0.11
 #### 
@@ -3408,6 +3419,17 @@ CC-BY-4.0 permitted
 
 
 
+<a name="code-block-writer"></a>
+### code-block-writer v13.0.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="collapse-white-space"></a>
 ### collapse-white-space v2.1.0
 #### 
@@ -4827,6 +4849,17 @@ CC-BY-4.0 permitted
 
 
 
+<a name="fdir"></a>
+### fdir v6.4.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="figures"></a>
 ### figures v3.2.0
 #### 
@@ -4992,8 +5025,30 @@ CC-BY-4.0 permitted
 
 
 
+<a name="fumadocs-docgen"></a>
+### fumadocs-docgen v1.3.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="fumadocs-mdx"></a>
 ### fumadocs-mdx v11.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="fumadocs-typescript"></a>
+### fumadocs-typescript v3.0.2
 #### 
 
 ##### Paths
@@ -7713,6 +7768,17 @@ Public Domain manually approved
 
 
 
+<a name="npm-to-yarn"></a>
+### npm-to-yarn v3.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="object-assign"></a>
 ### object-assign v4.1.1
 #### 
@@ -8089,6 +8155,17 @@ BlueOak-1.0.0 permitted
 
 <a name="path"></a>
 ### path v0.12.7
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="path-browserify"></a>
+### path-browserify v1.0.1
 #### 
 
 ##### Paths
@@ -9895,6 +9972,17 @@ Unknown manually approved
 
 
 
+<a name="tinyglobby"></a>
+### tinyglobby v0.2.10
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="tinygradient"></a>
 ### tinygradient v1.1.5
 #### 
@@ -10029,6 +10117,17 @@ Unknown manually approved
 
 <a name="ts-dedent"></a>
 ### ts-dedent v2.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="ts-morph"></a>
+### ts-morph v24.0.0
 #### 
 
 ##### Paths
