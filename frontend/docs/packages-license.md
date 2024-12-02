@@ -8573,7 +8573,7 @@ BlueOak-1.0.0 permitted
 
 <a name="proxy-compare"></a>
 ### proxy-compare v3.0.1
-#### 
+####
 
 ##### Paths
 * /home/runner/work/liam/liam/frontend
@@ -10645,7 +10645,7 @@ Unknown manually approved
 
 <a name="valtio"></a>
 ### valtio v2.1.2
-#### 
+####
 
 ##### Paths
 * /home/runner/work/liam/liam/frontend
