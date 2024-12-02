@@ -9,6 +9,11 @@
       "cache": false,
       "persistent": true
     },
+    "@liam/cli#dev": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true
+    },
     "gen": {
       "dependsOn": ["^gen"]
     },
