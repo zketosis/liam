@@ -75,9 +75,6 @@ importers:
       commander:
         specifier: 12.1.0
         version: 12.1.0
-      destyle.css:
-        specifier: 4.0.1
-        version: 4.0.1
       react:
         specifier: '18'
         version: 18.3.1
@@ -97,6 +94,9 @@ importers:
       '@liam/erd-core':
         specifier: workspace:*
         version: link:../erd-core
+      '@liam/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@rollup/plugin-node-resolve':
         specifier: 15.3.0
         version: 15.3.0(rollup@4.27.3)
@@ -232,6 +232,9 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
+      destyle.css:
+        specifier: 4.0.1
+        version: 4.0.1
       lucide-react:
         specifier: 0.451.0
         version: 0.451.0(react@18.3.1)
