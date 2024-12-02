@@ -6,7 +6,8 @@
   "main": "src/index.ts",
   "dependencies": {
     "@xyflow/react": "12.3.5",
-    "react": "18"
+    "react": "18",
+    "valtio": "2.1.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
