@@ -94,9 +94,6 @@ importers:
       '@liam/erd-core':
         specifier: workspace:*
         version: link:../erd-core
-      '@liam/ui':
-        specifier: workspace:*
-        version: link:../ui
       '@rollup/plugin-node-resolve':
         specifier: 15.3.0
         version: 15.3.0(rollup@4.27.3)
