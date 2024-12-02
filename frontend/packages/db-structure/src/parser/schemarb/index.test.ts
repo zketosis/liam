@@ -64,6 +64,8 @@ describe(processor, () => {
       const result = processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", default: "new user", null: true
+          t.bigint "age", default: 0, null: true
+          t.boolean "is_admin", default: false, null: true
         end
       `)
 
@@ -73,8 +75,17 @@ describe(processor, () => {
           name: aColumn({
             name: 'name',
             type: 'string',
-            notNull: false,
             default: 'new user',
+          }),
+          age: aColumn({
+            name: 'age',
+            type: 'bigint',
+            default: 0,
+          }),
+          is_admin: aColumn({
+            name: 'is_admin',
+            type: 'boolean',
+            default: false,
           }),
         },
       })

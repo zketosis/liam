@@ -1,5 +1,5 @@
 {
-  "name": "@liam/cli",
+  "name": "@liam-hq/cli",
   "license": "Apache-2.0",
   "private": true,
   "version": "0.0.0",
@@ -9,15 +9,14 @@
   },
   "dependencies": {
     "commander": "12.1.0",
-    "destyle.css": "4.0.1",
     "react": "18",
     "react-dom": "18",
     "valibot": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam/db-structure": "workspace:*",
-    "@liam/erd-core": "workspace:*",
+    "@liam-hq/db-structure": "workspace:*",
+    "@liam-hq/erd-core": "workspace:*",
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-typescript": "12.1.1",
     "@types/node": "22.9.0",
@@ -34,7 +33,7 @@
   "scripts": {
     "build": "pnpm run '/^build:.*/'",
     "build:cli": "rollup -c",
-    "build:vite": "vite build --outDir dist-cli/html",
+    "build:vite": "vite build",
     "command:build": "node ./dist-cli/bin/cli.js erd build --input fixtures/input.schema.rb",
     "dev": "pnpm command:build && cp dist/schema.json public/ && pnpm run '/^dev:.*/'",
     "dev:app": "vite",

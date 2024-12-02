@@ -75,9 +75,6 @@ importers:
       commander:
         specifier: 12.1.0
         version: 12.1.0
-      destyle.css:
-        specifier: 4.0.1
-        version: 4.0.1
       react:
         specifier: '18'
         version: 18.3.1
@@ -91,10 +88,10 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/db-structure':
+      '@liam-hq/db-structure':
         specifier: workspace:*
         version: link:../db-structure
-      '@liam/erd-core':
+      '@liam-hq/erd-core':
         specifier: workspace:*
         version: link:../erd-core
       '@rollup/plugin-node-resolve':
@@ -155,7 +152,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
       '@pgsql/types':
@@ -189,13 +186,13 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
-      '@liam/db-structure':
+      '@liam-hq/db-structure':
         specifier: workspace:*
         version: link:../db-structure
-      '@liam/ui':
+      '@liam-hq/ui':
         specifier: workspace:*
         version: link:../ui
       '@types/react':
@@ -217,7 +214,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
 
@@ -232,6 +229,9 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
+      destyle.css:
+        specifier: 4.0.1
+        version: 4.0.1
       lucide-react:
         specifier: 0.451.0
         version: 0.451.0(react@18.3.1)
@@ -242,7 +242,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam/configs':
+      '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
       '@storybook/react':

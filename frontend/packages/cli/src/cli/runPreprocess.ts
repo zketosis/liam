@@ -1,8 +1,8 @@
 import fs, { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { parse } from '@liam/db-structure'
+import { parse } from '@liam-hq/db-structure'
 
-export function runPreprocess(inputPath: string, publicDir: string) {
+export function runPreprocess(inputPath: string, outputDir: string) {
   if (!fs.existsSync(inputPath)) {
     throw new Error('Invalid input path. Please provide a valid file.')
   }
@@ -13,10 +13,10 @@ export function runPreprocess(inputPath: string, publicDir: string) {
   const format = 'schemarb'
   const json = parse(input, format)
 
-  const filePath = path.join(publicDir, 'schema.json')
+  const filePath = path.join(outputDir, 'schema.json')
 
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true })
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true })
   }
 
   try {

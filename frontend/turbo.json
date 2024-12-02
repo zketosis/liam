@@ -9,7 +9,7 @@
       "cache": false,
       "persistent": true
     },
-    "@liam/cli#dev": {
+    "@liam-hq/cli#dev": {
       "dependsOn": ["build"],
       "cache": false,
       "persistent": true
@@ -24,7 +24,7 @@
     "test": {
       "outputs": []
     },
-    "@liam/cli#test": {
+    "@liam-hq/cli#test": {
       "dependsOn": ["^build"]
     }
   }
