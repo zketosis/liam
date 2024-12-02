@@ -1,4 +1,4 @@
-import type { DBStructure } from '@liam/db-structure'
+import type { DBStructure } from '@liam-hq/db-structure'
 import { useSnapshot } from 'valtio'
 import { dbStructureStore } from './store'
 

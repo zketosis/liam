@@ -1,5 +1,5 @@
-import { dbStructureSchema } from '@liam/db-structure'
-import { ERDRenderer, initDBStructureStore } from '@liam/erd-core'
+import { dbStructureSchema } from '@liam-hq/db-structure'
+import { ERDRenderer, initDBStructureStore } from '@liam-hq/erd-core'
 import * as v from 'valibot'
 
 async function loadSchemaContent() {
