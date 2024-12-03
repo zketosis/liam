@@ -39,6 +39,7 @@
   display: flex;
   left: 0;
   color: var(--global-foreground);
+  border-right: 1px solid var(--pane-border);
 }
 
 [data-collapsible='offcanvas'] .sidebarWrapper {
@@ -91,7 +92,7 @@
   top: 0;
   bottom: 0;
   width: 1rem;
-  right: -1rem;
+  right: -0.5rem;
 }
 
 [data-collapsible='offcanvas'] .sidebarRail {
@@ -103,7 +104,14 @@
   width: 2px;
   top: 0px;
   bottom: 0px;
+  left: 50%;
   position: absolute;
+  transition: background-color var(--default-hover-animation-duration)
+    var(--default-timing-function);
+}
+
+.sidebarRail:hover::after {
+  background: var(--pane-border-hover);
 }
 
 .sidebarFooter {
