@@ -1,4 +1,5 @@
 :root {
   --default-timing-function: ease-out;
+  --default-animation-duration: 300ms;
   --default-hover-animation-duration: 100ms;
 }
