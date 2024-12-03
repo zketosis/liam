@@ -119,10 +119,11 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
               foreign.pk_attrs?.[0] && isStringNode(foreign.pk_attrs[0])
                 ? (foreign.pk_attrs[0].String.sval ?? 'id')
                 : 'id'
-            const foreignColumnName = colDef.colname
+            const foreignColumnName = colDef.colname || ''
 
-            if (primaryTableName && foreignColumnName && tableName) {
-              const relationshipName = `${tableName}_${foreignColumnName}_to_${primaryTableName}_${primaryColumnName}`
+            if (primaryTableName && tableName) {
+              // relationshipName example: "users_posts"
+              const relationshipName = `${primaryTableName}_${tableName}`
               const updateConstraint = getConstraintAction(
                 foreign.fk_upd_action,
               )
@@ -136,7 +137,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
                 primaryColumnName,
                 foreignTableName: tableName,
                 foreignColumnName,
-                cardinality: 'one_to_many',
+                cardinality: 'one_to_many', // default to one_to_many
                 updateConstraint,
                 deleteConstraint,
               }
