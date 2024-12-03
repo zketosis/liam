@@ -1,9 +1,9 @@
 # frontend
 
-As of December  3, 2024  4:38am. 988 total
+As of December  3, 2024  7:49am. 991 total
 
 ## Summary
-* 858 MIT
+* 861 MIT
 * 59 ISC
 * 28 Apache 2.0
 * 14 Simplified BSD
@@ -5267,6 +5267,17 @@ CC-BY-4.0 permitted
 
 
 
+<a name="globrex"></a>
+### globrex v0.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="gopd"></a>
 ### gopd v1.0.1
 #### 
@@ -10137,6 +10148,17 @@ Unknown manually approved
 
 
 
+<a name="tsconfck"></a>
+### tsconfck v3.1.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="tsconfig-paths"></a>
 ### tsconfig-paths v3.15.0
 #### 
@@ -10645,6 +10667,17 @@ Unknown manually approved
 
 <a name="vite-node"></a>
 ### vite-node v2.1.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="vite-tsconfig-paths"></a>
+### vite-tsconfig-paths v5.1.3
 #### 
 
 ##### Paths
