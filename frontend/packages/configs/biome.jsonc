@@ -13,9 +13,12 @@
     "rules": {
       "recommended": true,
       "nursery": {
+        "noCommonJs": "error",
         "useImportRestrictions": "error"
       },
       "correctness": {
+        "noNodejsModules": "error",
+        "noUndeclaredDependencies": "error",
         "noUnusedVariables": "error",
         "noUndeclaredVariables": "error"
       },

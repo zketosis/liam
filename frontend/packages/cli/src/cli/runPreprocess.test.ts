@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { runPreprocess } from './runPreprocess'
+import { runPreprocess } from './runPreprocess.js'
 
 describe('runPreprocess', () => {
   it('should create schema.json with the SQL content in the specified directory', async () => {

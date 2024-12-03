@@ -13,8 +13,14 @@ import {
   Visitor,
   loadPrism,
 } from '@ruby/prism'
-import type { Column, Columns, DBStructure, Table, Tables } from '../../schema'
-import { aColumn, aTable } from '../../schema'
+import type {
+  Column,
+  Columns,
+  DBStructure,
+  Table,
+  Tables,
+} from '../../schema/index.js'
+import { aColumn, aTable } from '../../schema/index.js'
 import type { Processor } from '../types.js'
 
 function extractTableName(argNodes: Node[]): string {
