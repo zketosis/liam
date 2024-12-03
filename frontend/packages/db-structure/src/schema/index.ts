@@ -1,3 +1,3 @@
 export { dbStructureSchema } from './dbStructure'
-export type { Columns, DBStructure, Table } from './dbStructure'
-export { aDBStructure } from './factories'
+export type { Column, Columns, DBStructure, Table, Tables } from './dbStructure'
+export { aColumn, aTable, aDBStructure } from './factories'
