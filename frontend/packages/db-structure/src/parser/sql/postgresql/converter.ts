@@ -5,7 +5,7 @@ import type {
   String as PgString,
 } from '@pgsql/types'
 import type { Columns, DBStructure, Table } from '../../../schema/index.js'
-import type { RawStmtWrapper } from './parser'
+import type { RawStmtWrapper } from './parser.js'
 
 // Transform function for AST to DBStructure
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {

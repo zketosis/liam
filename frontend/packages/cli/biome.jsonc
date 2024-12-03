@@ -1,3 +1,20 @@
 {
-  "extends": ["../../packages/configs/biome.jsonc"]
+  "extends": ["../../packages/configs/biome.jsonc"],
+  "linter": {
+    "rules": {
+      "correctness": {
+        "useImportExtensions": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "suggestedExtensions": {
+              "ts": {
+                "module": "js"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

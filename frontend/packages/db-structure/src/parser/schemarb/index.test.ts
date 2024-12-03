@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { processor } from '.'
 import type { Table } from '../../schema/index.js'
 import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
+import { processor } from './index.js'
 
 describe(processor, () => {
   describe('should parse create_table correctry', () => {

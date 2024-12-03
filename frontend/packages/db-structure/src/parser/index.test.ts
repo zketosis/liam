@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parse } from '.'
+import { parse } from './index.js'
 
 describe(parse, () => {
   it('should parse schema.rb to JSON correctly', async () => {
