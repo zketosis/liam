@@ -16,9 +16,6 @@
     "@biomejs/biome": "1.9.3",
     "@liam-hq/configs": "workspace:*",
     "@pgsql/types": "15.0.2",
-    "lodash-es": "4.17.21",
-    "peggy": "4.1.1",
-    "pluralize-esm": "9.0.5",
     "typescript": "5",
     "vitest": "2.1.4"
   },
@@ -26,7 +23,6 @@
     "build": "tsc",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
-    "gen:parser": "./scripts/generateParser.sh",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",

@@ -7,7 +7,7 @@ As of December  3, 2024  6:41am. 996 total
 * 59 ISC
 * 28 Apache 2.0
 * 14 Simplified BSD
-* 12 New BSD
+* 11 New BSD
 * 3 MIT OR Apache-2.0
 * 3 BlueOak-1.0.0
 * 2 LGPL-3.0-or-later
