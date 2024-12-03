@@ -25,7 +25,7 @@ export const AppBar: FC = () => {
             </a>
           </TooltipTrigger>
           <TooltipPortal>
-            <TooltipContent sideOffset={4}>Go to Liambx.com</TooltipContent>
+            <TooltipContent sideOffset={4}>Go to Home page</TooltipContent>
           </TooltipPortal>
         </TooltipRoot>
       </TooltipProvider>
