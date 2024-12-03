@@ -1,9 +1,9 @@
 # frontend
 
-As of December  3, 2024  6:41am. 996 total
+As of December  3, 2024  7:49am. 991 total
 
 ## Summary
-* 865 MIT
+* 861 MIT
 * 59 ISC
 * 28 Apache 2.0
 * 14 Simplified BSD
@@ -970,17 +970,6 @@ LGPL-3.0-or-later permitted
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
-
-
-
-<a name="@peggyjs/from-mem"></a>
-### @peggyjs/from-mem v1.3.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam/frontend
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -6690,17 +6679,6 @@ Public Domain manually approved
 
 
 
-<a name="lodash-es"></a>
-### lodash-es v4.17.21
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam/frontend
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="lodash.get"></a>
 ### lodash.get v4.4.2
 #### 
@@ -8318,17 +8296,6 @@ BlueOak-1.0.0 permitted
 
 
 
-<a name="peggy"></a>
-### peggy v4.1.1
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam/frontend
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="pg-query-emscripten"></a>
 ### pg-query-emscripten v5.1.0
 #### 
@@ -8364,17 +8331,6 @@ BlueOak-1.0.0 permitted
 
 <a name="pify"></a>
 ### pify v4.0.1
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam/frontend
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="pluralize-esm"></a>
-### pluralize-esm v9.0.5
 #### 
 
 ##### Paths
@@ -9497,17 +9453,6 @@ BlueOak-1.0.0 permitted
 
 <a name="source-map"></a>
 ### source-map v0.6.1
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam/frontend
-
-<a href="http://opensource.org/licenses/BSD-3-Clause">New BSD</a> permitted
-
-
-
-<a name="source-map-generator"></a>
-### source-map-generator v0.8.0
 #### 
 
 ##### Paths
