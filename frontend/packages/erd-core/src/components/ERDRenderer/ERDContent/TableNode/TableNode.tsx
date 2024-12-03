@@ -1,5 +1,7 @@
 import type { Table } from '@liam-hq/db-structure'
 import {
+  DiamondFillIcon,
+  DiamondIcon,
   DrawerClose,
   DrawerContent,
   DrawerPortal,
@@ -39,6 +41,25 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                       />
                     )}
                   </span>
+                  {!column.primary && (
+                    <span>
+                      {column.notNull ? (
+                        <DiamondFillIcon
+                          width={16}
+                          height={16}
+                          role="img"
+                          aria-label="Not Null"
+                        />
+                      ) : (
+                        <DiamondIcon
+                          width={16}
+                          height={16}
+                          role="img"
+                          aria-label="Nullable"
+                        />
+                      )}
+                    </span>
+                  )}
                   <span> </span>
                   <span>{column.name}</span>
                   <span> </span>
