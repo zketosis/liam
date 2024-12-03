@@ -1,4 +1,4 @@
-import { Background, Controls, ReactFlow } from '@xyflow/react'
+import { Background, BackgroundVariant, ReactFlow } from '@xyflow/react'
 import type { FC } from 'react'
 import { useDBStructureStore } from '../../../stores'
 import { convertDBStructureToNodes } from '../convertDBStructureToNodes'
@@ -25,8 +25,12 @@ export const ERDContent: FC = () => {
         minZoom={0.5}
         maxZoom={1}
       >
-        <Controls />
-        <Background />
+        <Background
+          color="var(--color-gray-600)"
+          variant={BackgroundVariant.Dots}
+          size={1}
+          gap={16}
+        />
       </ReactFlow>
     </div>
   )
