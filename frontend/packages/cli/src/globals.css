@@ -1,5 +1,3 @@
-@import url('@liam-hq/erd-core/src/styles/globals.css');
-
 #root {
   display: flex;
   flex-direction: column;
