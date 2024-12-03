@@ -187,21 +187,28 @@ const SidebarTrigger = forwardRef<
   ElementRef<'button'>,
   ComponentProps<'button'>
 >(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, state } = useSidebar()
 
   return (
-    <button
-      ref={ref}
-      data-sidebar="trigger"
-      className={clsx(styles.sidebarTrigger, className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
-      {...props}
-    >
-      <PanelLeft width={16} height={16} />
-    </button>
+    <TooltipRoot>
+      <TooltipTrigger asChild>
+        <button
+          ref={ref}
+          data-sidebar="trigger"
+          className={clsx(styles.sidebarTrigger, className)}
+          onClick={(event) => {
+            onClick?.(event)
+            toggleSidebar()
+          }}
+          {...props}
+        >
+          <PanelLeft width={16} height={16} />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="right" align="center">
+        {state === 'collapsed' ? 'Expand' : 'Collapse'}
+      </TooltipContent>
+    </TooltipRoot>
   )
 })
 SidebarTrigger.displayName = 'SidebarTrigger'
