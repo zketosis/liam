@@ -2,7 +2,6 @@
 
 import { Slot } from '@radix-ui/react-slot'
 import clsx from 'clsx'
-import { PanelLeft } from 'lucide-react'
 import {
   type CSSProperties,
   type ComponentProps,
@@ -15,6 +14,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { PanelLeft } from '../../icons'
 import {
   TooltipContent,
   TooltipProvider,
@@ -193,14 +193,14 @@ const SidebarTrigger = forwardRef<
     <button
       ref={ref}
       data-sidebar="trigger"
-      className={clsx(className)}
+      className={clsx(styles.sidebarTrigger, className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <PanelLeft />
+      <PanelLeft width={16} height={16} />
     </button>
   )
 })

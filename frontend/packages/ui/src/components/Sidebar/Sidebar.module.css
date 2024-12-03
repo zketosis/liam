@@ -3,6 +3,11 @@
   min-height: 100%;
 }
 
+.sidebarTrigger {
+  padding: var(--spacing-2);
+  color: var(--overlay-70);
+}
+
 .sidebarGap {
   width: var(--sidebar-width);
   height: 100%;
