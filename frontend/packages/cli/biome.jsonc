@@ -13,7 +13,9 @@
               }
             }
           }
-        }
+        },
+        // Due to the unavoidable use of Node.js modules in server-side code.
+        "noNodejsModules": "off"
       }
     }
   }

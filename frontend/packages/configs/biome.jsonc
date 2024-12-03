@@ -17,6 +17,7 @@
         "useImportRestrictions": "error"
       },
       "correctness": {
+        "noNodejsModules": "error",
         "noUndeclaredDependencies": "error",
         "noUnusedVariables": "error",
         "noUndeclaredVariables": "error"

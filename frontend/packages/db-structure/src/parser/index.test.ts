@@ -1,4 +1,6 @@
+// biome-ignore lint/correctness/noNodejsModules: this file is only used in tests
 import fs from 'node:fs'
+// biome-ignore lint/correctness/noNodejsModules: this file is only used in tests
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parse } from './index.js'
