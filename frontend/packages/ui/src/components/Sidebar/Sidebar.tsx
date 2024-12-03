@@ -205,7 +205,7 @@ const SidebarTrigger = forwardRef<
           <PanelLeft width={16} height={16} />
         </button>
       </TooltipTrigger>
-      <TooltipContent side="right" align="center">
+      <TooltipContent side="right" align="center" sideOffset={8}>
         {state === 'collapsed' ? 'Expand' : 'Collapse'}
       </TooltipContent>
     </TooltipRoot>
