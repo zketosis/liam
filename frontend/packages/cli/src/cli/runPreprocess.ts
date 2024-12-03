@@ -2,7 +2,7 @@ import fs, { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { parse } from '@liam-hq/db-structure/parser'
 
-export function runPreprocess(inputPath: string, outputDir: string) {
+export async function runPreprocess(inputPath: string, outputDir: string) {
   if (!fs.existsSync(inputPath)) {
     throw new Error('Invalid input path. Please provide a valid file.')
   }
@@ -11,7 +11,7 @@ export function runPreprocess(inputPath: string, outputDir: string) {
 
   // TODO: Expand support to additional formats, e.g., 'postgres'
   const format = 'schemarb'
-  const json = parse(input, format)
+  const json = await parse(input, format)
 
   const filePath = path.join(outputDir, 'schema.json')
 
