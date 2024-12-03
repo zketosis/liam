@@ -17,6 +17,7 @@
         "useImportRestrictions": "error"
       },
       "correctness": {
+        "noUndeclaredDependencies": "error",
         "noUnusedVariables": "error",
         "noUndeclaredVariables": "error"
       },

@@ -4,7 +4,7 @@ import type {
   Node,
   String as PgString,
 } from '@pgsql/types'
-import type { Columns, DBStructure, Table } from 'src/schema'
+import type { Columns, DBStructure, Table } from '../../../schema/index.js'
 import type { RawStmtWrapper } from './parser'
 
 // Transform function for AST to DBStructure
