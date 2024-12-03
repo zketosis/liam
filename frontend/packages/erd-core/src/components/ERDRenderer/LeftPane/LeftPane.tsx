@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@liam-hq/ui'
+import { Table2 } from '@liam-hq/ui'
 import { useDBStructureStore } from '../../../stores'
 
 export const LeftPane = () => {
@@ -25,7 +26,10 @@ export const LeftPane = () => {
             <SidebarMenu>
               {Object.values(tables).map((table) => (
                 <SidebarMenuItem key={table.name}>
-                  <SidebarMenuButton>{table.name}</SidebarMenuButton>
+                  <SidebarMenuButton>
+                    <Table2 width={'10px'} />
+                    <span>{table.name}</span>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

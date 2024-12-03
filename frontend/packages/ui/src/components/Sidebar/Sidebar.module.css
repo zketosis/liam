@@ -39,14 +39,27 @@
   height: 100%;
 }
 
-.sidebarGroup {
+.sidebarMenuButton {
   padding: var(--spacing-2);
+  display: flex;
+  gap: var(--spacing-1);
+  align-items: center;
+  font-size: var(--font-size-2);
+  color: var(--link-default);
 }
 
 .sidebarGroupLabel {
+  padding: var(--spacing-2);
+  border-bottom: 1px solid var(--global-border);
+}
+
+.sidebarGroupLabel span {
   display: inline-flex;
   align-items: center;
   height: 24px;
+  font-size: var(--font-size-2);
+  font-weight: 500;
+  line-height: normal;
 }
 
 .sidebarRail {
