@@ -37,6 +37,12 @@
   background: var(--pane-background);
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarContent {
+  flex: 1 1 0%;
 }
 
 .sidebarMenuButton {
@@ -81,4 +87,10 @@
   top: 0px;
   bottom: 0px;
   position: absolute;
+}
+
+.sidebarFooter {
+  color: var(--overlay-70);
+  padding: var(--spacing-2);
+  border-top: 1px solid var(--global-border);
 }

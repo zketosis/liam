@@ -12,10 +12,10 @@ import {
 } from '@liam-hq/ui'
 import { Table2 } from '@liam-hq/ui'
 import { useDBStructureStore } from '../../../stores'
+import { TableCounter } from './TableCounter'
 
 export const LeftPane = () => {
   const { tables } = useDBStructureStore()
-  const count = Object.keys(tables).length
 
   return (
     <Sidebar>
@@ -38,7 +38,7 @@ export const LeftPane = () => {
       </SidebarContent>
 
       <SidebarFooter>
-        {count} / {count}
+        <TableCounter />
       </SidebarFooter>
 
       <SidebarRail />

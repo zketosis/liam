@@ -235,14 +235,28 @@ SidebarHeader.displayName = 'SidebarHeader'
 
 const SidebarFooter = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} data-sidebar="footer" {...props} />
+    return (
+      <div
+        ref={ref}
+        data-sidebar="footer"
+        className={clsx(styles.sidebarFooter, className)}
+        {...props}
+      />
+    )
   },
 )
 SidebarFooter.displayName = 'SidebarFooter'
 
 const SidebarContent = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} data-sidebar="content" {...props} />
+    return (
+      <div
+        ref={ref}
+        data-sidebar="content"
+        className={clsx(styles.sidebarContent, className)}
+        {...props}
+      />
+    )
   },
 )
 SidebarContent.displayName = 'SidebarContent'
