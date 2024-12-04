@@ -11,6 +11,7 @@ import {
 } from '@liam-hq/ui'
 import type { Node, NodeProps } from '@xyflow/react'
 import type { FC } from 'react'
+import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
 type Data = {
@@ -27,7 +28,7 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
       <DrawerRoot direction="right">
         <DrawerTrigger>
           <div className={styles.wrapper}>
-            <div>{table.name}</div>
+            <TableHeader name={table.name} />
             <ul>
               {Object.values(table.columns).map((column) => (
                 <li key={column.name}>

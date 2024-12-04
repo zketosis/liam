@@ -1,6 +1,6 @@
 .wrapper {
-  border: 1px solid white;
-  color: white;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--overlay-20);
 }
 
 .content {
