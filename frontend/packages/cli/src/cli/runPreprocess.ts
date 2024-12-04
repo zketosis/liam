@@ -14,11 +14,7 @@ export async function runPreprocess(
   const input = readFileSync(inputPath, 'utf8')
 
   let json = null
-  if (
-    format === 'schemarb' ||
-    format === 'postgres' ||
-    format === 'schemarb-prism'
-  ) {
+  if (format === 'schemarb' || format === 'postgres') {
     try {
       json = await parse(input, format)
     } catch (error) {
