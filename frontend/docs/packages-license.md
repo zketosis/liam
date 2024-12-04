@@ -1,9 +1,9 @@
 # frontend
 
-As of December  3, 2024  7:49am. 991 total
+As of December  3, 2024 12:10pm. 992 total
 
 ## Summary
-* 861 MIT
+* 862 MIT
 * 59 ISC
 * 28 Apache 2.0
 * 14 Simplified BSD
@@ -10623,6 +10623,17 @@ Unknown manually approved
 
 <a name="vary"></a>
 ### vary v1.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="vaul"></a>
+### vaul v1.1.1
 #### 
 
 ##### Paths

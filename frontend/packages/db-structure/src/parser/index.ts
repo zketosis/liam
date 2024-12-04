@@ -1,4 +1,4 @@
-import type { DBStructure } from 'src/schema/index.js'
+import type { DBStructure } from '../schema/index.js'
 import { processor as schemarbProcessor } from './schemarb/index.js'
 import { processor as postgresqlProcessor } from './sql/index.js'
 

@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import type { SupportedFormat } from '@liam-hq/db-structure/parser'
 import { describe, expect, it } from 'vitest'
-import { runPreprocess } from './runPreprocess'
+import { runPreprocess } from './runPreprocess.js'
 
 describe('runPreprocess', () => {
   const testCases = [
