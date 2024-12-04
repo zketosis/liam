@@ -45,7 +45,7 @@ describe('CLI Smoke Test', () => {
     await execAsync('rm -rf ./dist')
     try {
       const { stdout, stderr } = await execAsync(
-        'npx --no-install . erd build --input fixtures/input.schema.rb',
+        'npx --no-install . erd build --input fixtures/input.schema.rb --format schemarb',
       )
       // NOTE: suppress the following warning:
       if (

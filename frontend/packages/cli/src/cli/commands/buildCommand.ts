@@ -3,11 +3,16 @@ import { existsSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import type { SupportedFormat } from '@liam-hq/db-structure/parser'
 import { runPreprocess } from '../runPreprocess.js'
 
-export const buildCommand = async (inputPath: string, outDir: string) => {
+export const buildCommand = async (
+  inputPath: string,
+  outDir: string,
+  format: SupportedFormat,
+) => {
   // generate schema.json
-  runPreprocess(inputPath, outDir)
+  runPreprocess(inputPath, outDir, format)
 
   // generate index.html
   const __filename = fileURLToPath(import.meta.url)

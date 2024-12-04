@@ -1,17 +1,37 @@
 import fs, { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { parse } from '@liam-hq/db-structure/parser'
+import {
+  type SupportedFormat,
+  parse,
+  supportedFormatSchema,
+} from '@liam-hq/db-structure/parser'
+import * as v from 'valibot'
 
-export async function runPreprocess(inputPath: string, outputDir: string) {
+export async function runPreprocess(
+  inputPath: string,
+  outputDir: string,
+  format: SupportedFormat,
+) {
   if (!fs.existsSync(inputPath)) {
     throw new Error('Invalid input path. Please provide a valid file.')
   }
 
   const input = readFileSync(inputPath, 'utf8')
 
-  // TODO: Expand support to additional formats, e.g., 'postgres'
-  const format = 'schemarb'
-  const json = await parse(input, format)
+  if (!v.safeParse(supportedFormatSchema, format).success) {
+    throw new Error(
+      '--format is missing, invalid, or specifies an unsupported format. Please provide a valid format (e.g., "schemarb" or "postgres").',
+    )
+  }
+
+  let json = null
+  try {
+    json = await parse(input, format)
+  } catch (error) {
+    throw new Error(
+      `Failed to parse ${format} file: ${error instanceof Error ? error.message : String(error)}`,
+    )
+  }
 
   const filePath = path.join(outputDir, 'schema.json')
 
