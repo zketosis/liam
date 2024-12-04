@@ -33,7 +33,7 @@ describe(processor, () => {
       })
 
     it('not null', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL
@@ -54,7 +54,7 @@ describe(processor, () => {
     })
 
     it('nullable', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
@@ -67,7 +67,7 @@ describe(processor, () => {
     })
 
     it('unique', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) UNIQUE
@@ -88,7 +88,7 @@ describe(processor, () => {
     })
 
     it('default value as varchar', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255) DEFAULT 'new user'
@@ -109,7 +109,7 @@ describe(processor, () => {
     })
 
     it('default value as integer', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255),
@@ -131,7 +131,7 @@ describe(processor, () => {
     })
 
     it('default value as boolean', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255),
@@ -153,7 +153,7 @@ describe(processor, () => {
     })
 
     it('should parse foreign keys to relationships', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
@@ -182,7 +182,7 @@ describe(processor, () => {
     })
 
     it('index', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
@@ -205,7 +205,7 @@ describe(processor, () => {
     })
 
     it('unique index', async () => {
-      const result = await processor(/* PostgreSQL */ `
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
