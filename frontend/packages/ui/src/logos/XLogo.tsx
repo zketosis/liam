@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react'
 
 type Props = ComponentPropsWithoutRef<'svg'>
 
-export const XIcon: FC<Props> = (props) => {
+export const XLogo: FC<Props> = (props) => {
   return (
     <svg
       role="img"

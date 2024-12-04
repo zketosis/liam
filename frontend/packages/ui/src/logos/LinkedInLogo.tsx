@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef, FC } from 'react'
 
 type Props = ComponentPropsWithoutRef<'svg'>
 
-export const LinkedInIcon: FC<Props> = (props) => {
+export const LinkedInLogo: FC<Props> = (props) => {
   return (
     <svg
       role="img"

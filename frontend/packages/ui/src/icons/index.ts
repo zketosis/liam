@@ -1,7 +1,5 @@
 export * from './InfoIcon'
-export * from './XIcon'
 export * from './FacebookIcon'
-export * from './LinkedInIcon'
 export * from './DiamondIcon'
 export * from './DiamondFillIcon'
 export * from './Table2'
