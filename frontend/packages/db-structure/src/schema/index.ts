@@ -5,5 +5,6 @@ export type {
   DBStructure,
   Table,
   Tables,
+  Relationship,
 } from './dbStructure.js'
 export { aColumn, aTable, aDBStructure } from './factories.js'

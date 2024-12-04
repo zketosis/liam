@@ -1,11 +1,11 @@
 # frontend
 
-As of December  3, 2024 12:10pm. 992 total
+As of December  4, 2024  7:24am. 1015 total
 
 ## Summary
-* 862 MIT
+* 883 MIT
 * 59 ISC
-* 28 Apache 2.0
+* 30 Apache 2.0
 * 14 Simplified BSD
 * 11 New BSD
 * 3 MIT OR Apache-2.0
@@ -29,6 +29,17 @@ As of December  3, 2024 12:10pm. 992 total
 
 <a name="@adobe/css-tools"></a>
 ### @adobe/css-tools v4.4.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@alloc/quick-lru"></a>
+### @alloc/quick-lru v5.2.0
 #### 
 
 ##### Paths
@@ -2645,6 +2656,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="any-promise"></a>
+### any-promise v1.3.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="anymatch"></a>
 ### anymatch v3.1.3
 #### 
@@ -2888,6 +2910,17 @@ Python-2.0 manually approved
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
+<a name="autoprefixer"></a>
+### autoprefixer v10.4.20
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -3146,6 +3179,17 @@ Python-2.0 manually approved
 
 <a name="camelcase"></a>
 ### camelcase v6.3.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="camelcase-css"></a>
+### camelcase-css v2.0.1
 #### 
 
 ##### Paths
@@ -3497,7 +3541,7 @@ CC-BY-4.0 permitted
 
 
 <a name="commander"></a>
-### commander v8.3.0
+### commander v4.1.1
 #### 
 
 ##### Paths
@@ -4057,6 +4101,17 @@ CC-BY-4.0 permitted
 
 
 
+<a name="didyoumean"></a>
+### didyoumean v1.2.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
 <a name="diff"></a>
 ### diff v4.0.2
 #### 
@@ -4070,6 +4125,17 @@ CC-BY-4.0 permitted
 
 <a name="dir-glob"></a>
 ### dir-glob v3.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="dlv"></a>
+### dlv v1.1.3
 #### 
 
 ##### Paths
@@ -4972,6 +5038,17 @@ CC-BY-4.0 permitted
 
 <a name="forwarded"></a>
 ### forwarded v0.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="fraction.js"></a>
+### fraction.js v4.3.7
 #### 
 
 ##### Paths
@@ -6400,6 +6477,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="jiti"></a>
+### jiti v1.21.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="js-tokens"></a>
 ### js-tokens v4.0.0
 #### 
@@ -6637,6 +6725,17 @@ Public Domain manually approved
 
 <a name="levn"></a>
 ### levn v0.4.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="lilconfig"></a>
+### lilconfig v2.1.0
 #### 
 
 ##### Paths
@@ -7625,6 +7724,17 @@ Public Domain manually approved
 
 
 
+<a name="mz"></a>
+### mz v2.7.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="nanoid"></a>
 ### nanoid v3.3.7
 #### 
@@ -7746,6 +7856,17 @@ Public Domain manually approved
 
 
 
+<a name="normalize-range"></a>
+### normalize-range v0.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="npm-package-arg"></a>
 ### npm-package-arg v11.0.3
 #### 
@@ -7781,6 +7902,17 @@ Public Domain manually approved
 
 <a name="object-assign"></a>
 ### object-assign v4.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="object-hash"></a>
+### object-hash v3.0.0
 #### 
 
 ##### Paths
@@ -8330,7 +8462,18 @@ BlueOak-1.0.0 permitted
 
 
 <a name="pify"></a>
-### pify v4.0.1
+### pify v2.3.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="pirates"></a>
+### pirates v4.0.6
 #### 
 
 ##### Paths
@@ -8353,6 +8496,39 @@ BlueOak-1.0.0 permitted
 
 <a name="postcss"></a>
 ### postcss v8.4.31
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="postcss-import"></a>
+### postcss-import v15.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="postcss-js"></a>
+### postcss-js v4.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="postcss-load-config"></a>
+### postcss-load-config v4.0.2
 #### 
 
 ##### Paths
@@ -8403,6 +8579,17 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
+<a name="postcss-nested"></a>
+### postcss-nested v6.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -8738,6 +8925,17 @@ BlueOak-1.0.0 permitted
 
 <a name="react-style-singleton"></a>
 ### react-style-singleton v2.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="read-cache"></a>
+### read-cache v1.0.0
 #### 
 
 ##### Paths
@@ -9785,6 +9983,17 @@ Unknown manually approved
 
 
 
+<a name="sucrase"></a>
+### sucrase v3.35.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="supports-color"></a>
 ### supports-color v5.5.0
 #### 
@@ -9840,6 +10049,17 @@ Unknown manually approved
 
 
 
+<a name="tailwindcss"></a>
+### tailwindcss v3.4.15
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="tapable"></a>
 ### tapable v2.2.1
 #### 
@@ -9864,6 +10084,28 @@ Unknown manually approved
 
 <a name="text-table"></a>
 ### text-table v0.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="thenify"></a>
+### thenify v3.3.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="thenify-all"></a>
+### thenify-all v1.6.0
 #### 
 
 ##### Paths
@@ -10101,6 +10343,17 @@ Unknown manually approved
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="ts-interface-checker"></a>
+### ts-interface-checker v0.1.13
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
 
 
 
