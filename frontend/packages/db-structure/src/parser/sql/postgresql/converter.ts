@@ -1,7 +1,9 @@
 import type {
+  CommentStmt,
   Constraint,
   CreateStmt,
   IndexStmt,
+  List,
   Node,
   String as PgString,
 } from '@pgsql/types'
@@ -38,6 +40,10 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
 
   function isIndexStmt(stmt: Node): stmt is { IndexStmt: IndexStmt } {
     return 'IndexStmt' in stmt
+  }
+
+  function isCommentStmt(stmt: Node): stmt is { CommentStmt: CommentStmt } {
+    return 'CommentStmt' in stmt
   }
 
   function handleCreateStmt(createStmt: CreateStmt) {
@@ -212,6 +218,37 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     }
   }
 
+  function handleCommentStmt(commentStmt: CommentStmt) {
+    if (commentStmt.objtype !== 'OBJECT_TABLE') return
+    const objectNode = commentStmt.object
+    if (!objectNode) return
+
+    const isList = (stmt: Node): stmt is { List: List } => 'List' in stmt
+    if (!isList(objectNode)) return
+
+    // Handles statements like `COMMENT ON TABLE <table_name> IS '<comment>';`.
+    // NOTE: As far as I know, PostgreSQL only allows adding a comment to one table per statement,
+    // so we can reasonably assume the number of `<table_name>` elements is 1.
+    const item = objectNode.List?.items?.[0]
+    if (!item) return
+    const tableName =
+      'String' in item &&
+      typeof item.String === 'object' &&
+      item.String !== null &&
+      'sval' in item.String &&
+      item.String.sval
+
+    if (!tableName) return
+    if (!tables[tableName]) return
+    const comment = commentStmt.comment
+    if (!comment) return
+
+    tables[tableName] = {
+      ...tables[tableName],
+      comment,
+    }
+  }
+
   if (!ast) {
     return {
       tables: {},
@@ -229,6 +266,8 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       handleCreateStmt(stmt.CreateStmt)
     } else if (isIndexStmt(stmt)) {
       handleIndexStmt(stmt.IndexStmt)
+    } else if (isCommentStmt(stmt)) {
+      handleCommentStmt(stmt.CommentStmt)
     }
   }
 
