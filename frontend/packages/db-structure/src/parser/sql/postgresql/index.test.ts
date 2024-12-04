@@ -4,7 +4,7 @@ import { aColumn, aDBStructure, aTable } from '../../../schema/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
-  describe('should parse create_table correctry', () => {
+  describe('should parse create_table correctly', () => {
     const userTable = (override?: Partial<Table>) =>
       aDBStructure({
         tables: {
