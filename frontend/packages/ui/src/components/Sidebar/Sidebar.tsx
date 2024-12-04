@@ -2,7 +2,6 @@
 
 import { Slot } from '@radix-ui/react-slot'
 import clsx from 'clsx'
-import { PanelLeft } from 'lucide-react'
 import {
   type CSSProperties,
   type ComponentProps,
@@ -15,6 +14,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { PanelLeft } from '../../icons'
 import {
   TooltipContent,
   TooltipProvider,
@@ -187,21 +187,28 @@ const SidebarTrigger = forwardRef<
   ElementRef<'button'>,
   ComponentProps<'button'>
 >(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, state } = useSidebar()
 
   return (
-    <button
-      ref={ref}
-      data-sidebar="trigger"
-      className={clsx(className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
-      {...props}
-    >
-      <PanelLeft />
-    </button>
+    <TooltipRoot>
+      <TooltipTrigger asChild>
+        <button
+          ref={ref}
+          data-sidebar="trigger"
+          className={clsx(styles.sidebarTrigger, className)}
+          onClick={(event) => {
+            onClick?.(event)
+            toggleSidebar()
+          }}
+          {...props}
+        >
+          <PanelLeft width={16} height={16} />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="right" align="center" sideOffset={8}>
+        {state === 'collapsed' ? 'Expand' : 'Collapse'}
+      </TooltipContent>
+    </TooltipRoot>
   )
 })
 SidebarTrigger.displayName = 'SidebarTrigger'
@@ -235,14 +242,28 @@ SidebarHeader.displayName = 'SidebarHeader'
 
 const SidebarFooter = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} data-sidebar="footer" {...props} />
+    return (
+      <div
+        ref={ref}
+        data-sidebar="footer"
+        className={clsx(styles.sidebarFooter, className)}
+        {...props}
+      />
+    )
   },
 )
 SidebarFooter.displayName = 'SidebarFooter'
 
 const SidebarContent = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} data-sidebar="content" {...props} />
+    return (
+      <div
+        ref={ref}
+        data-sidebar="content"
+        className={clsx(styles.sidebarContent, className)}
+        {...props}
+      />
+    )
   },
 )
 SidebarContent.displayName = 'SidebarContent'
@@ -253,7 +274,7 @@ const SidebarGroup = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
       <div
         ref={ref}
         data-sidebar="group"
-        className={clsx(styles.sidebarGroup, className)}
+        className={clsx(className)}
         {...props}
       />
     )
@@ -264,7 +285,7 @@ SidebarGroup.displayName = 'SidebarGroup'
 const SidebarGroupLabel = forwardRef<
   HTMLDivElement,
   ComponentProps<'div'> & { asChild?: boolean }
->(({ className, asChild = false, ...props }, ref) => {
+>(({ className, children, asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : 'div'
 
   return (
@@ -273,7 +294,9 @@ const SidebarGroupLabel = forwardRef<
       data-sidebar="group-label"
       className={clsx(styles.sidebarGroupLabel, className)}
       {...props}
-    />
+    >
+      <span>{children}</span>
+    </Comp>
   )
 })
 SidebarGroupLabel.displayName = 'SidebarGroupLabel'
@@ -321,41 +344,47 @@ const SidebarMenuButton = forwardRef<
     isActive?: boolean
     tooltip?: string | ComponentProps<typeof TooltipContent>
   }
->(({ asChild = false, isActive = false, tooltip, ...props }, ref) => {
-  const Comp = asChild ? Slot : 'button'
-  const { state } = useSidebar()
+>(
+  (
+    { asChild = false, isActive = false, tooltip, className, ...props },
+    ref,
+  ) => {
+    const Comp = asChild ? Slot : 'button'
+    const { state } = useSidebar()
 
-  const button = (
-    <Comp
-      ref={ref}
-      data-sidebar="menu-button"
-      data-active={isActive}
-      {...props}
-    />
-  )
-
-  if (!tooltip) {
-    return button
-  }
-
-  if (typeof tooltip === 'string') {
-    tooltip = {
-      children: tooltip,
-    }
-  }
-
-  return (
-    <TooltipRoot>
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
-      <TooltipContent
-        side="right"
-        align="center"
-        hidden={state !== 'collapsed'}
-        {...tooltip}
+    const button = (
+      <Comp
+        ref={ref}
+        data-sidebar="menu-button"
+        data-active={isActive}
+        className={clsx(styles.sidebarMenuButton, className)}
+        {...props}
       />
-    </TooltipRoot>
-  )
-})
+    )
+
+    if (!tooltip) {
+      return button
+    }
+
+    if (typeof tooltip === 'string') {
+      tooltip = {
+        children: tooltip,
+      }
+    }
+
+    return (
+      <TooltipRoot>
+        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        <TooltipContent
+          side="right"
+          align="center"
+          hidden={state !== 'collapsed'}
+          {...tooltip}
+        />
+      </TooltipRoot>
+    )
+  },
+)
 SidebarMenuButton.displayName = 'SidebarMenuButton'
 
 const SidebarMenuAction = forwardRef<
