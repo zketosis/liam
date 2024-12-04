@@ -92,7 +92,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         },
       },
       "comment": null,
-      "indices": [],
+      "indices": {},
       "name": "users",
     },
   },
@@ -184,7 +184,15 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": null,
-      "indices": [],
+      "indices": {
+        "index_users_on_company_id": {
+          "columns": [
+            "company_id",
+          ],
+          "name": "index_users_on_company_id",
+          "unique": false,
+        },
+      },
       "name": "users",
     },
   },

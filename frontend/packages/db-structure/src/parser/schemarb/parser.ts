@@ -1,4 +1,5 @@
 import {
+  ArrayNode,
   AssocNode,
   CallNode,
   FalseNode,
@@ -17,10 +18,12 @@ import type {
   Column,
   Columns,
   DBStructure,
+  Index,
+  Indices,
   Table,
   Tables,
 } from '../../schema/index.js'
-import { aColumn, aTable } from '../../schema/index.js'
+import { aColumn, aTable, anIndex } from '../../schema/index.js'
 import type { Processor } from '../types.js'
 
 function extractTableName(argNodes: Node[]): string {
@@ -65,8 +68,9 @@ function extractIdColumn(argNodes: Node[]): Column | null {
   return idColumn
 }
 
-function extractTableColumns(blockNodes: Node[]): Column[] {
+function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
   const columns: Column[] = []
+  const indices: Index[] = []
 
   for (const blockNode of blockNodes) {
     if (blockNode instanceof StatementsNode) {
@@ -76,8 +80,11 @@ function extractTableColumns(blockNodes: Node[]): Column[] {
           node.receiver instanceof LocalVariableReadNode &&
           node.receiver.name === 't'
         ) {
-          // TODO: Need to handle index
-          if (node.name === 'index') continue
+          if (node.name === 'index') {
+            const index = extractIndexDetails(node)
+            indices.push(index)
+            continue
+          }
 
           const column = extractColumnDetails(node)
           if (column.name) columns.push(column)
@@ -86,7 +93,7 @@ function extractTableColumns(blockNodes: Node[]): Column[] {
     }
   }
 
-  return columns
+  return [columns, indices]
 }
 
 function extractColumnDetails(node: CallNode): Column {
@@ -108,6 +115,31 @@ function extractColumnDetails(node: CallNode): Column {
   return column
 }
 
+function extractIndexDetails(node: CallNode): Index {
+  const index = anIndex({
+    name: '',
+    unique: false,
+    columns: [],
+  })
+
+  const argNodes = node.arguments_?.compactChildNodes() || []
+  for (const argNode of argNodes) {
+    if (argNode instanceof ArrayNode) {
+      const argElemens = argNode.compactChildNodes()
+      for (const argElem of argElemens) {
+        if (argElem instanceof StringNode) {
+          // @ts-expect-error: unescaped is defined as string but it is actually object
+          index.columns.push(argElem.unescaped.value)
+        }
+      }
+    } else if (argNode instanceof KeywordHashNode) {
+      extractIndexOptions(argNode, index)
+    }
+  }
+
+  return index
+}
+
 function extractColumnOptions(hashNode: KeywordHashNode, column: Column): void {
   for (const argElement of hashNode.elements) {
     if (!(argElement instanceof AssocNode)) continue
@@ -124,6 +156,25 @@ function extractColumnOptions(hashNode: KeywordHashNode, column: Column): void {
         break
       case 'unique':
         column.unique = value instanceof TrueNode
+        break
+    }
+  }
+}
+
+function extractIndexOptions(hashNode: KeywordHashNode, index: Index): void {
+  for (const argElement of hashNode.elements) {
+    if (!(argElement instanceof AssocNode)) continue
+    // @ts-expect-error: unescaped is defined as string but it is actually object
+    const key = argElement.key.unescaped.value
+    const value = argElement.value
+
+    switch (key) {
+      case 'name':
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        index.name = value.unescaped.value
+        break
+      case 'unique':
+        index.unique = value instanceof TrueNode
         break
     }
   }
@@ -164,17 +215,26 @@ class DBStructureFinder extends Visitor {
       })
 
       const columns: Column[] = []
+      const indices: Index[] = []
 
       const idColumn = extractIdColumn(argNodes)
       if (idColumn) columns.push(idColumn)
 
       const blockNodes = node.block?.compactChildNodes() || []
-      columns.push(...extractTableColumns(blockNodes))
+      const [extractColumns, extractIndices] = extractTableDetails(blockNodes)
+
+      columns.push(...extractColumns)
+      indices.push(...extractIndices)
 
       table.columns = columns.reduce((acc, column) => {
         acc[column.name] = column
         return acc
       }, {} as Columns)
+
+      table.indices = indices.reduce((acc, index) => {
+        acc[index.name] = index
+        return acc
+      }, {} as Indices)
 
       this.tables.push(table)
     }
