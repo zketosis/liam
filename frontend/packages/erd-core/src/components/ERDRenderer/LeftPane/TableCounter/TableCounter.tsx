@@ -11,7 +11,7 @@ export const TableCounter: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Table2 width={'12px'} />
+      <Table2 width="12px" />
       <span className={styles.text}>
         {visibleCount} / {allCount}
       </span>
