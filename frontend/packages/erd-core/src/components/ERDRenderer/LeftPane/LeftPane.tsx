@@ -27,7 +27,7 @@ export const LeftPane = () => {
               {Object.values(tables).map((table) => (
                 <SidebarMenuItem key={table.name}>
                   <SidebarMenuButton>
-                    <Table2 width={'10px'} />
+                    <Table2 width="10px" />
                     <span>{table.name}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
