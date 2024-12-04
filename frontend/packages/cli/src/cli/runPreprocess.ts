@@ -27,7 +27,9 @@ export async function runPreprocess(
       )
     }
   } else {
-    throw new Error('Invalid format')
+    throw new Error(
+      '--format is missing, invalid, or specifies an unsupported format. Please provide a valid format (e.g., "schemarb" or "postgres").',
+    )
   }
 
   const filePath = path.join(outputDir, 'schema.json')

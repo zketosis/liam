@@ -67,6 +67,8 @@ describe('runPreprocess', () => {
 
     await expect(
       runPreprocess(inputPath, tmpDir, 'invalid' as SupportedFormat),
-    ).rejects.toThrow('Invalid format')
+    ).rejects.toThrow(
+      '--format is missing, invalid, or specifies an unsupported format. Please provide a valid format (e.g., "schemarb" or "postgres").',
+    )
   })
 })
