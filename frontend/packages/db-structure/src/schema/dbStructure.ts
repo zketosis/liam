@@ -28,6 +28,8 @@ const indexSchema = v.object({
   columns: v.array(v.string()),
 })
 
+export type Index = v.InferOutput<typeof indexSchema>
+
 const tableSchema = v.object({
   name: tableNameSchema,
   columns: columnsSchema,

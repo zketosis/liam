@@ -1,4 +1,4 @@
-import type { Column, DBStructure, Table, Tables } from './dbStructure.js'
+import type { Column, DBStructure, Table, Tables, Index } from './dbStructure.js'
 
 export const aColumn = (override?: Partial<Column>): Column => ({
   name: 'id',
@@ -21,6 +21,13 @@ export const aTable = (override?: Partial<Table>): Table => ({
   columns: {
     ...override?.columns,
   },
+})
+
+export const anIndex = (override?: Partial<Index>): Index => ({
+  name: '',
+  unique: false,
+  columns: [],
+  ...override,
 })
 
 const tables = (override?: Tables): Tables => {
