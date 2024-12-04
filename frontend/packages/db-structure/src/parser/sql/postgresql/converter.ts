@@ -55,7 +55,28 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
               ?.filter(isStringNode)
               .map((n) => n.String.sval)
               .join('') || '',
-          default: null, // TODO
+          default:
+            colDef.constraints
+              ?.filter(isConstraintNode)
+              .reduce<string | number | boolean | null>((defaultValue, c) => {
+                const constraint = c.Constraint
+                if (
+                  constraint.contype !== 'CONSTR_DEFAULT' ||
+                  !constraint.raw_expr ||
+                  !('A_Const' in constraint.raw_expr)
+                )
+                  return defaultValue
+
+                const aConst = constraint.raw_expr.A_Const
+                if ('sval' in aConst && 'sval' in aConst.sval)
+                  return aConst.sval.sval
+                if ('ival' in aConst && 'ival' in aConst.ival)
+                  return aConst.ival.ival
+                if ('boolval' in aConst && 'boolval' in aConst.boolval)
+                  return aConst.boolval.boolval
+
+                return defaultValue
+              }, null) || null,
           check: null, // TODO
           primary:
             colDef.constraints
