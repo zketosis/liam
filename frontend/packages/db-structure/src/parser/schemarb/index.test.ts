@@ -189,5 +189,25 @@ describe(processor, () => {
 
       expect(result).toEqual(expected)
     })
+
+    it('column commnet', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.string "name", comment: 'this is name'
+        end
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'string',
+            comment: 'this is name',
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
   })
 })
