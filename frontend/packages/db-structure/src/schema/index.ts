@@ -6,5 +6,7 @@ export type {
   Table,
   Tables,
   Relationship,
+  Index,
+  Indices,
 } from './dbStructure.js'
-export { aColumn, aTable, aDBStructure } from './factories.js'
+export { aColumn, aTable, aDBStructure, anIndex } from './factories.js'

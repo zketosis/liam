@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
+import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
@@ -19,6 +19,9 @@ describe(processor, () => {
                 unique: true,
               }),
               ...override?.columns,
+            },
+            indices: {
+              ...override?.indices,
             },
           }),
         },
@@ -160,6 +163,26 @@ describe(processor, () => {
             name: 'name',
             type: 'string',
             unique: true,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('index', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.index [ "id", "email" ], name: "index_users_on_id_and_email", unique: true
+        end
+      `)
+
+      const expected = userTable({
+        indices: {
+          index_users_on_id_and_email: anIndex({
+            name: 'index_users_on_id_and_email',
+            unique: true,
+            columns: ['id', 'email'],
           }),
         },
       })

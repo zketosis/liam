@@ -4,6 +4,8 @@ const columnNameSchema = v.string()
 
 const tableNameSchema = v.string()
 
+const indexNameSchema = v.string()
+
 const relationshipNameSchema = v.string()
 
 const columnSchema = v.object({
@@ -27,12 +29,16 @@ const indexSchema = v.object({
   unique: v.boolean(),
   columns: v.array(v.string()),
 })
+export type Index = v.InferOutput<typeof indexSchema>
+
+const indicesSchema = v.record(indexNameSchema, indexSchema)
+export type Indices = v.InferOutput<typeof indicesSchema>
 
 const tableSchema = v.object({
   name: tableNameSchema,
   columns: columnsSchema,
   comment: v.nullable(v.string()),
-  indices: v.array(indexSchema),
+  indices: indicesSchema,
 })
 
 export type Table = v.InferOutput<typeof tableSchema>
