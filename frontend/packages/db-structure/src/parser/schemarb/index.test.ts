@@ -28,7 +28,7 @@ describe(processor, () => {
         },
       })
 
-    it('comment', async () => {
+    it('table comment', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users", comment: "store our users." do |t|
         end
@@ -204,7 +204,7 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('column commnet', async () => {
+    it('column comment', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", comment: 'this is name'
