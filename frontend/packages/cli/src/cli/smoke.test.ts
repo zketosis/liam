@@ -13,7 +13,7 @@ beforeAll(async () => {
 }, 60000 /* 60 seconds for setup */)
 
 describe('CLI Smoke Test', () => {
-  it('should run the CLI command without errors', async () => {
+  it('should run the CLI command without errors: `erd`', async () => {
     try {
       const { stdout, stderr } = await execAsync('npx --no-install . help')
       // NOTE: suppress the following warning:
@@ -44,7 +44,7 @@ describe('CLI Smoke Test', () => {
     }
   }, 20000 /* 20 seconds for smoke test */)
 
-  it('should run the CLI command without errors', async () => {
+  it('should run the CLI command without errors: `erd build`', async () => {
     await execAsync('rm -rf ./dist')
     try {
       const { stdout, stderr } = await execAsync(
