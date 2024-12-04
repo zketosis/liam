@@ -2,6 +2,9 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { beforeAll, describe, expect, it } from 'vitest'
 
+// NOTE: This CLI smoke test is a preliminary implementation, lacks refinement, and is relatively slow.
+// We should explore alternative approaches for testing.
+
 const execAsync = promisify(exec)
 
 beforeAll(async () => {
