@@ -2,15 +2,18 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { beforeAll, describe, expect, it } from 'vitest'
 
+// NOTE: This CLI smoke test is a preliminary implementation, lacks refinement, and is relatively slow.
+// We should explore alternative approaches for testing.
+
 const execAsync = promisify(exec)
 
 beforeAll(async () => {
   await execAsync('rm -rf ./dist-cli/ ./node_modules/.tmp')
   await execAsync('pnpm run build')
-}, 30000 /* 30 seconds for setup */)
+}, 60000 /* 60 seconds for setup */)
 
 describe('CLI Smoke Test', () => {
-  it('should run the CLI command without errors', async () => {
+  it('should run the CLI command without errors: `erd`', async () => {
     try {
       const { stdout, stderr } = await execAsync('npx --no-install . help')
       // NOTE: suppress the following warning:
@@ -39,9 +42,9 @@ describe('CLI Smoke Test', () => {
       // Fail the test if an error occurs
       expect(error).toBeNull()
     }
-  })
+  }, 20000 /* 20 seconds for smoke test */)
 
-  it('should run the CLI command without errors', async () => {
+  it('should run the CLI command without errors: `erd build`', async () => {
     await execAsync('rm -rf ./dist')
     try {
       const { stdout, stderr } = await execAsync(
@@ -65,5 +68,5 @@ describe('CLI Smoke Test', () => {
     } finally {
       await execAsync('rm -rf ./dist')
     }
-  }, 10000 /* 10 seconds for smoke test */)
+  }, 20000 /* 20 seconds for smoke test */)
 })
