@@ -11,6 +11,7 @@ import {
 } from '@liam-hq/ui'
 import type { Node, NodeProps } from '@xyflow/react'
 import type { FC } from 'react'
+import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
 type Data = {
@@ -27,43 +28,42 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
       <DrawerRoot direction="right">
         <DrawerTrigger>
           <div className={styles.wrapper}>
-            <div>{table.name}</div>
+            <TableHeader name={table.name} />
             <ul>
               {Object.values(table.columns).map((column) => (
-                <li key={column.name}>
-                  <span>
-                    {column.primary && (
-                      <KeyRound
+                <li key={column.name} className={styles.columnWrapper}>
+                  {column.primary && (
+                    <KeyRound
+                      width={16}
+                      height={16}
+                      className={styles.primaryKeyIcon}
+                      role="img"
+                      aria-label="Primary Key"
+                    />
+                  )}
+                  {!column.primary &&
+                    (column.notNull ? (
+                      <DiamondFillIcon
                         width={16}
                         height={16}
+                        className={styles.diamondIcon}
                         role="img"
-                        aria-label="Primary Key"
+                        aria-label="Not Null"
                       />
-                    )}
+                    ) : (
+                      <DiamondIcon
+                        width={16}
+                        height={16}
+                        className={styles.diamondIcon}
+                        role="img"
+                        aria-label="Nullable"
+                      />
+                    ))}
+
+                  <span className={styles.columnName}>
+                    <span>{column.name}</span>
+                    <span className={styles.columnType}>{column.type}</span>
                   </span>
-                  {!column.primary && (
-                    <span>
-                      {column.notNull ? (
-                        <DiamondFillIcon
-                          width={16}
-                          height={16}
-                          role="img"
-                          aria-label="Not Null"
-                        />
-                      ) : (
-                        <DiamondIcon
-                          width={16}
-                          height={16}
-                          role="img"
-                          aria-label="Nullable"
-                        />
-                      )}
-                    </span>
-                  )}
-                  <span> </span>
-                  <span>{column.name}</span>
-                  <span> </span>
-                  <span>{column.type}</span>
                 </li>
               ))}
             </ul>

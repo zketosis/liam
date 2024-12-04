@@ -1,0 +1,14 @@
+.wrapper {
+  display: flex;
+  padding: var(--spacing-2);
+  align-items: center;
+  gap: var(--spacing-1);
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0px 0px;
+  background: var(--global-muted-background);
+  backdrop-filter: blur(8px);
+  color: var(--overlay-60);
+  text-overflow: ellipsis;
+  font-size: var(--font-size-5);
+  font-weight: 500;
+  line-height: normal;
+}
