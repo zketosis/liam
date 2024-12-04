@@ -36,7 +36,7 @@ function extractTableName(argNodes: Node[]): string {
 }
 
 function extractIdColumn(argNodes: Node[]): Column | null {
-  const idKeywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
+  const keywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
 
   const idColumn = aColumn({
     name: 'id',
@@ -46,8 +46,8 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     unique: true,
   })
 
-  if (idKeywordHash) {
-    const idAssoc = idKeywordHash.elements.find(
+  if (keywordHash) {
+    const idAssoc = keywordHash.elements.find(
       (elem) =>
         elem instanceof AssocNode &&
         elem.key instanceof SymbolNode &&
