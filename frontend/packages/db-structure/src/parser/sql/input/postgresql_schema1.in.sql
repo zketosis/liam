@@ -9,3 +9,5 @@ CREATE TABLE posts (
   id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(id)
 );
+
+CREATE UNIQUE INDEX index_users_on_id_and_email ON public.users USING btree (id, email);

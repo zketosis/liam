@@ -41,7 +41,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         },
       },
       "comment": null,
-      "indices": [],
+      "indices": {},
       "name": "posts",
     },
     "users": {
@@ -92,7 +92,16 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         },
       },
       "comment": null,
-      "indices": {},
+      "indices": {
+        "index_users_on_id_and_email": {
+          "columns": [
+            "id",
+            "email",
+          ],
+          "name": "index_users_on_id_and_email",
+          "unique": true,
+        },
+      },
       "name": "users",
     },
   },

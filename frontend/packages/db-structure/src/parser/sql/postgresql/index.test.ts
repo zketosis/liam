@@ -18,7 +18,15 @@ describe(processor, () => {
                 primary: true,
                 increment: true,
               }),
+              name: aColumn({
+                name: 'name',
+                type: 'varchar',
+                notNull: false,
+              }),
               ...override?.columns,
+            },
+            indices: {
+              ...override?.indices,
             },
           }),
         },
@@ -53,15 +61,7 @@ describe(processor, () => {
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            notNull: false,
-          }),
-        },
-      })
+      const expected = userTable()
 
       expect(result).toEqual(expected)
     })
@@ -93,6 +93,52 @@ describe(processor, () => {
       }
 
       expect(result.relationships).toEqual(expectedRelationships)
+    })
+
+    it('index', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+
+        CREATE INDEX index_users_on_id_and_name ON public.users USING btree (id, name);
+      `)
+
+      const expected = userTable({
+        indices: {
+          index_users_on_id_and_name: {
+            name: 'index_users_on_id_and_name',
+            unique: false,
+            columns: ['id', 'name'],
+          },
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('unique index', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+
+        CREATE UNIQUE INDEX index_users_on_id_and_name ON public.users USING btree (id, name);
+      `)
+
+      const expected = userTable({
+        indices: {
+          index_users_on_id_and_name: {
+            name: 'index_users_on_id_and_name',
+            unique: true,
+            columns: ['id', 'name'],
+          },
+        },
+      })
+
+      expect(result).toEqual(expected)
     })
 
     // TODO: Implement default value
