@@ -65,6 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--overlay-70);
 }
 
 .md .leftIcon {

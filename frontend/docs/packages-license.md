@@ -5344,6 +5344,17 @@ CC-BY-4.0 permitted
 
 
 
+<a name="globrex"></a>
+### globrex v0.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="gopd"></a>
 ### gopd v1.0.1
 #### 
@@ -10390,6 +10401,17 @@ Unknown manually approved
 
 
 
+<a name="tsconfck"></a>
+### tsconfck v3.1.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="tsconfig-paths"></a>
 ### tsconfig-paths v3.15.0
 #### 
@@ -10863,6 +10885,17 @@ Unknown manually approved
 
 
 
+<a name="vaul"></a>
+### vaul v1.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="vfile"></a>
 ### vfile v6.0.3
 #### 
@@ -10898,6 +10931,17 @@ Unknown manually approved
 
 <a name="vite-node"></a>
 ### vite-node v2.1.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="vite-tsconfig-paths"></a>
+### vite-tsconfig-paths v5.1.3
 #### 
 
 ##### Paths

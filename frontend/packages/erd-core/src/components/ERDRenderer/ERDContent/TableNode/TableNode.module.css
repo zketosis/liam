@@ -1,3 +1,14 @@
 .wrapper {
-  border: 1px solid #000;
+  border: 1px solid white;
+  color: white;
+}
+
+.content {
+  top: var(--default-header-height);
+  right: 0;
+  bottom: 0;
+
+  /* TODO: delete sample code */
+  border: 1px solid white;
+  color: white;
 }

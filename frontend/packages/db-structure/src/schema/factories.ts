@@ -1,4 +1,4 @@
-import type { Column, DBStructure, Table, Tables } from './dbStructure'
+import type { Column, DBStructure, Table, Tables } from './dbStructure.js'
 
 export const aColumn = (override?: Partial<Column>): Column => ({
   name: 'id',
