@@ -1,9 +1,8 @@
-import type { DBStructure } from 'src/schema/index.js'
-import { processor as schemarbPrismProcessor } from './schemarb-prism/index.js'
+import type { DBStructure } from '../schema/index.js'
 import { processor as schemarbProcessor } from './schemarb/index.js'
 import { processor as postgresqlProcessor } from './sql/index.js'
 
-type SupportedFormat = 'schemarb' | 'postgres' | 'schemarb-prism'
+type SupportedFormat = 'schemarb' | 'postgres'
 
 // TODO: Add error handling and tests
 export const parse = (
@@ -13,8 +12,6 @@ export const parse = (
   switch (format) {
     case 'schemarb':
       return schemarbProcessor(str)
-    case 'schemarb-prism':
-      return schemarbPrismProcessor(str)
     case 'postgres':
       return postgresqlProcessor(str)
     default:

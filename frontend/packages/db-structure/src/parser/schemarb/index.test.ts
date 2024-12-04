@@ -1,7 +1,7 @@
-import type { Table } from 'src/schema'
-import { aColumn, aDBStructure, aTable } from 'src/schema/factories'
 import { describe, expect, it } from 'vitest'
-import { processor } from '.'
+import type { Table } from '../../schema/index.js'
+import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
+import { processor } from './index.js'
 
 describe(processor, () => {
   describe('should parse create_table correctry', () => {
@@ -11,15 +11,21 @@ describe(processor, () => {
           users: aTable({
             name: 'users',
             columns: {
-              id: aColumn({ primary: true }),
+              id: aColumn({
+                name: 'id',
+                type: 'bigserial',
+                notNull: true,
+                primary: true,
+                unique: true,
+              }),
               ...override?.columns,
             },
           }),
         },
       })
 
-    it('not null', () => {
-      const result = processor(/* Ruby */ `
+    it('not null', async () => {
+      const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", null: false
         end
@@ -27,7 +33,6 @@ describe(processor, () => {
 
       const expected = userTable({
         columns: {
-          id: aColumn({ primary: true }),
           name: aColumn({
             name: 'name',
             type: 'string',
@@ -39,8 +44,8 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('nullable', () => {
-      const result = processor(/* Ruby */ `
+    it('nullable', async () => {
+      const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", null: true
         end
@@ -48,7 +53,6 @@ describe(processor, () => {
 
       const expected = userTable({
         columns: {
-          id: aColumn({ primary: true }),
           name: aColumn({
             name: 'name',
             type: 'string',
@@ -60,32 +64,102 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('defalt value', () => {
-      const result = processor(/* Ruby */ `
+    it('defalt value as string', async () => {
+      const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", default: "new user", null: true
-          t.bigint "age", default: 0, null: true
-          t.boolean "is_admin", default: false, null: true
         end
       `)
 
       const expected = userTable({
         columns: {
-          id: aColumn({ primary: true }),
           name: aColumn({
             name: 'name',
             type: 'string',
+            notNull: false,
             default: 'new user',
           }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('defalt value as integer', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.integer "age", default: 30, null: true
+        end
+      `)
+
+      const expected = userTable({
+        columns: {
           age: aColumn({
             name: 'age',
-            type: 'bigint',
-            default: 0,
+            type: 'integer',
+            notNull: false,
+            default: 30,
           }),
-          is_admin: aColumn({
-            name: 'is_admin',
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('defalt value as boolean', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.boolean "active", default: true, null: true
+        end
+      `)
+
+      const expected = userTable({
+        columns: {
+          active: aColumn({
+            name: 'active',
             type: 'boolean',
-            default: false,
+            notNull: false,
+            default: true,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('primary key as args', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users", id: :bigint
+      `)
+
+      const expected = userTable({
+        columns: {
+          id: aColumn({
+            name: 'id',
+            type: 'bigint',
+            notNull: true,
+            primary: true,
+            unique: true,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('unique', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.string "name", unique: true
+        end
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'string',
+            unique: true,
           }),
         },
       })

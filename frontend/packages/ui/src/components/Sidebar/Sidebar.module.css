@@ -1,10 +1,11 @@
 .sidebarProvider {
-  min-height: 100svh;
+  position: relative;
+  min-height: 100%;
 }
 
 .sidebarGap {
   width: var(--sidebar-width);
-  height: 100svh;
+  height: 100%;
   transition-duration: 200ms;
   animation-timing-function: linear;
   transition-property: width;
@@ -16,8 +17,8 @@
 
 .sidebarWrapper {
   width: var(--sidebar-width);
-  height: 100svh;
-  position: fixed;
+  height: 100%;
+  position: absolute;
   inset: 0 auto auto 0;
   z-index: 10;
   transition-duration: 200ms;

@@ -144,10 +144,10 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
           "default": null,
           "increment": false,
           "name": "id",
-          "notNull": false,
+          "notNull": true,
           "primary": true,
-          "type": "varchar",
-          "unique": false,
+          "type": "uuid",
+          "unique": true,
         },
         "is_deleted": {
           "check": null,

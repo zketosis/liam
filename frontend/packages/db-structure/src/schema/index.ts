@@ -1,4 +1,4 @@
-export { dbStructureSchema } from './dbStructure'
+export { dbStructureSchema } from './dbStructure.js'
 export type {
   Column,
   Columns,
@@ -6,5 +6,5 @@ export type {
   Table,
   Tables,
   Relationship,
-} from './dbStructure'
-export { aColumn, aTable, aDBStructure } from './factories'
+} from './dbStructure.js'
+export { aColumn, aTable, aDBStructure } from './factories.js'
