@@ -1,0 +1,17 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  padding: var(--spacing-2);
+  gap: var(--spacing-1half);
+  background: var(--node-background);
+  color: var(--global-foreground);
+  font-size: var(--font-size-3);
+  line-height: normal;
+  border-bottom: 1px solid var(--node-border);
+}
+
+.columnName {
+  display: inline-flex;
+  justify-content: space-between;
+}

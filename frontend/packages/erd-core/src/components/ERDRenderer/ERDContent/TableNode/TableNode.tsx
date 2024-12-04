@@ -11,6 +11,7 @@ import {
 } from '@liam-hq/ui'
 import type { Node, NodeProps } from '@xyflow/react'
 import type { FC } from 'react'
+import { TableColumn } from './TableColumn'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -31,41 +32,7 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
             <TableHeader name={table.name} />
             <ul>
               {Object.values(table.columns).map((column) => (
-                <li key={column.name}>
-                  <span>
-                    {column.primary && (
-                      <KeyRound
-                        width={16}
-                        height={16}
-                        role="img"
-                        aria-label="Primary Key"
-                      />
-                    )}
-                  </span>
-                  {!column.primary && (
-                    <span>
-                      {column.notNull ? (
-                        <DiamondFillIcon
-                          width={16}
-                          height={16}
-                          role="img"
-                          aria-label="Not Null"
-                        />
-                      ) : (
-                        <DiamondIcon
-                          width={16}
-                          height={16}
-                          role="img"
-                          aria-label="Nullable"
-                        />
-                      )}
-                    </span>
-                  )}
-                  <span> </span>
-                  <span>{column.name}</span>
-                  <span> </span>
-                  <span>{column.type}</span>
-                </li>
+                <TableColumn key={column.name} column={column} />
               ))}
             </ul>
           </div>
