@@ -157,6 +157,10 @@ function extractColumnOptions(hashNode: KeywordHashNode, column: Column): void {
       case 'unique':
         column.unique = value instanceof TrueNode
         break
+      case 'comment':
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        column.comment = value.unescaped.value
+        break
     }
   }
 }
