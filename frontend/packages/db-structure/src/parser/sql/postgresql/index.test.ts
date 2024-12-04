@@ -66,6 +66,27 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
+    it('unique', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) UNIQUE
+        );
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'varchar',
+            unique: true,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
     it('should parse foreign keys to relationships', async () => {
       const result = await processor(/* PostgreSQL */ `
         CREATE TABLE users (
