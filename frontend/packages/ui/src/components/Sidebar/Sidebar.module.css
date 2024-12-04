@@ -32,7 +32,7 @@
   height: 100%;
   position: absolute;
   inset: 0 auto auto 0;
-  z-index: 10;
+  z-index: var(--z-index-sidebar);
   transition-duration: 200ms;
   animation-timing-function: linear;
   transition-property: left, right, width;

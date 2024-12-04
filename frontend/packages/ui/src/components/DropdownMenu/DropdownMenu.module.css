@@ -3,7 +3,7 @@
     Needed to set the z-index on the parent element div[data-radix-popper-content-wrapper].
     @see: https://github.com/radix-ui/primitives/issues/1839#issuecomment-1708479747
   */
-  z-index: var(--z-index-popup-button);
+  z-index: var(--z-index-dropdown-menu);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-half);
