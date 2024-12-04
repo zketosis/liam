@@ -11,6 +11,10 @@
   border-bottom: 1px solid var(--node-border);
 }
 
+.primaryKeyIcon {
+  color: var(--primary-accent);
+}
+
 .diamondIcon {
   color: var(--overlay-70);
 }

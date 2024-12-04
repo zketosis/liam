@@ -11,7 +11,13 @@ export const TableColumn: FC<Props> = ({ column }) => {
   return (
     <li key={column.name} className={styles.wrapper}>
       {column.primary && (
-        <KeyRound width={16} height={16} role="img" aria-label="Primary Key" />
+        <KeyRound
+          width={16}
+          height={16}
+          className={styles.primaryKeyIcon}
+          role="img"
+          aria-label="Primary Key"
+        />
       )}
       {!column.primary &&
         (column.notNull ? (
