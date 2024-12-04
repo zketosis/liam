@@ -1,1 +1,5 @@
-export { parse, type SupportedFormat } from './parser/index.js'
+export {
+  parse,
+  type SupportedFormat,
+  supportedFormatSchema,
+} from './parser/index.js'
