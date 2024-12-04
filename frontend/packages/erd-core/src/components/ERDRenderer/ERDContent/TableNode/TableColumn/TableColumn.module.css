@@ -11,6 +11,10 @@
   border-bottom: 1px solid var(--node-border);
 }
 
+.diamondIcon {
+  color: var(--overlay-70);
+}
+
 .columnName {
   display: inline-flex;
   justify-content: space-between;

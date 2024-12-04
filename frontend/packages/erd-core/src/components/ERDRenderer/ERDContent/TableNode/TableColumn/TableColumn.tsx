@@ -18,6 +18,7 @@ export const TableColumn: FC<Props> = ({ column }) => {
           <DiamondFillIcon
             width={16}
             height={16}
+            className={styles.diamondIcon}
             role="img"
             aria-label="Not Null"
           />
@@ -25,6 +26,7 @@ export const TableColumn: FC<Props> = ({ column }) => {
           <DiamondIcon
             width={16}
             height={16}
+            className={styles.diamondIcon}
             role="img"
             aria-label="Nullable"
           />
