@@ -23,3 +23,12 @@
   display: inline-flex;
   justify-content: space-between;
 }
+
+.columnType {
+  color: var(--overlay-70, rgba(255, 255, 255, 0.7));
+  text-align: right;
+  font-family: var(--code-font);
+  font-size: var(--font-size-1);
+  font-weight: 400;
+  line-height: normal;
+}

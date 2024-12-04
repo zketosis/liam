@@ -40,7 +40,7 @@ export const TableColumn: FC<Props> = ({ column }) => {
 
       <span className={styles.columnName}>
         <span>{column.name}</span>
-        <span>{column.type}</span>
+        <span className={styles.columnType}>{column.type}</span>
       </span>
     </li>
   )
