@@ -18,10 +18,7 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[css]": {
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.stylelint": "always"
-    }
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[mdx]": {
     "editor.formatOnSave": false,
