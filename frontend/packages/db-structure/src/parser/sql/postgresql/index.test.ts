@@ -66,6 +66,92 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
+    it('unique', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) UNIQUE
+        );
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'varchar',
+            unique: true,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('default value as varchar', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) DEFAULT 'new user'
+        );
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'varchar',
+            default: 'new user',
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('default value as integer', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255),
+          age INTEGER DEFAULT 30
+        );
+      `)
+
+      const expected = userTable({
+        columns: {
+          age: aColumn({
+            name: 'age',
+            type: 'int4',
+            default: 30,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('default value as boolean', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255),
+          active BOOLEAN DEFAULT TRUE
+        );
+      `)
+
+      const expected = userTable({
+        columns: {
+          active: aColumn({
+            name: 'active',
+            type: 'bool',
+            default: true,
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
     it('should parse foreign keys to relationships', async () => {
       const result = await processor(/* PostgreSQL */ `
         CREATE TABLE users (
@@ -140,7 +226,5 @@ describe(processor, () => {
 
       expect(result).toEqual(expected)
     })
-
-    // TODO: Implement default value
   })
 })

@@ -67,7 +67,7 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('defalt value as string', async () => {
+    it('default value as string', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", default: "new user", null: true
@@ -88,7 +88,7 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('defalt value as integer', async () => {
+    it('default value as integer', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.integer "age", default: 30, null: true
@@ -109,7 +109,7 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('defalt value as boolean', async () => {
+    it('default value as boolean', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.boolean "active", default: true, null: true
