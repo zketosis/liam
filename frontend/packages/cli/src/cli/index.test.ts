@@ -35,14 +35,24 @@ describe('program', () => {
   })
 
   describe('commands', () => {
-    it('should call buildCommand when "build" command is executed', () => {
-      program.parse(['erd', 'build', '--input', 'path/to/file.sql'], {
-        from: 'user',
-      })
-      expect(buildCommand).toHaveBeenCalledWith(
-        'path/to/file.sql',
-        expect.stringMatching(/\/dist$/),
-      )
-    })
+    it.each([['schemarb'], ['postgres']])(
+      'should call buildCommand with correct arguments for format %s',
+      (format) => {
+        const inputFile = './fixtures/input.schema.rb'
+
+        program.parse(
+          ['erd', 'build', '--input', inputFile, '--format', format],
+          {
+            from: 'user',
+          },
+        )
+
+        expect(buildCommand).toHaveBeenCalledWith(
+          inputFile,
+          expect.stringContaining('dist'),
+          format,
+        )
+      },
+    )
   })
 })

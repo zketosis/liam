@@ -1,5 +1,11 @@
-CREATE TABLE products (
-  brand VARCHAR(255),
-  model VARCHAR(255),
-  year INT
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id)
 );

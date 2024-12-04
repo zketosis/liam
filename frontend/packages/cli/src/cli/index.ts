@@ -15,6 +15,7 @@ erdCommand
   .command('build')
   .description('Build ERD html assets')
   .option('--input <path>', 'Path to the .sql file')
-  .action((options) => buildCommand(options.input, distDir))
+  .option('--format <format>', 'Format of the input file')
+  .action((options) => buildCommand(options.input, distDir, options.format))
 
 export { program }

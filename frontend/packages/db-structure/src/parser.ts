@@ -1,1 +1,1 @@
-export { parse } from './parser/index.js'
+export { parse, type SupportedFormat } from './parser/index.js'
