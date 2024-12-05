@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../../schema/index.js'
 import { aColumn, aDBStructure, aTable } from '../../../schema/index.js'
+import { parserTestCases } from '../../__tests__/testcase.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
@@ -36,17 +37,12 @@ describe(processor, () => {
     it('table comment', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
+          id BIGSERIAL PRIMARY KEY
         );
         COMMENT ON TABLE users IS 'store our users.';
       `)
 
-      const expected = userTable({
-        comment: 'store our users.',
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['table comment'])
     })
 
     it('not null', async () => {
