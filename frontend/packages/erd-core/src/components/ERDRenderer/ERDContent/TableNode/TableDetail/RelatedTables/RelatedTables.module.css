@@ -1,0 +1,27 @@
+.wrapper {
+  display: grid;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+}
+
+.header {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.heading {
+  color: var(--global-foreground);
+  font-family: var(--main-font);
+  font-size: var(--font-size-3);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.contentWrapper {
+  border-radius: var(--border-radius-smbase);
+  border: 1px solid var(--pane-border);
+  background: var(--global-background);
+}
