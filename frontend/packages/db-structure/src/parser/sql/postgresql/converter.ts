@@ -232,13 +232,6 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     const comment = commentStmt.comment
     if (!comment) return
 
-    // `COMMENT ON TABLE <table_name> IS '<comment>';`
-    // or
-    // `COMMENT ON COLUMN <table_name>.<column_name> IS '<comment>';`.
-    // e1 is the table name, e2 is the column name. e2 may be undefined.
-    const [e1, e2] = objectNode.List.items || []
-    if (!e1) return
-
     const extractStringValue = (item: Node): string | null =>
       'String' in item &&
       typeof item.String === 'object' &&
@@ -247,17 +240,33 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
         ? item.String.sval
         : null
 
-    const tableName = extractStringValue(e1)
-    if (!tableName) return
-    if (!tables[tableName]) return
+    const list = objectNode.List.items || []
+    const last1 = list[list.length - 1]
+    const last2 = list[list.length - 2]
+    if (!last1) return
 
     switch (commentStmt.objtype) {
-      case 'OBJECT_TABLE':
+      case 'OBJECT_TABLE': {
+        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
+        // `COMMENT ON TABLE <scope_name>.<table_name> IS '<comment>';`
+        // or
+        // `COMMENT ON TABLE <table_name> IS '<comment>';`
+        const tableName = extractStringValue(last1)
+        if (!tableName) return
+        if (!tables[tableName]) return
         tables[tableName].comment = comment
         return
+      }
       case 'OBJECT_COLUMN': {
-        if (!e2) return
-        const columnName = extractStringValue(e2)
+        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
+        // `COMMENT ON COLUMN <scope_name>.<table_name>.<column_name> IS '<comment>';`
+        // or
+        // `COMMENT ON COLUMN <table_name>.<column_name> IS '<comment>';`
+        if (!last2) return
+        const tableName = extractStringValue(last2)
+        if (!tableName) return
+        if (!tables[tableName]) return
+        const columnName = extractStringValue(last1)
         if (!columnName) return
         if (!tables[tableName].columns[columnName]) return
         tables[tableName].columns[columnName].comment = comment
