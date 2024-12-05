@@ -264,9 +264,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
         return
       }
       default:
-        throw new Error(
-          `Unsupported comment object type: ${commentStmt.objtype}`,
-        )
+      // NOTE: unexpected, but do nothing for now.
     }
   }
 
