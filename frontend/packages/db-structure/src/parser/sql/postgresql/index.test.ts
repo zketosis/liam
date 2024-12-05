@@ -33,8 +33,8 @@ describe(processor, () => {
         },
       })
 
-    it('comment', async () => {
-      const result = await processor(/* PostgreSQL */ `
+    it('table comment', async () => {
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
@@ -238,6 +238,28 @@ describe(processor, () => {
             unique: true,
             columns: ['id', 'name'],
           },
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('column commnet', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+        COMMENT ON COLUMN users.name IS 'this is name';
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'varchar',
+            comment: 'this is name',
+          }),
         },
       })
 

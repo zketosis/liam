@@ -219,33 +219,54 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   }
 
   function handleCommentStmt(commentStmt: CommentStmt) {
-    if (commentStmt.objtype !== 'OBJECT_TABLE') return
+    if (
+      commentStmt.objtype !== 'OBJECT_TABLE' &&
+      commentStmt.objtype !== 'OBJECT_COLUMN'
+    )
+      return
     const objectNode = commentStmt.object
     if (!objectNode) return
-
     const isList = (stmt: Node): stmt is { List: List } => 'List' in stmt
     if (!isList(objectNode)) return
 
-    // Handles statements like `COMMENT ON TABLE <table_name> IS '<comment>';`.
-    // NOTE: PostgreSQL allows only one comment to be added to one table per statement,
-    // so we can reasonably assume the number of `<table_name>` elements is 1.
-    const item = objectNode.List?.items?.[0]
-    if (!item) return
-    const tableName =
-      'String' in item &&
-      typeof item.String === 'object' &&
-      item.String !== null &&
-      'sval' in item.String &&
-      item.String.sval
-
-    if (!tableName) return
-    if (!tables[tableName]) return
     const comment = commentStmt.comment
     if (!comment) return
 
-    tables[tableName] = {
-      ...tables[tableName],
-      comment,
+    // `COMMENT ON TABLE <table_name> IS '<comment>';`
+    // or
+    // `COMMENT ON COLUMN <table_name>.<column_name> IS '<comment>';`.
+    // e1 is the table name, e2 is the column name. e2 may be undefined.
+    const [e1, e2] = objectNode.List.items || []
+    if (!e1) return
+
+    const extractStringValue = (item: Node): string | null =>
+      'String' in item &&
+      typeof item.String === 'object' &&
+      item.String !== null &&
+      'sval' in item.String
+        ? item.String.sval
+        : null
+
+    const tableName = extractStringValue(e1)
+    if (!tableName) return
+    if (!tables[tableName]) return
+
+    switch (commentStmt.objtype) {
+      case 'OBJECT_TABLE':
+        tables[tableName].comment = comment
+        return
+      case 'OBJECT_COLUMN': {
+        if (!e2) return
+        const columnName = extractStringValue(e2)
+        if (!columnName) return
+        if (!tables[tableName].columns[columnName]) return
+        tables[tableName].columns[columnName].comment = comment
+        return
+      }
+      default:
+        throw new Error(
+          `Unsupported comment object type: ${commentStmt.objtype}`,
+        )
     }
   }
 
