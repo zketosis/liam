@@ -6,4 +6,4 @@ export * from './Table2'
 export * from './PanelLeft'
 export * from './XIcon'
 
-export { KeyRound } from 'lucide-react'
+export { KeyRound, Hash } from 'lucide-react'
