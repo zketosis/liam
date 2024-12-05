@@ -27,4 +27,6 @@ export const DrawerContent = forwardRef<
 ))
 DrawerContent.displayName = Drawer.Content.displayName
 
+export const DrawerTitle = Drawer.Title
+
 export const DrawerClose = Drawer.Close
