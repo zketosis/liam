@@ -13,7 +13,7 @@ describe(processor, () => {
             columns: {
               id: aColumn({
                 name: 'id',
-                type: 'serial',
+                type: 'bigserial',
                 notNull: true,
                 primary: true,
               }),
@@ -35,7 +35,7 @@ describe(processor, () => {
     it('table comment', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
         COMMENT ON TABLE users IS 'store our users.';
@@ -51,7 +51,7 @@ describe(processor, () => {
     it('not null', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL
         );
       `)
@@ -72,7 +72,7 @@ describe(processor, () => {
     it('nullable', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
       `)
@@ -85,7 +85,7 @@ describe(processor, () => {
     it('unique', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255) UNIQUE
         );
       `)
@@ -106,7 +106,7 @@ describe(processor, () => {
     it('default value as varchar', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255) DEFAULT 'new user'
         );
       `)
@@ -127,7 +127,7 @@ describe(processor, () => {
     it('default value as integer', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255),
           age INTEGER DEFAULT 30
         );
@@ -149,7 +149,7 @@ describe(processor, () => {
     it('default value as boolean', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255),
           active BOOLEAN DEFAULT TRUE
         );
@@ -171,12 +171,12 @@ describe(processor, () => {
     it('should parse foreign keys to one-to-many relationships', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
 
         CREATE TABLE posts (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           user_id INT REFERENCES users(id)
         );
       `)
@@ -200,12 +200,12 @@ describe(processor, () => {
     it('should parse foreign keys and unique index to one-to-one relationships', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
 
         CREATE TABLE posts (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           user_id INT REFERENCES users(id) UNIQUE
         );
       `)
@@ -229,7 +229,7 @@ describe(processor, () => {
     it('index', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
 
@@ -252,7 +252,7 @@ describe(processor, () => {
     it('unique index', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
 
@@ -275,7 +275,7 @@ describe(processor, () => {
     it('column commnet', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
-          id SERIAL PRIMARY KEY,
+          id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255)
         );
         COMMENT ON COLUMN users.name IS 'this is name';
