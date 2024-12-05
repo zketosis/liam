@@ -6,6 +6,7 @@
   padding: 0 var(--spacing-4);
   background-color: var(--global-muted-background);
   border-bottom: 1px solid var(--pane-border);
+  z-index: var(--z-index-header);
 }
 
 .logo {

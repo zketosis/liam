@@ -2,4 +2,10 @@
   --default-timing-function: ease-out;
   --default-animation-duration: 300ms;
   --default-hover-animation-duration: 100ms;
+
+  --z-index-sidebar: 900;
+  --z-index-drawer: 900;
+  --z-index-header: 1000;
+  --z-index-dropdown-menu: 1100;
+  --z-index-tooltip: 2000;
 }

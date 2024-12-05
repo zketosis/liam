@@ -1,5 +1,6 @@
 .content {
   position: fixed;
+  z-index: var(--z-index-drawer);
 }
 
 /*
