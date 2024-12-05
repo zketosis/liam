@@ -60,8 +60,8 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                       />
                     ))}
 
-                  <span className={styles.columnName}>
-                    <span>{column.name}</span>
+                  <span className={styles.columnNameWrapper}>
+                    <span className={styles.columnName}>{column.name}</span>
                     <span className={styles.columnType}>{column.type}</span>
                   </span>
                 </li>

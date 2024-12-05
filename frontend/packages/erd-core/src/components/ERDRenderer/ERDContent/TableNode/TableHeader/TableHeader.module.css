@@ -12,3 +12,9 @@
   font-weight: 500;
   line-height: normal;
 }
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
