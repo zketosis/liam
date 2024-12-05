@@ -18,7 +18,7 @@ export const ColumnsItem: FC<Props> = ({ column }) => {
           <dt className={styles.dt}>Type</dt>
           <dd className={styles.dd}>{column.type}</dd>
         </div>
-        {column.default && (
+        {column.default !== null && (
           <div className={styles.dlItem}>
             <dt className={styles.dt}>Default</dt>
             <dd className={styles.dd}>{column.default}</dd>
