@@ -174,7 +174,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       tables[tableName] = {
         name: tableName,
         columns,
-        comment: null, // TODO
+        comment: null,
         indices: {},
       }
     }
@@ -219,33 +219,61 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   }
 
   function handleCommentStmt(commentStmt: CommentStmt) {
-    if (commentStmt.objtype !== 'OBJECT_TABLE') return
+    if (
+      commentStmt.objtype !== 'OBJECT_TABLE' &&
+      commentStmt.objtype !== 'OBJECT_COLUMN'
+    )
+      return
     const objectNode = commentStmt.object
     if (!objectNode) return
-
     const isList = (stmt: Node): stmt is { List: List } => 'List' in stmt
     if (!isList(objectNode)) return
 
-    // Handles statements like `COMMENT ON TABLE <table_name> IS '<comment>';`.
-    // NOTE: PostgreSQL allows only one comment to be added to one table per statement,
-    // so we can reasonably assume the number of `<table_name>` elements is 1.
-    const item = objectNode.List?.items?.[0]
-    if (!item) return
-    const tableName =
-      'String' in item &&
-      typeof item.String === 'object' &&
-      item.String !== null &&
-      'sval' in item.String &&
-      item.String.sval
-
-    if (!tableName) return
-    if (!tables[tableName]) return
     const comment = commentStmt.comment
     if (!comment) return
 
-    tables[tableName] = {
-      ...tables[tableName],
-      comment,
+    const extractStringValue = (item: Node): string | null =>
+      'String' in item &&
+      typeof item.String === 'object' &&
+      item.String !== null &&
+      'sval' in item.String
+        ? item.String.sval
+        : null
+
+    const list = objectNode.List.items || []
+    const last1 = list[list.length - 1]
+    const last2 = list[list.length - 2]
+    if (!last1) return
+
+    switch (commentStmt.objtype) {
+      case 'OBJECT_TABLE': {
+        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
+        // `COMMENT ON TABLE <scope_name>.<table_name> IS '<comment>';`
+        // or
+        // `COMMENT ON TABLE <table_name> IS '<comment>';`
+        const tableName = extractStringValue(last1)
+        if (!tableName) return
+        if (!tables[tableName]) return
+        tables[tableName].comment = comment
+        return
+      }
+      case 'OBJECT_COLUMN': {
+        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
+        // `COMMENT ON COLUMN <scope_name>.<table_name>.<column_name> IS '<comment>';`
+        // or
+        // `COMMENT ON COLUMN <table_name>.<column_name> IS '<comment>';`
+        if (!last2) return
+        const tableName = extractStringValue(last2)
+        if (!tableName) return
+        if (!tables[tableName]) return
+        const columnName = extractStringValue(last1)
+        if (!columnName) return
+        if (!tables[tableName].columns[columnName]) return
+        tables[tableName].columns[columnName].comment = comment
+        return
+      }
+      default:
+      // NOTE: unexpected, but do nothing for now.
     }
   }
 

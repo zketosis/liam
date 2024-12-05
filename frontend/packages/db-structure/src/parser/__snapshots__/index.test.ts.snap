@@ -81,7 +81,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
         },
         "username": {
           "check": null,
-          "comment": null,
+          "comment": "user fullname.",
           "default": null,
           "increment": false,
           "name": "username",
