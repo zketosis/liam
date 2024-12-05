@@ -8,6 +8,7 @@ export * from './Minus'
 export * from './Plus'
 export * from './Scan'
 export * from './Table2'
+export * from './TidyUpIcon'
 export * from './PanelLeft'
 export * from './XIcon'
 
