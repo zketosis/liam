@@ -52,6 +52,10 @@ const foreignKeyConstraintSchema = v.picklist([
   'NO ACTION',
 ])
 
+export type ForeignKeyConstraint = v.InferOutput<
+  typeof foreignKeyConstraintSchema
+>
+
 const relationshipSchema = v.object({
   name: relationshipNameSchema,
   primaryTableName: tableNameSchema,

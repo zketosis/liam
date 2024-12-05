@@ -9,6 +9,7 @@ export type {
   Relationships,
   Index,
   Indices,
+  ForeignKeyConstraint,
 } from './dbStructure.js'
 export {
   aColumn,

@@ -10,6 +10,7 @@ import type {
 import type {
   Columns,
   DBStructure,
+  ForeignKeyConstraint,
   Relationship,
   Relationships,
   Table,
@@ -129,7 +130,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
 
         // Update or delete constraint for foreign key
         // see: https://github.com/launchql/pgsql-parser/blob/pgsql-parser%4013.16.0/packages/deparser/src/deparser.ts#L3101-L3141
-        const getConstraintAction = (action?: string): string => {
+        const getConstraintAction = (action?: string): ForeignKeyConstraint => {
           switch (action?.toLowerCase()) {
             case 'r':
               return 'RESTRICT'

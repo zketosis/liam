@@ -18,6 +18,7 @@ import type {
   Column,
   Columns,
   DBStructure,
+  ForeignKeyConstraint,
   Index,
   Indices,
   Relationship,
@@ -218,12 +219,12 @@ function extractDefaultValue(
 }
 
 function extractRelationshipTableNames(argNodes: Node[]): [string, string] {
-  argNodes = argNodes.filter((node) => node instanceof StringNode)
-  if (!(argNodes.length === 2)) {
+  const stringNodes = argNodes.filter((node) => node instanceof StringNode)
+  if (!(stringNodes.length === 2)) {
     throw new Error('Foreign key relationship must have two table names')
   }
 
-  const [foreignTableName, primaryTableName] = argNodes.map((node) => {
+  const [foreignTableName, primaryTableName] = stringNodes.map((node) => {
     // @ts-expect-error: unescaped is defined as string but it is actually object
     if (node instanceof StringNode) return node.unescaped.value
     return null
@@ -232,7 +233,7 @@ function extractRelationshipTableNames(argNodes: Node[]): [string, string] {
   return [primaryTableName, foreignTableName]
 }
 
-function normalizeConstraintName(constraint: string): string {
+function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
   // Valid values are :nullify, :cascade, and :restrict
   // https://github.com/rails/rails/blob/v8.0.0/activerecord/lib/active_record/connection_adapters/abstract/schema_statements.rb#L1161-L1164
   switch (constraint) {
@@ -247,7 +248,10 @@ function normalizeConstraintName(constraint: string): string {
   }
 }
 
-function extractForeignKeyOptions(argNodes: Node[], relation: Relationship): void {
+function extractForeignKeyOptions(
+  argNodes: Node[],
+  relation: Relationship,
+): void {
   for (const argNode of argNodes) {
     if (argNode instanceof KeywordHashNode) {
       for (const argElement of argNode.elements) {
@@ -271,14 +275,18 @@ function extractForeignKeyOptions(argNodes: Node[], relation: Relationship): voi
             break
           case 'on_update':
             if (value instanceof SymbolNode) {
-              // @ts-expect-error: unescaped is defined as string but it is actually object
-              relation.updateConstraint = normalizeConstraintName(value.unescaped.value)
+              relation.updateConstraint = normalizeConstraintName(
+                // @ts-expect-error: unescaped is defined as string but it is actually object
+                value.unescaped.value,
+              )
             }
             break
           case 'on_delete':
             if (value instanceof SymbolNode) {
-              // @ts-expect-error: unescaped is defined as string but it is actually object
-              relation.deleteConstraint = normalizeConstraintName(value.unescaped.value)
+              relation.deleteConstraint = normalizeConstraintName(
+                // @ts-expect-error: unescaped is defined as string but it is actually object
+                value.unescaped.value,
+              )
             }
             break
         }
@@ -297,10 +305,13 @@ class DBStructureFinder extends Visitor {
         acc[table.name] = table
         return acc
       }, {} as Tables),
-      relationships: this.relationships.reduce((acc, relationship) => {
-        acc[relationship.name] = relationship
-        return acc
-      }, {} as Record<string, Relationship>),
+      relationships: this.relationships.reduce(
+        (acc, relationship) => {
+          acc[relationship.name] = relationship
+          return acc
+        },
+        {} as Record<string, Relationship>,
+      ),
     }
     return dbStructure
   }
@@ -342,7 +353,8 @@ class DBStructureFinder extends Visitor {
   handleAddForeignKey(node: CallNode): void {
     const argNodes = node.arguments_?.compactChildNodes() || []
 
-    const [primaryTableName, foreignTableName] = extractRelationshipTableNames(argNodes)
+    const [primaryTableName, foreignTableName] =
+      extractRelationshipTableNames(argNodes)
 
     const relationship = aRelationship({
       primaryTableName: primaryTableName,
