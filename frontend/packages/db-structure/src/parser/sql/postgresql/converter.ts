@@ -174,7 +174,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       tables[tableName] = {
         name: tableName,
         columns,
-        comment: null, // TODO
+        comment: null,
         indices: {},
       }
     }
