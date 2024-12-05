@@ -91,7 +91,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
           "unique": true,
         },
       },
-      "comment": null,
+      "comment": "store our users.",
       "indices": {
         "index_users_on_id_and_email": {
           "columns": [

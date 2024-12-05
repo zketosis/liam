@@ -11,3 +11,4 @@ CREATE TABLE posts (
 );
 
 CREATE UNIQUE INDEX index_users_on_id_and_email ON public.users USING btree (id, email);
+COMMENT ON TABLE users IS 'store our users.';

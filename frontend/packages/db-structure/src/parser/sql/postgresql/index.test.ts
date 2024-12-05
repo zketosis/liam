@@ -4,7 +4,7 @@ import { aColumn, aDBStructure, aTable } from '../../../schema/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
-  describe('should parse create_table correctry', () => {
+  describe('should parse create_table correctly', () => {
     const userTable = (override?: Partial<Table>) =>
       aDBStructure({
         tables: {
@@ -28,9 +28,26 @@ describe(processor, () => {
             indices: {
               ...override?.indices,
             },
+            comment: override?.comment ?? null,
           }),
         },
       })
+
+    it('comment', async () => {
+      const result = await processor(/* PostgreSQL */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+        COMMENT ON TABLE users IS 'store our users.';
+      `)
+
+      const expected = userTable({
+        comment: 'store our users.',
+      })
+
+      expect(result).toEqual(expected)
+    })
 
     it('not null', async () => {
       const result = await processor(/* sql */ `
