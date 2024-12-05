@@ -10,6 +10,7 @@ export * from './Scan'
 export * from './Table2'
 export * from './TidyUpIcon'
 export * from './PanelLeft'
+export * from './Waypoints'
 export * from './XIcon'
 
 export { KeyRound, Hash } from 'lucide-react'
