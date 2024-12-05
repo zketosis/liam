@@ -2,6 +2,7 @@ import type {
   Column,
   DBStructure,
   Index,
+  Relationship,
   Table,
   Tables,
 } from './dbStructure.js'
@@ -35,6 +36,20 @@ export const anIndex = (override?: Partial<Index>): Index => ({
   name: '',
   unique: false,
   columns: [],
+  ...override,
+})
+
+export const aRelationship = (
+  override?: Partial<Relationship>,
+): Relationship => ({
+  name: '',
+  primaryTableName: '',
+  primaryColumnName: '',
+  foreignTableName: '',
+  foreignColumnName: '',
+  cardinality: 'ONE_TO_MANY',
+  updateConstraint: 'NO ACTION',
+  deleteConstraint: 'NO ACTION',
   ...override,
 })
 

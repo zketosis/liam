@@ -10,4 +10,10 @@ export type {
   Index,
   Indices,
 } from './dbStructure.js'
-export { aColumn, aTable, aDBStructure, anIndex } from './factories.js'
+export {
+  aColumn,
+  aTable,
+  aDBStructure,
+  anIndex,
+  aRelationship,
+} from './factories.js'
