@@ -3,7 +3,7 @@ import type { Table } from '../../schema/index.js'
 import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
 import { processor } from './index.js'
 
-import { parserTestCases } from '../__tests__/testcase.js'
+import { parserTestCases } from '../__tests__/index.js'
 
 describe(processor, () => {
   describe('should parse create_table correctly', () => {
