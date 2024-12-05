@@ -43,13 +43,15 @@ const tableSchema = v.object({
 
 export type Table = v.InferOutput<typeof tableSchema>
 
+const cardinalitySchema = v.picklist(['ONE_TO_ONE', 'ONE_TO_MANY'])
+
 const relationshipSchema = v.object({
   name: relationshipNameSchema,
   primaryTableName: tableNameSchema,
   primaryColumnName: columnNameSchema,
   foreignTableName: tableNameSchema,
   foreignColumnName: columnNameSchema,
-  cardinality: v.string(),
+  cardinality: cardinalitySchema,
   updateConstraint: v.string(),
   deleteConstraint: v.string(),
 })
@@ -59,6 +61,7 @@ const tablesSchema = v.record(tableNameSchema, tableSchema)
 export type Tables = v.InferOutput<typeof tablesSchema>
 
 const relationshipsSchema = v.record(relationshipNameSchema, relationshipSchema)
+export type Relationships = v.InferOutput<typeof relationshipsSchema>
 
 export const dbStructureSchema = v.object({
   tables: tablesSchema,
