@@ -227,7 +227,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     if (!isList(objectNode)) return
 
     // Handles statements like `COMMENT ON TABLE <table_name> IS '<comment>';`.
-    // NOTE: As far as I know, PostgreSQL only allows adding a comment to one table per statement,
+    // NOTE: PostgreSQL allows only one comment to be added to one table per statement,
     // so we can reasonably assume the number of `<table_name>` elements is 1.
     const item = objectNode.List?.items?.[0]
     if (!item) return
