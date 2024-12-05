@@ -118,10 +118,6 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
               ?.filter(isConstraintNode)
               .some((c) => c.Constraint.contype === 'CONSTR_PRIMARY') ||
             false,
-          increment:
-            colDef.typeName?.names
-              ?.filter(isStringNode)
-              .some((n) => n.String.sval === 'serial') || false,
           comment: null, // TODO
         }
 

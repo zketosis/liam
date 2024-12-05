@@ -16,7 +16,6 @@ describe(processor, () => {
                 type: 'serial',
                 notNull: true,
                 primary: true,
-                increment: true,
               }),
               name: aColumn({
                 name: 'name',
