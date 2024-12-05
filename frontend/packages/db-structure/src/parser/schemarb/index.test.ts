@@ -23,9 +23,23 @@ describe(processor, () => {
             indices: {
               ...override?.indices,
             },
+            comment: override?.comment ?? null,
           }),
         },
       })
+
+    it('table comment', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users", comment: "store our users." do |t|
+        end
+      `)
+
+      const expected = userTable({
+        comment: 'store our users.',
+      })
+
+      expect(result).toEqual(expected)
+    })
 
     it('not null', async () => {
       const result = await processor(/* Ruby */ `
@@ -190,7 +204,7 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('column commnet', async () => {
+    it('column comment', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", comment: 'this is name'

@@ -35,8 +35,28 @@ function extractTableName(argNodes: Node[]): string {
   return nameNode.unescaped.value
 }
 
+function extractTableComment(argNodes: Node[]): string | null {
+  const keywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
+
+  if (keywordHash) {
+    const commentAssoc = keywordHash.elements.find(
+      (elem) =>
+        elem instanceof AssocNode &&
+        elem.key instanceof SymbolNode &&
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        elem.key.unescaped.value === 'comment',
+    )
+
+    if (commentAssoc && commentAssoc instanceof AssocNode) {
+      // @ts-expect-error: unescaped is defined as string but it is actually object
+      return commentAssoc.value.unescaped.value
+    }
+  }
+  return null
+}
+
 function extractIdColumn(argNodes: Node[]): Column | null {
-  const idKeywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
+  const keywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
 
   const idColumn = aColumn({
     name: 'id',
@@ -46,8 +66,8 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     unique: true,
   })
 
-  if (idKeywordHash) {
-    const idAssoc = idKeywordHash.elements.find(
+  if (keywordHash) {
+    const idAssoc = keywordHash.elements.find(
       (elem) =>
         elem instanceof AssocNode &&
         elem.key instanceof SymbolNode &&
@@ -217,6 +237,8 @@ class DBStructureFinder extends Visitor {
       const table = aTable({
         name: extractTableName(argNodes),
       })
+
+      table.comment = extractTableComment(argNodes)
 
       const columns: Column[] = []
       const indices: Index[] = []
