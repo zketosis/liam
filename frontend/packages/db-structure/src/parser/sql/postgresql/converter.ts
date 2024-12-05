@@ -11,9 +11,26 @@ import type {
   Columns,
   DBStructure,
   Relationship,
+  Relationships,
   Table,
+  Tables,
 } from '../../../schema/index.js'
 import type { RawStmtWrapper } from './parser.js'
+
+// If there is a unique index for a column in relationships, make it `ONE_TO_ONE` cardinality.
+const handleOneToOneRelationships = (
+  tables: Tables,
+  relationships: Relationships,
+) => {
+  for (const relationship of Object.values(relationships)) {
+    const foreignTable = tables[relationship.foreignTableName]
+    const foreignColumn = foreignTable?.columns[relationship.foreignColumnName]
+
+    if (foreignColumn?.unique) {
+      relationship.cardinality = 'ONE_TO_ONE'
+    }
+  }
+}
 
 // Transform function for AST to DBStructure
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
@@ -270,6 +287,8 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       handleCommentStmt(stmt.CommentStmt)
     }
   }
+
+  handleOneToOneRelationships(tables, relationships)
 
   return {
     tables,

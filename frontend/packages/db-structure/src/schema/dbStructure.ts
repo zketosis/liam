@@ -59,6 +59,7 @@ const tablesSchema = v.record(tableNameSchema, tableSchema)
 export type Tables = v.InferOutput<typeof tablesSchema>
 
 const relationshipsSchema = v.record(relationshipNameSchema, relationshipSchema)
+export type Relationships = v.InferOutput<typeof relationshipsSchema>
 
 export const dbStructureSchema = v.object({
   tables: tablesSchema,

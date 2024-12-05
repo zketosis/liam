@@ -6,6 +6,7 @@ export type {
   Table,
   Tables,
   Relationship,
+  Relationships,
   Index,
   Indices,
 } from './dbStructure.js'
