@@ -1,5 +1,6 @@
 export * from './Button'
 export * from './Drawer'
 export * from './DropdownMenu'
+export * from './IconButton'
 export * from './Tooltip'
 export * from './Sidebar'

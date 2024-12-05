@@ -2,7 +2,6 @@ import type { Table } from '@liam-hq/db-structure'
 import {
   DiamondFillIcon,
   DiamondIcon,
-  DrawerClose,
   DrawerContent,
   DrawerPortal,
   DrawerRoot,
@@ -11,6 +10,7 @@ import {
 } from '@liam-hq/ui'
 import type { Node, NodeProps } from '@xyflow/react'
 import type { FC } from 'react'
+import { TableDetail } from './TableDetail'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -71,8 +71,7 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
         </DrawerTrigger>
         <DrawerPortal>
           <DrawerContent className={styles.content}>
-            <DrawerClose>Close</DrawerClose>
-            <div>TODO: Render TableDetail Component</div>
+            <TableDetail table={table} />
           </DrawerContent>
         </DrawerPortal>
       </DrawerRoot>

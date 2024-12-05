@@ -55,8 +55,4 @@
   top: var(--default-header-height);
   right: 0;
   bottom: 0;
-
-  /* TODO: delete sample code */
-  border: 1px solid white;
-  color: white;
 }
