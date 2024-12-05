@@ -12,6 +12,7 @@ import {
 } from '@liam-hq/ui'
 import { Table2 } from '@liam-hq/ui'
 import { useDBStructureStore } from '../../../stores'
+import styles from './LeftPane.module.css'
 import { TableCounter } from './TableCounter'
 
 export const LeftPane = () => {
@@ -28,7 +29,7 @@ export const LeftPane = () => {
                 <SidebarMenuItem key={table.name}>
                   <SidebarMenuButton>
                     <Table2 width="10px" />
-                    <span>{table.name}</span>
+                    <span className={styles.tableName}>{table.name}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
