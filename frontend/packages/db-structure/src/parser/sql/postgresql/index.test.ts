@@ -16,6 +16,7 @@ describe(processor, () => {
                 type: 'bigserial',
                 notNull: true,
                 primary: true,
+                unique: true,
               }),
               name: aColumn({
                 name: 'name',

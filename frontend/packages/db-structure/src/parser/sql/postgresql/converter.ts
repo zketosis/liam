@@ -108,7 +108,11 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
           unique:
             colDef.constraints
               ?.filter(isConstraintNode)
-              .some((c) => c.Constraint.contype === 'CONSTR_UNIQUE') || false,
+              .some((c) =>
+                ['CONSTR_UNIQUE', 'CONSTR_PRIMARY'].includes(
+                  c.Constraint.contype ?? '',
+                ),
+              ) || false,
           notNull:
             colDef.constraints
               ?.filter(isConstraintNode)
