@@ -1,12 +1,13 @@
 import {
   Button,
+  ChevronDown,
+  Download,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
   DropdownMenuRoot,
   DropdownMenuTrigger,
 } from '@liam-hq/ui'
-import { ChevronDown, Download } from 'lucide-react'
 import { type FC, useRef } from 'react'
 import styles from './ExportButton.module.css'
 
@@ -21,15 +22,8 @@ export const ExportButton: FC = () => {
             ref={ref}
             variant="outline-secondary"
             size="md"
-            leftIcon={
-              <Download
-                strokeWidth={1.5}
-                stroke="var(--button-secondary-foreground)"
-              />
-            }
-            rightIcon={
-              <ChevronDown strokeWidth={1.5} stroke="var(--overlay-40)" />
-            }
+            leftIcon={<Download stroke="var(--button-secondary-foreground)" />}
+            rightIcon={<ChevronDown stroke="var(--overlay-40)" />}
           >
             Export
           </Button>

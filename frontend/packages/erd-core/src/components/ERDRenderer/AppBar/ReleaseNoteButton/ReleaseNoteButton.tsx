@@ -1,11 +1,11 @@
 import {
+  Megaphone,
   TooltipContent,
   TooltipPortal,
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,
 } from '@liam-hq/ui'
-import { Megaphone } from 'lucide-react'
 import type { FC } from 'react'
 import styles from './ReleaseNoteButton.module.css'
 
