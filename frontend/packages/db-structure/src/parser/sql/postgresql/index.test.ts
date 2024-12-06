@@ -104,21 +104,11 @@ describe(processor, () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255) UNIQUE
+          mention TEXT UNIQUE
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            unique: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases.unique)
     })
 
     it('should parse foreign keys to one-to-many relationships', async () => {

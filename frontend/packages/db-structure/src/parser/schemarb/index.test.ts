@@ -130,6 +130,16 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
+    it('unique', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.text "mention", unique: true
+        end
+      `)
+
+      expect(result).toEqual(parserTestCases.unique)
+    })
+
     it('primary key as args', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users", id: :bigint
@@ -142,26 +152,6 @@ describe(processor, () => {
             type: 'bigint',
             notNull: true,
             primary: true,
-            unique: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('unique', async () => {
-      const result = await processor(/* Ruby */ `
-        create_table "users" do |t|
-          t.string "name", unique: true
-        end
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'string',
             unique: true,
           }),
         },

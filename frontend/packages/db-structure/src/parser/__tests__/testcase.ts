@@ -76,5 +76,14 @@ export const parserTestCases = {
         default: true,
       }),
     },
-  })
+  }),
+  unique: userTable({
+    columns: {
+      mention: aColumn({
+        name: 'mention',
+        type: 'text',
+        unique: true,
+      }),
+    },
+  }),
 }
