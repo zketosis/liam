@@ -7,9 +7,7 @@ import {
 
 import type { FC } from 'react'
 
-export type RelationshipEdgeType = Edge
-
-type Props = EdgeProps<RelationshipEdgeType>
+type Props = EdgeProps<Edge>
 
 export const RelationshipEdge: FC<Props> = ({
   sourceX,
