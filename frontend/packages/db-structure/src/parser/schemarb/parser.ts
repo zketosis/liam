@@ -18,12 +18,14 @@ import type {
   Column,
   Columns,
   DBStructure,
+  ForeignKeyConstraint,
   Index,
   Indices,
+  Relationship,
   Table,
   Tables,
 } from '../../schema/index.js'
-import { aColumn, aTable, anIndex } from '../../schema/index.js'
+import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
 import type { Processor } from '../types.js'
 
 function extractTableName(argNodes: Node[]): string {
@@ -216,8 +218,86 @@ function extractDefaultValue(
   return null
 }
 
+function extractRelationshipTableNames(argNodes: Node[]): [string, string] {
+  const stringNodes = argNodes.filter((node) => node instanceof StringNode)
+  if (!(stringNodes.length === 2)) {
+    throw new Error('Foreign key relationship must have two table names')
+  }
+
+  const [foreignTableName, primaryTableName] = stringNodes.map((node) => {
+    // @ts-expect-error: unescaped is defined as string but it is actually object
+    if (node instanceof StringNode) return node.unescaped.value
+    return null
+  })
+
+  return [primaryTableName, foreignTableName]
+}
+
+function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
+  // Valid values are :nullify, :cascade, and :restrict
+  // https://github.com/rails/rails/blob/v8.0.0/activerecord/lib/active_record/connection_adapters/abstract/schema_statements.rb#L1161-L1164
+  switch (constraint) {
+    case 'cascade':
+      return 'CASCADE'
+    case 'restrict':
+      return 'RESTRICT'
+    case 'nullify':
+      return 'SET_NULL'
+    default:
+      return 'NO_ACTION'
+  }
+}
+
+function extractForeignKeyOptions(
+  argNodes: Node[],
+  relation: Relationship,
+): void {
+  for (const argNode of argNodes) {
+    if (argNode instanceof KeywordHashNode) {
+      for (const argElement of argNode.elements) {
+        if (!(argElement instanceof AssocNode)) continue
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        const key = argElement.key.unescaped.value
+        const value = argElement.value
+
+        switch (key) {
+          case 'column':
+            if (value instanceof StringNode || value instanceof SymbolNode) {
+              // @ts-expect-error: unescaped is defined as string but it is actually object
+              relation.foreignColumnName = value.unescaped.value
+            }
+            break
+          case 'name':
+            if (value instanceof StringNode || value instanceof SymbolNode) {
+              // @ts-expect-error: unescaped is defined as string but it is actually object
+              relation.name = value.unescaped.value
+            }
+            break
+          case 'on_update':
+            if (value instanceof SymbolNode) {
+              relation.updateConstraint = normalizeConstraintName(
+                // @ts-expect-error: unescaped is defined as string but it is actually object
+                value.unescaped.value,
+              )
+            }
+            break
+          case 'on_delete':
+            if (value instanceof SymbolNode) {
+              relation.deleteConstraint = normalizeConstraintName(
+                // @ts-expect-error: unescaped is defined as string but it is actually object
+                value.unescaped.value,
+              )
+            }
+            break
+        }
+      }
+    }
+  }
+}
+
 class DBStructureFinder extends Visitor {
   private tables: Table[] = []
+  private relationships: Relationship[] = []
 
   getDBStructure(): DBStructure {
     const dbStructure: DBStructure = {
@@ -225,45 +305,72 @@ class DBStructureFinder extends Visitor {
         acc[table.name] = table
         return acc
       }, {} as Tables),
-      relationships: {},
+      relationships: this.relationships.reduce(
+        (acc, relationship) => {
+          acc[relationship.name] = relationship
+          return acc
+        },
+        {} as Record<string, Relationship>,
+      ),
     }
     return dbStructure
   }
 
+  handleCreateTable(node: CallNode): void {
+    const argNodes = node.arguments_?.compactChildNodes() || []
+
+    const table = aTable({
+      name: extractTableName(argNodes),
+    })
+
+    table.comment = extractTableComment(argNodes)
+
+    const columns: Column[] = []
+    const indices: Index[] = []
+
+    const idColumn = extractIdColumn(argNodes)
+    if (idColumn) columns.push(idColumn)
+
+    const blockNodes = node.block?.compactChildNodes() || []
+    const [extractColumns, extractIndices] = extractTableDetails(blockNodes)
+
+    columns.push(...extractColumns)
+    indices.push(...extractIndices)
+
+    table.columns = columns.reduce((acc, column) => {
+      acc[column.name] = column
+      return acc
+    }, {} as Columns)
+
+    table.indices = indices.reduce((acc, index) => {
+      acc[index.name] = index
+      return acc
+    }, {} as Indices)
+
+    this.tables.push(table)
+  }
+
+  handleAddForeignKey(node: CallNode): void {
+    const argNodes = node.arguments_?.compactChildNodes() || []
+
+    const [primaryTableName, foreignTableName] =
+      extractRelationshipTableNames(argNodes)
+
+    const relationship = aRelationship({
+      primaryTableName: primaryTableName,
+      // TODO: This is a guess, we should add a way to specify the primary column name
+      primaryColumnName: 'id',
+      foreignTableName: foreignTableName,
+    })
+
+    extractForeignKeyOptions(argNodes, relationship)
+
+    this.relationships.push(relationship)
+  }
+
   override visitCallNode(node: CallNode): void {
-    if (node.name === 'create_table') {
-      const argNodes = node.arguments_?.compactChildNodes() || []
-
-      const table = aTable({
-        name: extractTableName(argNodes),
-      })
-
-      table.comment = extractTableComment(argNodes)
-
-      const columns: Column[] = []
-      const indices: Index[] = []
-
-      const idColumn = extractIdColumn(argNodes)
-      if (idColumn) columns.push(idColumn)
-
-      const blockNodes = node.block?.compactChildNodes() || []
-      const [extractColumns, extractIndices] = extractTableDetails(blockNodes)
-
-      columns.push(...extractColumns)
-      indices.push(...extractIndices)
-
-      table.columns = columns.reduce((acc, column) => {
-        acc[column.name] = column
-        return acc
-      }, {} as Columns)
-
-      table.indices = indices.reduce((acc, index) => {
-        acc[index.name] = index
-        return acc
-      }, {} as Indices)
-
-      this.tables.push(table)
-    }
+    if (node.name === 'create_table') this.handleCreateTable(node)
+    if (node.name === 'add_foreign_key') this.handleAddForeignKey(node)
 
     super.visitCallNode(node)
   }

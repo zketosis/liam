@@ -31,9 +31,15 @@
   color: var(--overlay-70);
 }
 
-.columnName {
+.columnNameWrapper {
   display: inline-flex;
   justify-content: space-between;
+}
+
+.columnName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .columnType {

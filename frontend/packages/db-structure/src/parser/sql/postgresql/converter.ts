@@ -10,10 +10,28 @@ import type {
 import type {
   Columns,
   DBStructure,
+  ForeignKeyConstraint,
   Relationship,
+  Relationships,
   Table,
+  Tables,
 } from '../../../schema/index.js'
 import type { RawStmtWrapper } from './parser.js'
+
+// If there is a unique index for a column in relationships, make it `ONE_TO_ONE` cardinality.
+const handleOneToOneRelationships = (
+  tables: Tables,
+  relationships: Relationships,
+) => {
+  for (const relationship of Object.values(relationships)) {
+    const foreignTable = tables[relationship.foreignTableName]
+    const foreignColumn = foreignTable?.columns[relationship.foreignColumnName]
+
+    if (foreignColumn?.unique) {
+      relationship.cardinality = 'ONE_TO_ONE'
+    }
+  }
+}
 
 // Transform function for AST to DBStructure
 export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
@@ -112,20 +130,20 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
 
         // Update or delete constraint for foreign key
         // see: https://github.com/launchql/pgsql-parser/blob/pgsql-parser%4013.16.0/packages/deparser/src/deparser.ts#L3101-L3141
-        const getConstraintAction = (action?: string): string => {
+        const getConstraintAction = (action?: string): ForeignKeyConstraint => {
           switch (action?.toLowerCase()) {
             case 'r':
               return 'RESTRICT'
             case 'c':
               return 'CASCADE'
             case 'n':
-              return 'SET NULL'
+              return 'SET_NULL'
             case 'd':
-              return 'SET DEFAULT'
+              return 'SET_DEFAULT'
             case 'a':
-              return 'NO ACTION'
+              return 'NO_ACTION'
             default:
-              return 'NO ACTION' // Default to 'NO ACTION' for unknown or missing values
+              return 'NO_ACTION' // Default to 'NO_ACTION' for unknown or missing values
           }
         }
 
@@ -174,7 +192,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       tables[tableName] = {
         name: tableName,
         columns,
-        comment: null, // TODO
+        comment: null,
         indices: {},
       }
     }
@@ -219,33 +237,61 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
   }
 
   function handleCommentStmt(commentStmt: CommentStmt) {
-    if (commentStmt.objtype !== 'OBJECT_TABLE') return
+    if (
+      commentStmt.objtype !== 'OBJECT_TABLE' &&
+      commentStmt.objtype !== 'OBJECT_COLUMN'
+    )
+      return
     const objectNode = commentStmt.object
     if (!objectNode) return
-
     const isList = (stmt: Node): stmt is { List: List } => 'List' in stmt
     if (!isList(objectNode)) return
 
-    // Handles statements like `COMMENT ON TABLE <table_name> IS '<comment>';`.
-    // NOTE: PostgreSQL allows only one comment to be added to one table per statement,
-    // so we can reasonably assume the number of `<table_name>` elements is 1.
-    const item = objectNode.List?.items?.[0]
-    if (!item) return
-    const tableName =
-      'String' in item &&
-      typeof item.String === 'object' &&
-      item.String !== null &&
-      'sval' in item.String &&
-      item.String.sval
-
-    if (!tableName) return
-    if (!tables[tableName]) return
     const comment = commentStmt.comment
     if (!comment) return
 
-    tables[tableName] = {
-      ...tables[tableName],
-      comment,
+    const extractStringValue = (item: Node): string | null =>
+      'String' in item &&
+      typeof item.String === 'object' &&
+      item.String !== null &&
+      'sval' in item.String
+        ? item.String.sval
+        : null
+
+    const list = objectNode.List.items || []
+    const last1 = list[list.length - 1]
+    const last2 = list[list.length - 2]
+    if (!last1) return
+
+    switch (commentStmt.objtype) {
+      case 'OBJECT_TABLE': {
+        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
+        // `COMMENT ON TABLE <scope_name>.<table_name> IS '<comment>';`
+        // or
+        // `COMMENT ON TABLE <table_name> IS '<comment>';`
+        const tableName = extractStringValue(last1)
+        if (!tableName) return
+        if (!tables[tableName]) return
+        tables[tableName].comment = comment
+        return
+      }
+      case 'OBJECT_COLUMN': {
+        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
+        // `COMMENT ON COLUMN <scope_name>.<table_name>.<column_name> IS '<comment>';`
+        // or
+        // `COMMENT ON COLUMN <table_name>.<column_name> IS '<comment>';`
+        if (!last2) return
+        const tableName = extractStringValue(last2)
+        if (!tableName) return
+        if (!tables[tableName]) return
+        const columnName = extractStringValue(last1)
+        if (!columnName) return
+        if (!tables[tableName].columns[columnName]) return
+        tables[tableName].columns[columnName].comment = comment
+        return
+      }
+      default:
+      // NOTE: unexpected, but do nothing for now.
     }
   }
 
@@ -270,6 +316,8 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       handleCommentStmt(stmt.CommentStmt)
     }
   }
+
+  handleOneToOneRelationships(tables, relationships)
 
   return {
     tables,

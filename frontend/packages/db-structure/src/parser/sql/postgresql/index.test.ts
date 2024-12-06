@@ -33,8 +33,8 @@ describe(processor, () => {
         },
       })
 
-    it('comment', async () => {
-      const result = await processor(/* PostgreSQL */ `
+    it('table comment', async () => {
+      const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
           name VARCHAR(255)
@@ -169,7 +169,7 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('should parse foreign keys to relationships', async () => {
+    it('should parse foreign keys to one-to-many relationships', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id SERIAL PRIMARY KEY,
@@ -190,8 +190,37 @@ describe(processor, () => {
           foreignTableName: 'posts',
           foreignColumnName: 'user_id',
           cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'NO ACTION',
-          deleteConstraint: 'NO ACTION',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      }
+
+      expect(result.relationships).toEqual(expectedRelationships)
+    })
+
+    it('should parse foreign keys and unique index to one-to-one relationships', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+
+        CREATE TABLE posts (
+          id SERIAL PRIMARY KEY,
+          user_id INT REFERENCES users(id) UNIQUE
+        );
+      `)
+
+      const expectedRelationships = {
+        users_id_to_posts_user_id: {
+          name: 'users_id_to_posts_user_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_ONE',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
         },
       }
 
@@ -238,6 +267,28 @@ describe(processor, () => {
             unique: true,
             columns: ['id', 'name'],
           },
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
+    it('column commnet', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255)
+        );
+        COMMENT ON COLUMN users.name IS 'this is name';
+      `)
+
+      const expected = userTable({
+        columns: {
+          name: aColumn({
+            name: 'name',
+            type: 'varchar',
+            comment: 'this is name',
+          }),
         },
       })
 

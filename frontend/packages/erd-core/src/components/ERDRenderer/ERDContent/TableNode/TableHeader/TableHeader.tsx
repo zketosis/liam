@@ -10,7 +10,7 @@ export const TableHeader: FC<Props> = ({ name }) => {
   return (
     <div className={styles.wrapper}>
       <Table2 width={16} />
-      <span>{name}</span>
+      <span className={styles.name}>{name}</span>
     </div>
   )
 }
