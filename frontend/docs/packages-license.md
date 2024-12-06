@@ -1,9 +1,9 @@
 # frontend
 
-As of December  5, 2024 12:54pm. 1015 total
+As of December  6, 2024  6:26am. 1019 total
 
 ## Summary
-* 883 MIT
+* 887 MIT
 * 59 ISC
 * 30 Apache 2.0
 * 14 Simplified BSD
@@ -1270,6 +1270,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@radix-ui/react-separator"></a>
+### @radix-ui/react-separator v1.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@radix-ui/react-slot"></a>
 ### @radix-ui/react-slot v1.1.0
 #### 
@@ -1283,6 +1294,39 @@ LGPL-3.0-or-later permitted
 
 <a name="@radix-ui/react-tabs"></a>
 ### @radix-ui/react-tabs v1.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@radix-ui/react-toggle"></a>
+### @radix-ui/react-toggle v1.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@radix-ui/react-toggle-group"></a>
+### @radix-ui/react-toggle-group v1.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@radix-ui/react-toolbar"></a>
+### @radix-ui/react-toolbar v1.1.0
 #### 
 
 ##### Paths

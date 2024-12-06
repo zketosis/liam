@@ -1,15 +1,17 @@
 import {
+  BookText,
+  CircleHelp,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
   DropdownMenuRoot,
   DropdownMenuTrigger,
+  MessagesSquare,
   TooltipContent,
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,
 } from '@liam-hq/ui'
-import { BookText, CircleHelp, MessagesSquare } from 'lucide-react'
 import { forwardRef } from 'react'
 import styles from './HelpButton.module.css'
 
