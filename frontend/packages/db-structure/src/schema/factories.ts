@@ -16,7 +16,6 @@ export const aColumn = (override?: Partial<Column>): Column => ({
   primary: false,
   unique: false,
   notNull: false,
-  increment: false,
   ...override,
 })
 

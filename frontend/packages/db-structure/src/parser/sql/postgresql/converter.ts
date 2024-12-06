@@ -109,7 +109,11 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
           unique:
             colDef.constraints
               ?.filter(isConstraintNode)
-              .some((c) => c.Constraint.contype === 'CONSTR_UNIQUE') || false,
+              .some((c) =>
+                ['CONSTR_UNIQUE', 'CONSTR_PRIMARY'].includes(
+                  c.Constraint.contype ?? '',
+                ),
+              ) || false,
           notNull:
             colDef.constraints
               ?.filter(isConstraintNode)
@@ -119,10 +123,6 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
               ?.filter(isConstraintNode)
               .some((c) => c.Constraint.contype === 'CONSTR_PRIMARY') ||
             false,
-          increment:
-            colDef.typeName?.names
-              ?.filter(isStringNode)
-              .some((n) => n.String.sval === 'serial') || false,
           comment: null, // TODO
         }
 

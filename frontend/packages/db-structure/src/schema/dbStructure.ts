@@ -16,7 +16,6 @@ const columnSchema = v.object({
   primary: v.boolean(),
   unique: v.boolean(),
   notNull: v.boolean(),
-  increment: v.boolean(),
   comment: v.nullable(v.string()),
 })
 
