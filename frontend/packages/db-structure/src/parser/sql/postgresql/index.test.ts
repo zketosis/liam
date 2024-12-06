@@ -67,6 +67,17 @@ describe(processor, () => {
       expect(result).toEqual(parserTestCases.nullable)
     })
 
+    it('default value as string', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          description TEXT DEFAULT 'user''s description'
+        );
+      `)
+
+      expect(result).toEqual(parserTestCases['default value as string'])
+    })
+
     it('unique', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
@@ -81,27 +92,6 @@ describe(processor, () => {
             name: 'name',
             type: 'varchar',
             unique: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('default value as varchar', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255) DEFAULT 'new user'
-        );
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            default: 'new user',
           }),
         },
       })

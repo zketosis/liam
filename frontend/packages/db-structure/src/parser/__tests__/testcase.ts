@@ -51,6 +51,12 @@ export const parserTestCases = {
     },
   }),
   'default value as string': userTable({
-
+    columns: {
+      description: aColumn({
+        name: 'description',
+        type: 'text',
+        default: "user's description",
+      }),
+    },
   })
 }

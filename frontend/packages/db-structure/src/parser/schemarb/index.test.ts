@@ -79,22 +79,11 @@ describe(processor, () => {
     it('default value as string', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.string "name", default: "new user", null: true
+          t.text "description", default: "user's description", null: true
         end
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'string',
-            notNull: false,
-            default: 'new user',
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['default value as string'])
     })
 
     it('default value as integer', async () => {
