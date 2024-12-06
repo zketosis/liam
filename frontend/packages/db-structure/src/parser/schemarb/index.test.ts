@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
+import {
+  aColumn,
+  aDBStructure,
+  aRelationship,
+  aTable,
+  anIndex,
+} from '../../schema/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
@@ -222,6 +228,27 @@ describe(processor, () => {
       })
 
       expect(result).toEqual(expected)
+    })
+
+    it('foreign key', async () => {
+      const result = await processor(/* Ruby */ `
+        add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
+      `)
+
+      const rel = aRelationship({
+        name: 'fk_posts_user_id',
+        primaryTableName: 'users',
+        primaryColumnName: 'id',
+        foreignTableName: 'posts',
+        foreignColumnName: 'user_id',
+        cardinality: 'ONE_TO_MANY',
+        updateConstraint: 'RESTRICT',
+        deleteConstraint: 'CASCADE',
+      })
+
+      const expected = { fk_posts_user_id: rel }
+
+      expect(result.relationships).toEqual(expected)
     })
   })
 })

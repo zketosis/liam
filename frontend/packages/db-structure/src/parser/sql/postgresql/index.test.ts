@@ -190,8 +190,8 @@ describe(processor, () => {
           foreignTableName: 'posts',
           foreignColumnName: 'user_id',
           cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'NO ACTION',
-          deleteConstraint: 'NO ACTION',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
         },
       }
 
@@ -219,8 +219,8 @@ describe(processor, () => {
           foreignTableName: 'posts',
           foreignColumnName: 'user_id',
           cardinality: 'ONE_TO_ONE',
-          updateConstraint: 'NO ACTION',
-          deleteConstraint: 'NO ACTION',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
         },
       }
 

@@ -5,13 +5,13 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
   "relationships": {
     "users_id_to_posts_user_id": {
       "cardinality": "ONE_TO_MANY",
-      "deleteConstraint": "NO ACTION",
+      "deleteConstraint": "NO_ACTION",
       "foreignColumnName": "user_id",
       "foreignTableName": "posts",
       "name": "users_id_to_posts_user_id",
       "primaryColumnName": "id",
       "primaryTableName": "users",
-      "updateConstraint": "NO ACTION",
+      "updateConstraint": "NO_ACTION",
     },
   },
   "tables": {
