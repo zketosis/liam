@@ -53,116 +53,62 @@ describe(processor, () => {
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            notNull: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['not null'])
     })
 
     it('nullable', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
+          description TEXT
         );
       `)
 
-      const expected = userTable()
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases.nullable)
     })
 
-    it('unique', async () => {
+    it('default value as string', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255) UNIQUE
+          description TEXT DEFAULT 'user''s description'
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            unique: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('default value as varchar', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255) DEFAULT 'new user'
-        );
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            default: 'new user',
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['default value as string'])
     })
 
     it('default value as integer', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255),
           age INTEGER DEFAULT 30
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          age: aColumn({
-            name: 'age',
-            type: 'int4',
-            default: 30,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['default value as integer'])
     })
 
     it('default value as boolean', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255),
           active BOOLEAN DEFAULT TRUE
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          active: aColumn({
-            name: 'active',
-            type: 'bool',
-            default: true,
-          }),
-        },
-      })
+      expect(result).toEqual(parserTestCases['default value as boolean'])
+    })
 
-      expect(result).toEqual(expected)
+    it('unique', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          mention TEXT UNIQUE
+        );
+      `)
+
+      expect(result).toEqual(parserTestCases.unique)
     })
 
     it('should parse foreign keys to one-to-many relationships', async () => {

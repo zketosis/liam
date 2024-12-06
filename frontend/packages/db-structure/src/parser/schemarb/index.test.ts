@@ -56,6 +56,7 @@ describe(processor, () => {
         columns: {
           name: aColumn({
             name: 'name',
+            // TODO: `t.string` should be converted to varchar for PostgreSQL
             type: 'string',
             notNull: true,
           }),
@@ -68,42 +69,21 @@ describe(processor, () => {
     it('nullable', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.string "name", null: true
+          t.text "description", null: true
         end
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'string',
-            notNull: false,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases.nullable)
     })
 
     it('default value as string', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.string "name", default: "new user", null: true
+          t.text "description", default: "user's description", null: true
         end
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'string',
-            notNull: false,
-            default: 'new user',
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['default value as string'])
     })
 
     it('default value as integer', async () => {
@@ -117,6 +97,7 @@ describe(processor, () => {
         columns: {
           age: aColumn({
             name: 'age',
+            // TODO: `t.integer` should be converted to int4 for PostgreSQL
             type: 'integer',
             notNull: false,
             default: 30,
@@ -138,6 +119,7 @@ describe(processor, () => {
         columns: {
           active: aColumn({
             name: 'active',
+            // TODO: `t.boolean` should be converted to bool for PostgreSQL
             type: 'boolean',
             notNull: false,
             default: true,
@@ -146,6 +128,16 @@ describe(processor, () => {
       })
 
       expect(result).toEqual(expected)
+    })
+
+    it('unique', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.text "mention", unique: true
+        end
+      `)
+
+      expect(result).toEqual(parserTestCases.unique)
     })
 
     it('primary key as args', async () => {
@@ -160,26 +152,6 @@ describe(processor, () => {
             type: 'bigint',
             notNull: true,
             primary: true,
-            unique: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('unique', async () => {
-      const result = await processor(/* Ruby */ `
-        create_table "users" do |t|
-          t.string "name", unique: true
-        end
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'string',
             unique: true,
           }),
         },
