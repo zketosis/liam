@@ -56,3 +56,7 @@
   right: 0;
   bottom: 0;
 }
+
+.handle {
+  top: auto;
+}
