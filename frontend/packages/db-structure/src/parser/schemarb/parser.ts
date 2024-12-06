@@ -242,9 +242,9 @@ function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
     case 'restrict':
       return 'RESTRICT'
     case 'nullify':
-      return 'SET NULL'
+      return 'SET_NULL'
     default:
-      return 'NO ACTION'
+      return 'NO_ACTION'
   }
 }
 

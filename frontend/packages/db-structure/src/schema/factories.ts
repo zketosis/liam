@@ -48,8 +48,8 @@ export const aRelationship = (
   foreignTableName: '',
   foreignColumnName: '',
   cardinality: 'ONE_TO_MANY',
-  updateConstraint: 'NO ACTION',
-  deleteConstraint: 'NO ACTION',
+  updateConstraint: 'NO_ACTION',
+  deleteConstraint: 'NO_ACTION',
   ...override,
 })
 

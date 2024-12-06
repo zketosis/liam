@@ -47,9 +47,9 @@ const cardinalitySchema = v.picklist(['ONE_TO_ONE', 'ONE_TO_MANY'])
 const foreignKeyConstraintSchema = v.picklist([
   'CASCADE',
   'RESTRICT',
-  'SET NULL',
-  'SET DEFAULT',
-  'NO ACTION',
+  'SET_NULL',
+  'SET_DEFAULT',
+  'NO_ACTION',
 ])
 
 export type ForeignKeyConstraint = v.InferOutput<

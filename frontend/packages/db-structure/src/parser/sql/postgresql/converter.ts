@@ -137,13 +137,13 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
             case 'c':
               return 'CASCADE'
             case 'n':
-              return 'SET NULL'
+              return 'SET_NULL'
             case 'd':
-              return 'SET DEFAULT'
+              return 'SET_DEFAULT'
             case 'a':
-              return 'NO ACTION'
+              return 'NO_ACTION'
             default:
-              return 'NO ACTION' // Default to 'NO ACTION' for unknown or missing values
+              return 'NO_ACTION' // Default to 'NO_ACTION' for unknown or missing values
           }
         }
 
