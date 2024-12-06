@@ -34,6 +34,7 @@ export const ShowModeMenu: FC = () => {
 
   return (
     <div className={styles.wrapper}>
+      <span className={styles.label}>show</span>
       <DropdownMenuRoot>
         <DropdownMenuTrigger>
           <Button
@@ -47,7 +48,7 @@ export const ShowModeMenu: FC = () => {
         <DropdownMenuPortal>
           <DropdownMenuContent
             className={styles.content}
-            align="end"
+            align="start"
             side="bottom"
             sideOffset={12}
           >
