@@ -78,6 +78,17 @@ describe(processor, () => {
       expect(result).toEqual(parserTestCases['default value as string'])
     })
 
+    it('default value as integer', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          age INTEGER DEFAULT 30
+        );
+      `)
+
+      expect(result).toEqual(parserTestCases['default value as integer'])
+    })
+
     it('unique', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
@@ -92,28 +103,6 @@ describe(processor, () => {
             name: 'name',
             type: 'varchar',
             unique: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('default value as integer', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255),
-          age INTEGER DEFAULT 30
-        );
-      `)
-
-      const expected = userTable({
-        columns: {
-          age: aColumn({
-            name: 'age',
-            type: 'int4',
-            default: 30,
           }),
         },
       })

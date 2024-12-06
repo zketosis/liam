@@ -58,5 +58,14 @@ export const parserTestCases = {
         default: "user's description",
       }),
     },
-  })
+  }),
+  'default value as integer': userTable({
+    columns: {
+      age: aColumn({
+        name: 'age',
+        type: 'int4',
+        default: 30,
+      }),
+    },
+  }),
 }
