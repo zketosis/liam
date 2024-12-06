@@ -119,6 +119,7 @@ describe(processor, () => {
         columns: {
           active: aColumn({
             name: 'active',
+            // TODO: `t.boolean` should be converted to bool for PostgreSQL
             type: 'boolean',
             notNull: false,
             default: true,

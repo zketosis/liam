@@ -68,4 +68,13 @@ export const parserTestCases = {
       }),
     },
   }),
+  'default value as boolean': userTable({
+    columns: {
+      active: aColumn({
+        name: 'active',
+        type: 'bool',
+        default: true,
+      }),
+    },
+  })
 }
