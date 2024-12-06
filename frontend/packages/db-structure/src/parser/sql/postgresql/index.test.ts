@@ -213,6 +213,87 @@ describe(processor, () => {
       expect(result.relationships).toEqual(expectedRelationships)
     })
 
+    it('foreign keys with no action by alter table', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE posts (
+            id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL
+        );
+
+        ALTER TABLE posts
+        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+      `)
+
+      const expectedRelationships = {
+        fk_posts_user_id: {
+          name: 'fk_posts_user_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      }
+
+      expect(result.relationships).toEqual(expectedRelationships)
+    })
+
+    it('foreign keys with action by alter table', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE posts (
+            id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL
+        );
+
+        ALTER TABLE posts
+        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL;
+      `)
+
+      const expectedRelationships = {
+        fk_posts_user_id: {
+          name: 'fk_posts_user_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'CASCADE',
+          deleteConstraint: 'SET_NULL',
+        },
+      }
+
+      expect(result.relationships).toEqual(expectedRelationships)
+    })
+
+    it('unique foreign keys by alter table', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE posts (
+            id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL UNIQUE
+        );
+
+        ALTER TABLE posts
+        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+      `)
+
+      const expectedRelationships = {
+        fk_posts_user_id: {
+          name: 'fk_posts_user_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_ONE',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      }
+
+      expect(result.relationships).toEqual(expectedRelationships)
+    })
+
     it('index', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (

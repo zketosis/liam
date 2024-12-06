@@ -1,4 +1,5 @@
 import type {
+  AlterTableStmt,
   CommentStmt,
   Constraint,
   CreateStmt,
@@ -64,6 +65,31 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     return 'CommentStmt' in stmt
   }
 
+  function isAlterTableStmt(
+    stmt: Node,
+  ): stmt is { AlterTableStmt: AlterTableStmt } {
+    return 'AlterTableStmt' in stmt
+  }
+
+  // ON UPDATE or ON DELETE subclauses for foreign key
+  // see: https://github.com/launchql/pgsql-parser/blob/pgsql-parser%4013.16.0/packages/deparser/src/deparser.ts#L3101-L3141
+  function getConstraintAction(action?: string): ForeignKeyConstraint {
+    switch (action?.toLowerCase()) {
+      case 'r':
+        return 'RESTRICT'
+      case 'c':
+        return 'CASCADE'
+      case 'n':
+        return 'SET_NULL'
+      case 'd':
+        return 'SET_DEFAULT'
+      case 'a':
+        return 'NO_ACTION'
+      default:
+        return 'NO_ACTION' // Default to 'NO_ACTION' for unknown or missing values
+    }
+  }
+
   function handleCreateStmt(createStmt: CreateStmt) {
     if (!createStmt || !createStmt.relation || !createStmt.tableElts) return
 
@@ -126,27 +152,6 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
           comment: null, // TODO
         }
 
-        // Handle REFERENCES constraints for relationships
-
-        // Update or delete constraint for foreign key
-        // see: https://github.com/launchql/pgsql-parser/blob/pgsql-parser%4013.16.0/packages/deparser/src/deparser.ts#L3101-L3141
-        const getConstraintAction = (action?: string): ForeignKeyConstraint => {
-          switch (action?.toLowerCase()) {
-            case 'r':
-              return 'RESTRICT'
-            case 'c':
-              return 'CASCADE'
-            case 'n':
-              return 'SET_NULL'
-            case 'd':
-              return 'SET_DEFAULT'
-            case 'a':
-              return 'NO_ACTION'
-            default:
-              return 'NO_ACTION' // Default to 'NO_ACTION' for unknown or missing values
-          }
-        }
-
         for (const constraint of (colDef.constraints ?? []).filter(
           isConstraintNode,
         )) {
@@ -179,7 +184,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
               primaryColumnName,
               foreignTableName: tableName,
               foreignColumnName,
-              cardinality: 'ONE_TO_MANY', // TODO: Consider implementing other cardinalities
+              cardinality: 'ONE_TO_MANY',
               updateConstraint,
               deleteConstraint,
             }
@@ -295,6 +300,62 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     }
   }
 
+  function handleAlterTableStmt(alterTableStmt: AlterTableStmt) {
+    if (!alterTableStmt || !alterTableStmt.relation || !alterTableStmt.cmds)
+      return
+
+    const foreignTableName = alterTableStmt.relation.relname
+    if (!foreignTableName) return
+
+    for (const cmd of alterTableStmt.cmds) {
+      if (!('AlterTableCmd' in cmd)) continue
+
+      const alterTableCmd = cmd.AlterTableCmd
+      if (alterTableCmd.subtype === 'AT_AddConstraint') {
+        const constraint = alterTableCmd.def
+        if (!constraint || !isConstraintNode(constraint)) continue
+        if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
+          const foreign = constraint.Constraint
+          const primaryTableName = foreign.pktable?.relname
+          const primaryColumnName =
+            foreign.pk_attrs?.[0] && isStringNode(foreign.pk_attrs[0])
+              ? foreign.pk_attrs[0].String.sval
+              : undefined
+
+          const foreignColumnName =
+            foreign.fk_attrs?.[0] && isStringNode(foreign.fk_attrs[0])
+              ? foreign.fk_attrs[0].String.sval
+              : undefined
+
+          if (!primaryTableName || !primaryColumnName || !foreignColumnName) {
+            throw new Error('Invalid foreign key constraint')
+          }
+
+          if (primaryTableName && foreignColumnName) {
+            const relationshipName = foreign.conname
+            const updateConstraint = getConstraintAction(foreign.fk_upd_action)
+            const deleteConstraint = getConstraintAction(foreign.fk_del_action)
+
+            if (!relationshipName) {
+              throw new Error('Invalid foreign key constraint')
+            }
+
+            relationships[relationshipName] = {
+              name: relationshipName,
+              primaryTableName,
+              primaryColumnName,
+              foreignTableName,
+              foreignColumnName,
+              cardinality: 'ONE_TO_MANY',
+              updateConstraint,
+              deleteConstraint,
+            }
+          }
+        }
+      }
+    }
+  }
+
   if (!ast) {
     return {
       tables: {},
@@ -314,6 +375,8 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       handleIndexStmt(stmt.IndexStmt)
     } else if (isCommentStmt(stmt)) {
       handleCommentStmt(stmt.CommentStmt)
+    } else if (isAlterTableStmt(stmt)) {
+      handleAlterTableStmt(stmt.AlterTableStmt)
     }
   }
 
