@@ -53,17 +53,7 @@ describe(processor, () => {
         );
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            notNull: true,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['not null'])
     })
 
     it('nullable', async () => {

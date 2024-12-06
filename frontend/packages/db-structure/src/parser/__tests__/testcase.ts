@@ -32,4 +32,13 @@ export const parserTestCases = {
   'table comment': userTable({
     comment: 'store our users.',
   }),
+  'not null': userTable({
+    columns: {
+      name: aColumn({
+        name: 'name',
+        type: 'varchar',
+        notNull: true,
+      }),
+    },
+  }),
 }

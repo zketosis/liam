@@ -56,6 +56,7 @@ describe(processor, () => {
         columns: {
           name: aColumn({
             name: 'name',
+            // TODO: `t.string` should be converted to varchar for PostgreSQL
             type: 'string',
             notNull: true,
           }),
