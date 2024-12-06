@@ -23,8 +23,8 @@ export const convertDBStructureToNodes = (
     type: 'relationship',
     source: rel.primaryTableName,
     target: rel.foreignTableName,
-    sourceHandle: rel.primaryColumnName,
-    targetHandle: rel.foreignColumnName,
+    sourceHandle: `${rel.primaryTableName}-${rel.primaryColumnName}`,
+    targetHandle: `${rel.foreignTableName}-${rel.foreignColumnName}`,
     data: { relationship: rel },
   }))
 
