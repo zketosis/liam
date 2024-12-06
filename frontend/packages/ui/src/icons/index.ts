@@ -1,3 +1,5 @@
+export * from './Check'
+export * from './ChevronDown'
 export * from './InfoIcon'
 export * from './FacebookIcon'
 export * from './DiamondIcon'

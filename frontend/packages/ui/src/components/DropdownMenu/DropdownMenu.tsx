@@ -13,13 +13,13 @@ import {
 import clsx from 'clsx'
 import { type ComponentProps, type ReactNode, forwardRef } from 'react'
 import { match } from 'ts-pattern'
+import { Check } from '../../icons'
 import styles from './DropdownMenu.module.css'
 
 export const DropdownMenuRoot = Root
 export const DropdownMenuTrigger = Trigger
 export const DropdownMenuPortal = Portal
 export const DropdownMenuRadioGroup = RadioGroup
-export const DropdownMenuItemIndicator = ItemIndicator
 export const DropdownMenuLabel = Label
 export const DropdownMenuContent = forwardRef<
   HTMLDivElement,
@@ -84,12 +84,25 @@ export const DropdownMenuItem = forwardRef<
 
 DropdownMenuItem.displayName = 'DropdownMenuItem'
 
+type DropdownMenuRadioItemProps = ComponentProps<typeof RadioItem> & {
+  label: string
+}
+
 export const DropdownMenuRadioItem = forwardRef<
   HTMLDivElement,
-  ComponentProps<typeof RadioItem>
->(({ className, ...props }, ref) => {
+  DropdownMenuRadioItemProps
+>(({ className, label, ...props }, ref) => {
   return (
-    <RadioItem {...props} ref={ref} className={clsx(className, styles.item)} />
+    <RadioItem
+      {...props}
+      ref={ref}
+      className={clsx(styles.item, styles.radioItem, styles.default, className)}
+    >
+      {label}
+      <ItemIndicator>
+        <Check width={10} height={10} />
+      </ItemIndicator>
+    </RadioItem>
   )
 })
 
