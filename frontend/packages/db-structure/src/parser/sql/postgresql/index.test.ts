@@ -165,13 +165,8 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('should parse foreign keys to one-to-many relationships', async () => {
+    it('foreign keys by create table', async () => {
       const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-
         CREATE TABLE posts (
           id BIGSERIAL PRIMARY KEY,
           user_id INT REFERENCES users(id)
@@ -194,13 +189,8 @@ describe(processor, () => {
       expect(result.relationships).toEqual(expectedRelationships)
     })
 
-    it('should parse foreign keys and unique index to one-to-one relationships', async () => {
+    it('unique foreign keys by create table', async () => {
       const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-
         CREATE TABLE posts (
           id BIGSERIAL PRIMARY KEY,
           user_id INT REFERENCES users(id) UNIQUE
