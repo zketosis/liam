@@ -4,6 +4,7 @@ import { useDBStructureStore } from '../../../stores'
 import { convertDBStructureToNodes } from '../convertDBStructureToNodes'
 import styles from './ERDContent.module.css'
 import { TableNode } from './TableNode'
+import { Toolbar } from './Toolbar'
 
 const nodeTypes = {
   table: TableNode,
@@ -32,6 +33,9 @@ export const ERDContent: FC = () => {
           gap={16}
         />
       </ReactFlow>
+      <div className={styles.toolbarWrapper}>
+        <Toolbar />
+      </div>
     </div>
   )
 }
