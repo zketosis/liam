@@ -63,6 +63,11 @@
   bottom: 0;
 }
 
+.content[data-vaul-drawer] {
+  transition-duration: 165ms;
+  animation-duration: 165ms;
+}
+
 .handle {
   top: auto;
 }
