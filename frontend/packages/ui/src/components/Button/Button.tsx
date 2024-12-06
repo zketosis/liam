@@ -4,7 +4,11 @@ import { match } from 'ts-pattern'
 import styles from './Button.module.css'
 
 type Props = ComponentProps<'button'> & {
-  variant?: 'solid-primary' | 'solid-danger' | 'outline-secondary'
+  variant?:
+    | 'solid-primary'
+    | 'solid-danger'
+    | 'outline-secondary'
+    | 'ghost-secondary'
   size?: 'sm' | 'md' | 'lg'
   leftIcon?: ReactNode
   rightIcon?: ReactNode
@@ -28,6 +32,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       .with('solid-primary', () => styles.solidPrimary)
       .with('solid-danger', () => styles.solidDanger)
       .with('outline-secondary', () => styles.outlineSecondary)
+      .with('ghost-secondary', () => styles.ghostSecondary)
       .exhaustive()
 
     const sizeClassName = match(size)

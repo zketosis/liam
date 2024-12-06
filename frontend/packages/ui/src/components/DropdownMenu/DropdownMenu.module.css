@@ -29,6 +29,10 @@
     var(--default-timing-function);
 }
 
+.radioItem {
+  grid-template-columns: 1fr auto;
+}
+
 .md {
   height: 32px;
 }

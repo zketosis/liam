@@ -1,0 +1,8 @@
+.wrapper {
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.content {
+  width: 9.75rem;
+}

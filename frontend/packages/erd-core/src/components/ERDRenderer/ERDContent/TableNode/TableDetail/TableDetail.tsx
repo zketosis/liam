@@ -19,7 +19,7 @@ export const TableDetail: FC<Props> = ({ table }) => {
         <DrawerTitle asChild>
           <h1 className={styles.heading}>Table Name</h1>
         </DrawerTitle>
-        <DrawerClose>
+        <DrawerClose asChild>
           <IconButton icon={<XIcon />} tooltipContent="Close" />
         </DrawerClose>
       </div>

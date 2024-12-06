@@ -3,6 +3,7 @@
   place-content: center;
   place-items: center;
   font-weight: 500;
+  line-height: normal;
   color: var(--button-primary-foreground);
 }
 
@@ -55,6 +56,16 @@
 
 .outlineSecondary:hover {
   background-color: var(--button-background-hover);
+}
+
+.ghostSecondary {
+  color: var(--button-secondary-foreground);
+  transition: background-color var(--default-hover-animation-duration)
+    var(--default-timing-function);
+}
+
+.ghostSecondary:hover {
+  background-color: var(--overlay-5);
 }
 
 .sm {
