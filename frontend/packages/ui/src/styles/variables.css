@@ -1,7 +1,13 @@
+/* https://fonts.google.com/specimen/IBM+Plex+Mono */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
 :root {
   --default-timing-function: ease-out;
   --default-animation-duration: 300ms;
   --default-hover-animation-duration: 100ms;
+
+  --code-font: 'ui-monospace', 'IBM Plex Mono', SF Mono, Menlo, Monaco, Consolas,
+    monospace;
 
   --z-index-sidebar: 900;
   --z-index-drawer: 900;
