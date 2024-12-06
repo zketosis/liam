@@ -69,21 +69,11 @@ describe(processor, () => {
     it('nullable', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.string "name", null: true
+          t.text "description", null: true
         end
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'string',
-            notNull: false,
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases.nullable)
     })
 
     it('default value as string', async () => {

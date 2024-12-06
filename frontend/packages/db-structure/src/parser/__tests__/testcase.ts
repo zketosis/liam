@@ -41,4 +41,16 @@ export const parserTestCases = {
       }),
     },
   }),
+  nullable: userTable({
+    columns: {
+      description: aColumn({
+        name: 'description',
+        type: 'text',
+        notNull: false,
+      }),
+    },
+  }),
+  'default value as string': userTable({
+
+  })
 }

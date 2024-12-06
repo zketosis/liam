@@ -60,13 +60,11 @@ describe(processor, () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
+          description TEXT
         );
       `)
 
-      const expected = userTable()
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases.nullable)
     })
 
     it('unique', async () => {
