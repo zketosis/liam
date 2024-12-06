@@ -30,6 +30,11 @@ jobs:
             src:
               - './.github/workflows/vercel-deploy.yml'
               - './frontend/apps/docs/**'
+              - './frontend/apps/erd-sample/**'
+              - './frontend/packages/cli/**'
+              - './frontend/packages/db-structure/**'
+              - './frontend/packages/erd-core/**'
+              - './frontend/packages/ui/**'
 
   deploy:
     name: Deploy
@@ -41,7 +46,11 @@ jobs:
       matrix:
         apps:
           - name: docs
+            prepare: "true"
             vercel-project-id-key: VERCEL_PROJECT_ID_DOCS
+          - name: erd-sample
+            prepare: "pnpm build"
+            vercel-project-id-key: VERCEL_PROJECT_ID_ERD_SAMPLE
     environment:
       name: "${{ needs.setup-deployment.outputs.environment }} - ${{ matrix.apps.name }}"
       url: ${{ steps.deployment.outputs.deployment-url }}
@@ -60,6 +69,9 @@ jobs:
         run: pnpm add --global vercel@latest
       - name: Pull Vercel Enviroment Infomation
         run: vercel pull --yes --environment=${{ needs.setup-deployment.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Run prepare command
+        run:  ${{ matrix.apps.prepare }}
+        working-directory: frontend
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }} ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }}
       - name: Deploy Project Artifacts to Vercel
