@@ -1,13 +1,11 @@
 import {
   BaseEdge,
   type Edge,
-  EdgeLabelRenderer,
   type EdgeProps,
   getSmoothStepPath,
 } from '@xyflow/react'
 
 import type { FC } from 'react'
-import styles from './RelationshipEdge.module.css'
 
 export type RelationshipEdgeType = Edge
 
@@ -20,7 +18,6 @@ export const RelationshipEdge: FC<Props> = ({
   targetX,
   targetY,
   targetPosition,
-  label,
   id,
 }) => {
   const [edgePath] = getSmoothStepPath({
@@ -35,11 +32,6 @@ export const RelationshipEdge: FC<Props> = ({
   return (
     <>
       <BaseEdge id={id} path={edgePath} />
-      <EdgeLabelRenderer>
-        <div className={styles.labelWrapper}>
-          <span>{label}</span>
-        </div>
-      </EdgeLabelRenderer>
     </>
   )
 }
