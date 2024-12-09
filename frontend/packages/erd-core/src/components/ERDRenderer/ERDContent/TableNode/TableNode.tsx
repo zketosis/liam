@@ -27,7 +27,7 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
   return (
     <>
-      <DrawerRoot direction="right" dismissible={false}>
+      <DrawerRoot direction="right">
         <DrawerTrigger>
           <div className={styles.wrapper}>
             <TableHeader name={table.name} />
