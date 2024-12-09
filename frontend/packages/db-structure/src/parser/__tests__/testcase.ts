@@ -3,6 +3,7 @@ import {
   aColumn,
   aDBStructure,
   aTable,
+  anIndex,
 } from '../../schema/index.js'
 
 const userTable = (override?: Partial<Table>) =>
@@ -92,6 +93,20 @@ export const parserTestCases = {
         name: 'mention',
         type: 'text',
         unique: true,
+      }),
+    },
+  }),
+  'index (unique: false)': userTable({
+    columns: {
+      email: aColumn({
+        name: 'email',
+      }),
+    },
+    indices: {
+      index_users_on_id_and_email: anIndex({
+        name: 'index_users_on_id_and_email',
+        unique: false,
+        columns: ['id', 'email'],
       }),
     },
   }),

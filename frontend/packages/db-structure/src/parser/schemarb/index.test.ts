@@ -169,24 +169,15 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('index', async () => {
+    it('index (unique: false)', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.index [ "id", "email" ], name: "index_users_on_id_and_email", unique: true
+          t.string "email"
+          t.index [ "id", "email" ], name: "index_users_on_id_and_email"
         end
       `)
 
-      const expected = userTable({
-        indices: {
-          index_users_on_id_and_email: anIndex({
-            name: 'index_users_on_id_and_email',
-            unique: true,
-            columns: ['id', 'email'],
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['index (unique: false)'])
     })
 
     it('foreign key', async () => {

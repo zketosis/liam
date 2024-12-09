@@ -123,6 +123,19 @@ describe(processor, () => {
       expect(result).toEqual(parserTestCases.unique)
     })
 
+    it('index (unique: false)', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          email VARCHAR(255)
+        );
+
+        CREATE INDEX index_users_on_id_and_email ON public.users USING btree (id, email);
+      `)
+
+      expect(result).toEqual(parserTestCases['index (unique: false)'])
+    })
+
     it('foreign keys by create table', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE posts (
@@ -250,29 +263,6 @@ describe(processor, () => {
       }
 
       expect(result.relationships).toEqual(expectedRelationships)
-    })
-
-    it('index', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-
-        CREATE INDEX index_users_on_id_and_name ON public.users USING btree (id, name);
-      `)
-
-      const expected = userTable({
-        indices: {
-          index_users_on_id_and_name: {
-            name: 'index_users_on_id_and_name',
-            unique: false,
-            columns: ['id', 'name'],
-          },
-        },
-      })
-
-      expect(result).toEqual(expected)
     })
 
     it('unique index', async () => {
