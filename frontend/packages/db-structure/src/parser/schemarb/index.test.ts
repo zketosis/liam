@@ -6,35 +6,35 @@ import {
   aRelationship,
   aTable,
 } from '../../schema/index.js'
-import { processor } from './index.js'
+import { TableNameNotFound, processor } from './index.js'
 
 import { parserTestCases } from '../__tests__/index.js'
 
 describe(processor, () => {
-  describe('should parse create_table correctly', () => {
-    const userTable = (override?: Partial<Table>) =>
-      aDBStructure({
-        tables: {
-          users: aTable({
-            name: 'users',
-            columns: {
-              id: aColumn({
-                name: 'id',
-                type: 'bigserial',
-                notNull: true,
-                primary: true,
-                unique: true,
-              }),
-              ...override?.columns,
-            },
-            indices: {
-              ...override?.indices,
-            },
-            comment: override?.comment ?? null,
-          }),
-        },
-      })
+  const userTable = (override?: Partial<Table>) =>
+    aDBStructure({
+      tables: {
+        users: aTable({
+          name: 'users',
+          columns: {
+            id: aColumn({
+              name: 'id',
+              type: 'bigserial',
+              notNull: true,
+              primary: true,
+              unique: true,
+            }),
+            ...override?.columns,
+          },
+          indices: {
+            ...override?.indices,
+          },
+          comment: override?.comment ?? null,
+        }),
+      },
+    })
 
+  describe('should parse create_table correctly', () => {
     it('table comment', async () => {
       const { value } = await processor(/* Ruby */ `
         create_table "users", comment: "store our users." do |t|
@@ -256,6 +256,24 @@ describe(processor, () => {
       const expected = { fk_posts_user_id: rel }
 
       expect(value.relationships).toEqual(expected)
+    })
+  })
+
+  describe('abnormal cases', () => {
+    it('Cannot handle if the table name is a variable', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+        end
+
+        variable = "posts"
+        create_table variable do |t|
+        end
+      `)
+
+      const value = userTable()
+      const errors = [new TableNameNotFound('Table name not found')]
+
+      expect(result).toEqual({ value, errors })
     })
   })
 })
