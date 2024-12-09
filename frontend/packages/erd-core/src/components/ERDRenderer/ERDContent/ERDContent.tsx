@@ -44,8 +44,8 @@ export const ERDContent: FC = () => {
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        minZoom={0.5}
-        maxZoom={1}
+        minZoom={0.25}
+        maxZoom={2}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
       >
