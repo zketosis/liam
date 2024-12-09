@@ -10,7 +10,7 @@ import {
   KeyRound,
 } from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
-import type { FC } from 'react'
+import { type FC, useState } from 'react'
 import { TableDetail } from './TableDetail'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
@@ -25,9 +25,16 @@ type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <>
-      <DrawerRoot direction="right" dismissible={false}>
+      <DrawerRoot
+        direction="right"
+        dismissible={false}
+        open={isOpen}
+        onOpenChange={setIsOpen}
+      >
         <DrawerTrigger>
           <div className={styles.wrapper}>
             <TableHeader name={table.name} />
@@ -105,7 +112,7 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
         </DrawerTrigger>
         <DrawerPortal>
           <DrawerContent className={styles.content}>
-            <TableDetail table={table} />
+            <TableDetail table={table} onOpenChange={setIsOpen} />
           </DrawerContent>
         </DrawerPortal>
       </DrawerRoot>
