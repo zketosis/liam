@@ -1,39 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { Table } from '../../../schema/index.js'
-import { aColumn, aDBStructure, aTable } from '../../../schema/index.js'
 import { parserTestCases } from '../../__tests__/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
   describe('should parse create_table correctly', () => {
-    const userTable = (override?: Partial<Table>) =>
-      aDBStructure({
-        tables: {
-          users: aTable({
-            name: 'users',
-            columns: {
-              id: aColumn({
-                name: 'id',
-                type: 'bigserial',
-                notNull: true,
-                primary: true,
-                unique: true,
-              }),
-              name: aColumn({
-                name: 'name',
-                type: 'varchar',
-                notNull: false,
-              }),
-              ...override?.columns,
-            },
-            indices: {
-              ...override?.indices,
-            },
-            comment: override?.comment ?? null,
-          }),
-        },
-      })
-
     it('table comment', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
@@ -43,6 +13,18 @@ describe(processor, () => {
       `)
 
       expect(result).toEqual(parserTestCases['table comment'])
+    })
+
+    it('column commnet', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          description TEXT
+        );
+        COMMENT ON COLUMN users.description IS 'this is description';
+      `)
+
+      expect(result).toEqual(parserTestCases['column comment'])
     })
 
     it('not null', async () => {
@@ -109,6 +91,32 @@ describe(processor, () => {
       `)
 
       expect(result).toEqual(parserTestCases.unique)
+    })
+
+    it('index (unique: false)', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          email VARCHAR(255)
+        );
+
+        CREATE INDEX index_users_on_id_and_email ON public.users USING btree (id, email);
+      `)
+
+      expect(result).toEqual(parserTestCases['index (unique: false)'])
+    })
+
+    it('index (unique: true)', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          email VARCHAR(255)
+        );
+
+        CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
+      `)
+
+      expect(result).toEqual(parserTestCases['index (unique: true)'])
     })
 
     it('foreign keys by create table', async () => {
@@ -238,74 +246,6 @@ describe(processor, () => {
       }
 
       expect(result.relationships).toEqual(expectedRelationships)
-    })
-
-    it('index', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-
-        CREATE INDEX index_users_on_id_and_name ON public.users USING btree (id, name);
-      `)
-
-      const expected = userTable({
-        indices: {
-          index_users_on_id_and_name: {
-            name: 'index_users_on_id_and_name',
-            unique: false,
-            columns: ['id', 'name'],
-          },
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('unique index', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-
-        CREATE UNIQUE INDEX index_users_on_id_and_name ON public.users USING btree (id, name);
-      `)
-
-      const expected = userTable({
-        indices: {
-          index_users_on_id_and_name: {
-            name: 'index_users_on_id_and_name',
-            unique: true,
-            columns: ['id', 'name'],
-          },
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('column commnet', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-        COMMENT ON COLUMN users.name IS 'this is name';
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            comment: 'this is name',
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
     })
   })
 })

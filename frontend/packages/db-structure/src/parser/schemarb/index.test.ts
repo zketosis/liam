@@ -5,7 +5,6 @@ import {
   aDBStructure,
   aRelationship,
   aTable,
-  anIndex,
 } from '../../schema/index.js'
 import { processor } from './index.js'
 
@@ -43,6 +42,16 @@ describe(processor, () => {
       `)
 
       expect(result).toEqual(parserTestCases['table comment'])
+    })
+
+    it('column comment', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.text "description", comment: 'this is description'
+        end
+      `)
+
+      expect(result).toEqual(parserTestCases['column comment'])
     })
 
     it('not null', async () => {
@@ -159,44 +168,26 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
-    it('index', async () => {
+    it('index (unique: false)', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.index [ "id", "email" ], name: "index_users_on_id_and_email", unique: true
+          t.string "email"
+          t.index [ "id", "email" ], name: "index_users_on_id_and_email"
         end
       `)
 
-      const expected = userTable({
-        indices: {
-          index_users_on_id_and_email: anIndex({
-            name: 'index_users_on_id_and_email',
-            unique: true,
-            columns: ['id', 'email'],
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['index (unique: false)'])
     })
 
-    it('column comment', async () => {
+    it('index (unique: true)', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
-          t.string "name", comment: 'this is name'
+          t.string "email"
+          t.index ["email"], name: "index_users_on_email", unique: true
         end
       `)
 
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            comment: 'this is name',
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
+      expect(result).toEqual(parserTestCases['index (unique: true)'])
     })
 
     it('foreign key', async () => {
