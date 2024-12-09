@@ -1,14 +1,21 @@
 import { convertDBStructureToNodes } from '@/components/ERDRenderer/convertDBStructureToNodes'
 import { useDBStructureStore } from '@/stores'
+import type { Table } from '@liam-hq/db-structure'
 import { GotoIcon, IconButton } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
 import type { FC } from 'react'
 import { ERDContent } from '../../../ERDContent'
 import styles from './RelatedTables.module.css'
+import { extractDBStructureForTable } from './extractDBStructureForTable'
 
-export const RelatedTables: FC = () => {
+type Props = {
+  table: Table
+}
+
+export const RelatedTables: FC<Props> = ({ table }) => {
   const dbStructure = useDBStructureStore()
-  const { nodes, edges } = convertDBStructureToNodes(dbStructure)
+  const extractedDBStructure = extractDBStructureForTable(table, dbStructure)
+  const { nodes, edges } = convertDBStructureToNodes(extractedDBStructure)
 
   return (
     <div className={styles.wrapper}>
