@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ruby/prism": "1.2.0",
+    "neverthrow": "8.1.1",
     "pg-query-emscripten": "5.1.0",
     "valibot": "^1.0.0-beta.5"
   },
