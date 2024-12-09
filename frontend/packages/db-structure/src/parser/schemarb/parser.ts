@@ -28,6 +28,7 @@ import type {
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
 import type { Processor } from '../types.js'
 import { handleOneToOneRelationships } from '../utils/index.js'
+import { convertColumnType } from './convertColumnType.js'
 
 function extractTableName(argNodes: Node[]): string {
   const nameNode = argNodes.find((node) => node instanceof StringNode)
@@ -122,7 +123,7 @@ function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
 function extractColumnDetails(node: CallNode): Column {
   const column = aColumn({
     name: '',
-    type: node.name,
+    type: convertColumnType(node.name),
   })
 
   const argNodes = node.arguments_?.compactChildNodes() || []
