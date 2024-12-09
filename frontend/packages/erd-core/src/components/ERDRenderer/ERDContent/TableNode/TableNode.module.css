@@ -66,6 +66,7 @@
 .content[data-vaul-drawer] {
   transition-duration: 165ms;
   animation-duration: 165ms;
+  user-select: auto;
 }
 
 .handle {
