@@ -27,7 +27,12 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
   return (
     <>
-      <DrawerRoot direction="right">
+      {/*
+      Set snapPoints to an empty array to disable the drawer snapping functionality.
+      This behavior is an undocumented, unofficial usage and might change in the future.
+      ref: https://github.com/emilkowalski/vaul/blob/main/src/use-snap-points.ts
+      */}
+      <DrawerRoot direction="right" snapPoints={[]}>
         <DrawerTrigger>
           <div className={styles.wrapper}>
             <TableHeader name={table.name} />
