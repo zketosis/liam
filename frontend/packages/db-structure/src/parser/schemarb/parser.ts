@@ -26,7 +26,7 @@ import type {
   Tables,
 } from '../../schema/index.js'
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
-import type { Processor } from '../types.js'
+import type { ProcessResult, Processor } from '../types.js'
 import { handleOneToOneRelationships } from '../utils/index.js'
 import { convertColumnType } from './convertColumnType.js'
 
@@ -385,14 +385,17 @@ class DBStructureFinder extends Visitor {
   }
 }
 
-async function parseRubySchema(schemaString: string): Promise<DBStructure> {
+async function parseRubySchema(schemaString: string): Promise<ProcessResult> {
   const parse = await loadPrism()
   const tableFinder = new DBStructureFinder()
 
   const parseResult = parse(schemaString)
   parseResult.value.accept(tableFinder)
 
-  return tableFinder.getDBStructure()
+  return {
+    value: tableFinder.getDBStructure(),
+    errors: tableFinder.getErrors(),
+  }
 }
 
 export const processor: Processor = (str) => parseRubySchema(str)

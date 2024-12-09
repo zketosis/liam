@@ -15,5 +15,5 @@ export const processor: Processor = async (str: string) => {
     mergeDBStructures(dbStructure, partial)
   })
 
-  return dbStructure
+  return { value: dbStructure, errors: [] }
 }

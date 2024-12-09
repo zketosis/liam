@@ -1,7 +1,7 @@
 import * as v from 'valibot'
-import type { DBStructure } from '../schema/index.js'
 import { processor as schemarbProcessor } from './schemarb/index.js'
 import { processor as postgresqlProcessor } from './sql/index.js'
+import type { ProcessResult } from './types.js'
 
 export const supportedFormatSchema = v.union([
   v.literal('schemarb'),
@@ -14,7 +14,7 @@ export type SupportedFormat = v.InferOutput<typeof supportedFormatSchema>
 export const parse = (
   str: string,
   format: SupportedFormat,
-): Promise<DBStructure> | DBStructure => {
+): Promise<ProcessResult> => {
   switch (format) {
     case 'schemarb':
       return schemarbProcessor(str)
