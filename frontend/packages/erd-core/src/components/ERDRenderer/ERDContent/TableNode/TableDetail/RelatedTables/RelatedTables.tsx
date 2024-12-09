@@ -1,9 +1,15 @@
+import { convertDBStructureToNodes } from '@/components/ERDRenderer/convertDBStructureToNodes'
+import { useDBStructureStore } from '@/stores'
 import { GotoIcon, IconButton } from '@liam-hq/ui'
+import { ReactFlowProvider } from '@xyflow/react'
 import type { FC } from 'react'
+import { ERDContent } from '../../../ERDContent'
 import styles from './RelatedTables.module.css'
-import img from './related-table-ex.png'
 
 export const RelatedTables: FC = () => {
+  const dbStructure = useDBStructureStore()
+  const { nodes, edges } = convertDBStructureToNodes(dbStructure)
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -11,8 +17,9 @@ export const RelatedTables: FC = () => {
         <IconButton icon={<GotoIcon />} tooltipContent="Go to Related tables" />
       </div>
       <div className={styles.contentWrapper}>
-        {/* TODO: Replace the placeholder image with the actual component */}
-        <img alt="related tables" src={img} width="100%" />
+        <ReactFlowProvider>
+          <ERDContent nodes={nodes} edges={edges} />
+        </ReactFlowProvider>
       </div>
     </div>
   )
