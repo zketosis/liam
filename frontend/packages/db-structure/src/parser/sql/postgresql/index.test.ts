@@ -1,39 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { Table } from '../../../schema/index.js'
-import { aColumn, aDBStructure, aTable } from '../../../schema/index.js'
 import { parserTestCases } from '../../__tests__/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
   describe('should parse create_table correctly', () => {
-    const userTable = (override?: Partial<Table>) =>
-      aDBStructure({
-        tables: {
-          users: aTable({
-            name: 'users',
-            columns: {
-              id: aColumn({
-                name: 'id',
-                type: 'bigserial',
-                notNull: true,
-                primary: true,
-                unique: true,
-              }),
-              name: aColumn({
-                name: 'name',
-                type: 'varchar',
-                notNull: false,
-              }),
-              ...override?.columns,
-            },
-            indices: {
-              ...override?.indices,
-            },
-            comment: override?.comment ?? null,
-          }),
-        },
-      })
-
     it('table comment', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (

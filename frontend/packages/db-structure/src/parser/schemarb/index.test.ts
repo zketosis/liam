@@ -5,7 +5,6 @@ import {
   aDBStructure,
   aRelationship,
   aTable,
-  anIndex,
 } from '../../schema/index.js'
 import { processor } from './index.js'
 
