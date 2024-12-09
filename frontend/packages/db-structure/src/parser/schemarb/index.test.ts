@@ -180,6 +180,17 @@ describe(processor, () => {
       expect(result).toEqual(parserTestCases['index (unique: false)'])
     })
 
+    it('index (unique: true)', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.string "email"
+          t.index ["email"], name: "index_users_on_email", unique: true
+        end
+      `)
+
+      expect(result).toEqual(parserTestCases['index (unique: true)'])
+    })
+
     it('foreign key', async () => {
       const result = await processor(/* Ruby */ `
         add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade

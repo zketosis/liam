@@ -110,4 +110,18 @@ export const parserTestCases = {
       }),
     },
   }),
+  'index (unique: true)': userTable({
+    columns: {
+      email: aColumn({
+        name: 'email',
+      }),
+    },
+    indices: {
+      index_users_on_email: anIndex({
+        name: 'index_users_on_email',
+        unique: true,
+        columns: ['email'],
+      }),
+    },
+  }),
 }
