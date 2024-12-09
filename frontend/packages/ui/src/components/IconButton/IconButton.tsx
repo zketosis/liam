@@ -1,4 +1,3 @@
-import type React from 'react'
 import { type ComponentProps, type ReactNode, forwardRef } from 'react'
 import {
   TooltipContent,
@@ -13,7 +12,6 @@ type Props = {
   icon: ReactNode
   tooltipSide?: ComponentProps<typeof TooltipContent>['side']
   tooltipContent: string
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, Props>(

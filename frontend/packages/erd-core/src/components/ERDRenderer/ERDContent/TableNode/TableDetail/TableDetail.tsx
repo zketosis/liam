@@ -10,14 +10,9 @@ import { Unique } from './Unique'
 
 type Props = {
   table: Table
-  onOpenChange: (open: boolean) => void
 }
 
-export const TableDetail: FC<Props> = ({ table, onOpenChange }) => {
-  const handleClose = () => {
-    onOpenChange(false)
-  }
-
+export const TableDetail: FC<Props> = ({ table }) => {
   return (
     <section className={styles.wrapper}>
       <div className={styles.header}>
@@ -25,11 +20,7 @@ export const TableDetail: FC<Props> = ({ table, onOpenChange }) => {
           <h1 className={styles.heading}>{table.name}</h1>
         </DrawerTitle>
         <DrawerClose asChild>
-          <IconButton
-            icon={<XIcon />}
-            tooltipContent="Close"
-            onClick={handleClose}
-          />
+          <IconButton icon={<XIcon />} tooltipContent="Close" />
         </DrawerClose>
       </div>
       <div className={styles.body}>
