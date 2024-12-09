@@ -45,6 +45,18 @@ describe(processor, () => {
       expect(result).toEqual(parserTestCases['table comment'])
     })
 
+    it('column commnet', async () => {
+      const result = await processor(/* sql */ `
+        CREATE TABLE users (
+          id BIGSERIAL PRIMARY KEY,
+          description TEXT
+        );
+        COMMENT ON COLUMN users.description IS 'this is description';
+      `)
+
+      expect(result).toEqual(parserTestCases['column comment'])
+    })
+
     it('not null', async () => {
       const result = await processor(/* sql */ `
         CREATE TABLE users (
@@ -280,28 +292,6 @@ describe(processor, () => {
             unique: true,
             columns: ['id', 'name'],
           },
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('column commnet', async () => {
-      const result = await processor(/* sql */ `
-        CREATE TABLE users (
-          id BIGSERIAL PRIMARY KEY,
-          name VARCHAR(255)
-        );
-        COMMENT ON COLUMN users.name IS 'this is name';
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            comment: 'this is name',
-          }),
         },
       })
 

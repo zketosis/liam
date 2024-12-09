@@ -45,6 +45,16 @@ describe(processor, () => {
       expect(result).toEqual(parserTestCases['table comment'])
     })
 
+    it('column comment', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.text "description", comment: 'this is description'
+        end
+      `)
+
+      expect(result).toEqual(parserTestCases['column comment'])
+    })
+
     it('not null', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
@@ -172,26 +182,6 @@ describe(processor, () => {
             name: 'index_users_on_id_and_email',
             unique: true,
             columns: ['id', 'email'],
-          }),
-        },
-      })
-
-      expect(result).toEqual(expected)
-    })
-
-    it('column comment', async () => {
-      const result = await processor(/* Ruby */ `
-        create_table "users" do |t|
-          t.string "name", comment: 'this is name'
-        end
-      `)
-
-      const expected = userTable({
-        columns: {
-          name: aColumn({
-            name: 'name',
-            type: 'varchar',
-            comment: 'this is name',
           }),
         },
       })
