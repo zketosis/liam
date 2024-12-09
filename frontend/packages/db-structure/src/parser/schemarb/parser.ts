@@ -27,6 +27,7 @@ import type {
 } from '../../schema/index.js'
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
 import type { Processor } from '../types.js'
+import { handleOneToOneRelationships } from '../utils/index.js'
 
 function extractTableName(argNodes: Node[]): string {
   const nameNode = argNodes.find((node) => node instanceof StringNode)
@@ -313,6 +314,7 @@ class DBStructureFinder extends Visitor {
         {} as Record<string, Relationship>,
       ),
     }
+    handleOneToOneRelationships(dbStructure.tables, dbStructure.relationships)
     return dbStructure
   }
 
