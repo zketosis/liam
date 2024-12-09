@@ -1,7 +1,11 @@
-import { Background, BackgroundVariant, ReactFlow } from '@xyflow/react'
+import {
+  Background,
+  BackgroundVariant,
+  type Edge,
+  type Node,
+  ReactFlow,
+} from '@xyflow/react'
 import type { FC } from 'react'
-import { useDBStructureStore } from '../../../stores'
-import { convertDBStructureToNodes } from '../convertDBStructureToNodes'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
@@ -15,10 +19,12 @@ const edgeTypes = {
   relationship: RelationshipEdge,
 }
 
-export const ERDContent: FC = () => {
-  const dbStructure = useDBStructureStore()
-  const { nodes, edges } = convertDBStructureToNodes(dbStructure)
+type Props = {
+  nodes: Node[]
+  edges: Edge[]
+}
 
+export const ERDContent: FC<Props> = ({ nodes, edges }) => {
   return (
     <div className={styles.wrapper}>
       <ReactFlow
