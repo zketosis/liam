@@ -22,10 +22,8 @@
     },
     "fmt": {},
     "test": {
+      "dependsOn": ["^build"],
       "outputs": []
-    },
-    "@liam-hq/cli#test": {
-      "dependsOn": ["^build"]
     }
   }
 }
