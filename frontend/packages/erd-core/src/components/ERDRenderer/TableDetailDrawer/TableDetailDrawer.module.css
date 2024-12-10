@@ -5,7 +5,7 @@
 }
 
 .content[data-vaul-drawer] {
-  transition-duration: 165ms;
-  animation-duration: 165ms;
+  transition-duration: var(--drawer-animation-duration);
+  animation-duration: var(--drawer-animation-duration);
   user-select: auto;
 }
