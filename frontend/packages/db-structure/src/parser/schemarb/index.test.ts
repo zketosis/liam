@@ -236,7 +236,7 @@ describe(processor, () => {
     })
 
     it('foreign key(omit column name)', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         add_foreign_key "posts", "users", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
       `)
 
@@ -253,7 +253,7 @@ describe(processor, () => {
 
       const expected = { fk_posts_user_id: rel }
 
-      expect(result.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(expected)
     })
 
     it('unique foreign key', async () => {
