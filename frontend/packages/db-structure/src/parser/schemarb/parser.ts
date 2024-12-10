@@ -32,17 +32,23 @@ import type { ProcessResult, Processor } from '../types.js'
 import { handleOneToOneRelationships } from '../utils/index.js'
 import { convertColumnType } from './convertColumnType.js'
 
-export class TableNameNotFound extends WarningError {
+export class UnsupportedTokenError extends WarningError {
   constructor(message: string) {
     super(message)
-    this.name = 'WarningError'
+    this.name = 'UnsupportedTokenError'
   }
 }
 
-function extractTableName(argNodes: Node[]): Result<string, TableNameNotFound> {
+function extractTableName(
+  argNodes: Node[],
+): Result<string, UnsupportedTokenError> {
   const nameNode = argNodes.find((node) => node instanceof StringNode)
   if (!nameNode) {
-    return err(new TableNameNotFound('Table name not found'))
+    return err(
+      new UnsupportedTokenError(
+        'Expected a string for the table name, but received different data',
+      ),
+    )
   }
 
   // @ts-expect-error: unescaped is defined as string but it is actually object

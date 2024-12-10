@@ -6,7 +6,7 @@ import {
   aRelationship,
   aTable,
 } from '../../schema/index.js'
-import { TableNameNotFound, processor } from './index.js'
+import { UnsupportedTokenError, processor } from './index.js'
 
 import { parserTestCases } from '../__tests__/index.js'
 
@@ -271,7 +271,11 @@ describe(processor, () => {
       `)
 
       const value = userTable()
-      const errors = [new TableNameNotFound('Table name not found')]
+      const errors = [
+        new UnsupportedTokenError(
+          'Expected a string for the table name, but received different data',
+        ),
+      ]
 
       expect(result).toEqual({ value, errors })
     })
