@@ -29,7 +29,10 @@ import type {
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
 import { type ProcessError, WarningError } from '../errors.js'
 import type { ProcessResult, Processor } from '../types.js'
-import { handleOneToOneRelationships } from '../utils/index.js'
+import {
+  defaultRelationshipName,
+  handleOneToOneRelationships,
+} from '../utils/index.js'
 import { convertColumnType } from './convertColumnType.js'
 import { singularize } from './singularize.js'
 
@@ -324,6 +327,15 @@ function extractForeignKeyOptions(
   // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
   if (relation.foreignColumnName === '') {
     relation.foreignColumnName = `${singularize(relation.primaryTableName)}_id`
+  }
+
+  if (relation.name === '') {
+    relation.name = defaultRelationshipName(
+      relation.primaryTableName,
+      relation.primaryColumnName,
+      relation.foreignTableName,
+      relation.foreignColumnName,
+    )
   }
 }
 
