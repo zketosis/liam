@@ -28,7 +28,7 @@ export const TableDetail: FC<Props> = ({ table }) => {
         <Columns columns={table.columns} />
         <Indices indices={table.indices} />
         <Unique columns={table.columns} />
-        <RelatedTables />
+        <RelatedTables table={table} />
       </div>
     </section>
   )

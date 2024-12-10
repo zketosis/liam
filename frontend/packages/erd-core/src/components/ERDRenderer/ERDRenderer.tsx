@@ -11,9 +11,13 @@ import { ERDContent } from './ERDContent'
 import styles from './ERDRenderer.module.css'
 import { LeftPane } from './LeftPane'
 import '@/styles/globals.css'
+import { useDBStructureStore } from '@/stores'
+import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 export const ERDRenderer: FC = () => {
   const defaultOpen = getSidebarStateFromCookie()
+  const dbStructure = useDBStructureStore()
+  const { nodes, edges } = convertDBStructureToNodes(dbStructure)
 
   return (
     <div className={styles.wrapper}>
@@ -26,7 +30,7 @@ export const ERDRenderer: FC = () => {
               <SidebarTrigger />
             </div>
             <ReactFlowProvider>
-              <ERDContent />
+              <ERDContent nodes={nodes} edges={edges} />
             </ReactFlowProvider>
           </main>
         </div>

@@ -20,7 +20,8 @@
     "@liam-hq/db-structure": "workspace:*",
     "@types/react": "18",
     "typed-css-modules": "0.9.1",
-    "typescript": "5"
+    "typescript": "5",
+    "vitest": "2.1.4"
   },
   "scripts": {
     "dev": "pnpm run '/^dev:.*/'",
@@ -31,6 +32,7 @@
     "gen:css": "tcm src",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
-    "lint:tsc": "tsc --noEmit"
+    "lint:tsc": "tsc --noEmit",
+    "test": "vitest --watch=false"
   }
 }

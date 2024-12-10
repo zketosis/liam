@@ -8,8 +8,6 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useEffect } from 'react'
-import { useDBStructureStore } from '../../../stores'
-import { convertDBStructureToNodes } from '../convertDBStructureToNodes'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
@@ -24,16 +22,19 @@ const edgeTypes = {
   relationship: RelationshipEdge,
 }
 
-export const ERDContent: FC = () => {
-  const dbStructure = useDBStructureStore()
+type Props = {
+  nodes: Node[]
+  edges: Edge[]
+}
+
+export const ERDContent: FC<Props> = ({ nodes: _nodes, edges: _edges }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
   useEffect(() => {
-    const { nodes, edges } = convertDBStructureToNodes(dbStructure)
-    setNodes(nodes)
-    setEdges(edges)
-  }, [dbStructure, setNodes, setEdges])
+    setNodes(_nodes)
+    setEdges(_edges)
+  }, [_nodes, _edges, setNodes, setEdges])
 
   useAutoLayout()
 
