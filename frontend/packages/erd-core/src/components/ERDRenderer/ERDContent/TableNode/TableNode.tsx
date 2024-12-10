@@ -1,4 +1,4 @@
-import { updateActiveTableId, useDBStructureStore } from '@/stores'
+import { updateActiveTableName, useDBStructureStore } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
@@ -17,7 +17,7 @@ type Props = NodeProps<TableNodeType>
 export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
   const handleClick = useCallback(() => {
-    updateActiveTableId(table.name)
+    updateActiveTableName(table.name)
   }, [table])
 
   return (

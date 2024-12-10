@@ -2,12 +2,12 @@ import { proxy } from 'valtio'
 
 type UserEditingStore = {
   active: {
-    tableId: string | undefined
+    tableName: string | undefined
   }
 }
 
 export const userEditingStore = proxy<UserEditingStore>({
   active: {
-    tableId: undefined,
+    tableName: undefined,
   },
 })

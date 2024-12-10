@@ -12,7 +12,7 @@ import {
 } from '@liam-hq/ui'
 import { Table2 } from '@liam-hq/ui'
 import {
-  updateActiveTableId,
+  updateActiveTableName,
   useDBStructureStore,
   useUserEditingStore,
 } from '../../../stores'
@@ -20,13 +20,13 @@ import styles from './LeftPane.module.css'
 import { TableCounter } from './TableCounter'
 
 const handleClickMenuButton = (tableId: string) => () => {
-  updateActiveTableId(tableId)
+  updateActiveTableName(tableId)
 }
 
 export const LeftPane = () => {
   const { tables } = useDBStructureStore()
   const {
-    active: { tableId },
+    active: { tableName },
   } = useUserEditingStore()
 
   return (
@@ -40,7 +40,7 @@ export const LeftPane = () => {
                 <SidebarMenuItem key={table.name}>
                   <SidebarMenuButton
                     onClick={handleClickMenuButton(table.name)}
-                    className={table.name === tableId ? styles.active : ''}
+                    className={table.name === tableName ? styles.active : ''}
                   >
                     <Table2 width="10px" />
                     <span className={styles.tableName}>{table.name}</span>

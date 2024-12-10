@@ -1,5 +1,5 @@
 import {
-  updateActiveTableId,
+  updateActiveTableName,
   useDBStructureStore,
   useUserEditingStore,
 } from '@/stores'
@@ -19,7 +19,7 @@ const ANIMATION_DURATION = 165
 
 export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
   const {
-    active: { tableId },
+    active: { tableName: tableId },
   } = useUserEditingStore()
   const [open, setOpen] = useState(tableId !== undefined)
 
@@ -29,8 +29,8 @@ export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
 
   const handleClose = useCallback(() => {
     setOpen(false)
-    // NOTE: Wait for the drawer to close before updating the active table ID.
-    setTimeout(() => updateActiveTableId(undefined), ANIMATION_DURATION)
+    // NOTE: Wait for the drawer to close before updating the active table name.
+    setTimeout(() => updateActiveTableName(undefined), ANIMATION_DURATION)
   }, [])
 
   return (
@@ -51,9 +51,9 @@ export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
 export const TableDetailDrawer: FC = () => {
   const { tables } = useDBStructureStore()
   const {
-    active: { tableId },
+    active: { tableName },
   } = useUserEditingStore()
-  const table = tables[tableId ?? '']
+  const table = tables[tableName ?? '']
 
   return (
     <DrawerPortal>
