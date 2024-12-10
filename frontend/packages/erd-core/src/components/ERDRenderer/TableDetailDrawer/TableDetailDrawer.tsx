@@ -11,6 +11,7 @@ import {
   useEffect,
   useState,
 } from 'react'
+// biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
 import { TableDetail } from '../ERDContent/TableNode/TableDetail'
 import styles from './TableDetailDrawer.module.css'
 
