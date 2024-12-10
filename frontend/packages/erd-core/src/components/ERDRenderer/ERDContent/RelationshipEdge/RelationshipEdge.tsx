@@ -5,9 +5,17 @@ import {
   getSmoothStepPath,
 } from '@xyflow/react'
 
+import clsx from 'clsx'
 import type { FC } from 'react'
+import styles from './RelationshipEdge.module.css'
 
-type Props = EdgeProps<Edge>
+type Data = {
+  isHovered: boolean
+}
+
+export type RelationshipEdgeType = Edge<Data, 'relationship'>
+
+type Props = EdgeProps<RelationshipEdgeType>
 
 export const RelationshipEdge: FC<Props> = ({
   sourceX,
@@ -17,6 +25,7 @@ export const RelationshipEdge: FC<Props> = ({
   targetY,
   targetPosition,
   id,
+  data,
 }) => {
   const [edgePath] = getSmoothStepPath({
     sourceX,
@@ -29,7 +38,11 @@ export const RelationshipEdge: FC<Props> = ({
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} />
+      <BaseEdge
+        id={id}
+        path={edgePath}
+        className={clsx(styles.edge, data?.isHovered && styles.hovered)}
+      />
     </>
   )
 }

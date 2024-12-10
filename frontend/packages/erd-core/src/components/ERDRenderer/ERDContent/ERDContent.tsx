@@ -2,12 +2,14 @@ import {
   Background,
   BackgroundVariant,
   type Edge,
+  type EdgeMouseHandler,
   type Node,
+  type NodeMouseHandler,
   ReactFlow,
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
-import { type FC, useEffect } from 'react'
+import { type FC, useCallback, useEffect } from 'react'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
@@ -38,6 +40,58 @@ export const ERDContent: FC<Props> = ({ nodes: _nodes, edges: _edges }) => {
 
   useAutoLayout()
 
+  const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
+    (_, { id }) => {
+      setEdges((edges) =>
+        edges.map((e) =>
+          e.source === id
+            ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
+            : e,
+        ),
+      )
+    },
+    [setEdges],
+  )
+
+  const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
+    (_, { id }) => {
+      setEdges((edges) =>
+        edges.map((e) =>
+          e.source === id
+            ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
+            : e,
+        ),
+      )
+    },
+    [setEdges],
+  )
+
+  const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
+    (_, { id }) => {
+      setEdges((edges) =>
+        edges.map((e) =>
+          e.id === id
+            ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
+            : e,
+        ),
+      )
+    },
+    [setEdges],
+  )
+
+  const handleMouseLeaveEdge: EdgeMouseHandler<Edge> = useCallback(
+    (_, { id }) => {
+      setEdges((edges) =>
+        edges.map((e) =>
+          e.id === id
+            ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
+            : e,
+        ),
+      )
+    },
+    [setEdges],
+  )
+
   return (
     <div className={styles.wrapper}>
       <ReactFlow
@@ -49,6 +103,10 @@ export const ERDContent: FC<Props> = ({ nodes: _nodes, edges: _edges }) => {
         maxZoom={2}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeMouseEnter={handleMouseEnterNode}
+        onNodeMouseLeave={handleMouseLeaveNode}
+        onEdgeMouseEnter={handleMouseEnterEdge}
+        onEdgeMouseLeave={handleMouseLeaveEdge}
       >
         <Background
           color="var(--color-gray-600)"

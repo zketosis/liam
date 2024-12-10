@@ -1,0 +1,9 @@
+.edge {
+  stroke: var(--global-border);
+  stroke-dasharray: 2;
+  transition: stroke 0.3s var(--default-timing-function);
+}
+
+.hovered {
+  stroke: var(--node-layout);
+}
