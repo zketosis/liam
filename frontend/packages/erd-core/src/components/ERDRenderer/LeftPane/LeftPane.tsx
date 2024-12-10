@@ -11,9 +11,13 @@ import {
   SidebarRail,
 } from '@liam-hq/ui'
 import { Table2 } from '@liam-hq/ui'
-import { useDBStructureStore } from '../../../stores'
+import { updateActiveTableId, useDBStructureStore } from '../../../stores'
 import styles from './LeftPane.module.css'
 import { TableCounter } from './TableCounter'
+
+const handleClickMenuButton = (tableId: string) => () => {
+  updateActiveTableId(tableId)
+}
 
 export const LeftPane = () => {
   const { tables } = useDBStructureStore()
@@ -27,7 +31,9 @@ export const LeftPane = () => {
             <SidebarMenu>
               {Object.values(tables).map((table) => (
                 <SidebarMenuItem key={table.name}>
-                  <SidebarMenuButton>
+                  <SidebarMenuButton
+                    onClick={handleClickMenuButton(table.name)}
+                  >
                     <Table2 width="10px" />
                     <span className={styles.tableName}>{table.name}</span>
                   </SidebarMenuButton>
