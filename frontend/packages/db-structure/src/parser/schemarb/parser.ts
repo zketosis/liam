@@ -317,13 +317,13 @@ function extractForeignKeyOptions(
             }
             break
         }
-
-        // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
-        if (relation.foreignColumnName === '') {
-          relation.foreignColumnName = `${singularize(relation.primaryTableName)}_id`
-        }
       }
     }
+  }
+
+  // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
+  if (relation.foreignColumnName === '') {
+    relation.foreignColumnName = `${singularize(relation.primaryTableName)}_id`
   }
 }
 
