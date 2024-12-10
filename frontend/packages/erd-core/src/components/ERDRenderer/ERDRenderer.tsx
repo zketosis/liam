@@ -12,6 +12,7 @@ import styles from './ERDRenderer.module.css'
 import { LeftPane } from './LeftPane'
 import '@/styles/globals.css'
 import { useDBStructureStore } from '@/stores'
+import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 export const ERDRenderer: FC = () => {
@@ -29,9 +30,12 @@ export const ERDRenderer: FC = () => {
             <div className={styles.triggerWrapper}>
               <SidebarTrigger />
             </div>
-            <ReactFlowProvider>
-              <ERDContent nodes={nodes} edges={edges} />
-            </ReactFlowProvider>
+            <TableDetailDrawerRoot>
+              <ReactFlowProvider>
+                <ERDContent nodes={nodes} edges={edges} />
+              </ReactFlowProvider>
+              <TableDetailDrawer />
+            </TableDetailDrawerRoot>
           </main>
         </div>
       </SidebarProvider>
