@@ -1,8 +1,8 @@
-import { useDBStructureStore } from '@/stores'
+import { updateActiveTableId, useDBStructureStore } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
-import type { FC } from 'react'
+import { type FC, useCallback } from 'react'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -16,8 +16,12 @@ type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
+  const handleClick = useCallback(() => {
+    updateActiveTableId(table.name)
+  }, [table])
+
   return (
-    <div className={styles.wrapper}>
+    <button type="button" className={styles.wrapper} onClick={handleClick}>
       <TableHeader name={table.name} />
       <ul>
         {Object.values(table.columns).map((column) => {
@@ -89,6 +93,6 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
           )
         })}
       </ul>
-    </div>
+    </button>
   )
 }
