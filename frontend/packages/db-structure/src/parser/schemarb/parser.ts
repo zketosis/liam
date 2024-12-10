@@ -80,8 +80,14 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     )
 
     if (idAssoc && idAssoc instanceof AssocNode) {
-      // @ts-expect-error: unescaped is defined as string but it is actually object
-      idColumn.type = idAssoc.value.unescaped.value
+      if (idAssoc.value instanceof FalseNode) return null
+      if (
+        idAssoc.value instanceof StringNode ||
+        idAssoc.value instanceof SymbolNode
+      )
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        idColumn.type = idAssoc.value.unescaped.value
+
       return idColumn
     }
   }

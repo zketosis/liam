@@ -4,12 +4,15 @@ import {
   type Edge,
   type Node,
   ReactFlow,
+  useEdgesState,
+  useNodesState,
 } from '@xyflow/react'
-import type { FC } from 'react'
+import { type FC, useEffect } from 'react'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
 import { Toolbar } from './Toolbar'
+import { useAutoLayout } from './useAutoLayout'
 
 const nodeTypes = {
   table: TableNode,
@@ -24,7 +27,17 @@ type Props = {
   edges: Edge[]
 }
 
-export const ERDContent: FC<Props> = ({ nodes, edges }) => {
+export const ERDContent: FC<Props> = ({ nodes: _nodes, edges: _edges }) => {
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+
+  useEffect(() => {
+    setNodes(_nodes)
+    setEdges(_edges)
+  }, [_nodes, _edges, setNodes, setEdges])
+
+  useAutoLayout()
+
   return (
     <div className={styles.wrapper}>
       <ReactFlow
@@ -32,8 +45,10 @@ export const ERDContent: FC<Props> = ({ nodes, edges }) => {
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        minZoom={0.5}
-        maxZoom={1}
+        minZoom={0.25}
+        maxZoom={2}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
       >
         <Background
           color="var(--color-gray-600)"

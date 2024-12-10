@@ -1,6 +1,6 @@
 # frontend
 
-As of December  9, 2024 10:05am. 1019 total
+As of December 10, 2024  2:08am. 1020 total
 
 ## Summary
 * 887 MIT
@@ -18,6 +18,7 @@ As of December  9, 2024 10:05am. 1019 total
 * 1 (BSD-2-Clause OR MIT OR Apache-2.0)
 * 1 CC0 1.0 Universal
 * 1 Public Domain
+* 1 Eclipse 2.0
 * 1 CC-BY-4.0
 * 1 Mozilla Public License 2.0
 * 1 Python-2.0
@@ -4263,6 +4264,17 @@ CC-BY-4.0 permitted
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
+<a name="elkjs"></a>
+### elkjs v0.9.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="https://www.eclipse.org/legal/epl-v20.html">Eclipse 2.0</a> permitted
 
 
 
@@ -11245,5 +11257,3 @@ Unknown manually approved
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-

@@ -4,7 +4,7 @@ import * as v from 'valibot'
 
 async function loadSchemaContent() {
   try {
-    const response = await fetch('/schema.json')
+    const response = await fetch('./schema.json')
     if (!response.ok) {
       throw new Error(`Failed to fetch schema: ${response.statusText}`)
     }
