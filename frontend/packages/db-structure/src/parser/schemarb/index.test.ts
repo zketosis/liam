@@ -169,7 +169,7 @@ describe(processor, () => {
     })
 
     it('no primary key', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users", id: false do |t|
           t.string "name"
         end
@@ -189,7 +189,7 @@ describe(processor, () => {
         },
       })
 
-      expect(result).toEqual(expected)
+      expect(value).toEqual(expected)
     })
 
     it('index (unique: false)', async () => {
