@@ -95,3 +95,9 @@
     :why: Compatible with Apache-2.0 license. See https://opensource.org/license/mpl-2-0
     :versions: []
     :when: 2024-11-29 09:12:22.146432000 Z
+- - :permit
+  - Eclipse 2.0
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/epl-2-0
+    :versions: []
+    :when: 2024-12-09 09:29:53.604007000 Z
