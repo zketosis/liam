@@ -69,12 +69,14 @@ const constraintToRelationship = (
     throw new Error('Invalid foreign key constraint')
   }
 
-  const name = defaultRelationshipName(
-    primaryTableName,
-    primaryColumnName,
-    foreignTableName,
-    foreignColumnName,
-  )
+  const name =
+    constraint.conname ??
+    defaultRelationshipName(
+      primaryTableName,
+      primaryColumnName,
+      foreignTableName,
+      foreignColumnName,
+    )
   const updateConstraint = getConstraintAction(constraint.fk_upd_action)
   const deleteConstraint = getConstraintAction(constraint.fk_del_action)
   const cardinality = 'ONE_TO_MANY'
@@ -318,44 +320,21 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
       if (alterTableCmd.subtype === 'AT_AddConstraint') {
         const constraint = alterTableCmd.def
         if (!constraint || !isConstraintNode(constraint)) continue
-        if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
-          const foreign = constraint.Constraint
-          const primaryTableName = foreign.pktable?.relname
-          const primaryColumnName =
-            foreign.pk_attrs?.[0] && isStringNode(foreign.pk_attrs[0])
-              ? foreign.pk_attrs[0].String.sval
-              : undefined
+        const foreignColumnName =
+          constraint.Constraint.fk_attrs?.[0] &&
+          isStringNode(constraint.Constraint.fk_attrs[0])
+            ? constraint.Constraint.fk_attrs[0].String.sval
+            : undefined
+        if (foreignColumnName === undefined) continue
 
-          const foreignColumnName =
-            foreign.fk_attrs?.[0] && isStringNode(foreign.fk_attrs[0])
-              ? foreign.fk_attrs[0].String.sval
-              : undefined
+        const relationship = constraintToRelationship(
+          foreignTableName,
+          foreignColumnName,
+          constraint.Constraint,
+        )
+        if (relationship === undefined) continue
 
-          if (!primaryTableName || !primaryColumnName || !foreignColumnName) {
-            throw new Error('Invalid foreign key constraint')
-          }
-
-          if (primaryTableName && foreignColumnName) {
-            const relationshipName = foreign.conname
-            const updateConstraint = getConstraintAction(foreign.fk_upd_action)
-            const deleteConstraint = getConstraintAction(foreign.fk_del_action)
-
-            if (!relationshipName) {
-              throw new Error('Invalid foreign key constraint')
-            }
-
-            relationships[relationshipName] = {
-              name: relationshipName,
-              primaryTableName,
-              primaryColumnName,
-              foreignTableName,
-              foreignColumnName,
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint,
-              deleteConstraint,
-            }
-          }
-        }
+        relationships[relationship.name] = relationship
       }
     }
   }
