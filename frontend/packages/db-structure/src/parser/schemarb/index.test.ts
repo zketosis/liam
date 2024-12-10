@@ -168,6 +168,30 @@ describe(processor, () => {
       expect(result).toEqual(expected)
     })
 
+    it('no primary key', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users", id: false do |t|
+          t.string "name"
+        end
+      `)
+
+      const expected = aDBStructure({
+        tables: {
+          users: aTable({
+            name: 'users',
+            columns: {
+              name: aColumn({
+                name: 'name',
+                type: 'varchar',
+              }),
+            },
+          }),
+        },
+      })
+
+      expect(result).toEqual(expected)
+    })
+
     it('index (unique: false)', async () => {
       const result = await processor(/* Ruby */ `
         create_table "users" do |t|
