@@ -12,8 +12,8 @@ describe(parse, () => {
       'utf-8',
     )
 
-    const result = await parse(schemaText, 'schemarb')
-    expect(result).toMatchSnapshot()
+    const { value } = await parse(schemaText, 'schemarb')
+    expect(value).toMatchSnapshot()
   })
 
   it('should parse postgresql to JSON correctly', async () => {
@@ -22,7 +22,7 @@ describe(parse, () => {
       'utf-8',
     )
 
-    const result = await parse(schemaText, 'postgres')
-    expect(result).toMatchSnapshot()
+    const { value } = await parse(schemaText, 'postgres')
+    expect(value).toMatchSnapshot()
   })
 })

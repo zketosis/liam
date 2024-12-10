@@ -1,9 +1,9 @@
 # frontend
 
-As of December 10, 2024  3:16am. 1020 total
+As of December  9, 2024 12:25pm. 1020 total
 
 ## Summary
-* 887 MIT
+* 888 MIT
 * 59 ISC
 * 30 Apache 2.0
 * 14 Simplified BSD
@@ -7846,6 +7846,17 @@ Public Domain manually approved
 
 
 
+<a name="neverthrow"></a>
+### neverthrow v8.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam/frontend
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="next"></a>
 ### next v15.0.3
 #### 
@@ -11257,5 +11268,3 @@ Unknown manually approved
 * /home/runner/work/liam/liam/frontend
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-

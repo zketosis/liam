@@ -1,3 +1,9 @@
 import type { DBStructure } from '../schema/index.js'
+import type { ProcessError } from './errors.js'
 
-export type Processor = (str: string) => DBStructure | Promise<DBStructure>
+export type ProcessResult = {
+  value: DBStructure
+  errors: ProcessError[]
+}
+
+export type Processor = (str: string) => Promise<ProcessResult>

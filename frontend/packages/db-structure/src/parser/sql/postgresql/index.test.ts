@@ -5,18 +5,18 @@ import { processor } from './index.js'
 describe(processor, () => {
   describe('should parse create_table correctly', () => {
     it('table comment', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY
         );
         COMMENT ON TABLE users IS 'store our users.';
       `)
 
-      expect(result).toEqual(parserTestCases['table comment'])
+      expect(value).toEqual(parserTestCases['table comment'])
     })
 
     it('column commnet', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           description TEXT
@@ -24,77 +24,77 @@ describe(processor, () => {
         COMMENT ON COLUMN users.description IS 'this is description';
       `)
 
-      expect(result).toEqual(parserTestCases['column comment'])
+      expect(value).toEqual(parserTestCases['column comment'])
     })
 
     it('not null', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL
         );
       `)
 
-      expect(result).toEqual(parserTestCases['not null'])
+      expect(value).toEqual(parserTestCases['not null'])
     })
 
     it('nullable', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           description TEXT
         );
       `)
 
-      expect(result).toEqual(parserTestCases.nullable)
+      expect(value).toEqual(parserTestCases.nullable)
     })
 
     it('default value as string', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           description TEXT DEFAULT 'user''s description'
         );
       `)
 
-      expect(result).toEqual(parserTestCases['default value as string'])
+      expect(value).toEqual(parserTestCases['default value as string'])
     })
 
     it('default value as integer', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           age INTEGER DEFAULT 30
         );
       `)
 
-      expect(result).toEqual(parserTestCases['default value as integer'])
+      expect(value).toEqual(parserTestCases['default value as integer'])
     })
 
     it('default value as boolean', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           active BOOLEAN DEFAULT TRUE
         );
       `)
 
-      expect(result).toEqual(parserTestCases['default value as boolean'])
+      expect(value).toEqual(parserTestCases['default value as boolean'])
     })
 
     it('unique', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           mention TEXT UNIQUE
         );
       `)
 
-      expect(result).toEqual(parserTestCases.unique)
+      expect(value).toEqual(parserTestCases.unique)
     })
 
     it('index (unique: false)', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           email VARCHAR(255)
@@ -103,11 +103,11 @@ describe(processor, () => {
         CREATE INDEX index_users_on_id_and_email ON public.users USING btree (id, email);
       `)
 
-      expect(result).toEqual(parserTestCases['index (unique: false)'])
+      expect(value).toEqual(parserTestCases['index (unique: false)'])
     })
 
     it('index (unique: true)', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE users (
           id BIGSERIAL PRIMARY KEY,
           email VARCHAR(255)
@@ -116,11 +116,11 @@ describe(processor, () => {
         CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
       `)
 
-      expect(result).toEqual(parserTestCases['index (unique: true)'])
+      expect(value).toEqual(parserTestCases['index (unique: true)'])
     })
 
     it('foreign keys by create table', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
           id BIGSERIAL PRIMARY KEY,
           user_id INT REFERENCES users(id)
@@ -140,11 +140,11 @@ describe(processor, () => {
         },
       }
 
-      expect(result.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(expectedRelationships)
     })
 
     it('unique foreign keys by create table', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
           id BIGSERIAL PRIMARY KEY,
           user_id INT REFERENCES users(id) UNIQUE
@@ -164,11 +164,11 @@ describe(processor, () => {
         },
       }
 
-      expect(result.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(expectedRelationships)
     })
 
     it('foreign keys with no action by alter table', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
             id SERIAL PRIMARY KEY,
             user_id INT NOT NULL
@@ -191,11 +191,11 @@ describe(processor, () => {
         },
       }
 
-      expect(result.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(expectedRelationships)
     })
 
     it('foreign keys with action by alter table', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
             id SERIAL PRIMARY KEY,
             user_id INT NOT NULL
@@ -218,11 +218,11 @@ describe(processor, () => {
         },
       }
 
-      expect(result.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(expectedRelationships)
     })
 
     it('unique foreign keys by alter table', async () => {
-      const result = await processor(/* sql */ `
+      const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
             id SERIAL PRIMARY KEY,
             user_id INT NOT NULL UNIQUE
@@ -245,7 +245,7 @@ describe(processor, () => {
         },
       }
 
-      expect(result.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(expectedRelationships)
     })
   })
 })

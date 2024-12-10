@@ -14,6 +14,7 @@ import {
   Visitor,
   loadPrism,
 } from '@ruby/prism'
+import { type Result, err, ok } from 'neverthrow'
 import type {
   Column,
   Columns,
@@ -26,17 +27,34 @@ import type {
   Tables,
 } from '../../schema/index.js'
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
-import type { Processor } from '../types.js'
+import { type ProcessError, WarningError } from '../errors.js'
+import type { ProcessResult, Processor } from '../types.js'
 import { handleOneToOneRelationships } from '../utils/index.js'
 import { convertColumnType } from './convertColumnType.js'
 
-function extractTableName(argNodes: Node[]): string {
+export class UnsupportedTokenError extends WarningError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'UnsupportedTokenError'
+  }
+}
+
+function extractTableName(
+  argNodes: Node[],
+): Result<string, UnsupportedTokenError> {
   const nameNode = argNodes.find((node) => node instanceof StringNode)
   if (!nameNode) {
-    throw new Error('Table name not found')
+    return err(
+      new UnsupportedTokenError(
+        'Expected a string for the table name, but received different data',
+      ),
+    )
   }
+
   // @ts-expect-error: unescaped is defined as string but it is actually object
-  return nameNode.unescaped.value
+  const value = nameNode.unescaped.value
+
+  return ok(value)
 }
 
 function extractTableComment(argNodes: Node[]): string | null {
@@ -306,6 +324,7 @@ function extractForeignKeyOptions(
 class DBStructureFinder extends Visitor {
   private tables: Table[] = []
   private relationships: Relationship[] = []
+  private errors: ProcessError[] = []
 
   getDBStructure(): DBStructure {
     const dbStructure: DBStructure = {
@@ -325,11 +344,20 @@ class DBStructureFinder extends Visitor {
     return dbStructure
   }
 
+  getErrors(): ProcessError[] {
+    return this.errors
+  }
+
   handleCreateTable(node: CallNode): void {
     const argNodes = node.arguments_?.compactChildNodes() || []
+    const nameResult = extractTableName(argNodes)
+    if (nameResult.isErr()) {
+      this.errors.push(nameResult.error)
+      return
+    }
 
     const table = aTable({
-      name: extractTableName(argNodes),
+      name: nameResult.value,
     })
 
     table.comment = extractTableComment(argNodes)
@@ -385,14 +413,17 @@ class DBStructureFinder extends Visitor {
   }
 }
 
-async function parseRubySchema(schemaString: string): Promise<DBStructure> {
+async function parseRubySchema(schemaString: string): Promise<ProcessResult> {
   const parse = await loadPrism()
   const tableFinder = new DBStructureFinder()
 
   const parseResult = parse(schemaString)
   parseResult.value.accept(tableFinder)
 
-  return tableFinder.getDBStructure()
+  return {
+    value: tableFinder.getDBStructure(),
+    errors: tableFinder.getErrors(),
+  }
 }
 
 export const processor: Processor = (str) => parseRubySchema(str)

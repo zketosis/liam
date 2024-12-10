@@ -6,56 +6,56 @@ import {
   aRelationship,
   aTable,
 } from '../../schema/index.js'
-import { processor } from './index.js'
+import { UnsupportedTokenError, processor } from './index.js'
 
 import { parserTestCases } from '../__tests__/index.js'
 
 describe(processor, () => {
-  describe('should parse create_table correctly', () => {
-    const userTable = (override?: Partial<Table>) =>
-      aDBStructure({
-        tables: {
-          users: aTable({
-            name: 'users',
-            columns: {
-              id: aColumn({
-                name: 'id',
-                type: 'bigserial',
-                notNull: true,
-                primary: true,
-                unique: true,
-              }),
-              ...override?.columns,
-            },
-            indices: {
-              ...override?.indices,
-            },
-            comment: override?.comment ?? null,
-          }),
-        },
-      })
+  const userTable = (override?: Partial<Table>) =>
+    aDBStructure({
+      tables: {
+        users: aTable({
+          name: 'users',
+          columns: {
+            id: aColumn({
+              name: 'id',
+              type: 'bigserial',
+              notNull: true,
+              primary: true,
+              unique: true,
+            }),
+            ...override?.columns,
+          },
+          indices: {
+            ...override?.indices,
+          },
+          comment: override?.comment ?? null,
+        }),
+      },
+    })
 
+  describe('should parse create_table correctly', () => {
     it('table comment', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users", comment: "store our users." do |t|
         end
       `)
 
-      expect(result).toEqual(parserTestCases['table comment'])
+      expect(value).toEqual(parserTestCases['table comment'])
     })
 
     it('column comment', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.text "description", comment: 'this is description'
         end
       `)
 
-      expect(result).toEqual(parserTestCases['column comment'])
+      expect(value).toEqual(parserTestCases['column comment'])
     })
 
     it('not null', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "name", null: false
         end
@@ -71,31 +71,31 @@ describe(processor, () => {
         },
       })
 
-      expect(result).toEqual(expected)
+      expect(value).toEqual(expected)
     })
 
     it('nullable', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.text "description", null: true
         end
       `)
 
-      expect(result).toEqual(parserTestCases.nullable)
+      expect(value).toEqual(parserTestCases.nullable)
     })
 
     it('default value as string', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.text "description", default: "user's description", null: true
         end
       `)
 
-      expect(result).toEqual(parserTestCases['default value as string'])
+      expect(value).toEqual(parserTestCases['default value as string'])
     })
 
     it('default value as integer', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.integer "age", default: 30, null: true
         end
@@ -113,11 +113,11 @@ describe(processor, () => {
         },
       })
 
-      expect(result).toEqual(expected)
+      expect(value).toEqual(expected)
     })
 
     it('default value as boolean', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.boolean "active", default: true, null: true
         end
@@ -135,21 +135,21 @@ describe(processor, () => {
         },
       })
 
-      expect(result).toEqual(expected)
+      expect(value).toEqual(expected)
     })
 
     it('unique', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.text "mention", unique: true
         end
       `)
 
-      expect(result).toEqual(parserTestCases.unique)
+      expect(value).toEqual(parserTestCases.unique)
     })
 
     it('primary key as args', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users", id: :bigint
       `)
 
@@ -165,11 +165,11 @@ describe(processor, () => {
         },
       })
 
-      expect(result).toEqual(expected)
+      expect(value).toEqual(expected)
     })
 
     it('no primary key', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users", id: false do |t|
           t.string "name"
         end
@@ -189,33 +189,33 @@ describe(processor, () => {
         },
       })
 
-      expect(result).toEqual(expected)
+      expect(value).toEqual(expected)
     })
 
     it('index (unique: false)', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "email"
           t.index [ "id", "email" ], name: "index_users_on_id_and_email"
         end
       `)
 
-      expect(result).toEqual(parserTestCases['index (unique: false)'])
+      expect(value).toEqual(parserTestCases['index (unique: false)'])
     })
 
     it('index (unique: true)', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "users" do |t|
           t.string "email"
           t.index ["email"], name: "index_users_on_email", unique: true
         end
       `)
 
-      expect(result).toEqual(parserTestCases['index (unique: true)'])
+      expect(value).toEqual(parserTestCases['index (unique: true)'])
     })
 
     it('foreign key', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
       `)
 
@@ -232,11 +232,11 @@ describe(processor, () => {
 
       const expected = { fk_posts_user_id: rel }
 
-      expect(result.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(expected)
     })
 
     it('unique foreign key', async () => {
-      const result = await processor(/* Ruby */ `
+      const { value } = await processor(/* Ruby */ `
         create_table "posts" do |t|
           t.bigint "user_id", unique: true
         end
@@ -255,7 +255,29 @@ describe(processor, () => {
 
       const expected = { fk_posts_user_id: rel }
 
-      expect(result.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(expected)
+    })
+  })
+
+  describe('abnormal cases', () => {
+    it('Cannot handle if the table name is a variable', async () => {
+      const result = await processor(/* Ruby */ `
+        create_table "users" do |t|
+        end
+
+        variable = "posts"
+        create_table variable do |t|
+        end
+      `)
+
+      const value = userTable()
+      const errors = [
+        new UnsupportedTokenError(
+          'Expected a string for the table name, but received different data',
+        ),
+      ]
+
+      expect(result).toEqual({ value, errors })
     })
   })
 })

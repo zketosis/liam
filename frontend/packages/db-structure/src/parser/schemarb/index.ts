@@ -1,1 +1,4 @@
-export { processor } from './parser.js'
+export {
+  processor,
+  UnsupportedTokenError,
+} from './parser.js'
