@@ -7,7 +7,13 @@ import {
 
 import type { FC } from 'react'
 
-type Props = EdgeProps<Edge>
+type Data = {
+  isHovered: boolean
+}
+
+export type RelationshipEdgeType = Edge<Data, 'relationship'>
+
+type Props = EdgeProps<RelationshipEdgeType>
 
 export const RelationshipEdge: FC<Props> = ({
   sourceX,
@@ -17,6 +23,7 @@ export const RelationshipEdge: FC<Props> = ({
   targetY,
   targetPosition,
   id,
+  data,
 }) => {
   const [edgePath] = getSmoothStepPath({
     sourceX,
@@ -29,7 +36,17 @@ export const RelationshipEdge: FC<Props> = ({
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} />
+      <BaseEdge
+        id={id}
+        path={edgePath}
+        style={{
+          stroke: data?.isHovered
+            ? 'var(--node-layout)'
+            : 'var(--global-border)',
+          strokeDasharray: '2',
+          transition: 'stroke 0.3s var(--default-timing-function)',
+        }}
+      />
     </>
   )
 }
