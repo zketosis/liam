@@ -4,34 +4,17 @@ import {
   useUserEditingStore,
 } from '@/stores'
 import { DrawerContent, DrawerPortal, DrawerRoot } from '@liam-hq/ui'
-import {
-  type FC,
-  type PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import type { FC, PropsWithChildren } from 'react'
 // biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
 import { TableDetail } from '../ERDContent/TableNode/TableDetail'
 import styles from './TableDetailDrawer.module.css'
 
-const ANIMATION_DURATION = 165
+const handleClose = () => updateActiveTableName(undefined)
 
 export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
   const {
-    active: { tableName: tableId },
+    active: { tableName },
   } = useUserEditingStore()
-  const [open, setOpen] = useState(tableId !== undefined)
-
-  useEffect(() => {
-    setOpen(tableId !== undefined)
-  }, [tableId])
-
-  const handleClose = useCallback(() => {
-    setOpen(false)
-    // NOTE: Wait for the drawer to close before updating the active table name.
-    setTimeout(() => updateActiveTableName(undefined), ANIMATION_DURATION)
-  }, [])
 
   return (
     <DrawerRoot
@@ -40,7 +23,7 @@ export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
       // This behavior is an undocumented, unofficial usage and might change in the future.
       // ref: https://github.com/emilkowalski/vaul/blob/main/src/use-snap-points.ts
       snapPoints={[]}
-      open={open}
+      open={tableName !== undefined}
       onClose={handleClose}
     >
       {children}
@@ -63,11 +46,7 @@ export const TableDetailDrawer: FC = () => {
 
   return (
     <DrawerPortal>
-      <DrawerContent
-        style={{ '--drawer-animation-duration': `${ANIMATION_DURATION}ms` }}
-        className={styles.content}
-        {...ariaDescribedBy}
-      >
+      <DrawerContent className={styles.content} {...ariaDescribedBy}>
         {table !== undefined && <TableDetail table={table} />}
       </DrawerContent>
     </DrawerPortal>
