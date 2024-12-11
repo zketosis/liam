@@ -25,7 +25,11 @@ export const RelatedTables: FC<Props> = ({ table }) => {
       </div>
       <div className={styles.contentWrapper}>
         <ReactFlowProvider>
-          <ERDContent nodes={nodes} edges={edges} />
+          <ERDContent
+            nodes={nodes}
+            edges={edges}
+            enabledFeatures={{ fitViewWhenActiveTableChange: false }}
+          />
         </ReactFlowProvider>
       </div>
     </div>
