@@ -7,9 +7,7 @@ import { convertNodesToElkNodes } from './convertNodesToElkNodes'
 
 const elk = new ELK()
 const layoutOptions: LayoutOptions = {
-  'elk.aspectRatio': '1.78', // 16:0
-  'elk.algorithm': 'org.eclipse.elk.force',
-  'elk.force.model': 'EADES',
+  'elk.algorithm': 'org.eclipse.elk.layered',
 }
 
 type Params = {
