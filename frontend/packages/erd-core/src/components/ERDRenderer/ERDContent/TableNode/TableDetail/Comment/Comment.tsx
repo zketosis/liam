@@ -1,3 +1,4 @@
+import { DrawerDescription } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './Comment.module.css'
 
@@ -7,8 +8,8 @@ type Props = {
 
 export const Comment: FC<Props> = ({ comment }) => {
   return (
-    <div className={styles.wrapper}>
+    <DrawerDescription className={styles.wrapper}>
       <p className={styles.text}>{comment}</p>
-    </div>
+    </DrawerDescription>
   )
 }

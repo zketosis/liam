@@ -29,4 +29,6 @@ DrawerContent.displayName = Drawer.Content.displayName
 
 export const DrawerTitle = Drawer.Title
 
+export const DrawerDescription = Drawer.Description
+
 export const DrawerClose = Drawer.Close
