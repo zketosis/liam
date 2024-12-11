@@ -23,6 +23,11 @@
   border-bottom: 1px solid var(--node-border);
 }
 
+.columnWrapper:last-child {
+  border-bottom-left-radius: var(--border-radius-md);
+  border-bottom-right-radius: var(--border-radius-md);
+}
+
 .primaryKeyIcon {
   color: var(--primary-accent);
 }
@@ -34,6 +39,7 @@
 .columnNameWrapper {
   display: inline-flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .columnName {
@@ -59,4 +65,12 @@
 
 .handle {
   top: auto;
+}
+
+.handle[data-handlepos='right'] {
+  transform: translate(50%, 0%);
+}
+
+.handle[data-handlepos='left'] {
+  transform: translate(-50%, 0%);
 }
