@@ -124,4 +124,40 @@ export const parserTestCases = {
       }),
     },
   }),
+  'foreign key (one-to-many)': (name: string) => ({
+    [name]: {
+      name,
+      primaryTableName: 'users',
+      primaryColumnName: 'id',
+      foreignTableName: 'posts',
+      foreignColumnName: 'user_id',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'NO_ACTION',
+      deleteConstraint: 'NO_ACTION',
+    },
+  }),
+  'foreign key (one-to-one)': {
+    users_id_to_posts_user_id: {
+      name: 'users_id_to_posts_user_id',
+      primaryTableName: 'users',
+      primaryColumnName: 'id',
+      foreignTableName: 'posts',
+      foreignColumnName: 'user_id',
+      cardinality: 'ONE_TO_ONE',
+      updateConstraint: 'NO_ACTION',
+      deleteConstraint: 'NO_ACTION',
+    },
+  },
+  'foreign key with action': {
+    fk_posts_user_id: {
+      name: 'fk_posts_user_id',
+      primaryTableName: 'users',
+      primaryColumnName: 'id',
+      foreignTableName: 'posts',
+      foreignColumnName: 'user_id',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'RESTRICT',
+      deleteConstraint: 'CASCADE',
+    },
+  },
 }

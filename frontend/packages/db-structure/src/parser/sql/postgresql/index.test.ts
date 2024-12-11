@@ -3,7 +3,7 @@ import { parserTestCases } from '../../__tests__/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
-  describe('should parse create_table correctly', () => {
+  describe('should parse CREATE TABLE statement correctly', () => {
     it('table comment', async () => {
       const { value } = await processor(/* sql */ `
         CREATE TABLE users (
@@ -119,7 +119,23 @@ describe(processor, () => {
       expect(value).toEqual(parserTestCases['index (unique: true)'])
     })
 
-    it('foreign keys by create table', async () => {
+    // FIXME: `CONSTRAINT` statement is not supported yet
+    it.skip('foreign key (one-to-many)', async () => {
+      const keyName = 'fk_posts_user_id'
+      const { value } = await processor(/* sql */ `
+        CREATE TABLE posts (
+          id BIGSERIAL PRIMARY KEY,
+          user_id INT,
+          CONSTRAINT ${keyName} FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+      `)
+
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](keyName),
+      )
+    })
+
+    it('foreign key with omit key name', async () => {
       const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
           id BIGSERIAL PRIMARY KEY,
@@ -127,23 +143,14 @@ describe(processor, () => {
         );
       `)
 
-      const expectedRelationships = {
-        users_id_to_posts_user_id: {
-          name: 'users_id_to_posts_user_id',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        },
-      }
-
-      expect(value.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](
+          'users_id_to_posts_user_id',
+        ),
+      )
     })
 
-    it('unique foreign keys by create table', async () => {
+    it('foreign key (one-to-one)', async () => {
       const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
           id BIGSERIAL PRIMARY KEY,
@@ -151,77 +158,26 @@ describe(processor, () => {
         );
       `)
 
-      const expectedRelationships = {
-        users_id_to_posts_user_id: {
-          name: 'users_id_to_posts_user_id',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_ONE',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        },
-      }
-
-      expect(value.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-one)'],
+      )
     })
+  })
 
-    it('foreign keys with no action by alter table', async () => {
+  describe('should parse ALTER TABLE statement correctly', () => {
+    it('foreign key (one-to-many)', async () => {
+      const keyName = 'fk_posts_user_id'
       const { value } = await processor(/* sql */ `
-        CREATE TABLE posts (
-            id SERIAL PRIMARY KEY,
-            user_id INT NOT NULL
-        );
-
         ALTER TABLE posts
-        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+        ADD CONSTRAINT ${keyName} FOREIGN KEY (user_id) REFERENCES users(id);
       `)
 
-      const expectedRelationships = {
-        fk_posts_user_id: {
-          name: 'fk_posts_user_id',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        },
-      }
-
-      expect(value.relationships).toEqual(expectedRelationships)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](keyName),
+      )
     })
 
-    it('foreign keys with action by alter table', async () => {
-      const { value } = await processor(/* sql */ `
-        CREATE TABLE posts (
-            id SERIAL PRIMARY KEY,
-            user_id INT NOT NULL
-        );
-
-        ALTER TABLE posts
-        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL;
-      `)
-
-      const expectedRelationships = {
-        fk_posts_user_id: {
-          name: 'fk_posts_user_id',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'CASCADE',
-          deleteConstraint: 'SET_NULL',
-        },
-      }
-
-      expect(value.relationships).toEqual(expectedRelationships)
-    })
-
-    it('unique foreign keys by alter table', async () => {
+    it('foreign key (one-to-one)', async () => {
       const { value } = await processor(/* sql */ `
         CREATE TABLE posts (
             id SERIAL PRIMARY KEY,
@@ -229,23 +185,28 @@ describe(processor, () => {
         );
 
         ALTER TABLE posts
-        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+        ADD CONSTRAINT users_id_to_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id);
       `)
 
-      const expectedRelationships = {
-        fk_posts_user_id: {
-          name: 'fk_posts_user_id',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_ONE',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        },
-      }
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-one)'],
+      )
+    })
 
-      expect(value.relationships).toEqual(expectedRelationships)
+    it('foreign key with action', async () => {
+      const { value } = await processor(/* sql */ `
+        CREATE TABLE posts (
+            id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL
+        );
+
+        ALTER TABLE posts
+        ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+      `)
+
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key with action'],
+      )
     })
   })
 })
