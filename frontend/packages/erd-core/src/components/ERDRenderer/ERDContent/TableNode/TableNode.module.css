@@ -77,3 +77,11 @@
 .handle {
   top: auto;
 }
+
+.handle[data-handlepos='right'] {
+  transform: translate(50%, 0%);
+}
+
+.handle[data-handlepos='left'] {
+  transform: translate(-50%, 0%);
+}
