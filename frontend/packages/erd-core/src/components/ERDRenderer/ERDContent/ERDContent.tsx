@@ -15,6 +15,7 @@ import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
 import { Toolbar } from './Toolbar'
 import { useAutoLayout } from './useAutoLayout'
+import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 
 const nodeTypes = {
   table: TableNode,
@@ -39,6 +40,7 @@ export const ERDContent: FC<Props> = ({ nodes: _nodes, edges: _edges }) => {
   }, [_nodes, _edges, setNodes, setEdges])
 
   useAutoLayout()
+  useFitViewWhenActiveTableChange(true)
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
