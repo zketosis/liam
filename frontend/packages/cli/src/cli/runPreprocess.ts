@@ -1,4 +1,4 @@
-import fs, { readFileSync } from 'node:fs'
+import fs from 'node:fs'
 import path from 'node:path'
 import {
   type SupportedFormat,
@@ -6,17 +6,14 @@ import {
   supportedFormatSchema,
 } from '@liam-hq/db-structure/parser'
 import * as v from 'valibot'
+import { getInputContent } from './getInputContent.js'
 
 export async function runPreprocess(
   inputPath: string,
   outputDir: string,
   format: SupportedFormat,
 ) {
-  if (!fs.existsSync(inputPath)) {
-    throw new Error('Invalid input path. Please provide a valid file.')
-  }
-
-  const input = readFileSync(inputPath, 'utf8')
+  const input = await getInputContent(inputPath)
 
   if (!v.safeParse(supportedFormatSchema, format).success) {
     throw new Error(
