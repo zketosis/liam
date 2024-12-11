@@ -1,7 +1,12 @@
-import { updateActiveTableName, useDBStructureStore } from '@/stores'
+import {
+  updateActiveTableName,
+  useDBStructureStore,
+  useUserEditingStore,
+} from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
+import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
@@ -16,12 +21,20 @@ type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
+  const {
+    active: { tableName },
+  } = useUserEditingStore()
+  const isActive = tableName === table.name
   const handleClick = useCallback(() => {
     updateActiveTableName(table.name)
   }, [table])
 
   return (
-    <button type="button" className={styles.wrapper} onClick={handleClick}>
+    <button
+      type="button"
+      className={clsx(styles.wrapper, isActive && styles.wrapperActive)}
+      onClick={handleClick}
+    >
       <TableHeader name={table.name} />
       <ul>
         {Object.values(table.columns).map((column) => {
