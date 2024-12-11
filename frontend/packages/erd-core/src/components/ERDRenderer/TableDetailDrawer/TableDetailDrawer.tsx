@@ -54,12 +54,19 @@ export const TableDetailDrawer: FC = () => {
     active: { tableName },
   } = useUserEditingStore()
   const table = tables[tableName ?? '']
+  const ariaDescribedBy =
+    table?.comment == null
+      ? {
+          'aria-describedby': undefined,
+        }
+      : {}
 
   return (
     <DrawerPortal>
       <DrawerContent
         style={{ '--drawer-animation-duration': `${ANIMATION_DURATION}ms` }}
         className={styles.content}
+        {...ariaDescribedBy}
       >
         {table !== undefined && <TableDetail table={table} />}
       </DrawerContent>
