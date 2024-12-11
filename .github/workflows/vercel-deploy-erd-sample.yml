@@ -65,8 +65,6 @@ jobs:
           working-directory: frontend
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
-      # temp
-      - run: curl -sSL https://raw.githubusercontent.com/mastodon/mastodon/refs/tags/v4.3.2/db/schema.rb > frontend/apps/erd-sample/schema.rb
       - name: Pull Vercel Enviroment Infomation
         run: vercel pull --yes --environment=${{ needs.setup-deployment.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Run prepare command
