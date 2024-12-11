@@ -2,7 +2,7 @@ import {
   BaseEdge,
   type Edge,
   type EdgeProps,
-  getSmoothStepPath,
+  getBezierPath,
 } from '@xyflow/react'
 
 import clsx from 'clsx'
@@ -27,7 +27,7 @@ export const RelationshipEdge: FC<Props> = ({
   id,
   data,
 }) => {
-  const [edgePath] = getSmoothStepPath({
+  const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
