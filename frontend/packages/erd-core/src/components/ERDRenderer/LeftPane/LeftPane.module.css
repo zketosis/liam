@@ -3,3 +3,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.active {
+  background: linear-gradient(
+      0deg,
+      var(--primary-accent-overlay) 0%,
+      var(--primary-accent-overlay) 100%
+    ), var(--pane-background-active);
+}

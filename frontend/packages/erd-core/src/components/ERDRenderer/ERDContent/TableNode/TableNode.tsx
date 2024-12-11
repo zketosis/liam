@@ -1,17 +1,8 @@
-import { useDBStructureStore } from '@/stores'
+import { updateActiveTableName, useDBStructureStore } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
-import {
-  DiamondFillIcon,
-  DiamondIcon,
-  DrawerContent,
-  DrawerPortal,
-  DrawerRoot,
-  DrawerTrigger,
-  KeyRound,
-} from '@liam-hq/ui'
+import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
-import type { FC } from 'react'
-import { TableDetail } from './TableDetail'
+import { type FC, useCallback } from 'react'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -25,95 +16,83 @@ type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({ data: { table } }) => {
   const { relationships } = useDBStructureStore()
+  const handleClick = useCallback(() => {
+    updateActiveTableName(table.name)
+  }, [table])
+
   return (
-    <>
-      {/*
-      Set snapPoints to an empty array to disable the drawer snapping functionality.
-      This behavior is an undocumented, unofficial usage and might change in the future.
-      ref: https://github.com/emilkowalski/vaul/blob/main/src/use-snap-points.ts
-      */}
-      <DrawerRoot direction="right" snapPoints={[]}>
-        <DrawerTrigger>
-          <div className={styles.wrapper}>
-            <TableHeader name={table.name} />
-            <ul>
-              {Object.values(table.columns).map((column) => {
-                const handleId = `${table.name}-${column.name}`
-                const isSource = Object.values(relationships).some(
-                  (relationship) =>
-                    relationship.primaryTableName === table.name &&
-                    relationship.primaryColumnName === column.name,
-                )
-                const isTarget = Object.values(relationships).some(
-                  (relationship) =>
-                    relationship.foreignTableName === table.name &&
-                    relationship.foreignColumnName === column.name,
-                )
+    <button type="button" className={styles.wrapper} onClick={handleClick}>
+      <TableHeader name={table.name} />
+      <ul>
+        {Object.values(table.columns).map((column) => {
+          const handleId = `${table.name}-${column.name}`
+          const isSource = Object.values(relationships).some(
+            (relationship) =>
+              relationship.primaryTableName === table.name &&
+              relationship.primaryColumnName === column.name,
+          )
+          const isTarget = Object.values(relationships).some(
+            (relationship) =>
+              relationship.foreignTableName === table.name &&
+              relationship.foreignColumnName === column.name,
+          )
 
-                return (
-                  <li key={column.name} className={styles.columnWrapper}>
-                    {column.primary && (
-                      <KeyRound
-                        width={16}
-                        height={16}
-                        className={styles.primaryKeyIcon}
-                        role="img"
-                        aria-label="Primary Key"
-                      />
-                    )}
-                    {!column.primary &&
-                      (column.notNull ? (
-                        <DiamondFillIcon
-                          width={16}
-                          height={16}
-                          className={styles.diamondIcon}
-                          role="img"
-                          aria-label="Not Null"
-                        />
-                      ) : (
-                        <DiamondIcon
-                          width={16}
-                          height={16}
-                          className={styles.diamondIcon}
-                          role="img"
-                          aria-label="Nullable"
-                        />
-                      ))}
+          return (
+            <li key={column.name} className={styles.columnWrapper}>
+              {column.primary && (
+                <KeyRound
+                  width={16}
+                  height={16}
+                  className={styles.primaryKeyIcon}
+                  role="img"
+                  aria-label="Primary Key"
+                />
+              )}
+              {!column.primary &&
+                (column.notNull ? (
+                  <DiamondFillIcon
+                    width={16}
+                    height={16}
+                    className={styles.diamondIcon}
+                    role="img"
+                    aria-label="Not Null"
+                  />
+                ) : (
+                  <DiamondIcon
+                    width={16}
+                    height={16}
+                    className={styles.diamondIcon}
+                    role="img"
+                    aria-label="Nullable"
+                  />
+                ))}
 
-                    <span className={styles.columnNameWrapper}>
-                      <span className={styles.columnName}>{column.name}</span>
-                      <span className={styles.columnType}>{column.type}</span>
-                    </span>
+              <span className={styles.columnNameWrapper}>
+                <span className={styles.columnName}>{column.name}</span>
+                <span className={styles.columnType}>{column.type}</span>
+              </span>
 
-                    {isSource && (
-                      <Handle
-                        id={handleId}
-                        type="source"
-                        position={Position.Right}
-                        className={styles.handle}
-                      />
-                    )}
+              {isSource && (
+                <Handle
+                  id={handleId}
+                  type="source"
+                  position={Position.Right}
+                  className={styles.handle}
+                />
+              )}
 
-                    {isTarget && (
-                      <Handle
-                        id={handleId}
-                        type="target"
-                        position={Position.Left}
-                        className={styles.handle}
-                      />
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </DrawerTrigger>
-        <DrawerPortal>
-          <DrawerContent className={styles.content}>
-            <TableDetail table={table} />
-          </DrawerContent>
-        </DrawerPortal>
-      </DrawerRoot>
-    </>
+              {isTarget && (
+                <Handle
+                  id={handleId}
+                  type="target"
+                  position={Position.Left}
+                  className={styles.handle}
+                />
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </button>
   )
 }
