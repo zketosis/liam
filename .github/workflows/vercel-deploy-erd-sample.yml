@@ -58,33 +58,20 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ vars[matrix.apps.vercel-project-id-key] }}
-      working-directory: "${{ github.repository }}"
     steps:
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/pnpm-setup
         with:
-          path: ${{ env.working-directory }}
-      - uses: actions/checkout@v4
-        with:
-          path: "./mastodon/mastodon"
-          ref: "v4.3.2"
-          repository: "mastodon/mastodon"
-          sparse-checkout: "db/schema.rb"
-      - uses: ./liam-hq/liam/.github/actions/pnpm-setup
-        with:
-          working-directory: ${{ env.working-directory }}/frontend
+          working-directory: frontend
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
-      - name: Navigate frontend path
-        run: ln -s ${{ env.working-directory }}/frontend frontend
-      - name: Navigate mastodon path
-        run: ln -sf ../../../../../mastodon/mastodon/db/schema.rb ${{ env.working-directory }}/frontend/apps/erd-sample/schema.rb
       - name: Pull Vercel Enviroment Infomation
         run: vercel pull --yes --environment=${{ needs.setup-deployment.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Run prepare command
         run:  pnpm build
-        working-directory: ${{ env.working-directory }}/frontend
+        working-directory: frontend
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }} ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }}
+        run: vercel build ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }}
       - name: Deploy Project Artifacts to Vercel
         run: |
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }} > deployment-url.txt
