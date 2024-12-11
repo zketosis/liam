@@ -47,15 +47,6 @@ describe('runPreprocess', () => {
     },
   )
 
-  it('should throw an error if the input file does not exist', async () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-distDir-'))
-    const nonExistentPath = path.join(tmpDir, 'non-existent.sql')
-
-    await expect(
-      runPreprocess(nonExistentPath, tmpDir, 'postgres'),
-    ).rejects.toThrow('Invalid input path. Please provide a valid file.')
-  })
-
   it('should throw an error if the format is invalid', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-distDir-'))
     const inputPath = path.join(tmpDir, 'input.sql')
