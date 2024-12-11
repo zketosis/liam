@@ -57,7 +57,7 @@ export const ERDContent: FC<Props> = ({
     (_, { id }) => {
       setEdges((edges) =>
         edges.map((e) =>
-          e.source === id
+          e.source === id || e.target === id
             ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
             : e,
         ),
@@ -70,7 +70,7 @@ export const ERDContent: FC<Props> = ({
     (_, { id }) => {
       setEdges((edges) =>
         edges.map((e) =>
-          e.source === id
+          e.source === id || e.target === id
             ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
             : e,
         ),
