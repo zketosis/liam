@@ -23,6 +23,10 @@
   border-bottom: 1px solid var(--node-border);
 }
 
+.columnWrapper:last-child {
+  border-radius: var(--border-radius-md);
+}
+
 .primaryKeyIcon {
   color: var(--primary-accent);
 }
