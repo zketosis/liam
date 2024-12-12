@@ -9,7 +9,7 @@ import {
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
-import { type FC, useCallback, useEffect } from 'react'
+import { type FC, useCallback, useEffect, useState } from 'react'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
@@ -42,6 +42,7 @@ export const ERDContent: FC<Props> = ({
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const [hoveredTableId, setHoveredTableId] = useState<string | null>(null)
 
   useEffect(() => {
     setNodes(_nodes)
@@ -55,6 +56,7 @@ export const ERDContent: FC<Props> = ({
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
+      setHoveredTableId(id)
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
@@ -68,6 +70,7 @@ export const ERDContent: FC<Props> = ({
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
+      setHoveredTableId(null)
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
@@ -108,7 +111,10 @@ export const ERDContent: FC<Props> = ({
   return (
     <div className={styles.wrapper}>
       <ReactFlow
-        nodes={nodes}
+        nodes={nodes.map((node) => ({
+          ...node,
+          data: { ...node.data, hoveredTableId },
+        }))}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
