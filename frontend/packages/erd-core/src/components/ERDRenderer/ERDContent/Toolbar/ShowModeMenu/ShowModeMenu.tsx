@@ -1,3 +1,5 @@
+import { type ShowMode, showModeSchema } from '@/schemas/showMode'
+import { updateShowMode, useUserEditingStore } from '@/stores'
 import {
   Button,
   ChevronDown,
@@ -8,12 +10,9 @@ import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
 } from '@liam-hq/ui'
-import { type FC, useCallback, useState } from 'react'
-import { type InferOutput, picklist, safeParse } from 'valibot'
+import { type FC, useCallback } from 'react'
+import { safeParse } from 'valibot'
 import styles from './ShowModeMenu.module.css'
-
-const showModeSchema = picklist(['ALL_FIELDS', 'TABLE_NAME', 'KEY_ONLY'])
-type ShowMode = InferOutput<typeof showModeSchema>
 
 const OPTION_LIST: { value: ShowMode; label: string }[] = [
   { value: 'ALL_FIELDS', label: 'All Fields' },
@@ -22,13 +21,13 @@ const OPTION_LIST: { value: ShowMode; label: string }[] = [
 ]
 
 export const ShowModeMenu: FC = () => {
-  const [showMode, setShowMode] = useState<ShowMode>('ALL_FIELDS')
+  const { showMode } = useUserEditingStore()
 
   const handleChangeValue = useCallback((value: string) => {
     const parsed = safeParse(showModeSchema, value)
 
     if (parsed.success) {
-      setShowMode(parsed.output)
+      updateShowMode(parsed.output)
     }
   }, [])
 

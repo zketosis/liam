@@ -48,6 +48,8 @@ export const TableNode: FC<Props> = ({ data: { table, hoveredTableId } }) => {
       isRelatedToTable(tableName),
     [hoveredTableId, tableName, isRelatedToTable, table.name],
   )
+  const { showMode } = useUserEditingStore()
+
   const handleClick = useCallback(() => {
     updateActiveTableName(table.name)
   }, [table])
@@ -63,76 +65,78 @@ export const TableNode: FC<Props> = ({ data: { table, hoveredTableId } }) => {
       onClick={handleClick}
     >
       <TableHeader name={table.name} />
-      <ul>
-        {Object.values(table.columns).map((column) => {
-          const handleId = `${table.name}-${column.name}`
-          const isSource = Object.values(relationships).some(
-            (relationship) =>
-              relationship.primaryTableName === table.name &&
-              relationship.primaryColumnName === column.name,
-          )
-          const isTarget = Object.values(relationships).some(
-            (relationship) =>
-              relationship.foreignTableName === table.name &&
-              relationship.foreignColumnName === column.name,
-          )
+      {showMode === 'ALL_FIELDS' && (
+        <ul>
+          {Object.values(table.columns).map((column) => {
+            const handleId = `${table.name}-${column.name}`
+            const isSource = Object.values(relationships).some(
+              (relationship) =>
+                relationship.primaryTableName === table.name &&
+                relationship.primaryColumnName === column.name,
+            )
+            const isTarget = Object.values(relationships).some(
+              (relationship) =>
+                relationship.foreignTableName === table.name &&
+                relationship.foreignColumnName === column.name,
+            )
 
-          return (
-            <li key={column.name} className={styles.columnWrapper}>
-              {column.primary && (
-                <KeyRound
-                  width={16}
-                  height={16}
-                  className={styles.primaryKeyIcon}
-                  role="img"
-                  aria-label="Primary Key"
-                />
-              )}
-              {!column.primary &&
-                (column.notNull ? (
-                  <DiamondFillIcon
+            return (
+              <li key={column.name} className={styles.columnWrapper}>
+                {column.primary && (
+                  <KeyRound
                     width={16}
                     height={16}
-                    className={styles.diamondIcon}
+                    className={styles.primaryKeyIcon}
                     role="img"
-                    aria-label="Not Null"
+                    aria-label="Primary Key"
                   />
-                ) : (
-                  <DiamondIcon
-                    width={16}
-                    height={16}
-                    className={styles.diamondIcon}
-                    role="img"
-                    aria-label="Nullable"
+                )}
+                {!column.primary &&
+                  (column.notNull ? (
+                    <DiamondFillIcon
+                      width={16}
+                      height={16}
+                      className={styles.diamondIcon}
+                      role="img"
+                      aria-label="Not Null"
+                    />
+                  ) : (
+                    <DiamondIcon
+                      width={16}
+                      height={16}
+                      className={styles.diamondIcon}
+                      role="img"
+                      aria-label="Nullable"
+                    />
+                  ))}
+
+                <span className={styles.columnNameWrapper}>
+                  <span className={styles.columnName}>{column.name}</span>
+                  <span className={styles.columnType}>{column.type}</span>
+                </span>
+
+                {isSource && (
+                  <Handle
+                    id={handleId}
+                    type="source"
+                    position={Position.Right}
+                    className={styles.handle}
                   />
-                ))}
+                )}
 
-              <span className={styles.columnNameWrapper}>
-                <span className={styles.columnName}>{column.name}</span>
-                <span className={styles.columnType}>{column.type}</span>
-              </span>
-
-              {isSource && (
-                <Handle
-                  id={handleId}
-                  type="source"
-                  position={Position.Right}
-                  className={styles.handle}
-                />
-              )}
-
-              {isTarget && (
-                <Handle
-                  id={handleId}
-                  type="target"
-                  position={Position.Left}
-                  className={styles.handle}
-                />
-              )}
-            </li>
-          )
-        })}
-      </ul>
+                {isTarget && (
+                  <Handle
+                    id={handleId}
+                    type="target"
+                    position={Position.Left}
+                    className={styles.handle}
+                  />
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </button>
   )
 }

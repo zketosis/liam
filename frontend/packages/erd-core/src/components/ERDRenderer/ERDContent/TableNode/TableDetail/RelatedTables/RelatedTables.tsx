@@ -15,7 +15,10 @@ type Props = {
 export const RelatedTables: FC<Props> = ({ table }) => {
   const dbStructure = useDBStructureStore()
   const extractedDBStructure = extractDBStructureForTable(table, dbStructure)
-  const { nodes, edges } = convertDBStructureToNodes(extractedDBStructure)
+  const { nodes, edges } = convertDBStructureToNodes({
+    dbStructure: extractedDBStructure,
+    showMode: 'TABLE_NAME',
+  })
 
   return (
     <div className={styles.wrapper}>
