@@ -28,6 +28,7 @@ export const convertDBStructureToNodes = ({
       style: {
         opacity: 0,
       },
+      zIndex: 1,
     }
   })
 
