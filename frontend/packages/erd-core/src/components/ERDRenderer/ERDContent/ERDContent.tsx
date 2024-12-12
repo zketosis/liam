@@ -1,3 +1,5 @@
+import { useDBStructureStore } from '@/stores'
+import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
   BackgroundVariant,
@@ -9,7 +11,7 @@ import {
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
-import { type FC, useCallback, useEffect, useState } from 'react'
+import { type FC, useCallback, useEffect } from 'react'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
@@ -35,6 +37,19 @@ type Props = {
     | undefined
 }
 
+export const isRelatedToTable = (
+  relationships: Relationships,
+  tableName: string,
+  targetTableName: string | undefined,
+) =>
+  Object.values(relationships).some(
+    (relationship) =>
+      (relationship.primaryTableName === tableName ||
+        relationship.foreignTableName === tableName) &&
+      (relationship.primaryTableName === targetTableName ||
+        relationship.foreignTableName === targetTableName),
+  )
+
 export const ERDContent: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
@@ -42,7 +57,7 @@ export const ERDContent: FC<Props> = ({
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
-  const [hoveredTableId, setHoveredTableId] = useState<string | null>(null)
+  const { relationships } = useDBStructureStore()
 
   useEffect(() => {
     setNodes(_nodes)
@@ -56,7 +71,13 @@ export const ERDContent: FC<Props> = ({
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      setHoveredTableId(id)
+      setNodes((nodes) =>
+        nodes.map((n) =>
+          n.id === id || isRelatedToTable(relationships, n.id, id)
+            ? { ...n, data: { ...n.data, isHovered: true } }
+            : n,
+        ),
+      )
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
@@ -65,12 +86,18 @@ export const ERDContent: FC<Props> = ({
         ),
       )
     },
-    [setEdges],
+    [setEdges, setNodes, relationships],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      setHoveredTableId(null)
+      setNodes((nodes) =>
+        nodes.map((n) =>
+          n.id === id || isRelatedToTable(relationships, n.id, id)
+            ? { ...n, data: { ...n.data, isHovered: false } }
+            : n,
+        ),
+      )
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
@@ -79,7 +106,7 @@ export const ERDContent: FC<Props> = ({
         ),
       )
     },
-    [setEdges],
+    [setEdges, setNodes, relationships],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
@@ -113,7 +140,7 @@ export const ERDContent: FC<Props> = ({
       <ReactFlow
         nodes={nodes.map((node) => ({
           ...node,
-          data: { ...node.data, hoveredTableId },
+          data: { ...node.data },
         }))}
         edges={edges}
         nodeTypes={nodeTypes}

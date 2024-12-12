@@ -7,47 +7,31 @@ import type { Table } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
 import clsx from 'clsx'
-import { type FC, useCallback, useMemo } from 'react'
+import { type FC, useCallback } from 'react'
+import { isRelatedToTable } from '../ERDContent'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
 type Data = {
   table: Table
-  hoveredTableId: string
+  isHovered: boolean
 }
 
 type TableNodeType = Node<Data, 'Table'>
 
 type Props = NodeProps<TableNodeType>
 
-export const TableNode: FC<Props> = ({ data: { table, hoveredTableId } }) => {
+export const TableNode: FC<Props> = ({ data: { table, isHovered } }) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
   } = useUserEditingStore()
 
-  const isRelatedToTable = useCallback(
-    (targetTableName: string | undefined) =>
-      Object.values(relationships).some(
-        (relationship) =>
-          (relationship.primaryTableName === table.name ||
-            relationship.foreignTableName === table.name) &&
-          (relationship.primaryTableName === targetTableName ||
-            relationship.foreignTableName === targetTableName),
-      ),
-    [relationships, table.name],
-  )
-
   const isActive = tableName === table.name
 
-  // A table is "hovered" if it is hovered, or related to the hovered/active table.
-  const isTableHovered = useMemo(
-    () =>
-      hoveredTableId === table.name ||
-      isRelatedToTable(hoveredTableId) ||
-      isRelatedToTable(tableName),
-    [hoveredTableId, tableName, isRelatedToTable, table.name],
-  )
+  const isRelated =
+    isHovered || isRelatedToTable(relationships, table.name, tableName)
+
   const { showMode } = useUserEditingStore()
 
   const handleClick = useCallback(() => {
@@ -59,7 +43,7 @@ export const TableNode: FC<Props> = ({ data: { table, hoveredTableId } }) => {
       type="button"
       className={clsx(
         styles.wrapper,
-        isTableHovered && styles.wrapperHover,
+        isRelated && styles.wrapperHover,
         isActive && styles.wrapperActive,
       )}
       onClick={handleClick}
