@@ -21,19 +21,11 @@ export async function runPreprocess(
     )
   }
 
-  let json = null
-  try {
-    const { value, errors } = await parse(input, format)
-    json = value
-    if (errors.length > 0) {
-      for (const error of errors) {
-        console.error(error)
-      }
+  const { value: json, errors } = await parse(input, format)
+  if (errors.length > 0) {
+    for (const error of errors) {
+      console.error(error)
     }
-  } catch (error) {
-    throw new Error(
-      `Failed to parse ${format} file: ${error instanceof Error ? error.message : String(error)}`,
-    )
   }
 
   const filePath = path.join(outputDir, 'schema.json')
