@@ -10,7 +10,7 @@ import type { FC } from 'react'
 import styles from './RelationshipEdge.module.css'
 
 type Data = {
-  isHovered: boolean
+  isHighlighted: boolean
 }
 
 export type RelationshipEdgeType = Edge<Data, 'relationship'>
@@ -41,7 +41,7 @@ export const RelationshipEdge: FC<Props> = ({
       <BaseEdge
         id={id}
         path={edgePath}
-        className={clsx(styles.edge, data?.isHovered && styles.hovered)}
+        className={clsx(styles.edge, data?.isHighlighted && styles.hovered)}
       />
     </>
   )
