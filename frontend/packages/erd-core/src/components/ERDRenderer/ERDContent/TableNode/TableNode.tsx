@@ -109,12 +109,10 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                       className={clsx([
                         styles.handleCardinality,
                         styles.handleCardinalityRight,
-                      ])}
-                      color={
                         isHighlighted
-                          ? 'var(--node-layout)'
-                          : 'var(--global-border)'
-                      }
+                          ? styles.handleCardinalityHighlighted
+                          : styles.handleCardinalityDefault,
+                      ])}
                     />
                   </>
                 )}
@@ -133,12 +131,10 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
-                          ])}
-                          color={
                             isHighlighted
-                              ? 'var(--node-layout)'
-                              : 'var(--global-border)'
-                          }
+                              ? styles.handleCardinalityHighlighted
+                              : styles.handleCardinalityDefault,
+                          ])}
                         />
                       ))
                       .with('ONE_TO_MANY', () => (
@@ -146,12 +142,10 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
-                          ])}
-                          color={
                             isHighlighted
-                              ? 'var(--node-layout)'
-                              : 'var(--global-border)'
-                          }
+                              ? styles.handleCardinalityHighlighted
+                              : styles.handleCardinalityDefault,
+                          ])}
                         />
                       ))
                       .otherwise(() => null)}

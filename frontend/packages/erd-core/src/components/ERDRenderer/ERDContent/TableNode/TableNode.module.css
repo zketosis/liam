@@ -90,6 +90,14 @@
   height: 16px;
 }
 
+.handleCardinalityHighlighted {
+  color: var(--node-layout);
+}
+
+.handleCardinalityDefault {
+  color: var(--global-border);
+}
+
 .handleCardinalityRight {
   right: -23px;
 }
