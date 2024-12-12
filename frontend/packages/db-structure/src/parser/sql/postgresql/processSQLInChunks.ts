@@ -10,14 +10,17 @@ export const processSQLInChunks = async (
   chunkSize: number,
   callback: (chunk: string) => Promise<void>,
 ): Promise<void> => {
-  const lines = input.split('\n')
+  const semicolon = ';'
+  // Even though the parser can handle "--", we remove such lines for ease of splitting by semicolons.
+  const lines = input.split('\n').filter((line) => !line.startsWith('--'))
+
   let partialStmt = ''
 
   for (let i = 0; i < lines.length; i += chunkSize) {
     const chunk = lines.slice(i, i + chunkSize).join('\n')
     const combined = partialStmt + chunk
 
-    const lastSemicolonIndex = combined.lastIndexOf(';')
+    const lastSemicolonIndex = combined.lastIndexOf(semicolon)
     if (lastSemicolonIndex === -1) {
       partialStmt = combined
       continue
