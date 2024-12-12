@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import {
-  aColumn,
-  aDBStructure,
-  aRelationship,
-  aTable,
-} from '../../schema/index.js'
+import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
 import { UnsupportedTokenError, processor } from './index.js'
 
 import { parserTestCases } from '../__tests__/index.js'
@@ -214,90 +209,62 @@ describe(processor, () => {
       expect(value).toEqual(parserTestCases['index (unique: true)'])
     })
 
-    it('foreign key', async () => {
+    it('foreign key (one-to-many)', async () => {
+      const keyName = 'fk_posts_user_id'
       const { value } = await processor(/* Ruby */ `
-        add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
+        add_foreign_key "posts", "users", column: "user_id", name: "${keyName}"
       `)
 
-      const rel = aRelationship({
-        name: 'fk_posts_user_id',
-        primaryTableName: 'users',
-        primaryColumnName: 'id',
-        foreignTableName: 'posts',
-        foreignColumnName: 'user_id',
-        cardinality: 'ONE_TO_MANY',
-        updateConstraint: 'RESTRICT',
-        deleteConstraint: 'CASCADE',
-      })
-
-      const expected = { fk_posts_user_id: rel }
-
-      expect(value.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](keyName),
+      )
     })
 
-    it('foreign key(omit column name)', async () => {
+    it('foreign key with omit column name', async () => {
+      const keyName = 'fk_posts_user_id'
       const { value } = await processor(/* Ruby */ `
-        add_foreign_key "posts", "users", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
+        add_foreign_key "posts", "users", name: "${keyName}"
       `)
 
-      const rel = aRelationship({
-        name: 'fk_posts_user_id',
-        primaryTableName: 'users',
-        primaryColumnName: 'id',
-        foreignTableName: 'posts',
-        foreignColumnName: 'user_id',
-        cardinality: 'ONE_TO_MANY',
-        updateConstraint: 'RESTRICT',
-        deleteConstraint: 'CASCADE',
-      })
-
-      const expected = { fk_posts_user_id: rel }
-
-      expect(value.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](keyName),
+      )
     })
 
-    it('foreign key(omit key name)', async () => {
+    it('foreign key with omit key name', async () => {
       const { value } = await processor(/* Ruby */ `
-        add_foreign_key "posts", "users", column: "user_id", on_update: :restrict, on_delete: :cascade
+        add_foreign_key "posts", "users", column: "user_id"
       `)
 
-      const rel = aRelationship({
-        name: 'users_id_to_posts_user_id',
-        primaryTableName: 'users',
-        primaryColumnName: 'id',
-        foreignTableName: 'posts',
-        foreignColumnName: 'user_id',
-        cardinality: 'ONE_TO_MANY',
-        updateConstraint: 'RESTRICT',
-        deleteConstraint: 'CASCADE',
-      })
-
-      const expected = { users_id_to_posts_user_id: rel }
-
-      expect(value.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](
+          'users_id_to_posts_user_id',
+        ),
+      )
     })
 
-    it('unique foreign key', async () => {
+    it('foreign key (one-to-one)', async () => {
       const { value } = await processor(/* Ruby */ `
         create_table "posts" do |t|
           t.bigint "user_id", unique: true
         end
 
-        add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id"
+        add_foreign_key "posts", "users", column: "user_id"
       `)
 
-      const rel = aRelationship({
-        name: 'fk_posts_user_id',
-        primaryTableName: 'users',
-        primaryColumnName: 'id',
-        foreignTableName: 'posts',
-        foreignColumnName: 'user_id',
-        cardinality: 'ONE_TO_ONE',
-      })
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-one)'],
+      )
+    })
 
-      const expected = { fk_posts_user_id: rel }
+    it('foreign keys with action', async () => {
+      const { value } = await processor(/* Ruby */ `
+        add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
+      `)
 
-      expect(value.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key with action'],
+      )
     })
   })
 
