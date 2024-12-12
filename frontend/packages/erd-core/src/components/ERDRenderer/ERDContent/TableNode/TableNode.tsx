@@ -23,13 +23,16 @@ import styles from './TableNode.module.css'
 type Data = {
   table: Table
   isHighlighted: boolean
+  highlightedHandles: string[]
 }
 
 type TableNodeType = Node<Data, 'Table'>
 
 type Props = NodeProps<TableNodeType>
 
-export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
+export const TableNode: FC<Props> = ({
+  data: { table, isHighlighted, highlightedHandles },
+}) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
@@ -119,7 +122,9 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                       className={clsx([
                         styles.handleCardinality,
                         styles.handleCardinalityRight,
-                        isHighlighted && styles.handleCardinalityHighlighted,
+                        (isHighlighted ||
+                          highlightedHandles?.includes(handleId)) &&
+                          styles.handleCardinalityHighlighted,
                       ])}
                     />
                   </>
@@ -139,7 +144,8 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
-                            isHighlighted &&
+                            (isHighlighted ||
+                              highlightedHandles?.includes(handleId)) &&
                               styles.handleCardinalityHighlighted,
                           ])}
                         />
@@ -149,7 +155,8 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
-                            isHighlighted &&
+                            (isHighlighted ||
+                              highlightedHandles?.includes(handleId)) &&
                               styles.handleCardinalityHighlighted,
                           ])}
                         />

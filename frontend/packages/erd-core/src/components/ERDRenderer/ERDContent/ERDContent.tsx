@@ -15,7 +15,6 @@ import { type FC, useCallback, useEffect } from 'react'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
-import { Toolbar } from './Toolbar'
 import { useAutoLayout } from './useAutoLayout'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 
@@ -75,46 +74,81 @@ export const ERDContent: FC<Props> = ({
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      setEdges((edges) =>
-        edges.map((e) =>
-          e.source === id || e.target === id
-            ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
-            : e,
-        ),
+      const relatedEdges = edges.filter(
+        (e) => e.source === id || e.target === id,
       )
-      setNodes((nodes) =>
-        nodes.map((n) =>
-          n.id === id || isRelatedToTable(relationships, n.id, id)
-            ? { ...n, data: { ...n.data, isHighlighted: true } }
-            : n,
-        ),
+
+      const updatedEdges = edges.map((e) =>
+        relatedEdges.includes(e)
+          ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
+          : e,
       )
+
+      const updatedNodes = nodes.map((node) => {
+        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
+          return { ...node, data: { ...node.data, isHighlighted: true } }
+        }
+
+        const highlightedTargetHandles = relatedEdges
+          .filter((edge) => edge.source === id && edge.target === node.id)
+          .map((edge) => edge.targetHandle)
+
+        const highlightedSourceHandles = relatedEdges
+          .filter((edge) => edge.target === id && edge.source === node.id)
+          .map((edge) => edge.sourceHandle)
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            highlightedHandles:
+              highlightedTargetHandles.concat(highlightedSourceHandles) || [],
+          },
+        }
+      })
+
+      setEdges(updatedEdges)
+      setNodes(updatedNodes)
     },
-    [setEdges, setNodes, relationships],
+    [edges, nodes, setNodes, setEdges, relationships],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      setEdges((edges) =>
-        edges.map((e) =>
-          e.source === id || e.target === id
-            ? {
-                ...e,
-                animated: false,
-                data: { ...e.data, isHighlighted: false },
-              }
-            : e,
-        ),
+      const updatedEdges = edges.map((e) =>
+        e.source === id || e.target === id
+          ? {
+              ...e,
+              animated: false,
+              data: { ...e.data, isHighlighted: false },
+            }
+          : e,
       )
-      setNodes((nodes) =>
-        nodes.map((n) =>
-          n.id === id || isRelatedToTable(relationships, n.id, id)
-            ? { ...n, data: { ...n.data, isHighlighted: false } }
-            : n,
-        ),
-      )
+
+      const updatedNodes = nodes.map((node) => {
+        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isHighlighted: false,
+            },
+          }
+        }
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            highlightedHandles: [],
+          },
+        }
+      })
+
+      setEdges(updatedEdges)
+      setNodes(updatedNodes)
     },
-    [setEdges, setNodes, relationships],
+    [edges, nodes, setNodes, setEdges, relationships],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
@@ -170,9 +204,6 @@ export const ERDContent: FC<Props> = ({
           gap={16}
         />
       </ReactFlow>
-      <div className={styles.toolbarWrapper}>
-        <Toolbar />
-      </div>
     </div>
   )
 }

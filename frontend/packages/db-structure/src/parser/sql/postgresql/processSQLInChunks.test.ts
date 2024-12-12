@@ -47,5 +47,18 @@ describe(processSQLInChunks, () => {
 
       expect(callback).not.toHaveBeenCalled()
     })
+
+    it('should correctly process SQL chunks while ignoring semicolons in comment lines starting with "--"', async () => {
+      const input =
+        'SELECT 1;\nSELECT 2;\n-- This is a comment line; additional text here should be ignored.\nSELECT 3;\nSELECT 4;'
+      const chunkSize = 3
+      const callback = vi.fn()
+
+      await processSQLInChunks(input, chunkSize, callback)
+
+      expect(callback).toHaveBeenCalledTimes(2)
+      expect(callback).toHaveBeenCalledWith('SELECT 1;\nSELECT 2;\nSELECT 3;')
+      expect(callback).toHaveBeenCalledWith('SELECT 4;')
+    })
   })
 })
