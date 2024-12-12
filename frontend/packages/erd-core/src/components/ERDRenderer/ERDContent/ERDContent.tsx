@@ -58,12 +58,17 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
-            ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
+            ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
             : e,
         ),
       )
+      setNodes((nodes) =>
+        nodes.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, isHighlighted: true } } : n,
+        ),
+      )
     },
-    [setEdges],
+    [setNodes, setEdges],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
@@ -71,12 +76,21 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
-            ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
+            ? {
+                ...e,
+                animated: false,
+                data: { ...e.data, isHighlighted: false },
+              }
             : e,
         ),
       )
+      setNodes((nodes) =>
+        nodes.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, isHighlighted: false } } : n,
+        ),
+      )
     },
-    [setEdges],
+    [setNodes, setEdges],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
@@ -84,7 +98,7 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.id === id
-            ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
+            ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
             : e,
         ),
       )
@@ -97,7 +111,11 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.id === id
-            ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
+            ? {
+                ...e,
+                animated: false,
+                data: { ...e.data, isHighlighted: false },
+              }
             : e,
         ),
       )

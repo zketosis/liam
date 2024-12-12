@@ -21,13 +21,14 @@ import styles from './TableNode.module.css'
 
 type Data = {
   table: Table
+  isHighlighted: boolean
 }
 
 type TableNodeType = Node<Data, 'Table'>
 
 type Props = NodeProps<TableNodeType>
 
-export const TableNode: FC<Props> = ({ data: { table } }) => {
+export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
@@ -108,6 +109,7 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                       className={clsx([
                         styles.handleCardinality,
                         styles.handleCardinalityRight,
+                        isHighlighted && styles.handleCardinalityHighlighted,
                       ])}
                     />
                   </>
@@ -127,6 +129,8 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
+                            isHighlighted &&
+                              styles.handleCardinalityHighlighted,
                           ])}
                         />
                       ))
@@ -135,6 +139,8 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
+                            isHighlighted &&
+                              styles.handleCardinalityHighlighted,
                           ])}
                         />
                       ))
