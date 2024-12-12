@@ -7,6 +7,7 @@ import type {
   List,
   Node,
   String as PgString,
+  RawStmt,
 } from '@pgsql/types'
 import type {
   Columns,
@@ -19,7 +20,6 @@ import {
   defaultRelationshipName,
   handleOneToOneRelationships,
 } from '../../utils/index.js'
-import type { RawStmtWrapper } from './parser.js'
 
 function isStringNode(node: Node | undefined): node is { String: PgString } {
   return (
@@ -94,7 +94,7 @@ const constraintToRelationship = (
 }
 
 // Transform function for AST to DBStructure
-export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
+export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
 
@@ -339,16 +339,7 @@ export const convertToDBStructure = (ast: RawStmtWrapper[]): DBStructure => {
     }
   }
 
-  if (!ast) {
-    return {
-      tables: {},
-      relationships: {},
-    }
-  }
-
-  // pg-query-emscripten does not have types, so we need to define them ourselves
-  // @ts-expect-error
-  for (const statement of ast.parse_tree.stmts) {
+  for (const statement of stmts) {
     if (statement?.stmt === undefined) continue
 
     const stmt = statement.stmt
