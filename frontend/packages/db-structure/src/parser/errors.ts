@@ -11,3 +11,10 @@ export class WarningError extends ProcessError {
     this.name = 'WarningError'
   }
 }
+
+export class UnexpectedTokenWarningError extends WarningError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'UnexpectedTokenWarningError'
+  }
+}

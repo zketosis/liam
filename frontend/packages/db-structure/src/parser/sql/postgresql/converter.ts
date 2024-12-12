@@ -7,6 +7,7 @@ import type {
   List,
   Node,
   String as PgString,
+  RawStmt,
 } from '@pgsql/types'
 import type {
   Columns,
@@ -19,7 +20,6 @@ import {
   defaultRelationshipName,
   handleOneToOneRelationships,
 } from '../../utils/index.js'
-import type { ParseResult } from './parser.js'
 
 function isStringNode(node: Node | undefined): node is { String: PgString } {
   return (
@@ -94,7 +94,7 @@ const constraintToRelationship = (
 }
 
 // Transform function for AST to DBStructure
-export const convertToDBStructure = (ast: ParseResult): DBStructure => {
+export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
 
@@ -339,14 +339,14 @@ export const convertToDBStructure = (ast: ParseResult): DBStructure => {
     }
   }
 
-  if (!ast) {
+  if (!stmts) {
     return {
       tables: {},
       relationships: {},
     }
   }
 
-  for (const statement of ast.parse_tree.stmts) {
+  for (const statement of stmts) {
     if (statement?.stmt === undefined) continue
 
     const stmt = statement.stmt

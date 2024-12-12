@@ -14,14 +14,14 @@ export interface ParseResult {
   parse_tree: {
     version: number
     stmts: RawStmt[]
-    stderr_buffer: string
-    error: {
-      message: string
-      funcname: string
-      filename: string
-      lineno: number
-      cursorpos: number
-      context: string
-    } | null
   }
+  stderr_buffer: string
+  error: {
+    message: string
+    funcname: string
+    filename: string
+    lineno: number
+    cursorpos: number
+    context: string
+  } | null
 }
