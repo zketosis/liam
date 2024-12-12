@@ -27,7 +27,11 @@ import type {
   Tables,
 } from '../../schema/index.js'
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
-import { type ProcessError, WarningError } from '../errors.js'
+import {
+  type ProcessError,
+  UnexpectedTokenWarningError,
+  WarningError,
+} from '../errors.js'
 import type { ProcessResult, Processor } from '../types.js'
 import {
   defaultRelationshipName,
@@ -248,19 +252,27 @@ function extractDefaultValue(
   return null
 }
 
-function extractRelationshipTableNames(argNodes: Node[]): [string, string] {
+function extractRelationshipTableNames(
+  argNodes: Node[],
+): Result<[string, string], UnexpectedTokenWarningError> {
   const stringNodes = argNodes.filter((node) => node instanceof StringNode)
-  if (!(stringNodes.length === 2)) {
-    throw new Error('Foreign key relationship must have two table names')
+  if (stringNodes.length !== 2) {
+    return err(
+      new UnexpectedTokenWarningError(
+        'Foreign key relationship must have two table names',
+      ),
+    )
   }
 
-  const [foreignTableName, primaryTableName] = stringNodes.map((node) => {
-    // @ts-expect-error: unescaped is defined as string but it is actually object
-    if (node instanceof StringNode) return node.unescaped.value
-    return null
-  })
+  const [foreignTableName, primaryTableName] = stringNodes.map(
+    (node): string => {
+      // @ts-expect-error: unescaped is defined as string but it is actually object
+      if (node instanceof StringNode) return node.unescaped.value
+      return ''
+    },
+  ) as [string, string]
 
-  return [primaryTableName, foreignTableName]
+  return ok([primaryTableName, foreignTableName])
 }
 
 function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
@@ -408,8 +420,12 @@ class DBStructureFinder extends Visitor {
   handleAddForeignKey(node: CallNode): void {
     const argNodes = node.arguments_?.compactChildNodes() || []
 
-    const [primaryTableName, foreignTableName] =
-      extractRelationshipTableNames(argNodes)
+    const namesResult = extractRelationshipTableNames(argNodes)
+    if (namesResult.isErr()) {
+      this.errors.push(namesResult.error)
+      return
+    }
+    const [primaryTableName, foreignTableName] = namesResult.value
 
     const relationship = aRelationship({
       primaryTableName: primaryTableName,
