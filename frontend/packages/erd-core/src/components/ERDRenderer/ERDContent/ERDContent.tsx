@@ -70,11 +70,11 @@ export const ERDContent: FC<Props> = ({
           return { ...node, data: { ...node.data, isHighlighted: true } }
         }
 
-        const targethighlightedRelationships = relatedEdges
+        const highlightedTargetHandles = relatedEdges
           .filter((edge) => edge.source === id && edge.target === node.id)
           .map((edge) => edge.targetHandle)
 
-        const sourcehighlightedRelationships = relatedEdges
+        const highlightedSourceHandles = relatedEdges
           .filter((edge) => edge.target === id && edge.source === node.id)
           .map((edge) => edge.sourceHandle)
 
@@ -82,10 +82,8 @@ export const ERDContent: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
-            highlightedCardinalities:
-              targethighlightedRelationships.concat(
-                sourcehighlightedRelationships,
-              ) || [],
+            highlightedHandles:
+              highlightedTargetHandles.concat(highlightedSourceHandles) || [],
           },
         }
       })
@@ -123,7 +121,7 @@ export const ERDContent: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
-            highlightedCardinalities: [],
+            highlightedHandles: [],
           },
         }
       })

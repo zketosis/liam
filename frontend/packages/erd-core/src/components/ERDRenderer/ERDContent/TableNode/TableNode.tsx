@@ -22,7 +22,7 @@ import styles from './TableNode.module.css'
 type Data = {
   table: Table
   isHighlighted: boolean
-  highlightedCardinalities: string[]
+  highlightedHandles: string[]
 }
 
 type TableNodeType = Node<Data, 'Table'>
@@ -30,7 +30,7 @@ type TableNodeType = Node<Data, 'Table'>
 type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({
-  data: { table, isHighlighted, highlightedCardinalities },
+  data: { table, isHighlighted, highlightedHandles },
 }) => {
   const { relationships } = useDBStructureStore()
   const {
@@ -113,7 +113,7 @@ export const TableNode: FC<Props> = ({
                         styles.handleCardinality,
                         styles.handleCardinalityRight,
                         (isHighlighted ||
-                          highlightedCardinalities?.includes(handleId)) &&
+                          highlightedHandles?.includes(handleId)) &&
                           styles.handleCardinalityHighlighted,
                       ])}
                     />
@@ -135,7 +135,7 @@ export const TableNode: FC<Props> = ({
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
                             (isHighlighted ||
-                              highlightedCardinalities?.includes(handleId)) &&
+                              highlightedHandles?.includes(handleId)) &&
                               styles.handleCardinalityHighlighted,
                           ])}
                         />
@@ -146,7 +146,7 @@ export const TableNode: FC<Props> = ({
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
                             (isHighlighted ||
-                              highlightedCardinalities?.includes(handleId)) &&
+                              highlightedHandles?.includes(handleId)) &&
                               styles.handleCardinalityHighlighted,
                           ])}
                         />
