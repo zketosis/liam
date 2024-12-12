@@ -41,14 +41,18 @@ export const isRelatedToTable = (
   relationships: Relationships,
   tableName: string,
   targetTableName: string | undefined,
-) =>
-  Object.values(relationships).some(
+) => {
+  if (!targetTableName) {
+    return false
+  }
+  return Object.values(relationships).some(
     (relationship) =>
       (relationship.primaryTableName === tableName ||
         relationship.foreignTableName === tableName) &&
       (relationship.primaryTableName === targetTableName ||
         relationship.foreignTableName === targetTableName),
   )
+}
 
 export const ERDContent: FC<Props> = ({
   nodes: _nodes,
