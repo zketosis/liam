@@ -21,13 +21,14 @@ import styles from './TableNode.module.css'
 
 type Data = {
   table: Table
+  isHovered: boolean
 }
 
 type TableNodeType = Node<Data, 'Table'>
 
 type Props = NodeProps<TableNodeType>
 
-export const TableNode: FC<Props> = ({ data: { table } }) => {
+export const TableNode: FC<Props> = ({ data: { table, isHovered } }) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
@@ -109,6 +110,11 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                         styles.handleCardinality,
                         styles.handleCardinalityRight,
                       ])}
+                      color={
+                        isHovered
+                          ? 'var(--node-layout)'
+                          : 'var(--global-border)'
+                      }
                     />
                   </>
                 )}
@@ -128,6 +134,11 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
                           ])}
+                          color={
+                            isHovered
+                              ? 'var(--node-layout)'
+                              : 'var(--global-border)'
+                          }
                         />
                       ))
                       .with('ONE_TO_MANY', () => (
@@ -136,6 +147,11 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
                           ])}
+                          color={
+                            isHovered
+                              ? 'var(--node-layout)'
+                              : 'var(--global-border)'
+                          }
                         />
                       ))
                       .otherwise(() => null)}

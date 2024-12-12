@@ -62,8 +62,13 @@ export const ERDContent: FC<Props> = ({
             : e,
         ),
       )
+      setNodes((nodes) =>
+        nodes.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, isHovered: true } } : n,
+        ),
+      )
     },
-    [setEdges],
+    [setNodes, setEdges],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
@@ -75,8 +80,13 @@ export const ERDContent: FC<Props> = ({
             : e,
         ),
       )
+      setNodes((nodes) =>
+        nodes.map((n) =>
+          n.id === id ? { ...n, data: { ...n.data, isHovered: false } } : n,
+        ),
+      )
     },
-    [setEdges],
+    [setNodes, setEdges],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
