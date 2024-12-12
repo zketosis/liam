@@ -77,10 +77,12 @@
 
 .handle[data-handlepos='right'] {
   transform: translate(50%, 0%);
+  right: -20px;
 }
 
 .handle[data-handlepos='left'] {
   transform: translate(-50%, 0%);
+  left: -20px;
 }
 
 .handleCardinality {
@@ -93,6 +95,8 @@
 
 .handleCardinalityHighlighted {
   color: var(--node-layout);
+  transition: color var(--default-hover-animation-duration)
+    var(--default-timing-function);
 }
 
 .handleCardinalityRight {
