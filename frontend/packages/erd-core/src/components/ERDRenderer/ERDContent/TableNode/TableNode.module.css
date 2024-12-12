@@ -107,19 +107,3 @@
 .handleCardinalityLeft {
   left: -23px;
 }
-
-.handleCardinality {
-  top: auto;
-  position: absolute;
-  width: 23px;
-  height: 16px;
-  color: var(--global-border);
-}
-
-.handleCardinalityRight {
-  right: -23px;
-}
-
-.handleCardinalityLeft {
-  left: -23px;
-}

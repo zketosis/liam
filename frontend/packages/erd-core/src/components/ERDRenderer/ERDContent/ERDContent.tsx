@@ -146,10 +146,7 @@ export const ERDContent: FC<Props> = ({
   return (
     <div className={styles.wrapper}>
       <ReactFlow
-        nodes={nodes.map((node) => ({
-          ...node,
-          data: { ...node.data },
-        }))}
+        nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
