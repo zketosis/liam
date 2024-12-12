@@ -58,13 +58,13 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
-            ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
+            ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
             : e,
         ),
       )
       setNodes((nodes) =>
         nodes.map((n) =>
-          n.id === id ? { ...n, data: { ...n.data, isHovered: true } } : n,
+          n.id === id ? { ...n, data: { ...n.data, isHighlighted: true } } : n,
         ),
       )
     },
@@ -76,13 +76,13 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.source === id || e.target === id
-            ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
+            ? { ...e, animated: false, data: { ...e.data, isHighlighted: false } }
             : e,
         ),
       )
       setNodes((nodes) =>
         nodes.map((n) =>
-          n.id === id ? { ...n, data: { ...n.data, isHovered: false } } : n,
+          n.id === id ? { ...n, data: { ...n.data, isHighlighted: false } } : n,
         ),
       )
     },
@@ -94,7 +94,7 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.id === id
-            ? { ...e, animated: true, data: { ...e.data, isHovered: true } }
+            ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
             : e,
         ),
       )
@@ -107,7 +107,7 @@ export const ERDContent: FC<Props> = ({
       setEdges((edges) =>
         edges.map((e) =>
           e.id === id
-            ? { ...e, animated: false, data: { ...e.data, isHovered: false } }
+            ? { ...e, animated: false, data: { ...e.data, isHighlighted: false } }
             : e,
         ),
       )
