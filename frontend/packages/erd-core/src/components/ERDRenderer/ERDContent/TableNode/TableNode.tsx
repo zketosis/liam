@@ -4,10 +4,18 @@ import {
   useUserEditingStore,
 } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
-import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
+import {
+  CardinalityZeroOrManyLeftIcon,
+  CardinalityZeroOrOneLeftIcon,
+  CardinalityZeroOrOneRightIcon,
+  DiamondFillIcon,
+  DiamondIcon,
+  KeyRound,
+} from '@liam-hq/ui'
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
+import { match } from 'ts-pattern'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -47,11 +55,11 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                 relationship.primaryTableName === table.name &&
                 relationship.primaryColumnName === column.name,
             )
-            const isTarget = Object.values(relationships).some(
-              (relationship) =>
-                relationship.foreignTableName === table.name &&
-                relationship.foreignColumnName === column.name,
-            )
+            const targetCardinality = Object.values(relationships).find(
+              ({ foreignTableName, foreignColumnName }) =>
+                foreignTableName === table.name &&
+                foreignColumnName === column.name,
+            )?.cardinality
 
             return (
               <li key={column.name} className={styles.columnWrapper}>
@@ -89,21 +97,49 @@ export const TableNode: FC<Props> = ({ data: { table } }) => {
                 </span>
 
                 {isSource && (
-                  <Handle
-                    id={handleId}
-                    type="source"
-                    position={Position.Right}
-                    className={styles.handle}
-                  />
+                  <>
+                    <Handle
+                      id={handleId}
+                      type="source"
+                      position={Position.Right}
+                      className={clsx([styles.handle])}
+                    />
+                    <CardinalityZeroOrOneRightIcon
+                      className={clsx([
+                        styles.handleCardinality,
+                        styles.handleCardinalityRight,
+                      ])}
+                    />
+                  </>
                 )}
 
-                {isTarget && (
-                  <Handle
-                    id={handleId}
-                    type="target"
-                    position={Position.Left}
-                    className={styles.handle}
-                  />
+                {targetCardinality && (
+                  <>
+                    <Handle
+                      id={handleId}
+                      type="target"
+                      position={Position.Left}
+                      className={clsx([styles.handle])}
+                    />
+                    {match(targetCardinality)
+                      .with('ONE_TO_ONE', () => (
+                        <CardinalityZeroOrOneLeftIcon
+                          className={clsx([
+                            styles.handleCardinality,
+                            styles.handleCardinalityLeft,
+                          ])}
+                        />
+                      ))
+                      .with('ONE_TO_MANY', () => (
+                        <CardinalityZeroOrManyLeftIcon
+                          className={clsx([
+                            styles.handleCardinality,
+                            styles.handleCardinalityLeft,
+                          ])}
+                        />
+                      ))
+                      .otherwise(() => null)}
+                  </>
                 )}
               </li>
             )
