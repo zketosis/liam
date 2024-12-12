@@ -339,13 +339,6 @@ export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
     }
   }
 
-  if (!stmts) {
-    return {
-      tables: {},
-      relationships: {},
-    }
-  }
-
   for (const statement of stmts) {
     if (statement?.stmt === undefined) continue
 
