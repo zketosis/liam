@@ -3,14 +3,25 @@ import type { RawStmt } from '@pgsql/types'
 // @ts-expect-error
 import Module from 'pg-query-emscripten'
 
-export const parse = async (str: string): Promise<RawStmtWrapper[]> => {
+export const parse = async (str: string): Promise<ParseResult> => {
   const pgQuery = await new Module()
   const result = pgQuery.parse(str)
   return result
 }
 
-// It was expected that postgresParse would return a ParseResult object,
-// but it was found that an array of RawStmtWrapper objects was returned.
-export interface RawStmtWrapper {
-  RawStmt: RawStmt
+// NOTE: pg-query-emscripten does not have types, so we need to define them ourselves
+export interface ParseResult {
+  parse_tree: {
+    version: number
+    stmts: RawStmt[]
+    stderr_buffer: string
+    error: {
+      message: string
+      funcname: string
+      filename: string
+      lineno: number
+      cursorpos: number
+      context: string
+    } | null
+  }
 }
