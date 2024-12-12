@@ -109,9 +109,7 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                       className={clsx([
                         styles.handleCardinality,
                         styles.handleCardinalityRight,
-                        isHighlighted
-                          ? styles.handleCardinalityHighlighted
-                          : styles.handleCardinalityDefault,
+                        isHighlighted && styles.handleCardinalityHighlighted,
                       ])}
                     />
                   </>
@@ -131,9 +129,8 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
-                            isHighlighted
-                              ? styles.handleCardinalityHighlighted
-                              : styles.handleCardinalityDefault,
+                            isHighlighted &&
+                              styles.handleCardinalityHighlighted,
                           ])}
                         />
                       ))
@@ -142,9 +139,8 @@ export const TableNode: FC<Props> = ({ data: { table, isHighlighted } }) => {
                           className={clsx([
                             styles.handleCardinality,
                             styles.handleCardinalityLeft,
-                            isHighlighted
-                              ? styles.handleCardinalityHighlighted
-                              : styles.handleCardinalityDefault,
+                            isHighlighted &&
+                              styles.handleCardinalityHighlighted,
                           ])}
                         />
                       ))

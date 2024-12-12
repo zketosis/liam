@@ -88,14 +88,11 @@
   position: absolute;
   width: 23px;
   height: 16px;
+  color: var(--global-border);
 }
 
 .handleCardinalityHighlighted {
   color: var(--node-layout);
-}
-
-.handleCardinalityDefault {
-  color: var(--global-border);
 }
 
 .handleCardinalityRight {
