@@ -16,6 +16,7 @@ import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
 import { match } from 'ts-pattern'
+import { isRelatedToTable } from '../ERDContent'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -36,7 +37,12 @@ export const TableNode: FC<Props> = ({
   const {
     active: { tableName },
   } = useUserEditingStore()
+
   const isActive = tableName === table.name
+
+  const isRelated =
+    isHighlighted || isRelatedToTable(relationships, table.name, tableName)
+
   const { showMode } = useUserEditingStore()
 
   const handleClick = useCallback(() => {
@@ -46,7 +52,11 @@ export const TableNode: FC<Props> = ({
   return (
     <button
       type="button"
-      className={clsx(styles.wrapper, isActive && styles.wrapperActive)}
+      className={clsx(
+        styles.wrapper,
+        isRelated && styles.wrapperHover,
+        isActive && styles.wrapperActive,
+      )}
       onClick={handleClick}
     >
       <TableHeader name={table.name} />

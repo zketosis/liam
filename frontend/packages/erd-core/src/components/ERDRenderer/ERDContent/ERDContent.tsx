@@ -1,3 +1,5 @@
+import { useDBStructureStore } from '@/stores'
+import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
   BackgroundVariant,
@@ -34,6 +36,23 @@ type Props = {
     | undefined
 }
 
+export const isRelatedToTable = (
+  relationships: Relationships,
+  tableName: string,
+  targetTableName: string | undefined,
+) => {
+  if (!targetTableName) {
+    return false
+  }
+  return Object.values(relationships).some(
+    (relationship) =>
+      (relationship.primaryTableName === tableName ||
+        relationship.foreignTableName === tableName) &&
+      (relationship.primaryTableName === targetTableName ||
+        relationship.foreignTableName === targetTableName),
+  )
+}
+
 export const ERDContent: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
@@ -41,6 +60,7 @@ export const ERDContent: FC<Props> = ({
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const { relationships } = useDBStructureStore()
 
   useEffect(() => {
     setNodes(_nodes)
@@ -65,7 +85,7 @@ export const ERDContent: FC<Props> = ({
       )
 
       const updatedNodes = nodes.map((node) => {
-        if (node.id === id) {
+        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
           return { ...node, data: { ...node.data, isHighlighted: true } }
         }
 
@@ -90,7 +110,7 @@ export const ERDContent: FC<Props> = ({
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges],
+    [edges, nodes, setNodes, setEdges, relationships],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
@@ -106,7 +126,7 @@ export const ERDContent: FC<Props> = ({
       )
 
       const updatedNodes = nodes.map((node) => {
-        if (node.id === id) {
+        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
           return {
             ...node,
             data: {
@@ -128,7 +148,7 @@ export const ERDContent: FC<Props> = ({
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges],
+    [edges, nodes, setNodes, setEdges, relationships],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
