@@ -8,6 +8,7 @@ import { convertNodesToElkNodes } from './convertNodesToElkNodes'
 const elk = new ELK()
 const layoutOptions: LayoutOptions = {
   'elk.algorithm': 'org.eclipse.elk.layered',
+  'elk.layered.spacing.baseValue': '32',
 }
 
 type Params = {
