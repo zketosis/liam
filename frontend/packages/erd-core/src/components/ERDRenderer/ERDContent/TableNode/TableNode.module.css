@@ -73,6 +73,7 @@
 
 .handle {
   top: auto;
+  opacity: 0;
 }
 
 .handle[data-handlepos='right'] {
@@ -81,4 +82,20 @@
 
 .handle[data-handlepos='left'] {
   transform: translate(-50%, 0%);
+}
+
+.handleCardinality {
+  top: auto;
+  position: absolute;
+  width: 23px;
+  height: 16px;
+  color: var(--global-border);
+}
+
+.handleCardinalityRight {
+  right: -23px;
+}
+
+.handleCardinalityLeft {
+  left: -23px;
 }

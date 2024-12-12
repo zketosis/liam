@@ -19,5 +19,8 @@ export * from './TidyUpIcon'
 export * from './PanelLeft'
 export * from './Waypoints'
 export * from './XIcon'
+export * from './CardinalityZeroOrManyLeftIcon'
+export * from './CardinalityZeroOrOneRightIcon'
+export * from './CardinalityZeroOrOneLeftIcon'
 
 export { KeyRound, Hash } from 'lucide-react'
