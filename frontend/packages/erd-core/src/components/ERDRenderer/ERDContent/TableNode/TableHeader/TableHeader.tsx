@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from '@liam-hq/ui'
 import { Handle, Position } from '@xyflow/react'
+import clsx from 'clsx'
 import type { FC } from 'react'
 import styles from './TableHeader.module.css'
 
@@ -27,7 +28,12 @@ export const TableHeader: FC<Props> = ({ name }) => {
   )
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={clsx(
+        styles.wrapper,
+        showMode === 'TABLE_NAME' && styles.wrapperTableNameMode,
+      )}
+    >
       <Table2 width={16} />
 
       <TooltipProvider>
