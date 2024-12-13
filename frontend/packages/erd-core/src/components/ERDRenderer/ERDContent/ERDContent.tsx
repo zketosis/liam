@@ -181,6 +181,8 @@ export const ERDContent: FC<Props> = ({
     [setEdges],
   )
 
+  const panOnDrag = [1, 2]
+
   return (
     <div className={styles.wrapper}>
       <ReactFlow
@@ -196,6 +198,9 @@ export const ERDContent: FC<Props> = ({
         onNodeMouseLeave={handleMouseLeaveNode}
         onEdgeMouseEnter={handleMouseEnterEdge}
         onEdgeMouseLeave={handleMouseLeaveEdge}
+        panOnScroll
+        panOnDrag={panOnDrag}
+        selectionOnDrag
       >
         <Background
           color="var(--color-gray-600)"
