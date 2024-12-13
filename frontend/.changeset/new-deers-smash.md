@@ -3,4 +3,4 @@
 "@liam-hq/cli": patch
 ---
 
-Add tooltip functionality to TableHeader component
+Add tooltips to display the full table name when it is truncated in the Table node
