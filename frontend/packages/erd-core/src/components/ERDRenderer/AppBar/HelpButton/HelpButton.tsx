@@ -15,6 +15,10 @@ import {
 import { forwardRef } from 'react'
 import styles from './HelpButton.module.css'
 
+const handleSelect = (url: string) => () => {
+  window.open(url, '_blank', 'noreferrer')
+}
+
 export const HelpButton = forwardRef<HTMLButtonElement>((_, ref) => {
   return (
     <DropdownMenuRoot>
@@ -37,10 +41,21 @@ export const HelpButton = forwardRef<HTMLButtonElement>((_, ref) => {
           sideOffset={4}
           className={styles.menuContent}
         >
-          <DropdownMenuItem size="sm" leftIcon={<BookText />}>
+          <DropdownMenuItem
+            size="sm"
+            leftIcon={<BookText />}
+            // TODO: Update the URL
+            onSelect={handleSelect('https://liam-docs-sigma.vercel.app/docs')}
+          >
             Documentation
           </DropdownMenuItem>
-          <DropdownMenuItem size="sm" leftIcon={<MessagesSquare />}>
+          <DropdownMenuItem
+            size="sm"
+            leftIcon={<MessagesSquare />}
+            onSelect={handleSelect(
+              'https://github.com/liam-hq/liam/discussions',
+            )}
+          >
             Community Forum
           </DropdownMenuItem>
         </DropdownMenuContent>
