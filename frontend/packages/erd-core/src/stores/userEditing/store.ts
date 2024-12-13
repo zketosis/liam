@@ -1,3 +1,4 @@
+import type { QueryParam } from '@/schemas/queryParam'
 import type { ShowMode } from '@/schemas/showMode'
 import { proxy, subscribe } from 'valtio'
 
@@ -18,11 +19,12 @@ export const userEditingStore = proxy<UserEditingStore>({
 subscribe(userEditingStore.active, () => {
   const newTableName = userEditingStore.active.tableName
   const url = new URL(window.location.href)
+  const activeQueryParam: QueryParam = 'active'
 
   if (newTableName) {
-    url.searchParams.set('active', newTableName)
+    url.searchParams.set(activeQueryParam, newTableName)
   } else {
-    url.searchParams.delete('active')
+    url.searchParams.delete(activeQueryParam)
   }
 
   window.history.pushState({}, '', url)
