@@ -6,9 +6,17 @@ import { convertElkNodesToNodes } from './convertElkNodesToNodes'
 import { convertNodesToElkNodes } from './convertNodesToElkNodes'
 
 const elk = new ELK()
+
 const layoutOptions: LayoutOptions = {
-  'elk.algorithm': 'org.eclipse.elk.layered',
-  'elk.layered.spacing.baseValue': '32',
+  'elk.algorithm': 'layered',
+  'elk.layered.spacing.baseValue': '40',
+  'elk.spacing.componentComponent': '80',
+  'elk.layered.spacing.edgeNodeBetweenLayers': '120',
+  'elk.layered.considerModelOrder.strategy': 'PREFER_EDGES',
+  'elk.layered.crossingMinimization.forceNodeModelOrder': 'true',
+  'elk.layered.mergeEdges': 'true',
+  'elk.layered.nodePlacement.strategy': 'INTERACTIVE',
+  'elk.layered.layering.strategy': 'INTERACTIVE',
 }
 
 type Params = {
