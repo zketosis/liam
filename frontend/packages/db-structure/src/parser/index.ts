@@ -10,7 +10,6 @@ export const supportedFormatSchema = v.union([
 
 export type SupportedFormat = v.InferOutput<typeof supportedFormatSchema>
 
-// TODO: Add error handling and tests
 export const parse = (
   str: string,
   format: SupportedFormat,
@@ -20,7 +19,5 @@ export const parse = (
       return schemarbProcessor(str)
     case 'postgres':
       return postgresqlProcessor(str)
-    default:
-      throw new Error(`Unsupported format: ${format}`)
   }
 }

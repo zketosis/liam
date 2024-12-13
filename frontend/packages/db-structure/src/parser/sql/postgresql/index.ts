@@ -12,13 +12,19 @@ export const processor: Processor = async (str: string) => {
   const errors: Error[] = []
 
   await processSQLInChunks(str, CHUNK_SIZE, async (chunk) => {
-    const { parse_tree, error } = await parse(chunk)
-    const partial = convertToDBStructure(parse_tree.stmts)
-    mergeDBStructures(dbStructure, partial)
-
-    if (error !== null) {
-      errors.push(new UnexpectedTokenWarningError(error.message))
+    const { parse_tree, error: parseError } = await parse(chunk)
+    if (parseError !== null) {
+      errors.push(new UnexpectedTokenWarningError(parseError.message))
     }
+
+    const { value: converted, errors: convertErrors } = convertToDBStructure(
+      parse_tree.stmts,
+    )
+    if (convertErrors !== null) {
+      errors.push(...convertErrors)
+    }
+
+    mergeDBStructures(dbStructure, converted)
   })
 
   return { value: dbStructure, errors }

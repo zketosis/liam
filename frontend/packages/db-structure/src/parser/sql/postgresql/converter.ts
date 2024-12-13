@@ -9,13 +9,15 @@ import type {
   String as PgString,
   RawStmt,
 } from '@pgsql/types'
+import { type Result, err, ok } from 'neverthrow'
 import type {
   Columns,
-  DBStructure,
   ForeignKeyConstraint,
   Relationship,
   Table,
 } from '../../../schema/index.js'
+import { UnexpectedTokenWarningError } from '../../errors.js'
+import type { ProcessResult } from '../../types.js'
 import {
   defaultRelationshipName,
   handleOneToOneRelationships,
@@ -55,9 +57,9 @@ const constraintToRelationship = (
   foreignTableName: string,
   foreignColumnName: string,
   constraint: Constraint,
-): Relationship | undefined => {
+): Result<Relationship | undefined, UnexpectedTokenWarningError> => {
   if (constraint.contype !== 'CONSTR_FOREIGN') {
-    return undefined
+    return ok(undefined)
   }
 
   const primaryTableName = constraint.pktable?.relname
@@ -66,7 +68,9 @@ const constraintToRelationship = (
     : undefined
 
   if (!primaryTableName || !primaryColumnName) {
-    throw new Error('Invalid foreign key constraint')
+    return err(
+      new UnexpectedTokenWarningError('Invalid foreign key constraint'),
+    )
   }
 
   const name =
@@ -81,7 +85,7 @@ const constraintToRelationship = (
   const deleteConstraint = getConstraintAction(constraint.fk_del_action)
   const cardinality = 'ONE_TO_MANY'
 
-  return {
+  return ok({
     name,
     primaryTableName,
     primaryColumnName,
@@ -90,13 +94,14 @@ const constraintToRelationship = (
     cardinality,
     updateConstraint,
     deleteConstraint,
-  }
+  })
 }
 
 // Transform function for AST to DBStructure
-export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
+export const convertToDBStructure = (stmts: RawStmt[]): ProcessResult => {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
+  const errors: Error[] = []
 
   function isConstraintNode(node: Node): node is { Constraint: Constraint } {
     return (node as { Constraint: Constraint }).Constraint !== undefined
@@ -189,12 +194,17 @@ export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
         for (const constraint of (colDef.constraints ?? []).filter(
           isConstraintNode,
         )) {
-          const relationship = constraintToRelationship(
+          const relResult = constraintToRelationship(
             tableName,
             colDef.colname,
             constraint.Constraint,
           )
-          if (relationship === undefined) continue
+          if (relResult.isErr()) {
+            errors.push(relResult.error)
+            continue
+          }
+          if (relResult.value === undefined) continue
+          const relationship = relResult.value
 
           relationships[relationship.name] = relationship
         }
@@ -327,12 +337,17 @@ export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
             : undefined
         if (foreignColumnName === undefined) continue
 
-        const relationship = constraintToRelationship(
+        const relResult = constraintToRelationship(
           foreignTableName,
           foreignColumnName,
           constraint.Constraint,
         )
-        if (relationship === undefined) continue
+        if (relResult.isErr()) {
+          errors.push(relResult.error)
+          continue
+        }
+        if (relResult.value === undefined) continue
+        const relationship = relResult.value
 
         relationships[relationship.name] = relationship
       }
@@ -357,7 +372,10 @@ export const convertToDBStructure = (stmts: RawStmt[]): DBStructure => {
   handleOneToOneRelationships(tables, relationships)
 
   return {
-    tables,
-    relationships,
+    value: {
+      tables,
+      relationships,
+    },
+    errors,
   }
 }
