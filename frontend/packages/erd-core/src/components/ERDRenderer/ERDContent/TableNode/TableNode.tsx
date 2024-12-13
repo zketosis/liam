@@ -26,7 +26,10 @@ type Data = {
   highlightedHandles: string[]
 }
 
-type TableNodeType = Node<Data, 'Table'>
+export type TableNodeType = Node<Data, 'table'>
+
+export const isTableNode = (node: Node): node is TableNodeType =>
+  node.type === 'table'
 
 type Props = NodeProps<TableNodeType>
 

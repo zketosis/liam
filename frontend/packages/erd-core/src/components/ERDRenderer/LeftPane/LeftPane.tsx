@@ -8,12 +8,15 @@ import {
   SidebarMenu,
   SidebarRail,
 } from '@liam-hq/ui'
-import { useDBStructureStore } from '../../../stores'
+import { useNodes } from '@xyflow/react'
+import { useMemo } from 'react'
+import { isTableNode } from '../ERDContent'
 import { TableCounter } from './TableCounter'
 import { TableNameMenuButton } from './TableNameMenuButton'
 
 export const LeftPane = () => {
-  const { tables } = useDBStructureStore()
+  const nodes = useNodes()
+  const tableNodes = useMemo(() => nodes.filter(isTableNode), [nodes])
 
   return (
     <Sidebar>
@@ -22,8 +25,8 @@ export const LeftPane = () => {
           <SidebarGroupLabel>Tables</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {Object.values(tables).map((table) => (
-                <TableNameMenuButton key={table.name} table={table} />
+              {tableNodes.map((node) => (
+                <TableNameMenuButton key={node.id} node={node} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

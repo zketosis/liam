@@ -30,23 +30,23 @@ export const ERDRenderer: FC = () => {
     <div className={styles.wrapper}>
       <AppBar />
       <SidebarProvider defaultOpen={defaultOpen}>
-        <div className={styles.mainWrapper}>
-          <LeftPane />
-          <main className={styles.main}>
-            <div className={styles.triggerWrapper}>
-              <SidebarTrigger />
-            </div>
-            <TableDetailDrawerRoot>
-              <ReactFlowProvider>
+        <ReactFlowProvider>
+          <div className={styles.mainWrapper}>
+            <LeftPane />
+            <main className={styles.main}>
+              <div className={styles.triggerWrapper}>
+                <SidebarTrigger />
+              </div>
+              <TableDetailDrawerRoot>
                 <ERDContent nodes={nodes} edges={edges} />
                 <div className={styles.toolbarWrapper}>
                   <Toolbar />
                 </div>
-              </ReactFlowProvider>
-              <TableDetailDrawer />
-            </TableDetailDrawerRoot>
-          </main>
-        </div>
+                <TableDetailDrawer />
+              </TableDetailDrawerRoot>
+            </main>
+          </div>
+        </ReactFlowProvider>
       </SidebarProvider>
     </div>
   )
