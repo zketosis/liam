@@ -332,7 +332,12 @@ SidebarMenu.displayName = 'SidebarMenu'
 
 const SidebarMenuItem = forwardRef<HTMLLIElement, ComponentProps<'li'>>(
   ({ className, ...props }, ref) => (
-    <li ref={ref} data-sidebar="menu-item" {...props} />
+    <li
+      ref={ref}
+      data-sidebar="menu-item"
+      className={clsx(styles.sidebarMenuItem, className)}
+      {...props}
+    />
   ),
 )
 SidebarMenuItem.displayName = 'SidebarMenuItem'
@@ -396,7 +401,18 @@ const SidebarMenuAction = forwardRef<
 >(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
   const Comp = asChild ? Slot : 'button'
 
-  return <Comp ref={ref} data-sidebar="menu-action" {...props} />
+  return (
+    <Comp
+      ref={ref}
+      data-sidebar="menu-action"
+      className={clsx(
+        styles.sidebarMenuAction,
+        showOnHover && styles.showOnHover,
+        className,
+      )}
+      {...props}
+    />
+  )
 })
 SidebarMenuAction.displayName = 'SidebarMenuAction'
 

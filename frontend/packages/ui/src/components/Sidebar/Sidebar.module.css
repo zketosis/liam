@@ -59,6 +59,10 @@
   overflow-y: auto;
 }
 
+.sidebarMenuItem {
+  position: relative;
+}
+
 .sidebarMenuButton {
   padding: var(--spacing-2);
   display: flex;
@@ -73,6 +77,23 @@
 
 .sidebarMenuButton:hover {
   background: var(--pane-background-hover);
+}
+
+.sidebarMenuAction {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: var(--spacing-2);
+}
+
+.sidebarMenuAction.showOnHover {
+  opacity: 0;
+  transition: opacity var(--default-hover-animation-duration)
+    var(--default-timing-function);
+}
+
+[data-sidebar='menu-item']:hover .sidebarMenuAction.showOnHover {
+  opacity: 1;
 }
 
 .sidebarGroupLabel {
