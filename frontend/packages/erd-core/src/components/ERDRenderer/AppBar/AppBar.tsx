@@ -30,7 +30,7 @@ export const AppBar: FC = () => {
         </TooltipRoot>
       </TooltipProvider>
 
-      <h1 className={styles.title}>ERD Generator</h1>
+      <h1 className={styles.title}>Liam ERD</h1>
 
       <div className={styles.rightSide}>
         <div className={styles.iconButtonGroup}>
