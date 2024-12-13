@@ -189,6 +189,7 @@ export const ERDContent: FC<Props> = ({
         panOnScroll
         panOnDrag={panOnDrag}
         selectionOnDrag
+        deleteKeyCode={null} // Turn off because it does not want to be deleted
       >
         <Background
           color="var(--color-gray-600)"
