@@ -7,6 +7,12 @@ export const { docs, meta } = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
+    rehypeCodeOptions: {
+      themes: {
+        light: 'light-plus', // undetermined
+        dark: 'github-dark-high-contrast',
+      },
+    },
     remarkPlugins: [remarkInstall],
   },
 })
