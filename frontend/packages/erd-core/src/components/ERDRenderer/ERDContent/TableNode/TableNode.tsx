@@ -127,6 +127,17 @@ export const TableNode: FC<Props> = ({
                           styles.handleCardinalityHighlighted,
                       ])}
                     />
+                    <span
+                      className={clsx([
+                        styles.handleCardinalityComment,
+                        styles.handleCardinalityCommentRight,
+                        (isHighlighted ||
+                          highlightedHandles?.includes(handleId)) &&
+                          styles.handleCardinalityCommentHighlighted,
+                      ])}
+                    >
+                      1
+                    </span>
                   </>
                 )}
 
@@ -140,26 +151,54 @@ export const TableNode: FC<Props> = ({
                     />
                     {match(targetCardinality)
                       .with('ONE_TO_ONE', () => (
-                        <CardinalityZeroOrOneLeftIcon
-                          className={clsx([
-                            styles.handleCardinality,
-                            styles.handleCardinalityLeft,
-                            (isHighlighted ||
-                              highlightedHandles?.includes(handleId)) &&
-                              styles.handleCardinalityHighlighted,
-                          ])}
-                        />
+                        <>
+                          <CardinalityZeroOrOneLeftIcon
+                            className={clsx([
+                              styles.handleCardinality,
+                              styles.handleCardinalityLeft,
+                              (isHighlighted ||
+                                highlightedHandles?.includes(handleId)) &&
+                                styles.handleCardinalityHighlighted,
+                            ])}
+                          />
+
+                          <span
+                            className={clsx([
+                              styles.handleCardinalityComment,
+                              styles.handleCardinalityCommentLeft,
+                              (isHighlighted ||
+                                highlightedHandles?.includes(handleId)) &&
+                                styles.handleCardinalityCommentHighlighted,
+                            ])}
+                          >
+                            1
+                          </span>
+                        </>
                       ))
                       .with('ONE_TO_MANY', () => (
-                        <CardinalityZeroOrManyLeftIcon
-                          className={clsx([
-                            styles.handleCardinality,
-                            styles.handleCardinalityLeft,
-                            (isHighlighted ||
-                              highlightedHandles?.includes(handleId)) &&
-                              styles.handleCardinalityHighlighted,
-                          ])}
-                        />
+                        <>
+                          <CardinalityZeroOrManyLeftIcon
+                            className={clsx([
+                              styles.handleCardinality,
+                              styles.handleCardinalityLeft,
+                              (isHighlighted ||
+                                highlightedHandles?.includes(handleId)) &&
+                                styles.handleCardinalityHighlighted,
+                            ])}
+                          />
+
+                          <span
+                            className={clsx([
+                              styles.handleCardinalityComment,
+                              styles.handleCardinalityCommentLeft,
+                              (isHighlighted ||
+                                highlightedHandles?.includes(handleId)) &&
+                                styles.handleCardinalityCommentHighlighted,
+                            ])}
+                          >
+                            n
+                          </span>
+                        </>
                       ))
                       .otherwise(() => null)}
                   </>

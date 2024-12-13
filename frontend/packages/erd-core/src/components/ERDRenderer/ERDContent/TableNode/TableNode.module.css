@@ -29,6 +29,7 @@
   font-size: var(--font-size-3);
   line-height: normal;
   border-bottom: 1px solid var(--node-border);
+  position: relative;
 }
 
 .columnWrapper:last-child {
@@ -106,4 +107,28 @@
 
 .handleCardinalityLeft {
   left: -23px;
+}
+
+.handleCardinalityComment {
+  color: var(--global-border);
+  opacity: 0;
+}
+
+.handleCardinalityCommentRight {
+  position: absolute;
+  right: -20px;
+  top: -8px;
+}
+
+.handleCardinalityCommentLeft {
+  position: absolute;
+  left: -20px;
+  top: -8px;
+}
+
+.handleCardinalityCommentHighlighted {
+  color: var(--node-layout);
+  transition: color var(--default-hover-animation-duration)
+    var(--default-timing-function);
+  opacity: 1;
 }
