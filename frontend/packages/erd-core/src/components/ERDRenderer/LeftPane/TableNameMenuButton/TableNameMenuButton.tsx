@@ -1,30 +1,33 @@
 import { updateActiveTableName, useUserEditingStore } from '@/stores'
-import type { Table } from '@liam-hq/db-structure'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import type { FC } from 'react'
+import type { TableNodeType } from '../../ERDContent'
 import styles from '../LeftPane.module.css'
+import { VisibilityButton } from './VisibilityButton'
 
 const handleClickMenuButton = (tableId: string) => () => {
   updateActiveTableName(tableId)
 }
 
 type Props = {
-  table: Table
+  node: TableNodeType
 }
 
-export const TableNameMenuButton: FC<Props> = ({ table }) => {
+export const TableNameMenuButton: FC<Props> = ({ node }) => {
   const {
     active: { tableName },
   } = useUserEditingStore()
+  const name = node.data.table.name
 
   return (
-    <SidebarMenuItem key={table.name}>
+    <SidebarMenuItem>
       <SidebarMenuButton
-        onClick={handleClickMenuButton(table.name)}
-        className={table.name === tableName ? styles.active : ''}
+        onClick={handleClickMenuButton(name)}
+        className={name === tableName ? styles.active : ''}
       >
         <Table2 width="10px" />
-        <span className={styles.tableName}>{table.name}</span>
+        <span className={styles.tableName}>{name}</span>
+        <VisibilityButton tableName={name} hidden={node.hidden} />
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
