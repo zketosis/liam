@@ -12,7 +12,7 @@ type Props = {
   icon: ReactNode
   tooltipSide?: ComponentProps<typeof TooltipContent>['side']
   tooltipContent: string
-}
+} & ComponentProps<'button'>
 
 export const IconButton = forwardRef<HTMLButtonElement, Props>(
   ({ icon, tooltipSide = 'bottom', tooltipContent, ...props }, ref) => {
