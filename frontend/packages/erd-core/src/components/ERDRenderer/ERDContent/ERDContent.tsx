@@ -89,9 +89,11 @@ export const ERDContent: FC<Props> = ({
       )
 
       const updatedNodes = nodes.map((node) => {
-        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
+        if (node.id === id) {
           return { ...node, data: { ...node.data, isHighlighted: true } }
         }
+
+        const isRelated = isRelatedToTable(relationships, node.id, id)
 
         const highlightedTargetHandles = relatedEdges
           .filter((edge) => edge.source === id && edge.target === node.id)
@@ -105,6 +107,7 @@ export const ERDContent: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
+            isRelated: isRelated,
             highlightedHandles:
               highlightedTargetHandles.concat(highlightedSourceHandles) || [],
           },
@@ -130,22 +133,13 @@ export const ERDContent: FC<Props> = ({
       )
 
       const updatedNodes = nodes.map((node) => {
-        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              highlightedHandles: [],
-              isHighlighted: false,
-            },
-          }
-        }
-
         return {
           ...node,
           data: {
             ...node.data,
+            isRelated: false,
             highlightedHandles: [],
+            isHighlighted: false,
           },
         }
       })
@@ -153,7 +147,7 @@ export const ERDContent: FC<Props> = ({
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, relationships],
+    [edges, nodes, setNodes, setEdges],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
