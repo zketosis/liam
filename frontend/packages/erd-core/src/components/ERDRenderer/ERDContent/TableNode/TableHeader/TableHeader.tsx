@@ -1,4 +1,4 @@
-import { useDBStructureStore, useUserEditingStore } from '@/stores'
+import { useUserEditingStore } from '@/stores'
 import {
   Table2,
   TooltipContent,
@@ -10,22 +10,19 @@ import {
 import { Handle, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
+import type { Data } from '../type'
 import styles from './TableHeader.module.css'
 
 type Props = {
-  name: string
+  data: Data
 }
 
-export const TableHeader: FC<Props> = ({ name }) => {
+export const TableHeader: FC<Props> = ({ data }) => {
+  const name = data.table.name
   const { showMode } = useUserEditingStore()
-  const { relationships } = useDBStructureStore()
 
-  const isTarget = Object.values(relationships).some(
-    (relationship) => relationship.foreignTableName === name,
-  )
-  const isSource = Object.values(relationships).some(
-    (relationship) => relationship.primaryTableName === name,
-  )
+  const isTarget = data.targetColumnCardinalities !== undefined
+  const isSource = data.sourceColumnName !== undefined
 
   return (
     <div
