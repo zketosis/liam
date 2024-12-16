@@ -3,7 +3,6 @@ import {
   useDBStructureStore,
   useUserEditingStore,
 } from '@/stores'
-import type { Table } from '@liam-hq/db-structure'
 import type { Node, NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
@@ -11,15 +10,7 @@ import { isRelatedToTable } from '../ERDContent'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
-
-type Data = {
-  table: Table
-  isHighlighted: boolean
-  isRelated: boolean
-  highlightedHandles: string[]
-}
-
-export type TableNodeType = Node<Data, 'table'>
+import type { TableNodeType } from './type'
 
 export const isTableNode = (node: Node): node is TableNodeType =>
   node.type === 'table'
