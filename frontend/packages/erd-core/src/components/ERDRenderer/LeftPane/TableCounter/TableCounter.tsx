@@ -1,13 +1,12 @@
 import { Table2 } from '@liam-hq/ui'
+import { useNodes } from '@xyflow/react'
 import type { FC } from 'react'
-import { useDBStructureStore } from '../../../../stores'
 import styles from './TableCounter.module.css'
 
 export const TableCounter: FC = () => {
-  const { tables } = useDBStructureStore()
-  const allCount = Object.keys(tables).length
-  // TODO: Implement filtering
-  const visibleCount = allCount
+  const nodes = useNodes()
+  const allCount = nodes.length
+  const visibleCount = nodes.filter((node) => !node.hidden).length
 
   return (
     <div className={styles.wrapper}>
