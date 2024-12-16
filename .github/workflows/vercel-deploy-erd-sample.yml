@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         apps:
-          - name: erd-sample
+          - name: "@liam-hq/erd-sample"
             vercel-project-id-key: VERCEL_PROJECT_ID_ERD_SAMPLE
     environment:
       name: "${{ needs.setup-deployment.outputs.environment }} - ${{ matrix.apps.name }}"
@@ -70,6 +70,10 @@ jobs:
       - name: Run prepare command
         run:  pnpm build
         working-directory: frontend
+      - name: Update index.html content
+        run:  pnpm --filter ${{ matrix.apps.name }} update_dist_content
+        working-directory: frontend
+        # if: ${{ main }}
       - name: Build Project Artifacts
         run: vercel build ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }}
       - name: Deploy Project Artifacts to Vercel
