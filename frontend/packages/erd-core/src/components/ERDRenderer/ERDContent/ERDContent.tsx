@@ -16,6 +16,7 @@ import { type FC, useCallback, useEffect } from 'react'
 import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
+import { useActiveTableNameFromUrl } from './useActiveTableNameFromUrl'
 import { useAutoLayout } from './useAutoLayout'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 
@@ -70,6 +71,7 @@ export const ERDContent: FC<Props> = ({
   }, [_nodes, _edges, setNodes, setEdges])
 
   useAutoLayout()
+  useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
   )
