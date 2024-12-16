@@ -65,7 +65,9 @@ export const ERDContentInner: FC<Props> = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
   const { relationships } = useDBStructureStore()
   const { updateEdgeData, updateEdge } = useReactFlow()
-  const { state: { loading }} = useERDContentContext()
+  const {
+    state: { loading },
+  } = useERDContentContext()
 
   useEffect(() => {
     setNodes(_nodes)
