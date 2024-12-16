@@ -35,7 +35,7 @@ export const ShowModeMenu: FC = () => {
     <div className={styles.wrapper}>
       <span className={styles.label}>show</span>
       <DropdownMenuRoot>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button
             size="sm"
             variant="ghost-secondary"
