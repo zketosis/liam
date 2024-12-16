@@ -1,0 +1,23 @@
+.handleCardinalityNotation {
+  color: var(--global-border);
+  opacity: 0;
+}
+
+.handleCardinalityNotationRight {
+  position: absolute;
+  right: -20px;
+  top: -8px;
+}
+
+.handleCardinalityNotationLeft {
+  position: absolute;
+  left: -20px;
+  top: -8px;
+}
+
+.handleCardinalityNotationHighlighted {
+  color: var(--node-layout);
+  transition: color var(--default-hover-animation-duration)
+    var(--default-timing-function);
+  opacity: 1;
+}

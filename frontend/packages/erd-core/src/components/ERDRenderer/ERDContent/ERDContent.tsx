@@ -135,6 +135,7 @@ export const ERDContent: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
+              highlightedHandles: [],
               isHighlighted: false,
             },
           }
