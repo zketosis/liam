@@ -2,7 +2,7 @@ import { updateActiveTableName, useUserEditingStore } from '@/stores'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import type { FC } from 'react'
 import type { TableNodeType } from '../../ERDContent'
-import styles from '../LeftPane.module.css'
+import styles from './TableNameMenuButton.module.css'
 import { VisibilityButton } from './VisibilityButton'
 
 const handleClickMenuButton = (tableId: string) => () => {
