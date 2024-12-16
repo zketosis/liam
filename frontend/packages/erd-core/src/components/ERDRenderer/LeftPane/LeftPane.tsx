@@ -6,28 +6,17 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
 } from '@liam-hq/ui'
-import { Table2 } from '@liam-hq/ui'
-import {
-  updateActiveTableName,
-  useDBStructureStore,
-  useUserEditingStore,
-} from '../../../stores'
-import styles from './LeftPane.module.css'
+import { useNodes } from '@xyflow/react'
+import { useMemo } from 'react'
+import { isTableNode } from '../ERDContent'
 import { TableCounter } from './TableCounter'
-
-const handleClickMenuButton = (tableId: string) => () => {
-  updateActiveTableName(tableId)
-}
+import { TableNameMenuButton } from './TableNameMenuButton'
 
 export const LeftPane = () => {
-  const { tables } = useDBStructureStore()
-  const {
-    active: { tableName },
-  } = useUserEditingStore()
+  const nodes = useNodes()
+  const tableNodes = useMemo(() => nodes.filter(isTableNode), [nodes])
 
   return (
     <Sidebar>
@@ -36,16 +25,8 @@ export const LeftPane = () => {
           <SidebarGroupLabel>Tables</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {Object.values(tables).map((table) => (
-                <SidebarMenuItem key={table.name}>
-                  <SidebarMenuButton
-                    onClick={handleClickMenuButton(table.name)}
-                    className={table.name === tableName ? styles.active : ''}
-                  >
-                    <Table2 width="10px" />
-                    <span className={styles.tableName}>{table.name}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+              {tableNodes.map((node) => (
+                <TableNameMenuButton key={node.id} node={node} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

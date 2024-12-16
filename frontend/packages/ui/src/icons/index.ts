@@ -22,5 +22,7 @@ export * from './XIcon'
 export * from './CardinalityZeroOrManyLeftIcon'
 export * from './CardinalityZeroOrOneRightIcon'
 export * from './CardinalityZeroOrOneLeftIcon'
+export * from './Eye'
+export * from './EyeClosed'
 
 export { KeyRound, Hash } from 'lucide-react'
