@@ -15,6 +15,7 @@ import styles from './TableNode.module.css'
 type Data = {
   table: Table
   isHighlighted: boolean
+  isRelated: boolean
   highlightedHandles: string[]
 }
 
@@ -26,7 +27,7 @@ export const isTableNode = (node: Node): node is TableNodeType =>
 type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({
-  data: { table, isHighlighted, highlightedHandles },
+  data: { table, isRelated, isHighlighted, highlightedHandles },
 }) => {
   const { relationships } = useDBStructureStore()
   const {
@@ -35,8 +36,8 @@ export const TableNode: FC<Props> = ({
 
   const isActive = tableName === table.name
 
-  const isRelated =
-    isHighlighted || isRelatedToTable(relationships, table.name, tableName)
+  const isTableRelated =
+    isRelated || isRelatedToTable(relationships, table.name, tableName)
 
   const { showMode } = useUserEditingStore()
 
@@ -49,7 +50,7 @@ export const TableNode: FC<Props> = ({
       type="button"
       className={clsx(
         styles.wrapper,
-        isRelated && styles.wrapperHover,
+        isTableRelated && styles.wrapperHover,
         isActive && styles.wrapperActive,
       )}
       onClick={handleClick}
