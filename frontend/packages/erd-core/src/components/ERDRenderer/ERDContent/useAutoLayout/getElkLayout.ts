@@ -1,7 +1,6 @@
 import type { Edge, Node } from '@xyflow/react'
 import type { ElkNode, LayoutOptions } from 'elkjs'
 import ELK from 'elkjs/lib/elk.bundled.js'
-import { convertElkEdgesToEdges } from './convertElkEdgesToEdges'
 import { convertElkNodesToNodes } from './convertElkNodesToNodes'
 import { convertNodesToElkNodes } from './convertNodesToElkNodes'
 
@@ -24,7 +23,7 @@ type Params = {
   edges: Edge[]
 }
 
-export async function getElkLayout({ nodes, edges }: Params): Promise<Params> {
+export async function getElkLayout({ nodes, edges }: Params): Promise<Node[]> {
   const graph: ElkNode = {
     id: 'root',
     layoutOptions,
@@ -38,14 +37,8 @@ export async function getElkLayout({ nodes, edges }: Params): Promise<Params> {
 
   const layout = await elk.layout(graph)
   if (!layout.children) {
-    return {
-      nodes,
-      edges,
-    }
+    return nodes
   }
 
-  return {
-    nodes: convertElkNodesToNodes(layout.children, nodes),
-    edges: convertElkEdgesToEdges(layout.edges ?? [], edges),
-  }
+  return convertElkNodesToNodes(layout.children, nodes)
 }

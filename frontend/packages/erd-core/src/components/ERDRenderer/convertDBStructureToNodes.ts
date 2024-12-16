@@ -46,9 +46,6 @@ export const convertDBStructureToNodes = ({
         ? null
         : `${rel.foreignTableName}-${rel.foreignColumnName}`,
     data: { relationship: rel },
-    style: {
-      opacity: 0,
-    },
   }))
 
   return { nodes, edges }
