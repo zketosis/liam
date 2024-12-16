@@ -1,7 +1,7 @@
 import {
   updateActiveTableName,
   useDBStructureStore,
-  useUserEditingStore,
+  useUserEditingActiveStore,
 } from '@/stores'
 import { DrawerContent, DrawerPortal, DrawerRoot } from '@liam-hq/ui'
 import type { FC, PropsWithChildren } from 'react'
@@ -12,9 +12,9 @@ import styles from './TableDetailDrawer.module.css'
 const handleClose = () => updateActiveTableName(undefined)
 
 export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
-  const {
-    active: { tableName },
-  } = useUserEditingStore()
+  const { tableName } = useUserEditingActiveStore()
+  const { tables } = useDBStructureStore()
+  const open = Object.keys(tables).length > 0 && tableName !== undefined
 
   return (
     <DrawerRoot
@@ -23,7 +23,7 @@ export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
       // This behavior is an undocumented, unofficial usage and might change in the future.
       // ref: https://github.com/emilkowalski/vaul/blob/main/src/use-snap-points.ts
       snapPoints={[]}
-      open={tableName !== undefined}
+      open={open}
       onClose={handleClose}
     >
       {children}
@@ -33,9 +33,7 @@ export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
 
 export const TableDetailDrawer: FC = () => {
   const { tables } = useDBStructureStore()
-  const {
-    active: { tableName },
-  } = useUserEditingStore()
+  const { tableName } = useUserEditingActiveStore()
   const table = tables[tableName ?? '']
   const ariaDescribedBy =
     table?.comment == null
