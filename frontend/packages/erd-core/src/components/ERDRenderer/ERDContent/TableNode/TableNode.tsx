@@ -4,19 +4,11 @@ import {
   useUserEditingStore,
 } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
-import {
-  CardinalityZeroOrManyLeftIcon,
-  CardinalityZeroOrOneLeftIcon,
-  CardinalityZeroOrOneRightIcon,
-  DiamondFillIcon,
-  DiamondIcon,
-  KeyRound,
-} from '@liam-hq/ui'
-import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
+import type { Node, NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
-import { match } from 'ts-pattern'
 import { isRelatedToTable } from '../ERDContent'
+import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
 
@@ -64,152 +56,12 @@ export const TableNode: FC<Props> = ({
     >
       <TableHeader name={table.name} />
       {showMode === 'ALL_FIELDS' && (
-        <ul>
-          {Object.values(table.columns).map((column) => {
-            const handleId = `${table.name}-${column.name}`
-            const isSource = Object.values(relationships).some(
-              (relationship) =>
-                relationship.primaryTableName === table.name &&
-                relationship.primaryColumnName === column.name,
-            )
-            const targetCardinality = Object.values(relationships).find(
-              ({ foreignTableName, foreignColumnName }) =>
-                foreignTableName === table.name &&
-                foreignColumnName === column.name,
-            )?.cardinality
-
-            return (
-              <li key={column.name} className={styles.columnWrapper}>
-                {column.primary && (
-                  <KeyRound
-                    width={16}
-                    height={16}
-                    className={styles.primaryKeyIcon}
-                    role="img"
-                    aria-label="Primary Key"
-                  />
-                )}
-                {!column.primary &&
-                  (column.notNull ? (
-                    <DiamondFillIcon
-                      width={16}
-                      height={16}
-                      className={styles.diamondIcon}
-                      role="img"
-                      aria-label="Not Null"
-                    />
-                  ) : (
-                    <DiamondIcon
-                      width={16}
-                      height={16}
-                      className={styles.diamondIcon}
-                      role="img"
-                      aria-label="Nullable"
-                    />
-                  ))}
-
-                <span className={styles.columnNameWrapper}>
-                  <span className={styles.columnName}>{column.name}</span>
-                  <span className={styles.columnType}>{column.type}</span>
-                </span>
-
-                {isSource && (
-                  <>
-                    <Handle
-                      id={handleId}
-                      type="source"
-                      position={Position.Right}
-                      className={clsx([styles.handle])}
-                    />
-                    <CardinalityZeroOrOneRightIcon
-                      className={clsx([
-                        styles.handleCardinality,
-                        styles.handleCardinalityRight,
-                        (isHighlighted ||
-                          highlightedHandles?.includes(handleId)) &&
-                          styles.handleCardinalityHighlighted,
-                      ])}
-                    />
-                    <span
-                      className={clsx([
-                        styles.handleCardinalityComment,
-                        styles.handleCardinalityCommentRight,
-                        (isHighlighted ||
-                          highlightedHandles?.includes(handleId)) &&
-                          styles.handleCardinalityCommentHighlighted,
-                      ])}
-                    >
-                      1
-                    </span>
-                  </>
-                )}
-
-                {targetCardinality && (
-                  <>
-                    <Handle
-                      id={handleId}
-                      type="target"
-                      position={Position.Left}
-                      className={clsx([styles.handle])}
-                    />
-                    {match(targetCardinality)
-                      .with('ONE_TO_ONE', () => (
-                        <>
-                          <CardinalityZeroOrOneLeftIcon
-                            className={clsx([
-                              styles.handleCardinality,
-                              styles.handleCardinalityLeft,
-                              (isHighlighted ||
-                                highlightedHandles?.includes(handleId)) &&
-                                styles.handleCardinalityHighlighted,
-                            ])}
-                          />
-
-                          <span
-                            className={clsx([
-                              styles.handleCardinalityComment,
-                              styles.handleCardinalityCommentLeft,
-                              (isHighlighted ||
-                                highlightedHandles?.includes(handleId)) &&
-                                styles.handleCardinalityCommentHighlighted,
-                            ])}
-                          >
-                            1
-                          </span>
-                        </>
-                      ))
-                      .with('ONE_TO_MANY', () => (
-                        <>
-                          <CardinalityZeroOrManyLeftIcon
-                            className={clsx([
-                              styles.handleCardinality,
-                              styles.handleCardinalityLeft,
-                              (isHighlighted ||
-                                highlightedHandles?.includes(handleId)) &&
-                                styles.handleCardinalityHighlighted,
-                            ])}
-                          />
-
-                          <span
-                            className={clsx([
-                              styles.handleCardinalityComment,
-                              styles.handleCardinalityCommentLeft,
-                              (isHighlighted ||
-                                highlightedHandles?.includes(handleId)) &&
-                                styles.handleCardinalityCommentHighlighted,
-                            ])}
-                          >
-                            n
-                          </span>
-                        </>
-                      ))
-                      .otherwise(() => null)}
-                  </>
-                )}
-              </li>
-            )
-          })}
-        </ul>
+        <TableColumnList
+          table={table}
+          relationships={relationships}
+          isHighlighted={isHighlighted}
+          highlightedHandles={highlightedHandles ?? []}
+        />
       )}
     </button>
   )
