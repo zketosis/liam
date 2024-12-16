@@ -1,5 +1,4 @@
 import {
-  Button,
   LiamLogoMark,
   TooltipContent,
   TooltipPortal,
@@ -13,6 +12,7 @@ import { ExportButton } from './ExportButton'
 import { GithubButton } from './GithubButton'
 import { HelpButton } from './HelpButton'
 import { ReleaseNoteButton } from './ReleaseNoteButton'
+import { CopyLinkButton } from './CopyLinkButton'
 
 export const AppBar: FC = () => {
   return (
@@ -39,9 +39,7 @@ export const AppBar: FC = () => {
           <HelpButton />
         </div>
         <ExportButton />
-        <Button variant="solid-primary" size="md">
-          Share
-        </Button>
+        <CopyLinkButton />
       </div>
     </header>
   )
