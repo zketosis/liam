@@ -14,6 +14,7 @@ import {
 } from '@xyflow/react'
 import { type FC, useCallback, useEffect } from 'react'
 import styles from './ERDContent.module.css'
+import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
 import { useActiveTableNameFromUrl } from './useActiveTableNameFromUrl'
@@ -55,7 +56,7 @@ export const isRelatedToTable = (
   )
 }
 
-export const ERDContent: FC<Props> = ({
+export const ERDContentInner: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
   enabledFeatures,
@@ -64,6 +65,7 @@ export const ERDContent: FC<Props> = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
   const { relationships } = useDBStructureStore()
   const { updateEdgeData, updateEdge } = useReactFlow()
+  const { state: { loading }} = useERDContentContext()
 
   useEffect(() => {
     setNodes(_nodes)
@@ -175,7 +177,7 @@ export const ERDContent: FC<Props> = ({
   const panOnDrag = [1, 2]
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} data-loading={loading}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -202,5 +204,13 @@ export const ERDContent: FC<Props> = ({
         />
       </ReactFlow>
     </div>
+  )
+}
+
+export const ERDContent: FC<Props> = (props) => {
+  return (
+    <ERDContentProvider>
+      <ERDContentInner {...props} />
+    </ERDContentProvider>
   )
 }
