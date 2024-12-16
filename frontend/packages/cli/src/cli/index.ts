@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { Command } from 'commander'
 import { buildCommand } from './commands/index.js'
@@ -6,7 +7,10 @@ const distDir = path.join(process.cwd(), 'dist')
 
 const program = new Command()
 
-program.name('liam').description('CLI tool for Liam').version('0.0.0')
+const require = createRequire(import.meta.url)
+const { version } = require('../../package.json')
+
+program.name('liam').description('CLI tool for Liam').version(version)
 
 const erdCommand = new Command('erd').description('ERD commands')
 program.addCommand(erdCommand)
