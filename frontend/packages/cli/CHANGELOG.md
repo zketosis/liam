@@ -1,5 +1,13 @@
 # @liam-hq/cli
 
+## 0.0.9
+
+### Patch Changes
+
+- 1aeed01: fix: reduce button-in-button
+- 8ed7b59: Enabled toggling the visibility of Table Nodes from the Left Pane.
+- b1521ed: Add url query params for quick access
+
 ## 0.0.8
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @liam-hq/erd-core
 
+## 0.0.4
+
+### Patch Changes
+
+- 1aeed01: fix: reduce button-in-button
+- 8ed7b59: Enabled toggling the visibility of Table Nodes from the Left Pane.
+- b1521ed: Add url query params for quick access
+- Updated dependencies [8ed7b59]
+  - @liam-hq/ui@0.0.1
+
 ## 0.0.3
 
 ### Patch Changes
