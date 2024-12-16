@@ -4,13 +4,11 @@ import {
   Background,
   BackgroundVariant,
   type Edge,
-  type EdgeMouseHandler,
   type Node,
   type NodeMouseHandler,
   ReactFlow,
   useEdgesState,
   useNodesState,
-  useReactFlow,
 } from '@xyflow/react'
 import { type FC, useCallback, useEffect } from 'react'
 import styles from './ERDContent.module.css'
@@ -64,7 +62,6 @@ export const ERDContentInner: FC<Props> = ({
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
   const { relationships } = useDBStructureStore()
-  const { updateEdgeData, updateEdge } = useReactFlow()
   const {
     state: { loading },
   } = useERDContentContext()
@@ -154,22 +151,6 @@ export const ERDContentInner: FC<Props> = ({
     [edges, nodes, setNodes, setEdges],
   )
 
-  const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(
-    (_, { id }) => {
-      updateEdge(id, { animated: true })
-      updateEdgeData(id, { isHighlighted: true })
-    },
-    [updateEdge, updateEdgeData],
-  )
-
-  const handleMouseLeaveEdge: EdgeMouseHandler<Edge> = useCallback(
-    (_, { id }) => {
-      updateEdge(id, { animated: false })
-      updateEdgeData(id, { isHighlighted: false })
-    },
-    [updateEdge, updateEdgeData],
-  )
-
   const panOnDrag = [1, 2]
 
   return (
@@ -185,8 +166,6 @@ export const ERDContentInner: FC<Props> = ({
         onEdgesChange={onEdgesChange}
         onNodeMouseEnter={handleMouseEnterNode}
         onNodeMouseLeave={handleMouseLeaveNode}
-        onEdgeMouseEnter={handleMouseEnterEdge}
-        onEdgeMouseLeave={handleMouseLeaveEdge}
         panOnScroll
         panOnDrag={panOnDrag}
         selectionOnDrag
