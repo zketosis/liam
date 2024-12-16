@@ -18,9 +18,6 @@ export function convertElkNodesToNodes(
       },
       width: elkNode.width ?? 0,
       height: elkNode.height ?? 0,
-      style: {
-        opacity: 1,
-      },
     })
   }
 
