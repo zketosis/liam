@@ -18,8 +18,8 @@ import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
 import { useActiveTableNameFromUrl } from './useActiveTableNameFromUrl'
-import { useAutoLayout } from './useAutoLayout'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
+import { useInitialAutoLayout } from './useInitialAutoLayout'
 
 const nodeTypes = {
   table: TableNode,
@@ -74,7 +74,7 @@ export const ERDContentInner: FC<Props> = ({
     setEdges(_edges)
   }, [_nodes, _edges, setNodes, setEdges])
 
-  useAutoLayout()
+  useInitialAutoLayout()
   useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
@@ -93,9 +93,11 @@ export const ERDContentInner: FC<Props> = ({
       )
 
       const updatedNodes = nodes.map((node) => {
-        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
+        if (node.id === id) {
           return { ...node, data: { ...node.data, isHighlighted: true } }
         }
+
+        const isRelated = isRelatedToTable(relationships, node.id, id)
 
         const highlightedTargetHandles = relatedEdges
           .filter((edge) => edge.source === id && edge.target === node.id)
@@ -109,6 +111,7 @@ export const ERDContentInner: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
+            isRelated: isRelated,
             highlightedHandles:
               highlightedTargetHandles.concat(highlightedSourceHandles) || [],
           },
@@ -134,22 +137,13 @@ export const ERDContentInner: FC<Props> = ({
       )
 
       const updatedNodes = nodes.map((node) => {
-        if (node.id === id || isRelatedToTable(relationships, node.id, id)) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              highlightedHandles: [],
-              isHighlighted: false,
-            },
-          }
-        }
-
         return {
           ...node,
           data: {
             ...node.data,
+            isRelated: false,
             highlightedHandles: [],
+            isHighlighted: false,
           },
         }
       })
@@ -157,7 +151,7 @@ export const ERDContentInner: FC<Props> = ({
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, relationships],
+    [edges, nodes, setNodes, setEdges],
   )
 
   const handleMouseEnterEdge: EdgeMouseHandler<Edge> = useCallback(

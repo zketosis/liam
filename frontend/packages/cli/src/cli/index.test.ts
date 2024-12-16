@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import type { Command } from 'commander'
 import { describe, expect, it, vi } from 'vitest'
 import { buildCommand } from './commands/index.js'
@@ -21,6 +22,9 @@ describe('program', () => {
   it('should have the correct name and description', () => {
     expect(program.name()).toBe('liam')
     expect(program.description()).toBe('CLI tool for Liam')
+    const require = createRequire(import.meta.url)
+    const { version: packageVersion } = require('../../package.json')
+    expect(program.version()).toBe(packageVersion)
   })
 
   it('should have an "erd" command with subcommands', () => {

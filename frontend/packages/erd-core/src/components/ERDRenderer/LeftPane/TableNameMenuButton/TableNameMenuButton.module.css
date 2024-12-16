@@ -4,6 +4,10 @@
   text-overflow: ellipsis;
 }
 
+.button {
+  cursor: pointer;
+}
+
 .active {
   background: linear-gradient(
       0deg,

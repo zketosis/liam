@@ -1,10 +1,10 @@
-import { useNodesInitialized, useReactFlow } from '@xyflow/react'
-import { useCallback, useEffect } from 'react'
+import { useReactFlow } from '@xyflow/react'
+import type { Node } from '@xyflow/react'
+import { useCallback } from 'react'
 import { useERDContentContext } from '../ERDContentContext'
 import { getElkLayout } from './getElkLayout'
 
 export const useAutoLayout = () => {
-  const nodesInitialized = useNodesInitialized()
   const { getNodes, setNodes, getEdges, fitView } = useReactFlow()
   const {
     actions: { setLoading },
@@ -14,20 +14,24 @@ export const useAutoLayout = () => {
     setLoading(true)
     const nodes = getNodes()
     const edges = getEdges()
+    const visibleNodes: Node[] = nodes.filter((node) => !node.hidden)
+    const hiddenNodes: Node[] = nodes.filter((node) => node.hidden)
 
-    const newNodes = await getElkLayout({
-      nodes,
-      edges,
+    // NOTE: Only include edges where both the source and target are in the nodes
+    const nodeMap = new Map(visibleNodes.map((node) => [node.id, node]))
+    const visibleEdges = edges.filter((edge) => {
+      return nodeMap.get(edge.source) && nodeMap.get(edge.target)
     })
 
-    setNodes(newNodes)
+    const newNodes = await getElkLayout({
+      nodes: visibleNodes,
+      edges: visibleEdges,
+    })
+
+    setNodes([...hiddenNodes, ...newNodes])
     setLoading(false)
     setTimeout(() => fitView(), 0)
   }, [getNodes, setNodes, getEdges, fitView, setLoading])
 
-  useEffect(() => {
-    if (nodesInitialized) {
-      handleLayout()
-    }
-  }, [nodesInitialized, handleLayout])
+  return { handleLayout }
 }
