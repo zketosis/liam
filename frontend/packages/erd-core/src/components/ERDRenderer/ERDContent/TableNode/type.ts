@@ -1,4 +1,4 @@
-import type { Table } from '@liam-hq/db-structure'
+import type { Cardinality, Table } from '@liam-hq/db-structure'
 import type { Node } from '@xyflow/react'
 
 export type Data = {
@@ -7,6 +7,7 @@ export type Data = {
   isRelated: boolean
   highlightedHandles: string[]
   sourceColumnName: string | undefined
+  targetColumnCardinalities?: Record<string, Cardinality> | undefined
 }
 
 export type TableNodeType = Node<Data, 'table'>

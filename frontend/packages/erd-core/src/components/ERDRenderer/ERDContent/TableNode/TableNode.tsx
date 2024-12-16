@@ -46,9 +46,7 @@ export const TableNode: FC<Props> = ({ data }) => {
       onClick={handleClick}
     >
       <TableHeader name={data.table.name} />
-      {showMode === 'ALL_FIELDS' && (
-        <TableColumnList data={data} relationships={relationships} />
-      )}
+      {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
     </button>
   )
 }

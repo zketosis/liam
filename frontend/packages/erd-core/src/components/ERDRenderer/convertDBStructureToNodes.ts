@@ -1,5 +1,5 @@
 import type { ShowMode } from '@/schemas/showMode'
-import type { DBStructure } from '@liam-hq/db-structure'
+import type { Cardinality, DBStructure } from '@liam-hq/db-structure'
 import type { Edge, Node } from '@xyflow/react'
 
 type Params = {
@@ -17,11 +17,19 @@ export const convertDBStructureToNodes = ({
   const tables = Object.values(dbStructure.tables)
   const relationships = Object.values(dbStructure.relationships)
   const sourceColumns = new Map<string, string>()
+  const tableColumnCardinalities = new Map<
+    string,
+    Record<string, Cardinality>
+  >()
   for (const relationship of relationships) {
     sourceColumns.set(
       relationship.primaryTableName,
       relationship.primaryColumnName,
     )
+    tableColumnCardinalities.set(relationship.foreignTableName, {
+      ...tableColumnCardinalities.get(relationship.foreignTableName),
+      [relationship.foreignColumnName]: relationship.cardinality,
+    })
   }
 
   const nodes: Node[] = tables.map((table) => {
@@ -31,6 +39,7 @@ export const convertDBStructureToNodes = ({
       data: {
         table,
         sourceColumnName: sourceColumns.get(table.name),
+        targetColumnCardinalities: tableColumnCardinalities.get(table.name),
       },
       position: { x: 0, y: 0 },
       zIndex: 1,
