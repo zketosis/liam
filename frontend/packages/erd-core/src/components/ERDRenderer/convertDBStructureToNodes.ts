@@ -25,9 +25,6 @@ export const convertDBStructureToNodes = ({
         table,
       },
       position: { x: 0, y: 0 },
-      style: {
-        opacity: 0,
-      },
       zIndex: 1,
     }
   })

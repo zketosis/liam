@@ -4,6 +4,10 @@
   transition: stroke 0.3s var(--default-timing-function);
 }
 
+:global([data-loading='true']) .edge {
+  stroke: transparent;
+}
+
 .hovered {
   stroke: var(--node-layout);
 }

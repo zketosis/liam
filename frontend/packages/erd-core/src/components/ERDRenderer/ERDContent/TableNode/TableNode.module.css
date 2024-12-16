@@ -4,6 +4,11 @@
   width: 172px;
   transition: border-color 300ms var(--default-timing-function), border-width
     300ms var(--default-timing-function);
+  opacity: 1;
+}
+
+:global([data-loading='true']) .wrapper {
+  opacity: 0;
 }
 
 .wrapperHover,
