@@ -1,5 +1,4 @@
 import {
-  Button,
   LiamLogoMark,
   TooltipContent,
   TooltipPortal,
@@ -9,6 +8,7 @@ import {
 } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './AppBar.module.css'
+import { CopyLinkButton } from './CopyLinkButton'
 import { ExportButton } from './ExportButton'
 import { GithubButton } from './GithubButton'
 import { HelpButton } from './HelpButton'
@@ -39,9 +39,7 @@ export const AppBar: FC = () => {
           <HelpButton />
         </div>
         <ExportButton />
-        <Button variant="solid-primary" size="md">
-          Share
-        </Button>
+        <CopyLinkButton />
       </div>
     </header>
   )

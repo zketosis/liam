@@ -14,4 +14,5 @@
   --z-index-header: 1000;
   --z-index-dropdown-menu: 1100;
   --z-index-tooltip: 2000;
+  --z-index-toast: 3000;
 }
