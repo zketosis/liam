@@ -2,6 +2,7 @@ import '@xyflow/react/dist/style.css'
 import {
   SidebarProvider,
   SidebarTrigger,
+  ToastProvider,
   getSidebarStateFromCookie,
 } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
@@ -28,26 +29,28 @@ export const ERDRenderer: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      <AppBar />
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <ReactFlowProvider>
-          <div className={styles.mainWrapper}>
-            <LeftPane />
-            <main className={styles.main}>
-              <div className={styles.triggerWrapper}>
-                <SidebarTrigger />
-              </div>
-              <TableDetailDrawerRoot>
-                <ERDContent nodes={nodes} edges={edges} />
-                <div className={styles.toolbarWrapper}>
-                  <Toolbar />
+      <ToastProvider>
+        <AppBar />
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <ReactFlowProvider>
+            <div className={styles.mainWrapper}>
+              <LeftPane />
+              <main className={styles.main}>
+                <div className={styles.triggerWrapper}>
+                  <SidebarTrigger />
                 </div>
-                <TableDetailDrawer />
-              </TableDetailDrawerRoot>
-            </main>
-          </div>
-        </ReactFlowProvider>
-      </SidebarProvider>
+                <TableDetailDrawerRoot>
+                  <ERDContent nodes={nodes} edges={edges} />
+                  <div className={styles.toolbarWrapper}>
+                    <Toolbar />
+                  </div>
+                  <TableDetailDrawer />
+                </TableDetailDrawerRoot>
+              </main>
+            </div>
+          </ReactFlowProvider>
+        </SidebarProvider>
+      </ToastProvider>
     </div>
   )
 }
