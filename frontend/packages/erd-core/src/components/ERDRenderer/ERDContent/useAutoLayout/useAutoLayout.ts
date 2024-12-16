@@ -1,9 +1,8 @@
-import { useNodesInitialized, useReactFlow } from '@xyflow/react'
-import { useCallback, useEffect } from 'react'
+import { useReactFlow } from '@xyflow/react'
+import { useCallback } from 'react'
 import { getElkLayout } from './getElkLayout'
 
 export const useAutoLayout = () => {
-  const nodesInitialized = useNodesInitialized()
   const { getNodes, setNodes, getEdges, fitView } = useReactFlow()
 
   const handleLayout = useCallback(async () => {
@@ -19,9 +18,5 @@ export const useAutoLayout = () => {
     setTimeout(() => fitView(), 0)
   }, [getNodes, setNodes, getEdges, fitView])
 
-  useEffect(() => {
-    if (nodesInitialized) {
-      handleLayout()
-    }
-  }, [nodesInitialized, handleLayout])
+  return { handleLayout }
 }

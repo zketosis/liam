@@ -17,8 +17,8 @@ import styles from './ERDContent.module.css'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
 import { useActiveTableNameFromUrl } from './useActiveTableNameFromUrl'
-import { useAutoLayout } from './useAutoLayout'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
+import { useInitialAutoLayout } from './useInitialAutoLayout'
 
 const nodeTypes = {
   table: TableNode,
@@ -70,7 +70,7 @@ export const ERDContent: FC<Props> = ({
     setEdges(_edges)
   }, [_nodes, _edges, setNodes, setEdges])
 
-  useAutoLayout()
+  useInitialAutoLayout()
   useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
