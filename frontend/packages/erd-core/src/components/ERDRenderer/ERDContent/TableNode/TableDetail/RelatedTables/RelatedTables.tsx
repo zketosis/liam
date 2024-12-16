@@ -37,7 +37,7 @@ export const RelatedTables: FC<Props> = ({ table }) => {
         <h2 className={styles.heading}>Related tables</h2>
         <IconButton
           icon={<GotoIcon />}
-          tooltipContent="Go to Related tables"
+          tooltipContent="Open in main area"
           onClick={handleClick}
         />
       </div>
