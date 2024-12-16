@@ -40,7 +40,7 @@ export const ERDRenderer: FC = () => {
                   <SidebarTrigger />
                 </div>
                 <TableDetailDrawerRoot>
-                  <ERDContent nodes={nodes} edges={edges} />
+                  <ERDContent key={nodes.length} nodes={nodes} edges={edges} />
                   <div className={styles.toolbarWrapper}>
                     <Toolbar />
                   </div>
