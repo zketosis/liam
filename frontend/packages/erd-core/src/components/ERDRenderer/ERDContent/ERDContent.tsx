@@ -15,7 +15,6 @@ import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
-import { useActiveTableNameFromUrl } from './useActiveTableNameFromUrl'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 
@@ -67,7 +66,6 @@ export const ERDContentInner: FC<Props> = ({
   } = useERDContentContext()
 
   useInitialAutoLayout()
-  useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
   )
