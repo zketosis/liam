@@ -7,7 +7,7 @@ import { getElkLayout } from './getElkLayout'
 export const useAutoLayout = () => {
   const { getNodes, setNodes, getEdges, fitView } = useReactFlow()
   const {
-    actions: { setLoading },
+    actions: { setLoading, setInitializeComplete },
   } = useERDContentContext()
 
   const handleLayout = useCallback(async () => {
@@ -30,8 +30,9 @@ export const useAutoLayout = () => {
 
     setNodes([...hiddenNodes, ...newNodes])
     setLoading(false)
+    setInitializeComplete(true)
     setTimeout(() => fitView(), 0)
-  }, [getNodes, setNodes, getEdges, fitView, setLoading])
+  }, [getNodes, setNodes, getEdges, fitView, setLoading, setInitializeComplete])
 
   return { handleLayout }
 }
