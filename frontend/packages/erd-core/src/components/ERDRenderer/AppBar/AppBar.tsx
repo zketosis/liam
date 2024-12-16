@@ -8,11 +8,11 @@ import {
 } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './AppBar.module.css'
+import { CopyLinkButton } from './CopyLinkButton'
 import { ExportButton } from './ExportButton'
 import { GithubButton } from './GithubButton'
 import { HelpButton } from './HelpButton'
 import { ReleaseNoteButton } from './ReleaseNoteButton'
-import { CopyLinkButton } from './CopyLinkButton'
 
 export const AppBar: FC = () => {
   return (
