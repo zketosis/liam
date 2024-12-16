@@ -15,6 +15,7 @@ type TableColumnProps = {
   relationships: Relationships
   isHighlighted: boolean
   highlightedHandles: string[]
+  isSource: boolean
 }
 
 export const TableColumn: FC<TableColumnProps> = ({
@@ -23,25 +24,21 @@ export const TableColumn: FC<TableColumnProps> = ({
   relationships,
   isHighlighted,
   highlightedHandles,
+  isSource,
 }) => {
   const handleId = `${table.name}-${column.name}`
 
-  const { sourceColumns, targetCardinalities } = useMemo(() => {
-    const sourceColumns: Set<string> = new Set()
+  const { targetCardinalities } = useMemo(() => {
     const targetCardinalities: Record<string, string | undefined> = {}
 
     for (const relationship of Object.values(relationships)) {
-      const sourceKey = `${relationship.primaryTableName}-${relationship.primaryColumnName}`
-      sourceColumns.add(sourceKey)
-
       const targetKey = `${relationship.foreignTableName}-${relationship.foreignColumnName}`
       targetCardinalities[targetKey] = relationship.cardinality
     }
 
-    return { sourceColumns, targetCardinalities }
+    return { targetCardinalities }
   }, [relationships])
 
-  const isSource = sourceColumns.has(handleId)
   const targetCardinality = targetCardinalities[handleId]
 
   return (

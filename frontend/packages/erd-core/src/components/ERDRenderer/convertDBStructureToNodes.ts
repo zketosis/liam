@@ -16,6 +16,13 @@ export const convertDBStructureToNodes = ({
 } => {
   const tables = Object.values(dbStructure.tables)
   const relationships = Object.values(dbStructure.relationships)
+  const sourceColumns = new Map<string, string>()
+  for (const relationship of relationships) {
+    sourceColumns.set(
+      relationship.primaryTableName,
+      relationship.primaryColumnName,
+    )
+  }
 
   const nodes: Node[] = tables.map((table) => {
     return {
@@ -23,6 +30,7 @@ export const convertDBStructureToNodes = ({
       type: 'table',
       data: {
         table,
+        sourceColumnName: sourceColumns.get(table.name),
       },
       position: { x: 0, y: 0 },
       zIndex: 1,

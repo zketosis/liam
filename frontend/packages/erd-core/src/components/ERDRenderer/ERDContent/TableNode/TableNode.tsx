@@ -17,24 +17,23 @@ export const isTableNode = (node: Node): node is TableNodeType =>
 
 type Props = NodeProps<TableNodeType>
 
-export const TableNode: FC<Props> = ({
-  data: { table, isRelated, isHighlighted, highlightedHandles },
-}) => {
+export const TableNode: FC<Props> = ({ data }) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
   } = useUserEditingStore()
 
-  const isActive = tableName === table.name
+  const isActive = tableName === data.table.name
 
   const isTableRelated =
-    isRelated || isRelatedToTable(relationships, table.name, tableName)
+    data.isRelated ||
+    isRelatedToTable(relationships, data.table.name, tableName)
 
   const { showMode } = useUserEditingStore()
 
   const handleClick = useCallback(() => {
-    updateActiveTableName(table.name)
-  }, [table])
+    updateActiveTableName(data.table.name)
+  }, [data])
 
   return (
     <button
@@ -46,14 +45,9 @@ export const TableNode: FC<Props> = ({
       )}
       onClick={handleClick}
     >
-      <TableHeader name={table.name} />
+      <TableHeader name={data.table.name} />
       {showMode === 'ALL_FIELDS' && (
-        <TableColumnList
-          table={table}
-          relationships={relationships}
-          isHighlighted={isHighlighted}
-          highlightedHandles={highlightedHandles ?? []}
-        />
+        <TableColumnList data={data} relationships={relationships} />
       )}
     </button>
   )
