@@ -12,7 +12,7 @@ import {
   useNodesState,
   useReactFlow,
 } from '@xyflow/react'
-import { type FC, useCallback, useEffect } from 'react'
+import { type FC, useCallback } from 'react'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
@@ -61,18 +61,13 @@ export const ERDContentInner: FC<Props> = ({
   edges: _edges,
   enabledFeatures,
 }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(_nodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(_edges)
   const { relationships } = useDBStructureStore()
   const { updateEdgeData, updateEdge } = useReactFlow()
   const {
     state: { loading },
   } = useERDContentContext()
-
-  useEffect(() => {
-    setNodes(_nodes)
-    setEdges(_edges)
-  }, [_nodes, _edges, setNodes, setEdges])
 
   useInitialAutoLayout()
   useActiveTableNameFromUrl()
