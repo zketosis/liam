@@ -17,6 +17,7 @@ import { RelationshipEdge } from './RelationshipEdge'
 import { TableNode } from './TableNode'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
+import { useUpdateNodeCardinalities } from './useUpdateNodeCardinalities'
 
 const nodeTypes = {
   table: TableNode,
@@ -78,6 +79,7 @@ export const ERDContentInner: FC<Props> = ({
   } = useERDContentContext()
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
 
+  useUpdateNodeCardinalities(nodes, relationships, setNodes)
   useInitialAutoLayout()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
