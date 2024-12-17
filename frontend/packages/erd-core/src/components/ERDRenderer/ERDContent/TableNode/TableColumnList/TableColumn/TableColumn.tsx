@@ -1,37 +1,31 @@
 import type {
   Cardinality as CardinalityType,
   Column,
-  Table,
 } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
 import { match } from 'ts-pattern'
-import { columnHandleId } from '../../../../columnHandleId'
 import { Cardinality } from './Cardinality'
 import { CardinalityNotation } from './CardinalityNotation'
 import styles from './TableColumn.module.css'
 
 type TableColumnProps = {
-  table: Table
   column: Column
+  handleId: string
   isHighlighted: boolean
-  highlightedHandles: string[]
   isSource: boolean
   targetCardinality?: CardinalityType | undefined
 }
 
 export const TableColumn: FC<TableColumnProps> = ({
-  table,
   column,
+  handleId,
   isHighlighted,
-  highlightedHandles,
   isSource,
   targetCardinality,
 }) => {
-  const handleId = columnHandleId(table.name, column.name)
-
   return (
     <li key={column.name} className={styles.columnWrapper}>
       {column.primary && (
@@ -78,16 +72,12 @@ export const TableColumn: FC<TableColumnProps> = ({
           <Cardinality
             direction="right"
             cardinality="ONE_TO_ONE"
-            isHighlighted={
-              isHighlighted || highlightedHandles.includes(handleId)
-            }
+            isHighlighted={isHighlighted}
           />
           <CardinalityNotation
             direction="right"
             notation="1"
-            isHighlighted={
-              isHighlighted || highlightedHandles.includes(handleId)
-            }
+            isHighlighted={isHighlighted}
           />
         </>
       )}
@@ -106,16 +96,12 @@ export const TableColumn: FC<TableColumnProps> = ({
                 <Cardinality
                   direction="left"
                   cardinality="ONE_TO_ONE"
-                  isHighlighted={
-                    isHighlighted || highlightedHandles.includes(handleId)
-                  }
+                  isHighlighted={isHighlighted}
                 />
                 <CardinalityNotation
                   direction="left"
                   notation="1"
-                  isHighlighted={
-                    isHighlighted || highlightedHandles.includes(handleId)
-                  }
+                  isHighlighted={isHighlighted}
                 />
               </>
             ))
@@ -124,16 +110,12 @@ export const TableColumn: FC<TableColumnProps> = ({
                 <Cardinality
                   direction="left"
                   cardinality="ONE_TO_MANY"
-                  isHighlighted={
-                    isHighlighted || highlightedHandles.includes(handleId)
-                  }
+                  isHighlighted={isHighlighted}
                 />
                 <CardinalityNotation
                   direction="left"
                   notation="n"
-                  isHighlighted={
-                    isHighlighted || highlightedHandles.includes(handleId)
-                  }
+                  isHighlighted={isHighlighted}
                 />
               </>
             ))
