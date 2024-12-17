@@ -21,6 +21,7 @@ export const TableNode: FC<Props> = ({ data }) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
+    showMode,
   } = useUserEditingStore()
 
   const isActive = tableName === data.table.name
@@ -28,8 +29,6 @@ export const TableNode: FC<Props> = ({ data }) => {
   const isTableRelated =
     data.isRelated ||
     isRelatedToTable(relationships, data.table.name, tableName)
-
-  const { showMode } = useUserEditingStore()
 
   const handleClick = useCallback(() => {
     updateActiveTableName(data.table.name)
