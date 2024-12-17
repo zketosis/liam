@@ -9,6 +9,7 @@ export const useUpdateNodeCardinalities = (
   setNodes: (nodes: Node[]) => void,
 ) => {
   useEffect(() => {
+    const visibleNodes = nodes.filter((n) => !n.hidden && isTableNode(n))
     const hiddenNodes = nodes.filter((n) => n.hidden && isTableNode(n))
 
     const updatedNodes = nodes.map((node) => {
@@ -29,10 +30,23 @@ export const useUpdateNodeCardinalities = (
           isPrimaryTableHidden ? undefined : relationship.cardinality
       }
 
+      const primaryRelationships = Object.values(relationships).filter(
+        (relationship) => relationship.primaryTableName === tableName
+      )
+
+      const visibleForeignRelationship = primaryRelationships.find((relationship) =>
+        visibleNodes.some((visibleNode) => visibleNode.id === relationship.foreignTableName)
+      )
+
+      const updatedSourceColumnName = visibleForeignRelationship
+        ? visibleForeignRelationship.primaryColumnName
+        : undefined
+
       return {
         ...node,
         data: {
           ...node.data,
+          sourceColumnName: updatedSourceColumnName,
           targetColumnCardinalities,
         },
       }
