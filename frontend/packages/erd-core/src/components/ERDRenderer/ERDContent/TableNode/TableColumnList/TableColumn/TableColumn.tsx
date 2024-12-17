@@ -8,6 +8,7 @@ import { Handle, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
 import { match } from 'ts-pattern'
+import { columnHandleId } from '../../../../columnHandleId'
 import { Cardinality } from './Cardinality'
 import { CardinalityNotation } from './CardinalityNotation'
 import styles from './TableColumn.module.css'
@@ -29,7 +30,7 @@ export const TableColumn: FC<TableColumnProps> = ({
   isSource,
   targetCardinality,
 }) => {
-  const handleId = `${table.name}-${column.name}`
+  const handleId = columnHandleId(table.name, column.name)
 
   return (
     <li key={column.name} className={styles.columnWrapper}>
