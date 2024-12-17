@@ -7,7 +7,9 @@ export type Data = {
   isRelated: boolean
   highlightedHandles: string[]
   sourceColumnName: string | undefined
-  targetColumnCardinalities?: Record<string, Cardinality> | undefined
+  targetColumnCardinalities?:
+    | Record<string, Cardinality | undefined>
+    | undefined
 }
 
 export type TableNodeType = Node<Data, 'table'>
