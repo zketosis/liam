@@ -67,7 +67,7 @@ export const ERDContentInner: FC<Props> = ({
     state: { loading },
   } = useERDContentContext()
 
-  useUpdateNodeCardinalities(nodes, relationships)
+  useUpdateNodeCardinalities(nodes, relationships, setNodes)
   useInitialAutoLayout()
   useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
