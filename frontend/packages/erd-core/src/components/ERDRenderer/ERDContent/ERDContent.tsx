@@ -18,6 +18,7 @@ import { TableNode } from './TableNode'
 import { useActiveTableNameFromUrl } from './useActiveTableNameFromUrl'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
+import { useUpdateNodeCardinalities } from './useUpdateNodeCardinalities'
 
 const nodeTypes = {
   table: TableNode,
@@ -66,6 +67,7 @@ export const ERDContentInner: FC<Props> = ({
     state: { loading },
   } = useERDContentContext()
 
+  useUpdateNodeCardinalities(nodes, relationships)
   useInitialAutoLayout()
   useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
