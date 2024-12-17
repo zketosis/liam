@@ -65,7 +65,7 @@ export const ERDContentInner: FC<Props> = ({
   const {
     state: { loading },
   } = useERDContentContext()
-  const [clickedNodeId, setClickedNodeId] = useState<string | null>(null)
+  const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
 
   useInitialAutoLayout()
   useActiveTableNameFromUrl()
@@ -75,7 +75,7 @@ export const ERDContentInner: FC<Props> = ({
 
   const handleNodeClick = useCallback(
     (nodeId: string) => {
-      setClickedNodeId(nodeId)
+      setActiveNodeId(nodeId)
 
       const relatedEdges = edges.filter(
         (e) => e.source === nodeId || e.target === nodeId,
@@ -136,7 +136,7 @@ export const ERDContentInner: FC<Props> = ({
   )
 
   const handlePaneClick = useCallback(() => {
-    setClickedNodeId(null)
+    setActiveNodeId(null)
 
     const updatedEdges = edges.map((e) => ({
       ...e,
@@ -208,10 +208,10 @@ export const ERDContentInner: FC<Props> = ({
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      // If a node is clicked, do not remove the highlight
-      if (clickedNodeId) {
+      // If a node is active, do not remove the highlight
+      if (activeNodeId) {
         const relatedEdges = edges.filter(
-          (e) => e.source === clickedNodeId || e.target === clickedNodeId,
+          (e) => e.source === activeNodeId || e.target === activeNodeId,
         )
         const updatedEdges = edges.map((e) =>
           relatedEdges.includes(e)
@@ -232,25 +232,25 @@ export const ERDContentInner: FC<Props> = ({
           const isRelated = isRelatedToTable(
             relationships,
             node.id,
-            clickedNodeId,
+            activeNodeId,
           )
 
-          if (node.id === clickedNodeId || isRelated) {
+          if (node.id === activeNodeId || isRelated) {
             const highlightedTargetHandles = relatedEdges
               .filter(
                 (edge) =>
-                  edge.source === clickedNodeId && edge.target === node.id,
+                  edge.source === activeNodeId && edge.target === node.id,
               )
               .map((edge) => edge.targetHandle)
 
             const highlightedSourceHandles = relatedEdges
               .filter(
                 (edge) =>
-                  edge.target === clickedNodeId && edge.source === node.id,
+                  edge.target === activeNodeId && edge.source === node.id,
               )
               .map((edge) => edge.sourceHandle)
 
-            const isHighlighted = node.id === clickedNodeId
+            const isHighlighted = node.id === activeNodeId
 
             return {
               ...node,
@@ -301,7 +301,7 @@ export const ERDContentInner: FC<Props> = ({
         setNodes(updatedNodes)
       }
     },
-    [edges, nodes, setNodes, setEdges, clickedNodeId, relationships],
+    [edges, nodes, setNodes, setEdges, activeNodeId, relationships],
   )
 
   const panOnDrag = [1, 2]
