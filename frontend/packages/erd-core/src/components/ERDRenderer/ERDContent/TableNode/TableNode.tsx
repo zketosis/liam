@@ -44,6 +44,7 @@ export const TableNode: FC<Props> = ({ data }) => {
         isActive && styles.wrapperActive,
       )}
       onClick={handleClick}
+      data-erd="table-node"
     >
       <TableHeader data={data} />
       {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
