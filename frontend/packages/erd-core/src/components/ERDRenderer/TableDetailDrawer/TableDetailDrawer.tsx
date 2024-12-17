@@ -25,6 +25,7 @@ export const TableDetailDrawerRoot: FC<PropsWithChildren> = ({ children }) => {
       snapPoints={[]}
       open={open}
       onClose={handleClose}
+      modal={false}
     >
       {children}
     </DrawerRoot>
