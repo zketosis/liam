@@ -12,7 +12,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data }) => (
     {Object.values(data.table.columns).map((column) => {
       const handleId = columnHandleId(data.table.name, column.name)
       const isHighlighted =
-        data.isHighlighted || data.highlightedHandles.includes(handleId)
+        data.isHighlighted || data.highlightedHandles?.includes(handleId)
       const isSource = data.sourceColumnName === column.name
 
       return (
