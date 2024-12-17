@@ -36,6 +36,18 @@ type Props = {
     | undefined
 }
 
+const highlightEdge = (edge: Edge): Edge => ({
+  ...edge,
+  animated: true,
+  data: { ...edge.data, isHighlighted: true },
+})
+
+const unhighlightEdge = (edge: Edge): Edge => ({
+  ...edge,
+  animated: false,
+  data: { ...edge.data, isHighlighted: false },
+})
+
 export const isRelatedToTable = (
   relationships: Relationships,
   tableName: string,
@@ -80,13 +92,7 @@ export const ERDContentInner: FC<Props> = ({
       )
 
       const updatedEdges = edges.map((e) =>
-        relatedEdges.includes(e)
-          ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
-          : {
-              ...e,
-              animated: false,
-              data: { ...e.data, isHighlighted: false },
-            },
+        relatedEdges.includes(e) ? highlightEdge(e) : unhighlightEdge(e),
       )
 
       const updatedNodes = nodes.map((node) => {
@@ -136,11 +142,7 @@ export const ERDContentInner: FC<Props> = ({
   const handlePaneClick = useCallback(() => {
     setActiveNodeId(null)
 
-    const updatedEdges = edges.map((e) => ({
-      ...e,
-      animated: false,
-      data: { ...e.data, isHighlighted: false },
-    }))
+    const updatedEdges = edges.map(unhighlightEdge)
 
     const updatedNodes = nodes.map((node) => ({
       ...node,
@@ -163,9 +165,7 @@ export const ERDContentInner: FC<Props> = ({
       )
 
       const updatedEdges = edges.map((e) =>
-        relatedEdges.includes(e)
-          ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
-          : e,
+        relatedEdges.includes(e) ? highlightEdge(e) : e,
       )
 
       const updatedNodes = nodes.map((node) => {
@@ -212,17 +212,7 @@ export const ERDContentInner: FC<Props> = ({
           (e) => e.source === activeNodeId || e.target === activeNodeId,
         )
         const updatedEdges = edges.map((e) =>
-          relatedEdges.includes(e)
-            ? {
-                ...e,
-                animated: true,
-                data: { ...e.data, isHighlighted: true },
-              }
-            : {
-                ...e,
-                animated: false,
-                data: { ...e.data, isHighlighted: false },
-              },
+          relatedEdges.includes(e) ? highlightEdge(e) : unhighlightEdge(e),
         )
         setEdges(updatedEdges)
 
@@ -277,13 +267,7 @@ export const ERDContentInner: FC<Props> = ({
         setNodes(updatedNodes)
       } else {
         const updatedEdges = edges.map((e) =>
-          e.source === id || e.target === id
-            ? {
-                ...e,
-                animated: false,
-                data: { ...e.data, isHighlighted: false },
-              }
-            : e,
+          e.source === id || e.target === id ? unhighlightEdge(e) : e,
         )
         setEdges(updatedEdges)
 
