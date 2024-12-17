@@ -3,7 +3,6 @@ import {
   useDBStructureStore,
   useUserEditingStore,
 } from '@/stores'
-import type { Table } from '@liam-hq/db-structure'
 import type { Node, NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
@@ -11,39 +10,30 @@ import { isRelatedToTable } from '../ERDContent'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
-
-type Data = {
-  table: Table
-  isHighlighted: boolean
-  isRelated: boolean
-  highlightedHandles: string[]
-}
-
-export type TableNodeType = Node<Data, 'table'>
+import type { TableNodeType } from './type'
 
 export const isTableNode = (node: Node): node is TableNodeType =>
   node.type === 'table'
 
 type Props = NodeProps<TableNodeType>
 
-export const TableNode: FC<Props> = ({
-  data: { table, isRelated, isHighlighted, highlightedHandles },
-}) => {
+export const TableNode: FC<Props> = ({ data }) => {
   const { relationships } = useDBStructureStore()
   const {
     active: { tableName },
   } = useUserEditingStore()
 
-  const isActive = tableName === table.name
+  const isActive = tableName === data.table.name
 
   const isTableRelated =
-    isRelated || isRelatedToTable(relationships, table.name, tableName)
+    data.isRelated ||
+    isRelatedToTable(relationships, data.table.name, tableName)
 
   const { showMode } = useUserEditingStore()
 
   const handleClick = useCallback(() => {
-    updateActiveTableName(table.name)
-  }, [table])
+    updateActiveTableName(data.table.name)
+  }, [data])
 
   return (
     <button
@@ -55,15 +45,8 @@ export const TableNode: FC<Props> = ({
       )}
       onClick={handleClick}
     >
-      <TableHeader name={table.name} />
-      {showMode === 'ALL_FIELDS' && (
-        <TableColumnList
-          table={table}
-          relationships={relationships}
-          isHighlighted={isHighlighted}
-          highlightedHandles={highlightedHandles ?? []}
-        />
-      )}
+      <TableHeader data={data} />
+      {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
     </button>
   )
 }

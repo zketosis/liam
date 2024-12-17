@@ -10,6 +10,7 @@ export type {
   Index,
   Indices,
   ForeignKeyConstraint,
+  Cardinality,
 } from './dbStructure.js'
 export {
   aColumn,

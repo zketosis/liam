@@ -1,3 +1,4 @@
+import type { Cardinality as CardinalityType } from '@liam-hq/db-structure'
 import {
   CardinalityZeroOrManyLeftIcon,
   CardinalityZeroOrOneLeftIcon,
@@ -9,7 +10,7 @@ import styles from './Cardinality.module.css'
 
 type CardinalityProps = {
   direction: 'left' | 'right'
-  cardinality: 'ONE_TO_ONE' | 'ONE_TO_MANY'
+  cardinality: CardinalityType
   isHighlighted: boolean
 }
 

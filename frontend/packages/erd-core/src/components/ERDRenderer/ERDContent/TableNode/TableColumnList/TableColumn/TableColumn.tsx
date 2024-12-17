@@ -1,8 +1,11 @@
-import type { Column, Relationships, Table } from '@liam-hq/db-structure'
+import type {
+  Cardinality as CardinalityType,
+  Column,
+  Table,
+} from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
 import { Handle, Position } from '@xyflow/react'
 import clsx from 'clsx'
-import { useMemo } from 'react'
 import type { FC } from 'react'
 import { match } from 'ts-pattern'
 import { Cardinality } from './Cardinality'
@@ -12,37 +15,21 @@ import styles from './TableColumn.module.css'
 type TableColumnProps = {
   table: Table
   column: Column
-  relationships: Relationships
   isHighlighted: boolean
   highlightedHandles: string[]
+  isSource: boolean
+  targetCardinality?: CardinalityType | undefined
 }
 
 export const TableColumn: FC<TableColumnProps> = ({
   table,
   column,
-  relationships,
   isHighlighted,
   highlightedHandles,
+  isSource,
+  targetCardinality,
 }) => {
   const handleId = `${table.name}-${column.name}`
-
-  const { sourceColumns, targetCardinalities } = useMemo(() => {
-    const sourceColumns: Set<string> = new Set()
-    const targetCardinalities: Record<string, string | undefined> = {}
-
-    for (const relationship of Object.values(relationships)) {
-      const sourceKey = `${relationship.primaryTableName}-${relationship.primaryColumnName}`
-      sourceColumns.add(sourceKey)
-
-      const targetKey = `${relationship.foreignTableName}-${relationship.foreignColumnName}`
-      targetCardinalities[targetKey] = relationship.cardinality
-    }
-
-    return { sourceColumns, targetCardinalities }
-  }, [relationships])
-
-  const isSource = sourceColumns.has(handleId)
-  const targetCardinality = targetCardinalities[handleId]
 
   return (
     <li key={column.name} className={styles.columnWrapper}>

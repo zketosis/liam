@@ -1,29 +1,22 @@
-import type { Relationships, Table } from '@liam-hq/db-structure'
 import type { FC } from 'react'
+import type { Data } from '../type'
 import { TableColumn } from './TableColumn'
 
 type TableColumnListProps = {
-  table: Table
-  relationships: Relationships
-  isHighlighted: boolean
-  highlightedHandles: string[]
+  data: Data
 }
 
-export const TableColumnList: FC<TableColumnListProps> = ({
-  table,
-  relationships,
-  isHighlighted,
-  highlightedHandles,
-}) => (
+export const TableColumnList: FC<TableColumnListProps> = ({ data }) => (
   <ul>
-    {Object.values(table.columns).map((column) => (
+    {Object.values(data.table.columns).map((column) => (
       <TableColumn
         key={column.name}
-        table={table}
+        table={data.table}
         column={column}
-        relationships={relationships}
-        isHighlighted={isHighlighted}
-        highlightedHandles={highlightedHandles}
+        isHighlighted={data.isHighlighted}
+        highlightedHandles={data.highlightedHandles ?? []}
+        isSource={data.sourceColumnName === column.name}
+        targetCardinality={data.targetColumnCardinalities?.[column.name]}
       />
     ))}
   </ul>
