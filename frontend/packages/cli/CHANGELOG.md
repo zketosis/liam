@@ -1,5 +1,27 @@
 # @liam-hq/cli
 
+## 0.0.10
+
+### Patch Changes
+
+- 66bef4c: fix: reword to open in main area
+- bfcbb3a: LeftPane now shows the number of tables currently being displayed
+- ae4e27a: fix: Fixed an issue where edges were displayed during the initial loading
+- 3f4965f: `Tidy up` button now allows layout adjustments for only the currently displayed nodes
+- 9e88995: Refactored components for better maintainability: TableColumnList, TableColumn, Cardinality.
+- 28e7f9e: fix: reduce button-in-button
+- 91895fd: `-V/--version` now displays the correct version number.
+- 9ed0bdd: It is now possible to hide tables other than Related Tables
+- 8109940: refactor: reduce useEffect
+- b6112e9: Fixed incorrect cardinality icon positioning (left/right)
+- a9b9579: ✨Changed the default show mode to 'Table name only'
+- 471d49b: fix: Fixed an issue where edges were displayed incorrectly when switching the show mode
+- 7eccf51: Add current link copy button
+- 3b9c3b4: refactor: Reduced performance degradation caused by calculations for source and target
+- a85acb3: fix: Fixed an issue where URL sharing in TableDetail sometimes did not work correctly
+- 846feee: Fixed excessive highlighting of cardinality elements.
+- d255ff3: fix: Removed the highlight on Edge hover to prevent performance degradation
+
 ## 0.0.9
 
 ### Patch Changes
