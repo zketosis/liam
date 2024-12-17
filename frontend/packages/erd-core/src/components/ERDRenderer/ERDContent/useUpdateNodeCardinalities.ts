@@ -13,11 +13,19 @@ export const useUpdateNodeCardinalities = (
     const hiddenNodes = nodes.filter((n) => n.hidden && isTableNode(n))
 
     const updatedNodes = nodes.map((node) => {
-      if (!isTableNode(node)) return node
-      const tableName = node.data.table.name
-      const targetColumnCardinalities = node.data.targetColumnCardinalities
+      if (!isTableNode(node)) {
+        return node
+      }
 
-      if (!targetColumnCardinalities) return node
+      const { table } = node.data
+      const { name: tableName } = table
+      const { targetColumnCardinalities } = node.data
+
+      if (!targetColumnCardinalities) {
+        return node
+      }
+
+      const updatedTargetColumnCardinalities = { ...targetColumnCardinalities }
 
       for (const relationship of Object.values(relationships)) {
         if (relationship.foreignTableName !== tableName) continue
@@ -26,29 +34,34 @@ export const useUpdateNodeCardinalities = (
           (hiddenNode) => hiddenNode.id === relationship.primaryTableName,
         )
 
-        targetColumnCardinalities[relationship.foreignColumnName] =
+        updatedTargetColumnCardinalities[relationship.foreignColumnName] =
           isPrimaryTableHidden ? undefined : relationship.cardinality
       }
 
       const primaryRelationships = Object.values(relationships).filter(
-        (relationship) => relationship.primaryTableName === tableName
+        (relationship) => relationship.primaryTableName === tableName,
       )
 
-      const visibleForeignRelationship = primaryRelationships.find((relationship) =>
-        visibleNodes.some((visibleNode) => visibleNode.id === relationship.foreignTableName)
+      const visibleForeignRelationship = primaryRelationships.find(
+        (relationship) =>
+          visibleNodes.some(
+            (visibleNode) => visibleNode.id === relationship.foreignTableName,
+          ),
       )
 
       const updatedSourceColumnName = visibleForeignRelationship
         ? visibleForeignRelationship.primaryColumnName
         : undefined
 
+      const updatedData = {
+        ...node.data,
+        sourceColumnName: updatedSourceColumnName,
+        targetColumnCardinalities: updatedTargetColumnCardinalities,
+      }
+
       return {
         ...node,
-        data: {
-          ...node.data,
-          sourceColumnName: updatedSourceColumnName,
-          targetColumnCardinalities,
-        },
+        data: updatedData,
       }
     })
 
