@@ -10,7 +10,7 @@ import {
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
-import { type FC, useCallback } from 'react'
+import { type FC, useCallback, useState } from 'react'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
@@ -65,12 +65,98 @@ export const ERDContentInner: FC<Props> = ({
   const {
     state: { loading },
   } = useERDContentContext()
+  const [clickedNodeId, setClickedNodeId] = useState<string | null>(null)
 
   useInitialAutoLayout()
   useActiveTableNameFromUrl()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
   )
+
+  const handleNodeClick = useCallback(
+    (nodeId: string) => {
+      setClickedNodeId(nodeId)
+
+      const relatedEdges = edges.filter(
+        (e) => e.source === nodeId || e.target === nodeId,
+      )
+
+      const updatedEdges = edges.map((e) =>
+        relatedEdges.includes(e)
+          ? { ...e, animated: true, data: { ...e.data, isHighlighted: true } }
+          : {
+              ...e,
+              animated: false,
+              data: { ...e.data, isHighlighted: false },
+            },
+      )
+
+      const updatedNodes = nodes.map((node) => {
+        if (node.id === nodeId) {
+          return { ...node, data: { ...node.data, isHighlighted: true } }
+        }
+
+        const isRelated = isRelatedToTable(relationships, node.id, nodeId)
+
+        if (isRelated) {
+          const highlightedTargetHandles = relatedEdges
+            .filter((edge) => edge.source === nodeId && edge.target === node.id)
+            .map((edge) => edge.targetHandle)
+
+          const highlightedSourceHandles = relatedEdges
+            .filter((edge) => edge.target === nodeId && edge.source === node.id)
+            .map((edge) => edge.sourceHandle)
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isRelated: isRelated,
+              highlightedHandles:
+                highlightedTargetHandles.concat(highlightedSourceHandles) || [],
+            },
+          }
+        }
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            isRelated: false,
+            isHighlighted: false,
+            highlightedHandles: [],
+          },
+        }
+      })
+
+      setEdges(updatedEdges)
+      setNodes(updatedNodes)
+    },
+    [edges, nodes, setNodes, setEdges, relationships],
+  )
+
+  const handlePaneClick = useCallback(() => {
+    setClickedNodeId(null)
+
+    const updatedEdges = edges.map((e) => ({
+      ...e,
+      animated: false,
+      data: { ...e.data, isHighlighted: false },
+    }))
+
+    const updatedNodes = nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        isRelated: false,
+        highlightedHandles: [],
+        isHighlighted: false,
+      },
+    }))
+
+    setEdges(updatedEdges)
+    setNodes(updatedNodes)
+  }, [edges, nodes, setNodes, setEdges])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
@@ -91,23 +177,27 @@ export const ERDContentInner: FC<Props> = ({
 
         const isRelated = isRelatedToTable(relationships, node.id, id)
 
-        const highlightedTargetHandles = relatedEdges
-          .filter((edge) => edge.source === id && edge.target === node.id)
-          .map((edge) => edge.targetHandle)
+        if (isRelated) {
+          const highlightedTargetHandles = relatedEdges
+            .filter((edge) => edge.source === id && edge.target === node.id)
+            .map((edge) => edge.targetHandle)
 
-        const highlightedSourceHandles = relatedEdges
-          .filter((edge) => edge.target === id && edge.source === node.id)
-          .map((edge) => edge.sourceHandle)
+          const highlightedSourceHandles = relatedEdges
+            .filter((edge) => edge.target === id && edge.source === node.id)
+            .map((edge) => edge.sourceHandle)
 
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            isRelated: isRelated,
-            highlightedHandles:
-              highlightedTargetHandles.concat(highlightedSourceHandles) || [],
-          },
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isRelated: isRelated,
+              highlightedHandles:
+                highlightedTargetHandles.concat(highlightedSourceHandles) || [],
+            },
+          }
         }
+
+        return node
       })
 
       setEdges(updatedEdges)
@@ -118,18 +208,88 @@ export const ERDContentInner: FC<Props> = ({
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      const updatedEdges = edges.map((e) =>
-        e.source === id || e.target === id
-          ? {
-              ...e,
-              animated: false,
-              data: { ...e.data, isHighlighted: false },
-            }
-          : e,
-      )
+      // If a node is clicked, do not remove the highlight
+      if (clickedNodeId) {
+        const relatedEdges = edges.filter(
+          (e) => e.source === clickedNodeId || e.target === clickedNodeId,
+        )
+        const updatedEdges = edges.map((e) =>
+          relatedEdges.includes(e)
+            ? {
+                ...e,
+                animated: true,
+                data: { ...e.data, isHighlighted: true },
+              }
+            : {
+                ...e,
+                animated: false,
+                data: { ...e.data, isHighlighted: false },
+              },
+        )
+        setEdges(updatedEdges)
 
-      const updatedNodes = nodes.map((node) => {
-        return {
+        const updatedNodes = nodes.map((node) => {
+          const isRelated = isRelatedToTable(
+            relationships,
+            node.id,
+            clickedNodeId,
+          )
+
+          if (node.id === clickedNodeId || isRelated) {
+            const highlightedTargetHandles = relatedEdges
+              .filter(
+                (edge) =>
+                  edge.source === clickedNodeId && edge.target === node.id,
+              )
+              .map((edge) => edge.targetHandle)
+
+            const highlightedSourceHandles = relatedEdges
+              .filter(
+                (edge) =>
+                  edge.target === clickedNodeId && edge.source === node.id,
+              )
+              .map((edge) => edge.sourceHandle)
+
+            const isHighlighted = node.id === clickedNodeId
+
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                isRelated: isRelated,
+                isHighlighted: isHighlighted,
+                highlightedHandles:
+                  highlightedTargetHandles.concat(highlightedSourceHandles) ||
+                  [],
+              },
+            }
+          }
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isRelated: false,
+              isHighlighted: false,
+              highlightedHandles: [],
+            },
+          }
+        })
+
+        setNodes(updatedNodes)
+      } else {
+        const updatedEdges = edges.map((e) =>
+          e.source === id || e.target === id
+            ? {
+                ...e,
+                animated: false,
+                data: { ...e.data, isHighlighted: false },
+              }
+            : e,
+        )
+        setEdges(updatedEdges)
+
+        const updatedNodes = nodes.map((node) => ({
           ...node,
           data: {
             ...node.data,
@@ -137,13 +297,11 @@ export const ERDContentInner: FC<Props> = ({
             highlightedHandles: [],
             isHighlighted: false,
           },
-        }
-      })
-
-      setEdges(updatedEdges)
-      setNodes(updatedNodes)
+        }))
+        setNodes(updatedNodes)
+      }
     },
-    [edges, nodes, setNodes, setEdges],
+    [edges, nodes, setNodes, setEdges, clickedNodeId, relationships],
   )
 
   const panOnDrag = [1, 2]
@@ -151,7 +309,13 @@ export const ERDContentInner: FC<Props> = ({
   return (
     <div className={styles.wrapper} data-loading={loading}>
       <ReactFlow
-        nodes={nodes}
+        nodes={nodes.map((node) => ({
+          ...node,
+          data: {
+            ...node.data,
+            onClick: handleNodeClick,
+          },
+        }))}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
@@ -159,6 +323,8 @@ export const ERDContentInner: FC<Props> = ({
         maxZoom={2}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={(_, node) => handleNodeClick(node.id)}
+        onPaneClick={handlePaneClick}
         onNodeMouseEnter={handleMouseEnterNode}
         onNodeMouseLeave={handleMouseLeaveNode}
         panOnScroll

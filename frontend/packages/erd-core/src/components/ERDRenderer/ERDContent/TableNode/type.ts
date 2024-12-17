@@ -8,6 +8,7 @@ export type Data = {
   highlightedHandles: string[]
   sourceColumnName: string | undefined
   targetColumnCardinalities?: Record<string, Cardinality> | undefined
+  onClick?: (tableName: string) => void
 }
 
 export type TableNodeType = Node<Data, 'table'>
