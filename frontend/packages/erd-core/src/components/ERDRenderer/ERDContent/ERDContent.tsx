@@ -14,6 +14,7 @@ import { type FC, useCallback, useState } from 'react'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
+import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
@@ -292,6 +293,7 @@ export const ERDContentInner: FC<Props> = ({
 
   return (
     <div className={styles.wrapper} data-loading={loading}>
+      {loading && <Spinner className={styles.loading} />}
       <ReactFlow
         nodes={nodes.map((node) => ({
           ...node,
