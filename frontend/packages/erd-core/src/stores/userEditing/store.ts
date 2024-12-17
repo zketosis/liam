@@ -13,7 +13,7 @@ export const userEditingStore = proxy<UserEditingStore>({
   active: {
     tableName: undefined,
   },
-  showMode: 'ALL_FIELDS',
+  showMode: 'TABLE_NAME',
 })
 
 subscribe(userEditingStore.active, () => {
