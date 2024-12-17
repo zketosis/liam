@@ -48,7 +48,7 @@
   transition: opacity 300ms var(--default-timing-function);
 }
 
-.wrapper:hover .columnType {
+:global([data-erd='table-node']):hover .columnType {
   opacity: 1;
 }
 
