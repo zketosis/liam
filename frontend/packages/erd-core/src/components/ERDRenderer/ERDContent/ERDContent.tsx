@@ -65,6 +65,22 @@ export const isRelatedToTable = (
   )
 }
 
+const getHighlightedHandles = (
+  edges: Edge[],
+  targetId: string,
+  nodeId: string,
+) => {
+  const highlightedTargetHandles = edges
+    .filter((edge) => edge.source === targetId && edge.target === nodeId)
+    .map((edge) => edge.targetHandle)
+
+  const highlightedSourceHandles = edges
+    .filter((edge) => edge.target === targetId && edge.source === nodeId)
+    .map((edge) => edge.sourceHandle)
+
+  return highlightedTargetHandles.concat(highlightedSourceHandles) || []
+}
+
 export const ERDContentInner: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
@@ -103,21 +119,18 @@ export const ERDContentInner: FC<Props> = ({
         const isRelated = isRelatedToTable(relationships, node.id, nodeId)
 
         if (isRelated) {
-          const highlightedTargetHandles = relatedEdges
-            .filter((edge) => edge.source === nodeId && edge.target === node.id)
-            .map((edge) => edge.targetHandle)
-
-          const highlightedSourceHandles = relatedEdges
-            .filter((edge) => edge.target === nodeId && edge.source === node.id)
-            .map((edge) => edge.sourceHandle)
+          const highlightedHandles = getHighlightedHandles(
+            edges,
+            nodeId,
+            node.id,
+          )
 
           return {
             ...node,
             data: {
               ...node.data,
               isRelated: isRelated,
-              highlightedHandles:
-                highlightedTargetHandles.concat(highlightedSourceHandles) || [],
+              highlightedHandles: highlightedHandles,
             },
           }
         }
@@ -164,9 +177,19 @@ export const ERDContentInner: FC<Props> = ({
         (e) => e.source === id || e.target === id,
       )
 
-      const updatedEdges = edges.map((e) =>
-        relatedEdges.includes(e) ? highlightEdge(e) : e,
+      const relatedToActiveNodeEdges = edges.filter(
+        (e) => e.source === activeNodeId || e.target === activeNodeId,
       )
+
+      const updatedEdges = edges.map((e) => {
+        if (relatedEdges.includes(e)) {
+          return highlightEdge(e)
+        }
+        if (relatedToActiveNodeEdges.includes(e)) {
+          return highlightEdge(e)
+        }
+        return unhighlightEdge(e)
+      })
 
       const updatedNodes = nodes.map((node) => {
         if (node.id === id) {
@@ -174,34 +197,62 @@ export const ERDContentInner: FC<Props> = ({
         }
 
         const isRelated = isRelatedToTable(relationships, node.id, id)
+        const isRelatedToActiveNode =
+          activeNodeId && isRelatedToTable(relationships, node.id, activeNodeId)
 
         if (isRelated) {
-          const highlightedTargetHandles = relatedEdges
-            .filter((edge) => edge.source === id && edge.target === node.id)
-            .map((edge) => edge.targetHandle)
-
-          const highlightedSourceHandles = relatedEdges
-            .filter((edge) => edge.target === id && edge.source === node.id)
-            .map((edge) => edge.sourceHandle)
+          let highlightedHandles = getHighlightedHandles(edges, id, node.id)
+          if (isRelatedToActiveNode) {
+            highlightedHandles = highlightedHandles.concat(
+              getHighlightedHandles(edges, activeNodeId, node.id),
+            )
+          }
 
           return {
             ...node,
             data: {
               ...node.data,
-              isRelated: isRelated,
-              highlightedHandles:
-                highlightedTargetHandles.concat(highlightedSourceHandles) || [],
+              isRelated: true,
+              highlightedHandles: highlightedHandles,
             },
           }
         }
 
-        return node
+        if (isRelatedToActiveNode) {
+          const highlightedHandles = getHighlightedHandles(
+            edges,
+            activeNodeId,
+            node.id,
+          ).concat(getHighlightedHandles(edges, id, node.id))
+
+          const isHighlighted = node.id === activeNodeId
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isRelated: true,
+              isHighlighted: isHighlighted,
+              highlightedHandles: highlightedHandles,
+            },
+          }
+        }
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            isRelated: false,
+            isHighlighted: false,
+            highlightedHandles: [],
+          },
+        }
       })
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, relationships],
+    [edges, nodes, setNodes, setEdges, relationships, activeNodeId],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
@@ -224,19 +275,11 @@ export const ERDContentInner: FC<Props> = ({
           )
 
           if (node.id === activeNodeId || isRelated) {
-            const highlightedTargetHandles = relatedEdges
-              .filter(
-                (edge) =>
-                  edge.source === activeNodeId && edge.target === node.id,
-              )
-              .map((edge) => edge.targetHandle)
-
-            const highlightedSourceHandles = relatedEdges
-              .filter(
-                (edge) =>
-                  edge.target === activeNodeId && edge.source === node.id,
-              )
-              .map((edge) => edge.sourceHandle)
+            const highlightedHandles = getHighlightedHandles(
+              edges,
+              activeNodeId,
+              node.id,
+            )
 
             const isHighlighted = node.id === activeNodeId
 
@@ -246,9 +289,7 @@ export const ERDContentInner: FC<Props> = ({
                 ...node.data,
                 isRelated: isRelated,
                 isHighlighted: isHighlighted,
-                highlightedHandles:
-                  highlightedTargetHandles.concat(highlightedSourceHandles) ||
-                  [],
+                highlightedHandles: highlightedHandles,
               },
             }
           }
