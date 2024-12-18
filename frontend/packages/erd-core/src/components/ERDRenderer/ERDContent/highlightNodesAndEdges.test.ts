@@ -27,11 +27,15 @@ const aTableNode = (
 const anEdge = (
   source: string,
   target: string,
+  sourceHandle: string | null,
+  targetHandle: string | null,
   override?: Partial<Edge>,
 ): Edge => ({
   id: `${source}-${target}`,
   source,
+  sourceHandle,
   target,
+  targetHandle,
   animated: false,
   data: { isHighlighted: false, ...override?.data },
   ...override,
@@ -46,9 +50,14 @@ describe(highlightNodesAndEdges, () => {
   ]
 
   const edges: Edge[] = [
-    anEdge('users', 'posts'),
-    anEdge('users', 'comment_users'),
-    anEdge('comments', 'comment_users'),
+    anEdge('users', 'posts', 'users-id', 'posts-user_id'),
+    anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id'),
+    anEdge(
+      'comments',
+      'comment_users',
+      'comments-id',
+      'comment_users-comment_id',
+    ),
   ]
 
   it('When the users is active, the users and related tables are highlighted', () => {
@@ -63,11 +72,17 @@ describe(highlightNodesAndEdges, () => {
         data: aTableData('users', { isActiveHighlighted: true }),
       }),
       aTableNode('posts', {
-        data: aTableData('posts', { isHighlighted: true }),
+        data: aTableData('posts', {
+          isHighlighted: true,
+          highlightedHandles: ['posts-user_id'],
+        }),
       }),
       aTableNode('comments'),
       aTableNode('comment_users', {
-        data: aTableData('comment_users', { isHighlighted: true }),
+        data: aTableData('comment_users', {
+          isHighlighted: true,
+          highlightedHandles: ['comment_users-user_id'],
+        }),
       }),
     ])
   })

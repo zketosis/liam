@@ -24,6 +24,39 @@ const isActivelyRelatedNode = (
   return edgeMap.get(activeTableName)?.includes(node.data.table.name) ?? false
 }
 
+const getHighlightedHandlesForRelatedNode = (
+  activeTableName: string | undefined,
+  edges: Edge[],
+  node: TableNodeType,
+): string[] => {
+  if (!activeTableName) {
+    return []
+  }
+
+  const handles: string[] = []
+  for (const edge of edges) {
+    if (
+      edge.targetHandle !== undefined &&
+      edge.targetHandle !== null &&
+      edge.source === activeTableName &&
+      edge.target === node.data.table.name
+    ) {
+      handles.push(edge.targetHandle)
+    }
+
+    if (
+      edge.sourceHandle !== undefined &&
+      edge.sourceHandle !== null &&
+      edge.source === node.data.table.name &&
+      edge.target === activeTableName
+    ) {
+      handles.push(edge.sourceHandle)
+    }
+  }
+
+  return handles
+}
+
 const activeHighlightNode = (node: TableNodeType): TableNodeType => ({
   ...node,
   data: {
@@ -32,11 +65,15 @@ const activeHighlightNode = (node: TableNodeType): TableNodeType => ({
   },
 })
 
-const highlightNode = (node: TableNodeType): TableNodeType => ({
+const highlightNode = (
+  node: TableNodeType,
+  handles: string[],
+): TableNodeType => ({
   ...node,
   data: {
     ...node.data,
     isHighlighted: true,
+    highlightedHandles: handles,
   },
 })
 
@@ -75,7 +112,12 @@ export const highlightNodesAndEdges = (
     }
 
     if (isActivelyRelatedNode(activeTableName, edgeMap, node)) {
-      return highlightNode(node)
+      const highlightedHandles = getHighlightedHandlesForRelatedNode(
+        activeTableName,
+        edges,
+        node,
+      )
+      return highlightNode(node, highlightedHandles)
     }
 
     return unhighlightNode(node)
