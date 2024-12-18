@@ -33,7 +33,7 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
           onClick={handleClickMenuButton(name)}
           onKeyDown={handleClickMenuButton(name)}
         >
-          <Table2 width="10px" />
+          <Table2 size="10px" />
           <span className={styles.tableName}>{name}</span>
           <VisibilityButton tableName={name} hidden={node.hidden} />
         </div>

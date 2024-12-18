@@ -76,6 +76,7 @@
 }
 
 .sidebarMenuButton:hover {
+  padding-right: var(--spacing-9);
   background: var(--pane-background-hover);
 }
 
@@ -83,7 +84,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  right: var(--spacing-2);
+  right: var(--spacing-5);
 }
 
 .sidebarMenuAction.showOnHover {
