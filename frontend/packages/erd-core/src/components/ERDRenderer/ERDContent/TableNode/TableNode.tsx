@@ -1,11 +1,7 @@
-import {
-  updateActiveTableName,
-  useDBStructureStore,
-  useUserEditingStore,
-} from '@/stores'
+import { useDBStructureStore, useUserEditingStore } from '@/stores'
 import type { Node, NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
-import { type FC, useCallback } from 'react'
+import type { FC } from 'react'
 import { isRelatedToTable } from '../ERDContent'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
@@ -30,23 +26,17 @@ export const TableNode: FC<Props> = ({ data }) => {
     data.isRelated ||
     isRelatedToTable(relationships, data.table.name, tableName)
 
-  const handleClick = useCallback(() => {
-    updateActiveTableName(data.table.name)
-  }, [data])
-
   return (
-    <button
-      type="button"
+    <div
       className={clsx(
         styles.wrapper,
         isTableRelated && styles.wrapperHover,
         isActive && styles.wrapperActive,
       )}
-      onClick={handleClick}
       data-erd="table-node"
     >
       <TableHeader data={data} />
       {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
-    </button>
+    </div>
   )
 }
