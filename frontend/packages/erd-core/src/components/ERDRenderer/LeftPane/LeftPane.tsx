@@ -16,7 +16,19 @@ import { TableNameMenuButton } from './TableNameMenuButton'
 
 export const LeftPane = () => {
   const nodes = useNodes()
-  const tableNodes = useMemo(() => nodes.filter(isTableNode), [nodes])
+  const tableNodes = useMemo(() => {
+    return nodes.filter(isTableNode).sort((a, b) => {
+      const nameA = a.data.table.name
+      const nameB = b.data.table.name
+      if (nameA < nameB) {
+        return -1
+      }
+      if (nameA > nameB) {
+        return 1
+      }
+      return 0
+    })
+  }, [nodes])
 
   return (
     <Sidebar>
