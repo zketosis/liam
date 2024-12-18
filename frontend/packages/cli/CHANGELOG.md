@@ -1,5 +1,22 @@
 # @liam-hq/cli
 
+## 0.0.11
+
+### Patch Changes
+
+- 987082d: Update hidden node cardinalities
+- 60bfdeb: refactor: Move the calculation to TableColumnList and TableColumn only displays the props
+- 16118e3: 💄 add loading spinner
+- 9c44a6a: fix: Fixed an issue where the correct table was not focused when sharing URLs in TableDetail
+- 3ebbac2: Corrected incorrect cardinality direction.
+- c3756b1: Reduce the width of TableDetail to prevent TableNode from being obscured
+- 594a73b: Enable hiding cardinalities on source node if target node is hidden
+- 88cf707: refactor: The behavior of TableNode when clicked is unified to be handled by ERDContent
+- b08232b: Highlight related edges and cardinalities when a TableNode is active.
+- e21fdc5: Enable clicking while Table Detail opened
+- 296fdaa: Restored columnType visibility.
+- b4b76d6: Minor refactoring of ERDContent
+
 ## 0.0.10
 
 ### Patch Changes
