@@ -185,7 +185,7 @@ export const ERDContentInner: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
-              isRelated: true,
+              isHighlighted: true,
               highlightedHandles: highlightedHandles,
             },
           }
@@ -203,7 +203,6 @@ export const ERDContentInner: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
-              isRelated: true,
               isHighlighted: isHighlighted,
               highlightedHandles: highlightedHandles,
             },
@@ -214,7 +213,6 @@ export const ERDContentInner: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
-            isRelated: false,
             isHighlighted: false,
             highlightedHandles: [],
           },
