@@ -1,4 +1,4 @@
-import { useDBStructureStore } from '@/stores'
+import { updateActiveTableName, useDBStructureStore } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
@@ -89,6 +89,7 @@ export const ERDContentInner: FC<Props> = ({
   const handleNodeClick = useCallback(
     (nodeId: string) => {
       setActiveNodeId(nodeId)
+      updateActiveTableName(nodeId)
 
       const relatedEdges = edges.filter(
         (e) => e.source === nodeId || e.target === nodeId,
