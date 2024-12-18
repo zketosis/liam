@@ -1,3 +1,4 @@
+import { clickLogEvent } from '@/features/gtm/utils'
 import {
   Button,
   TooltipContent,
@@ -27,6 +28,10 @@ export const CopyLinkButton: FC = () => {
           status: 'error',
         })
       })
+
+    clickLogEvent({
+      element: 'copyLinkButton',
+    })
   }, [toast])
 
   return (
