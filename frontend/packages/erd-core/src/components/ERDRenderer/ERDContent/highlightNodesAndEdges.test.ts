@@ -53,15 +53,23 @@ describe(highlightNodesAndEdges, () => {
   ]
 
   it('When the users is active, the users and related tables are highlighted', () => {
-    const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, 'users')
+    const { nodes: updatedNodes } = highlightNodesAndEdges(
+      nodes,
+      edges,
+      'users',
+    )
 
     expect(updatedNodes).toEqual([
       aTableNode('users', {
         data: aTableData('users', { isActiveHighlighted: true }),
       }),
-      aTableNode('posts'),
+      aTableNode('posts', {
+        data: aTableData('posts', { isHighlighted: true }),
+      }),
       aTableNode('comments'),
-      aTableNode('comment_users'),
+      aTableNode('comment_users', {
+        data: aTableData('comment_users', { isHighlighted: true }),
+      }),
     ])
   })
 })
