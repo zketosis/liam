@@ -8,7 +8,6 @@ const aTableData = (name: string, override?: Partial<Data>): Data => ({
   table: aTable({ name }),
   isActiveHighlighted: false,
   isHighlighted: false,
-  isRelated: false,
   highlightedHandles: [],
   sourceColumnName: undefined,
   ...override,

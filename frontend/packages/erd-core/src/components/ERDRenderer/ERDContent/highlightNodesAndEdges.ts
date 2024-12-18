@@ -46,7 +46,6 @@ const unhighlightNode = (node: TableNodeType): TableNodeType => ({
     ...node.data,
     isActiveHighlighted: false,
     isHighlighted: false,
-    isRelated: false,
     highlightedHandles: [],
   },
 })
