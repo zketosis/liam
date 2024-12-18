@@ -16,6 +16,7 @@ import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
+import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 import { useUpdateNodeCardinalities } from './useUpdateNodeCardinalities'
@@ -99,62 +100,29 @@ export const ERDContentInner: FC<Props> = ({
         relatedEdges.includes(e) ? highlightEdge(e) : unhighlightEdge(e),
       )
 
-      const updatedNodes = nodes.map((node) => {
-        if (node.id === nodeId) {
-          return { ...node, data: { ...node.data, isHighlighted: true } }
-        }
-
-        const isRelated = isRelatedToTable(relationships, node.id, nodeId)
-
-        if (isRelated) {
-          const highlightedTargetHandles = relatedEdges
-            .filter((edge) => edge.source === nodeId && edge.target === node.id)
-            .map((edge) => edge.targetHandle)
-
-          const highlightedSourceHandles = relatedEdges
-            .filter((edge) => edge.target === nodeId && edge.source === node.id)
-            .map((edge) => edge.sourceHandle)
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isHighlighted: true,
-              highlightedHandles:
-                highlightedTargetHandles.concat(highlightedSourceHandles) || [],
-            },
-          }
-        }
-
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            isHighlighted: false,
-            highlightedHandles: [],
-          },
-        }
-      })
+      const { nodes: updatedNodes } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        nodeId,
+      )
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, relationships],
+    [edges, nodes, setNodes, setEdges],
   )
 
   const handlePaneClick = useCallback(() => {
     setActiveNodeId(null)
+    updateActiveTableName(undefined)
 
     const updatedEdges = edges.map(unhighlightEdge)
 
-    const updatedNodes = nodes.map((node) => ({
-      ...node,
-      data: {
-        ...node.data,
-        highlightedHandles: [],
-        isHighlighted: false,
-      },
-    }))
+    const { nodes: updatedNodes } = highlightNodesAndEdges(
+      nodes,
+      edges,
+      undefined,
+    )
 
     setEdges(updatedEdges)
     setNodes(updatedNodes)
