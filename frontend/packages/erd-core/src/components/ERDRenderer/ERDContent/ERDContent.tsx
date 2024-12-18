@@ -119,7 +119,7 @@ export const ERDContentInner: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
-              isRelated: isRelated,
+              isHighlighted: true,
               highlightedHandles:
                 highlightedTargetHandles.concat(highlightedSourceHandles) || [],
             },
@@ -130,7 +130,6 @@ export const ERDContentInner: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
-            isRelated: false,
             isHighlighted: false,
             highlightedHandles: [],
           },
@@ -152,7 +151,6 @@ export const ERDContentInner: FC<Props> = ({
       ...node,
       data: {
         ...node.data,
-        isRelated: false,
         highlightedHandles: [],
         isHighlighted: false,
       },
@@ -192,7 +190,7 @@ export const ERDContentInner: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
-              isRelated: isRelated,
+              isHighlighted: true,
               highlightedHandles:
                 highlightedTargetHandles.concat(highlightedSourceHandles) || [],
             },
@@ -248,8 +246,7 @@ export const ERDContentInner: FC<Props> = ({
               ...node,
               data: {
                 ...node.data,
-                isRelated: isRelated,
-                isHighlighted: isHighlighted,
+                isHighlighted,
                 highlightedHandles:
                   highlightedTargetHandles.concat(highlightedSourceHandles) ||
                   [],
@@ -261,7 +258,6 @@ export const ERDContentInner: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
-              isRelated: false,
               isHighlighted: false,
               highlightedHandles: [],
             },
@@ -279,7 +275,6 @@ export const ERDContentInner: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
-            isRelated: false,
             highlightedHandles: [],
             isHighlighted: false,
           },
