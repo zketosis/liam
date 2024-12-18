@@ -86,4 +86,31 @@ describe(highlightNodesAndEdges, () => {
       }),
     ])
   })
+
+  it('When no active table, no tables are highlighted', () => {
+    const { nodes: updatedNodes } = highlightNodesAndEdges(
+      nodes,
+      edges,
+      undefined,
+    )
+
+    expect(updatedNodes).toEqual([
+      aTableNode('users', {
+        data: aTableData('users', { isActiveHighlighted: false }),
+      }),
+      aTableNode('posts', {
+        data: aTableData('posts', {
+          isHighlighted: false,
+          highlightedHandles: [],
+        }),
+      }),
+      aTableNode('comments'),
+      aTableNode('comment_users', {
+        data: aTableData('comment_users', {
+          isHighlighted: false,
+          highlightedHandles: [],
+        }),
+      }),
+    ])
+  })
 })
