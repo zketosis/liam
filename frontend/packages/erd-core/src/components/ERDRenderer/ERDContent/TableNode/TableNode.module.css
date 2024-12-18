@@ -5,6 +5,7 @@
   transition: border-color 300ms var(--default-timing-function), border-width
     300ms var(--default-timing-function);
   opacity: 1;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
 }
 
 :global([data-loading='true']) .wrapper {
