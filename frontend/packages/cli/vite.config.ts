@@ -25,6 +25,20 @@ export default defineConfig({
       ],
     },
   },
+  define: {
+    'import.meta.env.VITE_CLI_VERSION_VERSION': JSON.stringify(
+      process.env.VITE_CLI_VERSION_VERSION || '',
+    ),
+    'import.meta.env.VITE_CLI_VERSION_GIT_HASH': JSON.stringify(
+      process.env.VITE_CLI_VERSION_GIT_HASH || '',
+    ),
+    'import.meta.env.VITE_CLI_VERSION_IS_RELEASED_GIT_HASH': JSON.stringify(
+      process.env.VITE_CLI_VERSION_IS_RELEASED_GIT_HASH || '',
+    ),
+    'import.meta.env.VITE_CLI_VERSION_DATE': JSON.stringify(
+      process.env.VITE_CLI_VERSION_DATE || '',
+    ),
+  },
   plugins: [react(), tsconfigPaths()],
   test: {
     globals: true,
