@@ -1,5 +1,11 @@
 # @liam-hq/ui
 
+## 0.0.3
+
+### Patch Changes
+
+- 3ebbac2: Corrected incorrect cardinality direction.
+
 ## 0.0.2
 
 ### Patch Changes

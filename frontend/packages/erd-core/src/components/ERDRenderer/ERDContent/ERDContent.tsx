@@ -1,4 +1,4 @@
-import { useDBStructureStore } from '@/stores'
+import { updateActiveTableName, useDBStructureStore } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
@@ -14,9 +14,12 @@ import { type FC, useCallback, useState } from 'react'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
+import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
+import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
+import { useUpdateNodeCardinalities } from './useUpdateNodeCardinalities'
 
 const nodeTypes = {
   table: TableNode,
@@ -94,6 +97,7 @@ export const ERDContentInner: FC<Props> = ({
   } = useERDContentContext()
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
 
+  useUpdateNodeCardinalities(nodes, relationships, setNodes)
   useInitialAutoLayout()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
@@ -102,6 +106,7 @@ export const ERDContentInner: FC<Props> = ({
   const handleNodeClick = useCallback(
     (nodeId: string) => {
       setActiveNodeId(nodeId)
+      updateActiveTableName(nodeId)
 
       const relatedEdges = edges.filter(
         (e) => e.source === nodeId || e.target === nodeId,
@@ -111,61 +116,29 @@ export const ERDContentInner: FC<Props> = ({
         relatedEdges.includes(e) ? highlightEdge(e) : unhighlightEdge(e),
       )
 
-      const updatedNodes = nodes.map((node) => {
-        if (node.id === nodeId) {
-          return { ...node, data: { ...node.data, isHighlighted: true } }
-        }
-
-        const isRelated = isRelatedToTable(relationships, node.id, nodeId)
-
-        if (isRelated) {
-          const highlightedHandles = getHighlightedHandles(
-            edges,
-            nodeId,
-            node.id,
-          )
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isRelated: isRelated,
-              highlightedHandles: highlightedHandles,
-            },
-          }
-        }
-
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            isRelated: false,
-            isHighlighted: false,
-            highlightedHandles: [],
-          },
-        }
-      })
+      const { nodes: updatedNodes } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        nodeId,
+      )
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, relationships],
+    [edges, nodes, setNodes, setEdges],
   )
 
   const handlePaneClick = useCallback(() => {
     setActiveNodeId(null)
+    updateActiveTableName(undefined)
 
     const updatedEdges = edges.map(unhighlightEdge)
 
-    const updatedNodes = nodes.map((node) => ({
-      ...node,
-      data: {
-        ...node.data,
-        isRelated: false,
-        highlightedHandles: [],
-        isHighlighted: false,
-      },
-    }))
+    const { nodes: updatedNodes } = highlightNodesAndEdges(
+      nodes,
+      edges,
+      undefined,
+    )
 
     setEdges(updatedEdges)
     setNodes(updatedNodes)
@@ -217,7 +190,6 @@ export const ERDContentInner: FC<Props> = ({
             },
           }
         }
-
         if (isRelatedToActiveNode) {
           const highlightedHandles = getHighlightedHandles(
             edges,
@@ -287,8 +259,7 @@ export const ERDContentInner: FC<Props> = ({
               ...node,
               data: {
                 ...node.data,
-                isRelated: isRelated,
-                isHighlighted: isHighlighted,
+                isHighlighted,
                 highlightedHandles: highlightedHandles,
               },
             }
@@ -298,7 +269,6 @@ export const ERDContentInner: FC<Props> = ({
             ...node,
             data: {
               ...node.data,
-              isRelated: false,
               isHighlighted: false,
               highlightedHandles: [],
             },
@@ -316,7 +286,6 @@ export const ERDContentInner: FC<Props> = ({
           ...node,
           data: {
             ...node.data,
-            isRelated: false,
             highlightedHandles: [],
             isHighlighted: false,
           },
@@ -331,6 +300,7 @@ export const ERDContentInner: FC<Props> = ({
 
   return (
     <div className={styles.wrapper} data-loading={loading}>
+      {loading && <Spinner className={styles.loading} />}
       <ReactFlow
         nodes={nodes.map((node) => ({
           ...node,

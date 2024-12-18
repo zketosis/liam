@@ -3,4 +3,4 @@
 "@liam-hq/cli": patch
 ---
 
-Minor refactoring of ERDContent
+Refactoring and testing of highlights on active tables

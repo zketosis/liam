@@ -1,6 +1,7 @@
 import type { ShowMode } from '@/schemas/showMode'
 import type { Cardinality, DBStructure } from '@liam-hq/db-structure'
 import type { Edge, Node } from '@xyflow/react'
+import { columnHandleId } from './columnHandleId'
 
 type Params = {
   dbStructure: DBStructure
@@ -54,11 +55,11 @@ export const convertDBStructureToNodes = ({
     sourceHandle:
       showMode === 'TABLE_NAME'
         ? null
-        : `${rel.primaryTableName}-${rel.primaryColumnName}`,
+        : columnHandleId(rel.primaryTableName, rel.primaryColumnName),
     targetHandle:
       showMode === 'TABLE_NAME'
         ? null
-        : `${rel.foreignTableName}-${rel.foreignColumnName}`,
+        : columnHandleId(rel.foreignTableName, rel.foreignColumnName),
     data: { relationship: rel },
   }))
 
