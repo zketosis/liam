@@ -14,6 +14,7 @@ import {
 } from '@liam-hq/ui'
 import { forwardRef } from 'react'
 import styles from './HelpButton.module.css'
+import { ReleaseVersion } from './ReleaseVersion'
 
 const handleSelect = (url: string) => () => {
   window.open(url, '_blank', 'noreferrer')
@@ -41,6 +42,7 @@ export const HelpButton = forwardRef<HTMLButtonElement>((_, ref) => {
           sideOffset={4}
           className={styles.menuContent}
         >
+          <ReleaseVersion />
           <DropdownMenuItem
             size="sm"
             leftIcon={<BookText />}
