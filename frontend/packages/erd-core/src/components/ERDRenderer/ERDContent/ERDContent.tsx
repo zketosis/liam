@@ -1,8 +1,4 @@
-import {
-  updateActiveTableName,
-  useDBStructureStore,
-  useUserEditingActiveStore,
-} from '@/stores'
+import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
@@ -15,6 +11,7 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
+import { CardinalityMarkers } from './CardinalityMarkers'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
@@ -24,7 +21,6 @@ import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTableChange'
-import { useUpdateNodeCardinalities } from './useUpdateNodeCardinalities'
 
 const nodeTypes = {
   table: TableNode,
@@ -68,13 +64,11 @@ export const ERDContentInner: FC<Props> = ({
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(_nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(_edges)
-  const { relationships } = useDBStructureStore()
   const {
     state: { loading },
   } = useERDContentContext()
   const { tableName: activeTableName } = useUserEditingActiveStore()
 
-  useUpdateNodeCardinalities(nodes, relationships, setNodes)
   useInitialAutoLayout()
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
@@ -146,6 +140,7 @@ export const ERDContentInner: FC<Props> = ({
         selectionOnDrag
         deleteKeyCode={null} // Turn off because it does not want to be deleted
       >
+        <CardinalityMarkers />
         <Background
           color="var(--color-gray-600)"
           variant={BackgroundVariant.Dots}
