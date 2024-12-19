@@ -1,4 +1,8 @@
-import { updateActiveTableName, useDBStructureStore } from '@/stores'
+import {
+  updateActiveTableName,
+  useDBStructureStore,
+  useUserEditingActiveStore,
+} from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
@@ -10,12 +14,13 @@ import {
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
-import { type FC, useCallback, useState } from 'react'
+import { type FC, useCallback } from 'react'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
+import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTableChange'
@@ -39,18 +44,6 @@ type Props = {
     | undefined
 }
 
-const highlightEdge = (edge: Edge): Edge => ({
-  ...edge,
-  animated: true,
-  data: { ...edge.data, isHighlighted: true },
-})
-
-const unhighlightEdge = (edge: Edge): Edge => ({
-  ...edge,
-  animated: false,
-  data: { ...edge.data, isHighlighted: false },
-})
-
 export const isRelatedToTable = (
   relationships: Relationships,
   tableName: string,
@@ -68,22 +61,6 @@ export const isRelatedToTable = (
   )
 }
 
-const getHighlightedHandles = (
-  edges: Edge[],
-  targetId: string,
-  nodeId: string,
-) => {
-  const highlightedTargetHandles = edges
-    .filter((edge) => edge.source === targetId && edge.target === nodeId)
-    .map((edge) => edge.targetHandle)
-
-  const highlightedSourceHandles = edges
-    .filter((edge) => edge.target === targetId && edge.source === nodeId)
-    .map((edge) => edge.sourceHandle)
-
-  return highlightedTargetHandles.concat(highlightedSourceHandles) || []
-}
-
 export const ERDContentInner: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
@@ -95,8 +72,7 @@ export const ERDContentInner: FC<Props> = ({
   const {
     state: { loading },
   } = useERDContentContext()
-  // TODO: remove activeNodeId state
-  const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
+  const { tableName: activeTableName } = useUserEditingActiveStore()
 
   useUpdateNodeCardinalities(nodes, relationships, setNodes)
   useInitialAutoLayout()
@@ -106,164 +82,40 @@ export const ERDContentInner: FC<Props> = ({
   useSyncHighlightsActiveTableChange()
 
   const handleNodeClick = useCallback((nodeId: string) => {
-    setActiveNodeId(nodeId)
     updateActiveTableName(nodeId)
   }, [])
 
   const handlePaneClick = useCallback(() => {
-    setActiveNodeId(null)
     updateActiveTableName(undefined)
   }, [])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
-      const relatedEdges = edges.filter(
-        (e) => e.source === id || e.target === id,
-      )
-
-      const relatedToActiveNodeEdges = edges.filter(
-        (e) => e.source === activeNodeId || e.target === activeNodeId,
-      )
-
-      const updatedEdges = edges.map((e) => {
-        if (relatedEdges.includes(e)) {
-          return highlightEdge(e)
-        }
-        if (relatedToActiveNodeEdges.includes(e)) {
-          return highlightEdge(e)
-        }
-        return unhighlightEdge(e)
-      })
-
-      const updatedNodes = nodes.map((node) => {
-        if (node.id === id) {
-          return { ...node, data: { ...node.data, isHighlighted: true } }
-        }
-
-        const isRelated = isRelatedToTable(relationships, node.id, id)
-        const isRelatedToActiveNode =
-          activeNodeId && isRelatedToTable(relationships, node.id, activeNodeId)
-
-        if (isRelated) {
-          let highlightedHandles = getHighlightedHandles(edges, id, node.id)
-          if (isRelatedToActiveNode) {
-            highlightedHandles = highlightedHandles.concat(
-              getHighlightedHandles(edges, activeNodeId, node.id),
-            )
-          }
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isHighlighted: true,
-              highlightedHandles: highlightedHandles,
-            },
-          }
-        }
-        if (isRelatedToActiveNode) {
-          const highlightedHandles = getHighlightedHandles(
-            edges,
-            activeNodeId,
-            node.id,
-          ).concat(getHighlightedHandles(edges, id, node.id))
-
-          const isHighlighted = node.id === activeNodeId
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isHighlighted: isHighlighted,
-              highlightedHandles: highlightedHandles,
-            },
-          }
-        }
-
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            isHighlighted: false,
-            highlightedHandles: [],
-          },
-        }
-      })
+      const { nodes: updatedNodes, edges: updatedEdges } =
+        highlightNodesAndEdges(nodes, edges, {
+          activeTableName,
+          hoverTableName: id,
+        })
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, relationships, activeNodeId],
+    [edges, nodes, setNodes, setEdges, activeTableName],
   )
 
-  const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(
-    (_, { id }) => {
-      // If a node is active, do not remove the highlight
-      if (activeNodeId) {
-        const relatedEdges = edges.filter(
-          (e) => e.source === activeNodeId || e.target === activeNodeId,
-        )
-        const updatedEdges = edges.map((e) =>
-          relatedEdges.includes(e) ? highlightEdge(e) : unhighlightEdge(e),
-        )
-        setEdges(updatedEdges)
+  const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(() => {
+    const { nodes: updatedNodes, edges: updatedEdges } = highlightNodesAndEdges(
+      nodes,
+      edges,
+      {
+        activeTableName,
+        hoverTableName: undefined,
+      },
+    )
 
-        const updatedNodes = nodes.map((node) => {
-          const isRelated = isRelatedToTable(
-            relationships,
-            node.id,
-            activeNodeId,
-          )
-
-          if (node.id === activeNodeId || isRelated) {
-            const highlightedHandles = getHighlightedHandles(
-              edges,
-              activeNodeId,
-              node.id,
-            )
-
-            const isHighlighted = node.id === activeNodeId
-
-            return {
-              ...node,
-              data: {
-                ...node.data,
-                isHighlighted,
-                highlightedHandles: highlightedHandles,
-              },
-            }
-          }
-
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isHighlighted: false,
-              highlightedHandles: [],
-            },
-          }
-        })
-
-        setNodes(updatedNodes)
-      } else {
-        const updatedEdges = edges.map((e) =>
-          e.source === id || e.target === id ? unhighlightEdge(e) : e,
-        )
-        setEdges(updatedEdges)
-
-        const updatedNodes = nodes.map((node) => ({
-          ...node,
-          data: {
-            ...node.data,
-            highlightedHandles: [],
-            isHighlighted: false,
-          },
-        }))
-        setNodes(updatedNodes)
-      }
-    },
-    [edges, nodes, setNodes, setEdges, activeNodeId, relationships],
-  )
+    setEdges(updatedEdges)
+    setNodes(updatedNodes)
+  }, [edges, nodes, setNodes, setEdges, activeTableName])
 
   const panOnDrag = [1, 2]
 
