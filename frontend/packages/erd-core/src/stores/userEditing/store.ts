@@ -1,12 +1,14 @@
 import type { QueryParam } from '@/schemas/queryParam'
 import type { ShowMode } from '@/schemas/showMode'
 import { proxy, subscribe } from 'valtio'
+import { proxySet } from 'valtio/utils'
 
 type UserEditingStore = {
   active: {
     tableName: string | undefined
   }
   showMode: ShowMode
+  hiddenNodeIds: Set<string>
 }
 
 export const userEditingStore = proxy<UserEditingStore>({
@@ -14,6 +16,7 @@ export const userEditingStore = proxy<UserEditingStore>({
     tableName: undefined,
   },
   showMode: 'TABLE_NAME',
+  hiddenNodeIds: proxySet<string>(),
 })
 
 subscribe(userEditingStore.active, () => {
