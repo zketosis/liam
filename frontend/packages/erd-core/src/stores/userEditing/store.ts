@@ -1,5 +1,6 @@
 import type { QueryParam } from '@/schemas/queryParam'
 import type { ShowMode } from '@/schemas/showMode'
+import { compressToUTF16 } from '@/utils'
 import { proxy, subscribe } from 'valtio'
 import { proxySet } from 'valtio/utils'
 
@@ -33,14 +34,15 @@ subscribe(userEditingStore.active, () => {
   window.history.pushState({}, '', url)
 })
 
-subscribe(userEditingStore.hiddenNodeIds, () => {
+subscribe(userEditingStore.hiddenNodeIds, async () => {
   const url = new URL(window.location.href)
   const activeQueryParam: QueryParam = 'hidden'
   const hiddenNodeIds = Array.from(userEditingStore.hiddenNodeIds).join(',')
 
   url.searchParams.delete(activeQueryParam)
   if (hiddenNodeIds) {
-    url.searchParams.set(activeQueryParam, hiddenNodeIds)
+    const compressed = await compressToUTF16(hiddenNodeIds)
+    url.searchParams.set(activeQueryParam, compressed)
   }
 
   window.history.pushState({}, '', url)
