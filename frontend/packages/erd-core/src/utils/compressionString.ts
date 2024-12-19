@@ -9,66 +9,106 @@ function createReadableStreamFromBytes(
   })
 }
 
-export async function compressToUTF16(input: string): Promise<string> {
-  const encoder = new TextEncoder()
-  const inputBytes = encoder.encode(input)
-
-  // Deflate compression
-  const compressionStream = new CompressionStream('deflate')
-  const compressedStream =
-    createReadableStreamFromBytes(inputBytes).pipeThrough(compressionStream)
-  const compressedBuffer = await new Response(compressedStream).arrayBuffer()
-  const compressedBytes = new Uint8Array(compressedBuffer)
-
-  // Store the length of the compressed bytes in the first 4 bytes
-  const length = compressedBytes.length
-  const totalLength = 4 + length // Store length in the first 4 bytes
-  // Align to 2-byte (UTF-16 code unit) boundary, add 1 byte padding if necessary
-  const paddedLength = totalLength % 2 === 0 ? totalLength : totalLength + 1
-
-  const resultBytes = new Uint8Array(paddedLength)
-  const dataView = new DataView(resultBytes.buffer)
-
-  // Store length information in the first 4 bytes (Little Endian)
-  dataView.setUint32(0, length, true)
-  // Store the compressed data after the first 4 bytes
-  resultBytes.set(compressedBytes, 4)
-
-  // Convert to Uint16Array to interpret as UTF-16 code units
-  const uint16Array = new Uint16Array(resultBytes.buffer)
-
-  // Convert each Uint16 element to a character
-  return String.fromCharCode(...Array.from(uint16Array))
+/**
+ * Perform Deflate compression and return a Uint8Array
+ */
+async function deflateCompress(inputBytes: Uint8Array): Promise<Uint8Array> {
+  const compression = new CompressionStream('deflate')
+  const stream =
+    createReadableStreamFromBytes(inputBytes).pipeThrough(compression)
+  const compressedBuffer = await new Response(stream).arrayBuffer()
+  return new Uint8Array(compressedBuffer)
 }
 
-export async function decompressFromUTF16(input: string): Promise<string> {
-  const decoder = new TextDecoder()
+/**
+ * Perform Deflate decompression and return a Uint8Array
+ */
+async function deflateDecompress(inputBytes: Uint8Array): Promise<Uint8Array> {
+  const decompression = new DecompressionStream('deflate')
+  const stream =
+    createReadableStreamFromBytes(inputBytes).pipeThrough(decompression)
+  const decompressedBuffer = await new Response(stream).arrayBuffer()
+  return new Uint8Array(decompressedBuffer)
+}
 
-  // Reconstruct Uint16Array from UTF-16 code units
-  const codeUnits = new Uint16Array(input.length)
-  for (let i = 0; i < input.length; i++) {
-    codeUnits[i] = input.charCodeAt(i)
+/**
+ * Encode byte array to Base64 string
+ */
+function bytesToBase64(bytes: Uint8Array): string {
+  let binaryString = ''
+  for (const b of Array.from(bytes)) {
+    binaryString += String.fromCharCode(b)
   }
+  return btoa(binaryString)
+}
 
-  // Reference Uint8Array from Uint16Array
-  const bytes = new Uint8Array(codeUnits.buffer)
-  const dataView = new DataView(bytes.buffer)
+/**
+ * Decode Base64 string to byte array
+ */
+function base64ToBytes(base64: string): Uint8Array {
+  const binaryString = atob(base64)
+  const length = binaryString.length
+  const bytes = new Uint8Array(length)
+  for (let i = 0; i < length; i++) {
+    bytes[i] = binaryString.charCodeAt(i)
+  }
+  return bytes
+}
 
-  // Get the actual length of the compressed data from the first 4 bytes
-  const length = dataView.getUint32(0, true)
+/**
+ * Convert Base64 string to URL-safe string (`+` => `-`, `/` => `_`, remove `=`)
+ */
+function base64ToUrlSafe(base64: string): string {
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
 
-  // Extract the compressed data part
-  const compressedBytes = bytes.subarray(4, 4 + length)
+/**
+ * Convert URL-safe string back to Base64
+ */
+function urlSafeToBase64(urlSafe: string): string {
+  let base64 = urlSafe.replace(/-/g, '+').replace(/_/g, '/')
+  while (base64.length % 4) {
+    base64 += '='
+  }
+  return base64
+}
 
-  // Decompress
-  const decompressionStream = new DecompressionStream('deflate')
-  const decompressedStream =
-    createReadableStreamFromBytes(compressedBytes).pipeThrough(
-      decompressionStream,
-    )
-  const decompressedBuffer = await new Response(
-    decompressedStream,
-  ).arrayBuffer()
+/**
+ * Compress string using Deflate and return as Base64
+ */
+async function compressToBase64(input: string): Promise<string> {
+  const textEncoder = new TextEncoder()
+  const inputBytes = textEncoder.encode(input)
+  const compressedBytes = await deflateCompress(inputBytes)
+  return bytesToBase64(compressedBytes)
+}
 
-  return decoder.decode(decompressedBuffer)
+/**
+ * Decompress Base64 string and return the original string
+ */
+async function decompressFromBase64(input: string): Promise<string> {
+  const textDecoder = new TextDecoder()
+  const compressedBytes = base64ToBytes(input)
+  const decompressedBytes = await deflateDecompress(compressedBytes)
+  return textDecoder.decode(decompressedBytes)
+}
+
+/**
+ * Compress string using Deflate and return as URL-safe encoded string (based on Base64)
+ */
+export async function compressToEncodedURIComponent(
+  input: string,
+): Promise<string> {
+  const base64 = await compressToBase64(input)
+  return base64ToUrlSafe(base64)
+}
+
+/**
+ * Restore original string from URL-safe encoded string
+ */
+export async function decompressFromEncodedURIComponent(
+  input: string,
+): Promise<string> {
+  const base64 = urlSafeToBase64(input)
+  return decompressFromBase64(base64)
 }

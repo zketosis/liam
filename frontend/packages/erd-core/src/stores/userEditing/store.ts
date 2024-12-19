@@ -1,6 +1,6 @@
 import type { QueryParam } from '@/schemas/queryParam'
 import type { ShowMode } from '@/schemas/showMode'
-import { compressToUTF16 } from '@/utils'
+import { compressToEncodedURIComponent } from '@/utils'
 import { proxy, subscribe } from 'valtio'
 import { proxySet } from 'valtio/utils'
 
@@ -41,7 +41,7 @@ subscribe(userEditingStore.hiddenNodeIds, async () => {
 
   url.searchParams.delete(activeQueryParam)
   if (hiddenNodeIds) {
-    const compressed = await compressToUTF16(hiddenNodeIds)
+    const compressed = await compressToEncodedURIComponent(hiddenNodeIds)
     url.searchParams.set(activeQueryParam, compressed)
   }
 

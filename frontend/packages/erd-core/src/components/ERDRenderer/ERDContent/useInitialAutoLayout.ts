@@ -1,6 +1,6 @@
 import type { QueryParam } from '@/schemas/queryParam'
 import { addHiddenNodeIds, updateActiveTableName } from '@/stores'
-import { decompressFromUTF16 } from '@/utils'
+import { decompressFromEncodedURIComponent } from '@/utils'
 import { useNodesInitialized } from '@xyflow/react'
 import { useEffect } from 'react'
 import { useERDContentContext } from './ERDContentContext'
@@ -19,7 +19,7 @@ const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
   const hiddenQueryParam: QueryParam = 'hidden'
   const compressed = urlParams.get(hiddenQueryParam)
   const hiddenNodeIds = compressed
-    ? await decompressFromUTF16(compressed).catch(() => undefined)
+    ? await decompressFromEncodedURIComponent(compressed).catch(() => undefined)
     : undefined
 
   return hiddenNodeIds ? hiddenNodeIds.split(',') : []
