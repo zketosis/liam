@@ -1,8 +1,4 @@
-import {
-  updateActiveTableName,
-  useDBStructureStore,
-  useUserEditingActiveStore,
-} from '@/stores'
+import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
@@ -68,7 +64,6 @@ export const ERDContentInner: FC<Props> = ({
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(_nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(_edges)
-  const { relationships } = useDBStructureStore()
   const {
     state: { loading },
   } = useERDContentContext()

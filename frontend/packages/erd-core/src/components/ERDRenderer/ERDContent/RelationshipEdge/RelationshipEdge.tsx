@@ -32,22 +32,18 @@ export const RelationshipEdge: FC<Props> = ({
         id={id}
         path={edgePath}
         markerStart={
-          data?.cardinality
-            ? data?.isHighlighted
-              ? 'url(#zeroOrOneRightHighlight)'
-              : 'url(#zeroOrOneRight)'
-            : ''
+          data?.isHighlighted
+            ? 'url(#zeroOrOneRightHighlight)'
+            : 'url(#zeroOrOneRight)'
         }
         markerEnd={
           data?.cardinality === 'ONE_TO_ONE'
             ? data?.isHighlighted
               ? 'url(#zeroOrOneLeftHighlight)'
               : 'url(#zeroOrOneLeft)'
-            : data?.cardinality === 'ONE_TO_MANY'
-              ? data?.isHighlighted
-                ? 'url(#zeroOrManyLeftHighlight)'
-                : 'url(#zeroOrManyLeft)'
-              : ''
+            : data?.isHighlighted
+              ? 'url(#zeroOrManyLeftHighlight)'
+              : 'url(#zeroOrManyLeft)'
         }
         className={clsx(styles.edge, data?.isHighlighted && styles.hovered)}
       />
