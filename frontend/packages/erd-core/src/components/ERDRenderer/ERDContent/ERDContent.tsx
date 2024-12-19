@@ -17,6 +17,7 @@ import { type FC, useCallback } from 'react'
 import { CardinalityMarkers } from './CardinalityMarkers'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
+import { NonRelatedTableGroupNode } from './NonRelatedTableGroupNode'
 import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
@@ -28,6 +29,7 @@ import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTab
 
 const nodeTypes = {
   table: TableNode,
+  nonRelatedTableGroup: NonRelatedTableGroupNode,
 }
 
 const edgeTypes = {
