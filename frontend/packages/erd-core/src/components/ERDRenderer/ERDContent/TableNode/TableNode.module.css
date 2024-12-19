@@ -12,7 +12,7 @@
   opacity: 0;
 }
 
-.wrapperHover,
+.wrapperHighlighted,
 .wrapper:hover {
   border: 1px solid var(--primary-accent);
   box-shadow: 0px 0px 20px 0px rgba(29, 237, 131, 0.4);

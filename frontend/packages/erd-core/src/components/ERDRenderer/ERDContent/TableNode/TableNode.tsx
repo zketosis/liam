@@ -22,15 +22,15 @@ export const TableNode: FC<Props> = ({ data }) => {
 
   const isActive = tableName === data.table.name
 
-  const isTableRelated =
-    data.isRelated ||
+  const isTableHighlighted =
+    data.isHighlighted ||
     isRelatedToTable(relationships, data.table.name, tableName)
 
   return (
     <div
       className={clsx(
         styles.wrapper,
-        isTableRelated && styles.wrapperHover,
+        isTableHighlighted && styles.wrapperHighlighted,
         isActive && styles.wrapperActive,
       )}
       data-erd="table-node"
