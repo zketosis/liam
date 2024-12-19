@@ -6,12 +6,13 @@ import {
   getSidebarStateFromCookie,
 } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
-import type { FC } from 'react'
+import { type FC, useCallback, useState } from 'react'
 import { AppBar } from './AppBar'
 import { ERDContent } from './ERDContent'
 import styles from './ERDRenderer.module.css'
 import { LeftPane } from './LeftPane'
 import '@/styles/globals.css'
+import { toggleLogEvent } from '@/features/gtm/utils'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
 // biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
 import { Toolbar } from './ERDContent/Toolbar'
@@ -20,6 +21,8 @@ import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 export const ERDRenderer: FC = () => {
   const defaultOpen = getSidebarStateFromCookie()
+  const [open, setOpen] = useState(defaultOpen)
+
   const { showMode } = useUserEditingStore()
   const dbStructure = useDBStructureStore()
   const { nodes, edges } = convertDBStructureToNodes({
@@ -27,11 +30,23 @@ export const ERDRenderer: FC = () => {
     showMode,
   })
 
+  const handleChangeOpen = useCallback((open: boolean) => {
+    setOpen(open)
+    toggleLogEvent({
+      element: 'leftPane',
+      isShow: open,
+    })
+  }, [])
+
   return (
     <div className={styles.wrapper}>
       <ToastProvider>
         <AppBar />
-        <SidebarProvider defaultOpen={defaultOpen}>
+        <SidebarProvider
+          open={open}
+          defaultOpen={defaultOpen}
+          onOpenChange={handleChangeOpen}
+        >
           <ReactFlowProvider>
             <div className={styles.mainWrapper}>
               <LeftPane />
