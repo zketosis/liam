@@ -1,3 +1,3 @@
 import { picklist } from 'valibot'
 
-export const queryParamSchema = picklist(['active'])
+export const queryParamSchema = picklist(['active', 'hidden'])

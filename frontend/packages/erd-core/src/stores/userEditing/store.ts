@@ -32,3 +32,16 @@ subscribe(userEditingStore.active, () => {
 
   window.history.pushState({}, '', url)
 })
+
+subscribe(userEditingStore.hiddenNodeIds, () => {
+  const url = new URL(window.location.href)
+  const activeQueryParam: QueryParam = 'hidden'
+  const hiddenNodeIds = Array.from(userEditingStore.hiddenNodeIds).join(',')
+
+  url.searchParams.delete(activeQueryParam)
+  if (hiddenNodeIds) {
+    url.searchParams.set(activeQueryParam, hiddenNodeIds)
+  }
+
+  window.history.pushState({}, '', url)
+})

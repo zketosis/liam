@@ -17,7 +17,7 @@ export const toggleHiddenNodeId = (nodeId: string) => {
   }
 }
 
-const addHiddenNodeIds = (nodeIds: string[]) => {
+export const addHiddenNodeIds = (nodeIds: string[]) => {
   for (const id of nodeIds) {
     userEditingStore.hiddenNodeIds.add(id)
   }
