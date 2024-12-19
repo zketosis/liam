@@ -1,3 +1,4 @@
+import { clickLogEvent } from '@/features/gtm/utils'
 import type { Table } from '@liam-hq/db-structure'
 import { DrawerClose, DrawerTitle, IconButton, XIcon } from '@liam-hq/ui'
 import type { FC } from 'react'
@@ -13,6 +14,12 @@ type Props = {
 }
 
 export const TableDetail: FC<Props> = ({ table }) => {
+  const handleDrawerClose = () => {
+    clickLogEvent({
+      element: 'closeTableDetailButton',
+    })
+  }
+
   return (
     <section className={styles.wrapper}>
       <div className={styles.header}>
@@ -20,7 +27,11 @@ export const TableDetail: FC<Props> = ({ table }) => {
           <h1 className={styles.heading}>{table.name}</h1>
         </DrawerTitle>
         <DrawerClose asChild>
-          <IconButton icon={<XIcon />} tooltipContent="Close" />
+          <IconButton
+            icon={<XIcon />}
+            tooltipContent="Close"
+            onClick={handleDrawerClose}
+          />
         </DrawerClose>
       </div>
       <div className={styles.body}>
