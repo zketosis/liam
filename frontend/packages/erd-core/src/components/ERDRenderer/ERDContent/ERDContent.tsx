@@ -16,9 +16,9 @@ import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
-import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
+import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTableChange'
 import { useUpdateNodeCardinalities } from './useUpdateNodeCardinalities'
 
 const nodeTypes = {
@@ -95,6 +95,7 @@ export const ERDContentInner: FC<Props> = ({
   const {
     state: { loading },
   } = useERDContentContext()
+  // TODO: remove activeNodeId state
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
 
   useUpdateNodeCardinalities(nodes, relationships, setNodes)
@@ -102,34 +103,17 @@ export const ERDContentInner: FC<Props> = ({
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
   )
+  useSyncHighlightsActiveTableChange()
 
-  const handleNodeClick = useCallback(
-    (nodeId: string) => {
-      setActiveNodeId(nodeId)
-      updateActiveTableName(nodeId)
-
-      const { nodes: updatedNodes, edges: updatedEdges } =
-        highlightNodesAndEdges(nodes, edges, nodeId)
-
-      setEdges(updatedEdges)
-      setNodes(updatedNodes)
-    },
-    [edges, nodes, setNodes, setEdges],
-  )
+  const handleNodeClick = useCallback((nodeId: string) => {
+    setActiveNodeId(nodeId)
+    updateActiveTableName(nodeId)
+  }, [])
 
   const handlePaneClick = useCallback(() => {
     setActiveNodeId(null)
     updateActiveTableName(undefined)
-
-    const { nodes: updatedNodes, edges: updatedEdges } = highlightNodesAndEdges(
-      nodes,
-      edges,
-      undefined,
-    )
-
-    setEdges(updatedEdges)
-    setNodes(updatedNodes)
-  }, [edges, nodes, setNodes, setEdges])
+  }, [])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
