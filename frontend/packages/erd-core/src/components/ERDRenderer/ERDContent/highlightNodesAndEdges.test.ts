@@ -182,5 +182,27 @@ describe(highlightNodesAndEdges, () => {
         ),
       ])
     })
+    it('When the users is hovered, the users and related edges are highlighted', () => {
+      const { edges: updatedEdges } = highlightNodesAndEdges(nodes, edges, {
+        hoverTableName: 'users',
+      })
+
+      expect(updatedEdges).toEqual([
+        anEdge('users', 'posts', 'users-id', 'posts-user_id', {
+          animated: true,
+          data: { isHighlighted: true },
+        }),
+        anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
+          animated: true,
+          data: { isHighlighted: true },
+        }),
+        anEdge(
+          'comments',
+          'comment_users',
+          'comments-id',
+          'comment_users-comment_id',
+        ),
+      ])
+    })
   })
 })

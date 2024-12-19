@@ -31,11 +31,11 @@ const isHoveredNode = (
   return node.data.table.name === hoverTableName
 }
 
-const isActivelyRelatedEdge = (
-  activeTableName: string | undefined,
+const isRelatedEdgeToTarget = (
+  targetTableName: string | undefined,
   edge: Edge,
 ): boolean => {
-  return edge.source === activeTableName || edge.target === activeTableName
+  return edge.source === targetTableName || edge.target === targetTableName
 }
 
 const getHighlightedHandlesForRelatedNode = (
@@ -158,7 +158,7 @@ export const highlightNodesAndEdges = (
   })
 
   const updatedEdges = edges.map((edge) => {
-    if (isActivelyRelatedEdge(activeTableName, edge)) {
+    if (isRelatedEdgeToTarget(activeTableName ?? hoverTableName, edge)) {
       return highlightEdge(edge)
     }
 
