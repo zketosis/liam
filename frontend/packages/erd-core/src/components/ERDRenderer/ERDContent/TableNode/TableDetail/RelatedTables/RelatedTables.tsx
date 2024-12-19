@@ -1,5 +1,5 @@
 import { convertDBStructureToNodes } from '@/components/ERDRenderer/convertDBStructureToNodes'
-import { OpenRelatedTablesLogEvent } from '@/features/gtm/utils'
+import { openRelatedTablesLogEvent } from '@/features/gtm/utils'
 import {
   replaceHiddenNodeIds,
   updateActiveTableName,
@@ -34,7 +34,7 @@ export const RelatedTables: FC<Props> = ({ table }) => {
 
     replaceHiddenNodeIds(hiddenNodeIds)
     updateActiveTableName(undefined)
-    OpenRelatedTablesLogEvent({
+    openRelatedTablesLogEvent({
       tableId: table.name,
     })
   }, [nodes, getNodes, table.name])
