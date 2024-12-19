@@ -24,6 +24,13 @@ const isActivelyRelatedNode = (
   return edgeMap.get(activeTableName)?.includes(node.data.table.name) ?? false
 }
 
+const isActivelyRelatedEdge = (
+  activeTableName: string | undefined,
+  edge: Edge,
+): boolean => {
+  return edge.source === activeTableName || edge.target === activeTableName
+}
+
 const getHighlightedHandlesForRelatedNode = (
   activeTableName: string | undefined,
   edges: Edge[],
@@ -87,6 +94,18 @@ const unhighlightNode = (node: TableNodeType): TableNodeType => ({
   },
 })
 
+const highlightEdge = (edge: Edge): Edge => ({
+  ...edge,
+  animated: true,
+  data: { ...edge.data, isHighlighted: true },
+})
+
+const unhighlightEdge = (edge: Edge): Edge => ({
+  ...edge,
+  animated: false,
+  data: { ...edge.data, isHighlighted: false },
+})
+
 export const highlightNodesAndEdges = (
   nodes: Node[],
   edges: Edge[],
@@ -123,5 +142,13 @@ export const highlightNodesAndEdges = (
     return unhighlightNode(node)
   })
 
-  return { nodes: updatedNodes, edges: [] }
+  const updatedEdges = edges.map((edge) => {
+    if (isActivelyRelatedEdge(activeTableName, edge)) {
+      return highlightEdge(edge)
+    }
+
+    return unhighlightEdge(edge)
+  })
+
+  return { nodes: updatedNodes, edges: updatedEdges }
 }

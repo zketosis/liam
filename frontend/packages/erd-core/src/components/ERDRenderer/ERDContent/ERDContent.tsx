@@ -108,19 +108,8 @@ export const ERDContentInner: FC<Props> = ({
       setActiveNodeId(nodeId)
       updateActiveTableName(nodeId)
 
-      const relatedEdges = edges.filter(
-        (e) => e.source === nodeId || e.target === nodeId,
-      )
-
-      const updatedEdges = edges.map((e) =>
-        relatedEdges.includes(e) ? highlightEdge(e) : unhighlightEdge(e),
-      )
-
-      const { nodes: updatedNodes } = highlightNodesAndEdges(
-        nodes,
-        edges,
-        nodeId,
-      )
+      const { nodes: updatedNodes, edges: updatedEdges } =
+        highlightNodesAndEdges(nodes, edges, nodeId)
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
@@ -132,9 +121,7 @@ export const ERDContentInner: FC<Props> = ({
     setActiveNodeId(null)
     updateActiveTableName(undefined)
 
-    const updatedEdges = edges.map(unhighlightEdge)
-
-    const { nodes: updatedNodes } = highlightNodesAndEdges(
+    const { nodes: updatedNodes, edges: updatedEdges } = highlightNodesAndEdges(
       nodes,
       edges,
       undefined,

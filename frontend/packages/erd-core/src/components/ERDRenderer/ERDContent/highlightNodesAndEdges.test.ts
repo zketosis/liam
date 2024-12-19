@@ -60,57 +60,111 @@ describe(highlightNodesAndEdges, () => {
     ),
   ]
 
-  it('When the users is active, the users and related tables are highlighted', () => {
-    const { nodes: updatedNodes } = highlightNodesAndEdges(
-      nodes,
-      edges,
-      'users',
-    )
+  describe('nodes', () => {
+    it('When the users is active, the users and related tables are highlighted', () => {
+      const { nodes: updatedNodes } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        'users',
+      )
 
-    expect(updatedNodes).toEqual([
-      aTableNode('users', {
-        data: aTableData('users', { isActiveHighlighted: true }),
-      }),
-      aTableNode('posts', {
-        data: aTableData('posts', {
-          isHighlighted: true,
-          highlightedHandles: ['posts-user_id'],
+      expect(updatedNodes).toEqual([
+        aTableNode('users', {
+          data: aTableData('users', { isActiveHighlighted: true }),
         }),
-      }),
-      aTableNode('comments'),
-      aTableNode('comment_users', {
-        data: aTableData('comment_users', {
-          isHighlighted: true,
-          highlightedHandles: ['comment_users-user_id'],
+        aTableNode('posts', {
+          data: aTableData('posts', {
+            isHighlighted: true,
+            highlightedHandles: ['posts-user_id'],
+          }),
         }),
-      }),
-    ])
+        aTableNode('comments'),
+        aTableNode('comment_users', {
+          data: aTableData('comment_users', {
+            isHighlighted: true,
+            highlightedHandles: ['comment_users-user_id'],
+          }),
+        }),
+      ])
+    })
+
+    it('When no active table, no tables are highlighted', () => {
+      const { nodes: updatedNodes } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        undefined,
+      )
+
+      expect(updatedNodes).toEqual([
+        aTableNode('users', {
+          data: aTableData('users', { isActiveHighlighted: false }),
+        }),
+        aTableNode('posts', {
+          data: aTableData('posts', {
+            isHighlighted: false,
+            highlightedHandles: [],
+          }),
+        }),
+        aTableNode('comments'),
+        aTableNode('comment_users', {
+          data: aTableData('comment_users', {
+            isHighlighted: false,
+            highlightedHandles: [],
+          }),
+        }),
+      ])
+    })
   })
 
-  it('When no active table, no tables are highlighted', () => {
-    const { nodes: updatedNodes } = highlightNodesAndEdges(
-      nodes,
-      edges,
-      undefined,
-    )
+  describe('edges', () => {
+    it('When the users is active, the users and related edges are highlighted', () => {
+      const { edges: updatedEdges } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        'users',
+      )
 
-    expect(updatedNodes).toEqual([
-      aTableNode('users', {
-        data: aTableData('users', { isActiveHighlighted: false }),
-      }),
-      aTableNode('posts', {
-        data: aTableData('posts', {
-          isHighlighted: false,
-          highlightedHandles: [],
+      expect(updatedEdges).toEqual([
+        anEdge('users', 'posts', 'users-id', 'posts-user_id', {
+          animated: true,
+          data: { isHighlighted: true },
         }),
-      }),
-      aTableNode('comments'),
-      aTableNode('comment_users', {
-        data: aTableData('comment_users', {
-          isHighlighted: false,
-          highlightedHandles: [],
+        anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
+          animated: true,
+          data: { isHighlighted: true },
         }),
-      }),
-    ])
+        anEdge(
+          'comments',
+          'comment_users',
+          'comments-id',
+          'comment_users-comment_id',
+        ),
+      ])
+    })
+
+    it('When no active table, no edges are highlighted', () => {
+      const { edges: updatedEdges } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        undefined,
+      )
+
+      expect(updatedEdges).toEqual([
+        anEdge('users', 'posts', 'users-id', 'posts-user_id', {
+          animated: false,
+          data: { isHighlighted: false },
+        }),
+        anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
+          animated: false,
+          data: { isHighlighted: false },
+        }),
+        anEdge(
+          'comments',
+          'comment_users',
+          'comments-id',
+          'comment_users-comment_id',
+        ),
+      ])
+    })
   })
 })
