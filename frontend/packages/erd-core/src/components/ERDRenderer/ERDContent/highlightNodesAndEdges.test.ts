@@ -61,7 +61,7 @@ describe(highlightNodesAndEdges, () => {
   ]
 
   describe('nodes', () => {
-    it('When the users is active, the users and related tables are highlighted', () => {
+    it('When the users is active, the users and related foreign tables are highlighted', () => {
       const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
         activeTableName: 'users',
       })
@@ -85,7 +85,25 @@ describe(highlightNodesAndEdges, () => {
         }),
       ])
     })
+    it('When the posts is active, the posts and related primary table are highlighted', () => {
+      const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: 'posts',
+      })
 
+      expect(updatedNodes).toEqual([
+        aTableNode('users', {
+          data: aTableData('users', {
+            isHighlighted: true,
+            highlightedHandles: ['users-id'],
+          }),
+        }),
+        aTableNode('posts', {
+          data: aTableData('posts', { isActiveHighlighted: true }),
+        }),
+        aTableNode('comments'),
+        aTableNode('comment_users'),
+      ])
+    })
     it('When no active table, no tables are highlighted', () => {
       const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
         activeTableName: undefined,
