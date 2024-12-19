@@ -1,3 +1,4 @@
+import { toggleLogEvent } from '@/features/gtm/utils'
 import { toggleHiddenNodeId } from '@/stores'
 import { Eye, EyeClosed, SidebarMenuAction } from '@liam-hq/ui'
 import { type FC, type MouseEvent, useCallback } from 'react'
@@ -13,8 +14,13 @@ export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
     (event: MouseEvent) => {
       event.stopPropagation()
       toggleHiddenNodeId(tableName)
+      toggleLogEvent({
+        element: 'tableNameMenuButton',
+        isShow: !!hidden,
+        tableId: tableName,
+      })
     },
-    [tableName],
+    [tableName, hidden],
   )
 
   return (
