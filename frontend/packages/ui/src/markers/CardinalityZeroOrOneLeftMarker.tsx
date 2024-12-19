@@ -16,7 +16,7 @@ export const CardinalityZeroOrOneLeftMarker: FC<MarkerProps> = ({
           viewBox="0 0 22 16"
           markerWidth="22"
           markerHeight="16"
-          refX="11"
+          refX="0"
           refY="8"
           orient="auto"
           {...props}

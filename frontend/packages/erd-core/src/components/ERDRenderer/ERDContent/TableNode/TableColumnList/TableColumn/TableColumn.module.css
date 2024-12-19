@@ -63,7 +63,7 @@
 
 .handle[data-handlepos='right'] {
   transform: translate(50%, 0%);
-  right: -20px;
+  right: -17px;
 }
 
 .handle[data-handlepos='left'] {
