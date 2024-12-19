@@ -3,7 +3,7 @@ import type { Edge } from '@xyflow/react'
 
 export type Data = {
   isHighlighted: boolean
-  cardinality: Cardinality | undefined
+  cardinality: Cardinality
 }
 
 export type RelationshipEdgeType = Edge<Data, 'relationship'>

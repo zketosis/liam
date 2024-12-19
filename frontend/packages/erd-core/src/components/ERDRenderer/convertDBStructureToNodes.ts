@@ -62,7 +62,7 @@ export const convertDBStructureToNodes = ({
         : columnHandleId(rel.foreignTableName, rel.foreignColumnName),
     data: {
       relationship: rel,
-      cardinality: showMode === 'ALL_FIELDS' ? rel.cardinality : undefined,
+      cardinality: rel.cardinality,
     },
   }))
 
