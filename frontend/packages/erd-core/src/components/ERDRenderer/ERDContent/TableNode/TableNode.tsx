@@ -36,15 +36,9 @@ export const TableNode: FC<Props> = ({ data }) => {
       data-erd="table-node"
     >
       <TableHeader data={data} />
-      {showMode === 'ALL_FIELDS' && (
-        <TableColumnList data={data} relationships={relationships} />
-      )}
+      {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
       {showMode === 'KEY_ONLY' && (
-        <TableColumnList
-          data={data}
-          filter="KEY_ONLY"
-          relationships={relationships}
-        />
+        <TableColumnList data={data} filter="KEY_ONLY" />
       )}
     </div>
   )
