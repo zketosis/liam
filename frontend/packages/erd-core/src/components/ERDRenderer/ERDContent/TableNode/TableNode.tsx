@@ -20,7 +20,8 @@ export const TableNode: FC<Props> = ({ data }) => {
     showMode,
   } = useUserEditingStore()
 
-  const isActive = tableName === data.table.name
+  // TODO: remove tableName and isRelatedToTable() from here
+  const isActive = data.isActiveHighlighted || tableName === data.table.name
 
   const isTableHighlighted =
     data.isHighlighted ||
