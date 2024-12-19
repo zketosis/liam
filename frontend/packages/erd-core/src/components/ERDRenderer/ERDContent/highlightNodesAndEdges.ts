@@ -158,7 +158,10 @@ export const highlightNodesAndEdges = (
   })
 
   const updatedEdges = edges.map((edge) => {
-    if (isRelatedEdgeToTarget(activeTableName ?? hoverTableName, edge)) {
+    if (
+      isRelatedEdgeToTarget(activeTableName, edge) ||
+      isRelatedEdgeToTarget(hoverTableName, edge)
+    ) {
       return highlightEdge(edge)
     }
 

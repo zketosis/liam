@@ -134,6 +134,33 @@ describe(highlightNodesAndEdges, () => {
         }),
       ])
     })
+    it('When the users is active, and the comments is hovered, then the users and comments and related tables are highlighted', () => {
+      const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: 'users',
+        hoverTableName: 'comments',
+      })
+
+      expect(updatedNodes).toEqual([
+        aTableNode('users', {
+          data: aTableData('users', { isActiveHighlighted: true }),
+        }),
+        aTableNode('posts', {
+          data: aTableData('posts', {
+            isHighlighted: true,
+            highlightedHandles: ['posts-user_id'],
+          }),
+        }),
+        aTableNode('comments', {
+          data: aTableData('comments', { isHighlighted: true }),
+        }),
+        aTableNode('comment_users', {
+          data: aTableData('comment_users', {
+            isHighlighted: true,
+            highlightedHandles: ['comment_users-user_id'],
+          }),
+        }),
+      ])
+    })
   })
 
   describe('edges', () => {
@@ -201,6 +228,33 @@ describe(highlightNodesAndEdges, () => {
           'comment_users',
           'comments-id',
           'comment_users-comment_id',
+        ),
+      ])
+    })
+    it('When the users is active, and the comments is hovered, then the users and comments and related edges are highlighted', () => {
+      const { edges: updatedEdges } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: 'users',
+        hoverTableName: 'comments',
+      })
+
+      expect(updatedEdges).toEqual([
+        anEdge('users', 'posts', 'users-id', 'posts-user_id', {
+          animated: true,
+          data: { isHighlighted: true },
+        }),
+        anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
+          animated: true,
+          data: { isHighlighted: true },
+        }),
+        anEdge(
+          'comments',
+          'comment_users',
+          'comments-id',
+          'comment_users-comment_id',
+          {
+            animated: true,
+            data: { isHighlighted: true },
+          },
         ),
       ])
     })
