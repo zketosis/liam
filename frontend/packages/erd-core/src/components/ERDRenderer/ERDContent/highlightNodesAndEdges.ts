@@ -1,9 +1,9 @@
 import type { Edge, Node } from '@xyflow/react'
 import { type TableNodeType, isTableNode } from './TableNode'
 
-type SourceTableName = string
 type TargetTableName = string
-type EdgeMap = Map<SourceTableName, TargetTableName[]>
+type RelatedTableName = string
+type EdgeMap = Map<TargetTableName, Set<RelatedTableName>>
 
 const isActiveNode = (
   activeTableName: string | undefined,
@@ -21,7 +21,7 @@ const isRelatedNodeToTarget = (
     return false
   }
 
-  return edgeMap.get(targetTableName)?.includes(node.data.table.name) ?? false
+  return edgeMap.get(targetTableName)?.has(node.data.table.name) ?? false
 }
 
 const isHoveredNode = (
@@ -127,9 +127,13 @@ export const highlightNodesAndEdges = (
     const sourceTableName = edge.source
     const targetTableName = edge.target
     if (!edgeMap.has(sourceTableName)) {
-      edgeMap.set(sourceTableName, [])
+      edgeMap.set(sourceTableName, new Set())
     }
-    edgeMap.get(sourceTableName)?.push(targetTableName)
+    if (!edgeMap.has(targetTableName)) {
+      edgeMap.set(targetTableName, new Set())
+    }
+    edgeMap.get(sourceTableName)?.add(targetTableName)
+    edgeMap.get(targetTableName)?.add(sourceTableName)
   }
 
   const updatedNodes = nodes.map((node) => {
