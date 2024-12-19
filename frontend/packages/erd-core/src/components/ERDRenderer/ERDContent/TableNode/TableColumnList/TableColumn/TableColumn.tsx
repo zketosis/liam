@@ -2,7 +2,7 @@ import type {
   Cardinality as CardinalityType,
   Column,
 } from '@liam-hq/db-structure'
-import { DiamondFillIcon, DiamondIcon, KeyRound } from '@liam-hq/ui'
+import { DiamondFillIcon, DiamondIcon, KeyRound, LinkIcon } from '@liam-hq/ui'
 import { Handle, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
@@ -35,26 +35,34 @@ export const TableColumn: FC<TableColumnProps> = ({
           className={styles.primaryKeyIcon}
           role="img"
           aria-label="Primary Key"
+          strokeWidth={1.5}
         />
       )}
-      {!column.primary &&
-        (column.notNull ? (
-          <DiamondFillIcon
-            width={16}
-            height={16}
-            className={styles.diamondIcon}
-            role="img"
-            aria-label="Not Null"
-          />
-        ) : (
-          <DiamondIcon
-            width={16}
-            height={16}
-            className={styles.diamondIcon}
-            role="img"
-            aria-label="Nullable"
-          />
-        ))}
+      {!column.primary && (isSource || targetCardinality) ? (
+        <LinkIcon
+          width={16}
+          height={16}
+          className={styles.linkIcon}
+          role="img"
+          aria-label="Foreign Key"
+        />
+      ) : !column.primary && column.notNull ? (
+        <DiamondFillIcon
+          width={16}
+          height={16}
+          className={styles.diamondIcon}
+          role="img"
+          aria-label="Not Null"
+        />
+      ) : !column.primary ? (
+        <DiamondIcon
+          width={16}
+          height={16}
+          className={styles.diamondIcon}
+          role="img"
+          aria-label="Nullable"
+        />
+      ) : null}
 
       <span className={styles.columnNameWrapper}>
         <span className={styles.columnName}>{column.name}</span>

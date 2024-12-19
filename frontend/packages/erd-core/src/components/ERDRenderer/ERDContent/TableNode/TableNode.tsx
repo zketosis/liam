@@ -37,6 +37,9 @@ export const TableNode: FC<Props> = ({ data }) => {
     >
       <TableHeader data={data} />
       {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
+      {showMode === 'KEY_ONLY' && (
+        <TableColumnList data={data} filter="KEY_ONLY" />
+      )}
     </div>
   )
 }
