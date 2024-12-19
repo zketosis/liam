@@ -5,11 +5,6 @@ import {
 } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
-  CardinalityZeroOrManyLeftMarker,
-  CardinalityZeroOrOneLeftMarker,
-  CardinalityZeroOrOneRightMarker,
-} from '@liam-hq/ui'
-import {
   Background,
   BackgroundVariant,
   type Edge,
@@ -20,6 +15,7 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
+import { CardinalityMarkers } from './CardinalityMarkers'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { RelationshipEdge } from './RelationshipEdge'
@@ -149,33 +145,7 @@ export const ERDContentInner: FC<Props> = ({
         selectionOnDrag
         deleteKeyCode={null} // Turn off because it does not want to be deleted
       >
-        <CardinalityZeroOrOneLeftMarker
-          id="zeroOrOneLeft"
-          color="var(--pane-border-hover)"
-        />
-        <CardinalityZeroOrOneLeftMarker
-          id="zeroOrOneLeftHighlight"
-          isHighlighted={true}
-          color="var(--node-layout)"
-        />
-        <CardinalityZeroOrOneRightMarker
-          id="zeroOrOneRight"
-          color="var(--pane-border-hover)"
-        />
-        <CardinalityZeroOrOneRightMarker
-          id="zeroOrOneRightHighlight"
-          isHighlighted={true}
-          color="var(--node-layout)"
-        />
-        <CardinalityZeroOrManyLeftMarker
-          id="zeroOrManyLeft"
-          color="var(--pane-border-hover)"
-        />
-        <CardinalityZeroOrManyLeftMarker
-          id="zeroOrManyLeftHighlight"
-          isHighlighted={true}
-          color="var(--node-layout)"
-        />
+        <CardinalityMarkers />
         <Background
           color="var(--color-gray-600)"
           variant={BackgroundVariant.Dots}
