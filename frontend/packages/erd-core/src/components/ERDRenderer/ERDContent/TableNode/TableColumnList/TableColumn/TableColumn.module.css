@@ -21,6 +21,10 @@
   color: var(--primary-accent);
 }
 
+.linkIcon {
+  color: var(--primary-accent);
+}
+
 .diamondIcon {
   color: var(--overlay-70);
 }
