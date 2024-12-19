@@ -1,3 +1,4 @@
+import { selectTableLogEvent } from '@/features/gtm/utils'
 import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
@@ -75,8 +76,9 @@ export const ERDContentInner: FC<Props> = ({
   )
   useSyncHighlightsActiveTableChange()
 
-  const handleNodeClick = useCallback((nodeId: string) => {
-    updateActiveTableName(nodeId)
+  const handleNodeClick = useCallback((tableId: string) => {
+    updateActiveTableName(tableId)
+    selectTableLogEvent({ ref: 'mainArea', tableId })
   }, [])
 
   const handlePaneClick = useCallback(() => {
