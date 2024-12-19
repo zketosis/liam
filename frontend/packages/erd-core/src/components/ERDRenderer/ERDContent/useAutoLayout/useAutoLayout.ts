@@ -11,12 +11,23 @@ export const useAutoLayout = () => {
   } = useERDContentContext()
 
   const handleLayout = useCallback(
-    async (fitViewOptions?: FitViewOptions) => {
+    async (
+      fitViewOptions: FitViewOptions = {},
+      initialHiddenNodeIds: string[] = [],
+    ) => {
       setLoading(true)
       const nodes = getNodes()
       const edges = getEdges()
-      const visibleNodes: Node[] = nodes.filter((node) => !node.hidden)
-      const hiddenNodes: Node[] = nodes.filter((node) => node.hidden)
+
+      const hiddenNodes: Node[] = []
+      const visibleNodes: Node[] = []
+      for (const node of nodes) {
+        if (initialHiddenNodeIds.includes(node.id) || node.hidden) {
+          hiddenNodes.push({ ...node, hidden: true })
+        } else {
+          visibleNodes.push(node)
+        }
+      }
 
       // NOTE: Only include edges where both the source and target are in the nodes
       const nodeMap = new Map(visibleNodes.map((node) => [node.id, node]))

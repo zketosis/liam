@@ -21,6 +21,7 @@ import { TableNode } from './TableNode'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
+import { useSyncHiddenNodesChange } from './useSyncHiddenNodesChange'
 import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTableChange'
 
 const nodeTypes = {
@@ -75,6 +76,7 @@ export const ERDContentInner: FC<Props> = ({
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
   )
   useSyncHighlightsActiveTableChange()
+  useSyncHiddenNodesChange()
 
   const handleNodeClick = useCallback((tableId: string) => {
     updateActiveTableName(tableId)

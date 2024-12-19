@@ -1,5 +1,9 @@
 import { convertDBStructureToNodes } from '@/components/ERDRenderer/convertDBStructureToNodes'
-import { updateActiveTableName, useDBStructureStore } from '@/stores'
+import {
+  replaceHiddenNodeIds,
+  updateActiveTableName,
+  useDBStructureStore,
+} from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
 import { GotoIcon, IconButton } from '@liam-hq/ui'
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
@@ -19,17 +23,17 @@ export const RelatedTables: FC<Props> = ({ table }) => {
     dbStructure: extractedDBStructure,
     showMode: 'TABLE_NAME',
   })
-  const { setNodes } = useReactFlow()
+  const { getNodes } = useReactFlow()
   const handleClick = useCallback(() => {
     const visibleNodeIds: string[] = nodes.map((node) => node.id)
-    setNodes((mainPaneNodes) => {
-      return mainPaneNodes.map((node) => ({
-        ...node,
-        hidden: !visibleNodeIds.includes(node.id),
-      }))
-    })
+    const mainPaneNodes = getNodes()
+    const hiddenNodeIds = mainPaneNodes
+      .filter((node) => !visibleNodeIds.includes(node.id))
+      .map((node) => node.id)
+
+    replaceHiddenNodeIds(hiddenNodeIds)
     updateActiveTableName(undefined)
-  }, [nodes, setNodes])
+  }, [nodes, getNodes])
 
   return (
     <div className={styles.wrapper}>
