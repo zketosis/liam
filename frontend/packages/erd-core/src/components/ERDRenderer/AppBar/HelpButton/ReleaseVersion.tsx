@@ -1,4 +1,4 @@
-import { CliVersionProvider, useCliVersion } from '@/providers'
+import { useCliVersion } from '@/providers'
 import type { FC } from 'react'
 import styles from './ReleaseVersion.module.css'
 
@@ -15,18 +15,16 @@ export const ReleaseVersion: FC = () => {
   // - "Released version" means the current Git hash matches a tagged release.
   // - "Unreleased version" includes a short Git hash prefix to indicate changes since the last release.
   return (
-    <CliVersionProvider cliVersion={cliVersion}>
-      <div className={styles.cliVersion}>
-        <div className={styles.cliVersionInner}>
-          <span>{`v${cliVersion.version}`}</span>
-          <span>
-            {' '}
-            {cliVersion.isReleasedGitHash ||
-              `+ ${cliVersion.gitHash.slice(0, 7)} `}
-          </span>
-          <span>{cliVersion.date.length > 0 && ` (${cliVersion.date})`}</span>
-        </div>
+    <div className={styles.cliVersion}>
+      <div className={styles.cliVersionInner}>
+        <span>{`v${cliVersion.version}`}</span>
+        <span>
+          {' '}
+          {cliVersion.isReleasedGitHash ||
+            `+ ${cliVersion.gitHash.slice(0, 7)} `}
+        </span>
+        <span>{cliVersion.date.length > 0 && ` (${cliVersion.date})`}</span>
       </div>
-    </CliVersionProvider>
+    </div>
   )
 }
