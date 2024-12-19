@@ -8,7 +8,6 @@ const aTableData = (name: string, override?: Partial<Data>): Data => ({
   table: aTable({ name }),
   isActiveHighlighted: false,
   isHighlighted: false,
-  highlightedHandles: [],
   sourceColumnName: undefined,
   ...override,
 })
@@ -73,14 +72,12 @@ describe(highlightNodesAndEdges, () => {
         aTableNode('posts', {
           data: aTableData('posts', {
             isHighlighted: true,
-            highlightedHandles: ['posts-user_id'],
           }),
         }),
         aTableNode('comments'),
         aTableNode('comment_users', {
           data: aTableData('comment_users', {
             isHighlighted: true,
-            highlightedHandles: ['comment_users-user_id'],
           }),
         }),
       ])
@@ -94,7 +91,6 @@ describe(highlightNodesAndEdges, () => {
         aTableNode('users', {
           data: aTableData('users', {
             isHighlighted: true,
-            highlightedHandles: ['users-id'],
           }),
         }),
         aTableNode('posts', {
@@ -116,14 +112,12 @@ describe(highlightNodesAndEdges, () => {
         aTableNode('posts', {
           data: aTableData('posts', {
             isHighlighted: false,
-            highlightedHandles: [],
           }),
         }),
         aTableNode('comments'),
         aTableNode('comment_users', {
           data: aTableData('comment_users', {
             isHighlighted: false,
-            highlightedHandles: [],
           }),
         }),
       ])
@@ -140,14 +134,12 @@ describe(highlightNodesAndEdges, () => {
         aTableNode('posts', {
           data: aTableData('posts', {
             isHighlighted: true,
-            highlightedHandles: ['posts-user_id'],
           }),
         }),
         aTableNode('comments'),
         aTableNode('comment_users', {
           data: aTableData('comment_users', {
             isHighlighted: true,
-            highlightedHandles: ['comment_users-user_id'],
           }),
         }),
       ])
@@ -165,7 +157,6 @@ describe(highlightNodesAndEdges, () => {
         aTableNode('posts', {
           data: aTableData('posts', {
             isHighlighted: true,
-            highlightedHandles: ['posts-user_id'],
           }),
         }),
         aTableNode('comments', {
@@ -174,7 +165,6 @@ describe(highlightNodesAndEdges, () => {
         aTableNode('comment_users', {
           data: aTableData('comment_users', {
             isHighlighted: true,
-            highlightedHandles: ['comment_users-user_id'],
           }),
         }),
       ])
