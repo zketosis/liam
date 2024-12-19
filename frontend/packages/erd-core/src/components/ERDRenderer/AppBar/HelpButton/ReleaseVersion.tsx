@@ -16,15 +16,12 @@ export const ReleaseVersion: FC = () => {
   // - "Unreleased version" includes a short Git hash prefix to indicate changes since the last release.
   return (
     <div className={styles.cliVersion}>
-      <div className={styles.cliVersionInner}>
-        <span>{`v${cliVersion.version}`}</span>
-        <span>
-          {' '}
-          {cliVersion.isReleasedGitHash ||
-            `+ ${cliVersion.gitHash.slice(0, 7)} `}
-        </span>
-        <span>{cliVersion.date.length > 0 && ` (${cliVersion.date})`}</span>
-      </div>
+      <span>{`v${cliVersion.version}`}</span>
+      <span>
+        {' '}
+        {cliVersion.isReleasedGitHash || `+ ${cliVersion.gitHash.slice(0, 7)} `}
+      </span>
+      <span>{cliVersion.date.length > 0 && ` (${cliVersion.date})`}</span>
     </div>
   )
 }

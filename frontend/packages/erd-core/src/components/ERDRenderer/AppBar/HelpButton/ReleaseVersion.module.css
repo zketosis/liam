@@ -1,8 +1,5 @@
 .cliVersion {
-  padding: var(--spacing-2);
-}
-
-.cliVersionInner {
+  margin: var(--spacing-2);
   border-radius: var(--border-radius-full);
   background: var(--pane-muted-background);
   padding: var(--spacing-1) var(--spacing-2);
