@@ -19,7 +19,7 @@ const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
   const hiddenQueryParam: QueryParam = 'hidden'
   const compressed = urlParams.get(hiddenQueryParam)
   const hiddenNodeIds = compressed
-    ? await decompressFromUTF16(compressed)
+    ? await decompressFromUTF16(compressed).catch(() => undefined)
     : undefined
 
   return hiddenNodeIds ? hiddenNodeIds.split(',') : []
