@@ -24,6 +24,25 @@ const isActivelyRelatedNode = (
   return edgeMap.get(activeTableName)?.includes(node.data.table.name) ?? false
 }
 
+const isHoveredNode = (
+  hoverTableName: string | undefined,
+  node: TableNodeType,
+): boolean => {
+  return node.data.table.name === hoverTableName
+}
+
+const isHoverRelatedNode = (
+  hoverTableName: string | undefined,
+  edgeMap: EdgeMap,
+  node: TableNodeType,
+): boolean => {
+  if (!hoverTableName) {
+    return false
+  }
+
+  return edgeMap.get(hoverTableName)?.includes(node.data.table.name) ?? false
+}
+
 const isActivelyRelatedEdge = (
   activeTableName: string | undefined,
   edge: Edge,
@@ -109,8 +128,12 @@ const unhighlightEdge = (edge: Edge): Edge => ({
 export const highlightNodesAndEdges = (
   nodes: Node[],
   edges: Edge[],
-  activeTableName?: string | undefined,
+  trigger: {
+    activeTableName?: string | undefined
+    hoverTableName?: string | undefined
+  },
 ): { nodes: Node[]; edges: Edge[] } => {
+  const { activeTableName, hoverTableName } = trigger
   const edgeMap: EdgeMap = new Map()
   for (const edge of edges) {
     const sourceTableName = edge.source
@@ -130,9 +153,13 @@ export const highlightNodesAndEdges = (
       return activeHighlightNode(node)
     }
 
-    if (isActivelyRelatedNode(activeTableName, edgeMap, node)) {
+    if (
+      isActivelyRelatedNode(activeTableName, edgeMap, node) ||
+      isHoveredNode(hoverTableName, node) ||
+      isHoverRelatedNode(hoverTableName, edgeMap, node)
+    ) {
       const highlightedHandles = getHighlightedHandlesForRelatedNode(
-        activeTableName,
+        activeTableName ?? hoverTableName,
         edges,
         node,
       )

@@ -62,11 +62,9 @@ describe(highlightNodesAndEdges, () => {
 
   describe('nodes', () => {
     it('When the users is active, the users and related tables are highlighted', () => {
-      const { nodes: updatedNodes } = highlightNodesAndEdges(
-        nodes,
-        edges,
-        'users',
-      )
+      const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: 'users',
+      })
 
       expect(updatedNodes).toEqual([
         aTableNode('users', {
@@ -89,11 +87,9 @@ describe(highlightNodesAndEdges, () => {
     })
 
     it('When no active table, no tables are highlighted', () => {
-      const { nodes: updatedNodes } = highlightNodesAndEdges(
-        nodes,
-        edges,
-        undefined,
-      )
+      const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: undefined,
+      })
 
       expect(updatedNodes).toEqual([
         aTableNode('users', {
@@ -114,15 +110,37 @@ describe(highlightNodesAndEdges, () => {
         }),
       ])
     })
+    it('When the users is hovered, the users and related tables are highlighted', () => {
+      const { nodes: updatedNodes } = highlightNodesAndEdges(nodes, edges, {
+        hoverTableName: 'users',
+      })
+
+      expect(updatedNodes).toEqual([
+        aTableNode('users', {
+          data: aTableData('users', { isHighlighted: true }),
+        }),
+        aTableNode('posts', {
+          data: aTableData('posts', {
+            isHighlighted: true,
+            highlightedHandles: ['posts-user_id'],
+          }),
+        }),
+        aTableNode('comments'),
+        aTableNode('comment_users', {
+          data: aTableData('comment_users', {
+            isHighlighted: true,
+            highlightedHandles: ['comment_users-user_id'],
+          }),
+        }),
+      ])
+    })
   })
 
   describe('edges', () => {
     it('When the users is active, the users and related edges are highlighted', () => {
-      const { edges: updatedEdges } = highlightNodesAndEdges(
-        nodes,
-        edges,
-        'users',
-      )
+      const { edges: updatedEdges } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: 'users',
+      })
 
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
@@ -143,11 +161,9 @@ describe(highlightNodesAndEdges, () => {
     })
 
     it('When no active table, no edges are highlighted', () => {
-      const { edges: updatedEdges } = highlightNodesAndEdges(
-        nodes,
-        edges,
-        undefined,
-      )
+      const { edges: updatedEdges } = highlightNodesAndEdges(nodes, edges, {
+        activeTableName: undefined,
+      })
 
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {

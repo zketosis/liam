@@ -21,7 +21,7 @@ export const useSyncHighlightsActiveTableChange = () => {
     const { nodes: updatedNodes, edges: updatedEdges } = highlightNodesAndEdges(
       nodes,
       edges,
-      tableName,
+      { activeTableName: tableName },
     )
 
     setEdges(updatedEdges)
