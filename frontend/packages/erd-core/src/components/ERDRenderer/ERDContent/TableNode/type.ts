@@ -5,7 +5,6 @@ export type Data = {
   table: Table
   isActiveHighlighted: boolean
   isHighlighted: boolean
-  highlightedHandles: string[]
   sourceColumnName: string | undefined
   targetColumnCardinalities?:
     | Record<string, Cardinality | undefined>

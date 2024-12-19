@@ -38,39 +38,6 @@ const isRelatedEdgeToTarget = (
   return edge.source === targetTableName || edge.target === targetTableName
 }
 
-const getHighlightedHandlesForRelatedNode = (
-  targetTableName: string | undefined,
-  edges: Edge[],
-  node: TableNodeType,
-): string[] => {
-  if (!targetTableName) {
-    return []
-  }
-
-  const handles: string[] = []
-  for (const edge of edges) {
-    if (
-      edge.targetHandle !== undefined &&
-      edge.targetHandle !== null &&
-      edge.source === targetTableName &&
-      edge.target === node.data.table.name
-    ) {
-      handles.push(edge.targetHandle)
-    }
-
-    if (
-      edge.sourceHandle !== undefined &&
-      edge.sourceHandle !== null &&
-      edge.source === node.data.table.name &&
-      edge.target === targetTableName
-    ) {
-      handles.push(edge.sourceHandle)
-    }
-  }
-
-  return handles
-}
-
 const activeHighlightNode = (node: TableNodeType): TableNodeType => ({
   ...node,
   data: {
@@ -79,15 +46,11 @@ const activeHighlightNode = (node: TableNodeType): TableNodeType => ({
   },
 })
 
-const highlightNode = (
-  node: TableNodeType,
-  handles: string[],
-): TableNodeType => ({
+const highlightNode = (node: TableNodeType): TableNodeType => ({
   ...node,
   data: {
     ...node.data,
     isHighlighted: true,
-    highlightedHandles: handles,
   },
 })
 
@@ -97,7 +60,6 @@ const unhighlightNode = (node: TableNodeType): TableNodeType => ({
     ...node.data,
     isActiveHighlighted: false,
     isHighlighted: false,
-    highlightedHandles: [],
   },
 })
 
@@ -150,12 +112,7 @@ export const highlightNodesAndEdges = (
       isHoveredNode(hoverTableName, node) ||
       isRelatedNodeToTarget(hoverTableName, edgeMap, node)
     ) {
-      const highlightedHandles = getHighlightedHandlesForRelatedNode(
-        activeTableName ?? hoverTableName,
-        edges,
-        node,
-      )
-      return highlightNode(node, highlightedHandles)
+      return highlightNode(node)
     }
 
     return unhighlightNode(node)
