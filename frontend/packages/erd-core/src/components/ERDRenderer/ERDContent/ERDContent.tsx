@@ -5,6 +5,11 @@ import {
 } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
+  CardinalityZeroOrManyLeftMarker,
+  CardinalityZeroOrOneLeftMarker,
+  CardinalityZeroOrOneRightMarker,
+} from '@liam-hq/ui'
+import {
   Background,
   BackgroundVariant,
   type Edge,
@@ -146,6 +151,30 @@ export const ERDContentInner: FC<Props> = ({
         selectionOnDrag
         deleteKeyCode={null} // Turn off because it does not want to be deleted
       >
+        <CardinalityZeroOrOneLeftMarker
+          id="zeroOrOneLeft"
+          color="var(--pane-border-hover)"
+        />
+        <CardinalityZeroOrOneLeftMarker
+          id="zeroOrOneLeftHighlight"
+          color="var(--node-layout)"
+        />
+        <CardinalityZeroOrOneRightMarker
+          id="zeroOrOneRight"
+          color="var(--pane-border-hover)"
+        />
+        <CardinalityZeroOrOneRightMarker
+          id="zeroOrOneRightHighlight"
+          color="var(--node-layout)"
+        />
+        <CardinalityZeroOrManyLeftMarker
+          id="zeroOrManyLeft"
+          color="var(--pane-border-hover)"
+        />
+        <CardinalityZeroOrManyLeftMarker
+          id="zeroOrManyLeftHighlight"
+          color="var(--node-layout)"
+        />
         <Background
           color="var(--color-gray-600)"
           variant={BackgroundVariant.Dots}
