@@ -157,6 +157,7 @@ export const ERDContentInner: FC<Props> = ({
         />
         <CardinalityZeroOrOneLeftMarker
           id="zeroOrOneLeftHighlight"
+          isHighlighted={true}
           color="var(--node-layout)"
         />
         <CardinalityZeroOrOneRightMarker
@@ -165,6 +166,7 @@ export const ERDContentInner: FC<Props> = ({
         />
         <CardinalityZeroOrOneRightMarker
           id="zeroOrOneRightHighlight"
+          isHighlighted={true}
           color="var(--node-layout)"
         />
         <CardinalityZeroOrManyLeftMarker
@@ -173,6 +175,7 @@ export const ERDContentInner: FC<Props> = ({
         />
         <CardinalityZeroOrManyLeftMarker
           id="zeroOrManyLeftHighlight"
+          isHighlighted={true}
           color="var(--node-layout)"
         />
         <Background

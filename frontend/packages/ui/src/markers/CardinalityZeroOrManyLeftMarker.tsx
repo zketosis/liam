@@ -2,10 +2,12 @@ import type { FC, SVGAttributes } from 'react'
 
 type MarkerProps = SVGAttributes<SVGMarkerElement> & {
   id: string
+  isHighlighted?: boolean
 }
 
 export const CardinalityZeroOrManyLeftMarker: FC<MarkerProps> = ({
   id,
+  isHighlighted,
   ...props
 }) => {
   return (
@@ -13,9 +15,9 @@ export const CardinalityZeroOrManyLeftMarker: FC<MarkerProps> = ({
       <defs>
         <marker
           id={id}
-          viewBox="0 0 22 16"
+          viewBox="0 -10 22 30"
           markerWidth="22"
-          markerHeight="16"
+          markerHeight="30"
           refX="0"
           refY="8"
           orient="auto"
@@ -37,6 +39,18 @@ export const CardinalityZeroOrManyLeftMarker: FC<MarkerProps> = ({
             d="M6.665 4.33C4.36473 4.33 2.5 6.19473 2.5 8.495C2.5 10.7953 4.36473 12.66 6.665 12.66C8.96527 12.66 10.83 10.7953 10.83 8.495C10.83 6.19473 8.96527 4.33 6.665 4.33ZM1.5 8.495C1.5 5.64245 3.81245 3.33 6.665 3.33C9.51755 3.33 11.83 5.64245 11.83 8.495C11.83 11.3476 9.51755 13.66 6.665 13.66C3.81245 13.66 1.5 11.3476 1.5 8.495Z"
             fill="currentColor"
           />
+          {isHighlighted && (
+            <text
+              x="6"
+              y="-9"
+              textAnchor="middle"
+              fontSize="9"
+              fill="currentColor"
+              dominantBaseline="hanging"
+            >
+              n
+            </text>
+          )}
         </marker>
       </defs>
     </svg>
