@@ -1,4 +1,5 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
+import { useCliVersion } from '@/providers'
 import { useUserEditingStore } from '@/stores'
 import { IconButton, Minus, Plus } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
@@ -10,24 +11,27 @@ export const ZoomControls: FC = () => {
   const zoomLevel = useStore((store) => store.transform[2])
   const { zoomIn, zoomOut } = useReactFlow()
   const { showMode } = useUserEditingStore()
+  const { cliVersion } = useCliVersion()
 
   const handleClickZoomOut = useCallback(() => {
     toolbarActionLogEvent({
       element: 'zoom',
       zoomLevel: zoomLevel.toFixed(2),
       showMode,
+      cliVer: cliVersion.version,
     })
     zoomOut()
-  }, [zoomOut, zoomLevel, showMode])
+  }, [zoomOut, zoomLevel, showMode, cliVersion.version])
 
   const handleClickZoomIn = useCallback(() => {
     toolbarActionLogEvent({
       element: 'zoom',
       zoomLevel: zoomLevel.toFixed(2),
       showMode: showMode,
+      cliVer: cliVersion.version,
     })
     zoomIn()
-  }, [zoomIn, zoomLevel, showMode])
+  }, [zoomIn, zoomLevel, showMode, cliVersion.version])
 
   return (
     <div className={styles.wrapper}>

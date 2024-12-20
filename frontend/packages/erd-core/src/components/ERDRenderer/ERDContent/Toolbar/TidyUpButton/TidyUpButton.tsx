@@ -1,4 +1,5 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
+import { useCliVersion } from '@/providers'
 import { useUserEditingStore } from '@/stores'
 import { IconButton, TidyUpIcon } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
@@ -8,13 +9,15 @@ import { useAutoLayout } from '../../useAutoLayout'
 export const TidyUpButton: FC = () => {
   const { handleLayout } = useAutoLayout()
   const { showMode } = useUserEditingStore()
+  const { cliVersion } = useCliVersion()
   const handleClick = useCallback(() => {
     toolbarActionLogEvent({
       element: 'tidyUp',
       showMode,
+      cliVer: cliVersion.version,
     })
     handleLayout()
-  }, [handleLayout, showMode])
+  }, [handleLayout, showMode, cliVersion.version])
 
   return (
     <ToolbarButton asChild>

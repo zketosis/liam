@@ -13,6 +13,7 @@ import styles from './ERDRenderer.module.css'
 import { LeftPane } from './LeftPane'
 import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
+import { useCliVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
 // biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
 import { Toolbar } from './ERDContent/Toolbar'
@@ -30,13 +31,18 @@ export const ERDRenderer: FC = () => {
     showMode,
   })
 
-  const handleChangeOpen = useCallback((open: boolean) => {
-    setOpen(open)
-    toggleLogEvent({
-      element: 'leftPane',
-      isShow: open,
-    })
-  }, [])
+  const { cliVersion } = useCliVersion()
+  const handleChangeOpen = useCallback(
+    (open: boolean) => {
+      setOpen(open)
+      toggleLogEvent({
+        element: 'leftPane',
+        isShow: open,
+        cliVer: cliVersion.version,
+      })
+    },
+    [cliVersion.version],
+  )
 
   return (
     <div className={styles.wrapper}>
