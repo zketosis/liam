@@ -36,6 +36,7 @@ const anEdge = (
   target,
   targetHandle,
   animated: false,
+  zIndex: 0,
   data: { isHighlighted: false, ...override?.data },
   ...override,
 })
@@ -180,10 +181,12 @@ describe(highlightNodesAndEdges, () => {
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
           animated: true,
+          zIndex: 1,
           data: { isHighlighted: true },
         }),
         anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
           animated: true,
+          zIndex: 1,
           data: { isHighlighted: true },
         }),
         anEdge(
@@ -201,14 +204,14 @@ describe(highlightNodesAndEdges, () => {
       })
 
       expect(updatedEdges).toEqual([
-        anEdge('users', 'posts', 'users-id', 'posts-user_id', {
-          animated: false,
-          data: { isHighlighted: false },
-        }),
-        anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
-          animated: false,
-          data: { isHighlighted: false },
-        }),
+        anEdge('users', 'posts', 'users-id', 'posts-user_id', {}),
+        anEdge(
+          'users',
+          'comment_users',
+          'users-id',
+          'comment_users-user_id',
+          {},
+        ),
         anEdge(
           'comments',
           'comment_users',
@@ -225,10 +228,12 @@ describe(highlightNodesAndEdges, () => {
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
           animated: true,
+          zIndex: 1,
           data: { isHighlighted: true },
         }),
         anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
           animated: true,
+          zIndex: 1,
           data: { isHighlighted: true },
         }),
         anEdge(
@@ -248,10 +253,12 @@ describe(highlightNodesAndEdges, () => {
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
           animated: true,
+          zIndex: 1,
           data: { isHighlighted: true },
         }),
         anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
           animated: true,
+          zIndex: 1,
           data: { isHighlighted: true },
         }),
         anEdge(
@@ -261,6 +268,7 @@ describe(highlightNodesAndEdges, () => {
           'comment_users-comment_id',
           {
             animated: true,
+            zIndex: 1,
             data: { isHighlighted: true },
           },
         ),
