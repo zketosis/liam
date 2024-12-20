@@ -1,4 +1,5 @@
 import { clickLogEvent } from '@/features/gtm/utils'
+import { useCliVersion } from '@/providers'
 import {
   Button,
   TooltipContent,
@@ -12,6 +13,7 @@ import { type FC, useCallback } from 'react'
 
 export const CopyLinkButton: FC = () => {
   const toast = useToast()
+  const { cliVersion } = useCliVersion()
   const handleCopyUrl = useCallback(() => {
     navigator.clipboard
       .writeText(window.location.href)
@@ -31,8 +33,9 @@ export const CopyLinkButton: FC = () => {
 
     clickLogEvent({
       element: 'copyLinkButton',
+      cliVer: cliVersion.version,
     })
-  }, [toast])
+  }, [toast, cliVersion.version])
 
   return (
     <TooltipProvider>
