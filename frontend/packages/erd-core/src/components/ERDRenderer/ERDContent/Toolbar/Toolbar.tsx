@@ -4,7 +4,6 @@ import { FitviewButton } from './FitviewButton'
 import { ShowModeMenu } from './ShowModeMenu'
 import { TidyUpButton } from './TidyUpButton'
 import styles from './Toolbar.module.css'
-import { ViewControlButton } from './ViewControlButton'
 import { ZoomControls } from './ZoomControls'
 
 export const Toolbar: FC = () => {
@@ -15,7 +14,8 @@ export const Toolbar: FC = () => {
       <div className={styles.buttons}>
         <FitviewButton />
         <TidyUpButton />
-        <ViewControlButton />
+        {/* TODO: enable once implemented */}
+        {/* <ViewControlButton /> */}
       </div>
       <ToolbarPrimitive.Separator className={styles.separator} />
       <ShowModeMenu />
