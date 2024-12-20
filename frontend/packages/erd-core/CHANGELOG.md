@@ -1,5 +1,23 @@
 # @liam-hq/erd-core
 
+## 0.0.8
+
+### Patch Changes
+
+- e2d2c06: 🐛 bug-fix: Highlight source cardinality with multi-foreign keys
+- 90ccd89: refactor: Update handleLayout to accept nodes and improve hidden node handling
+- 486286a: 📈 : Add open related tables log event
+- 0a129c2: ✨ Enhance node conversion functions to support hierarchical structure and layout options for NonRelatedTableGroup nodes
+- fb03451: 📈 Add cliVer parameter to log event functions and component.s
+- 704f606: :chart_with_upwards_trend: add type for reposition table logging
+- b63e2da: fix: Render CardinalityMarkers based on loading state
+- ee77b3f: Show column types in table nodes when the table is highlighted
+- 116365d: 📈 Add appEnv parameter to logging events for environment tracking
+- 54d6ca9: ✨ Add NonRelatedTableGroupNode component with styling
+- 582ac0e: 📈 Add click logging for toolbar actions and include show mode in event data
+- bc2118d: 🐛 Fixed problem with active tables not being highlighted in LeftPane when opened via query parameter
+- d0a27e0: maintenance: Add GitHub Release Link and Disable some features
+
 ## 0.0.7
 
 ### Patch Changes

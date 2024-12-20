@@ -1,6 +1,6 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { useCliVersion } from '@/providers'
-import { updateActiveTableName, useUserEditingStore } from '@/stores'
+import { updateActiveTableName } from '@/stores'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import clsx from 'clsx'
 import type { FC } from 'react'
@@ -13,9 +13,6 @@ type Props = {
 }
 
 export const TableNameMenuButton: FC<Props> = ({ node }) => {
-  const {
-    active: { tableName },
-  } = useUserEditingStore()
   const name = node.data.table.name
 
   // TODO: Move handleClickMenuButton outside of TableNameMenuButton
@@ -27,13 +24,17 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
       ref: 'leftPane',
       tableId,
       cliVer: cliVersion.version,
+      appEnv: cliVersion.envName,
     })
   }
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        className={clsx(styles.button, name === tableName && styles.active)}
+        className={clsx(
+          styles.button,
+          node.data.isActiveHighlighted && styles.active,
+        )}
         asChild
       >
         <div
