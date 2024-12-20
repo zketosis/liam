@@ -28,6 +28,7 @@ loadSchemaContent()
 const cliVersionData = {
   version: import.meta.env.VITE_CLI_VERSION_VERSION,
   gitHash: import.meta.env.VITE_CLI_VERSION_GIT_HASH,
+  envName: import.meta.env.VITE_CLI_VERSION_ENV_NAME,
   isReleasedGitHash:
     import.meta.env.VITE_CLI_VERSION_IS_RELEASED_GIT_HASH === '1',
   date: import.meta.env.VITE_CLI_VERSION_DATE,
