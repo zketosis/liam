@@ -1,4 +1,5 @@
 import type { Edge, Node } from '@xyflow/react'
+import { zIndex } from '../constants'
 import { type TableNodeType, isTableNode } from './TableNode'
 
 type TargetTableName = string
@@ -66,12 +67,14 @@ const unhighlightNode = (node: TableNodeType): TableNodeType => ({
 const highlightEdge = (edge: Edge): Edge => ({
   ...edge,
   animated: true,
+  zIndex: zIndex.edgeHighlighted,
   data: { ...edge.data, isHighlighted: true },
 })
 
 const unhighlightEdge = (edge: Edge): Edge => ({
   ...edge,
   animated: false,
+  zIndex: zIndex.edgeDefault,
   data: { ...edge.data, isHighlighted: false },
 })
 
