@@ -11,7 +11,7 @@ export const TidyUpButton: FC = () => {
   const handleClick = useCallback(() => {
     toolbarActionLogEvent({
       element: 'tidyUp',
-      showMode: showMode,
+      showMode,
     })
     handleLayout()
   }, [handleLayout, showMode])

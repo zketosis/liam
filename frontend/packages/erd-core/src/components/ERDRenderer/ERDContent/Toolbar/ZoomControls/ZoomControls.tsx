@@ -15,7 +15,7 @@ export const ZoomControls: FC = () => {
     toolbarActionLogEvent({
       element: 'zoom',
       zoomLevel: zoomLevel.toFixed(2),
-      showMode: showMode,
+      showMode,
     })
     zoomOut()
   }, [zoomOut, zoomLevel, showMode])

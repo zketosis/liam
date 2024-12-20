@@ -12,7 +12,7 @@ export const FitviewButton: FC = () => {
   const handleClick = useCallback(() => {
     toolbarActionLogEvent({
       element: 'fitview',
-      showMode: showMode,
+      showMode,
     })
     fitView()
   }, [fitView, showMode])
