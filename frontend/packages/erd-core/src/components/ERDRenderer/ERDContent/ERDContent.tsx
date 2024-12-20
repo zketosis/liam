@@ -1,5 +1,6 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
+import { useCliVersion } from '@/providers'
 import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
 import type { Relationships } from '@liam-hq/db-structure'
 import {
@@ -80,10 +81,18 @@ export const ERDContentInner: FC<Props> = ({
   useSyncHighlightsActiveTableChange()
   useSyncHiddenNodesChange()
 
-  const handleNodeClick = useCallback((tableId: string) => {
-    updateActiveTableName(tableId)
-    selectTableLogEvent({ ref: 'mainArea', tableId })
-  }, [])
+  const { cliVersion } = useCliVersion()
+  const handleNodeClick = useCallback(
+    (tableId: string) => {
+      updateActiveTableName(tableId)
+      selectTableLogEvent({
+        ref: 'mainArea',
+        tableId,
+        cliVer: cliVersion.version,
+      })
+    },
+    [cliVersion.version],
+  )
 
   const handlePaneClick = useCallback(() => {
     updateActiveTableName(undefined)
@@ -122,10 +131,14 @@ export const ERDContentInner: FC<Props> = ({
       const operationId = `id_${new Date().getTime()}`
       for (const node of nodes) {
         const tableId = node.id
-        repositionTableLogEvent({ tableId, operationId })
+        repositionTableLogEvent({
+          tableId,
+          operationId,
+          cliVer: cliVersion.version,
+        })
       }
     },
-    [],
+    [cliVersion.version],
   )
 
   const panOnDrag = [1, 2]

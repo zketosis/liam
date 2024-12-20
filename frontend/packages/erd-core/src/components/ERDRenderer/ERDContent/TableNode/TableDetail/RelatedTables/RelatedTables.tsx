@@ -1,5 +1,6 @@
 import { convertDBStructureToNodes } from '@/components/ERDRenderer/convertDBStructureToNodes'
 import { openRelatedTablesLogEvent } from '@/features/gtm/utils'
+import { useCliVersion } from '@/providers'
 import {
   replaceHiddenNodeIds,
   updateActiveTableName,
@@ -25,6 +26,7 @@ export const RelatedTables: FC<Props> = ({ table }) => {
     showMode: 'TABLE_NAME',
   })
   const { getNodes } = useReactFlow()
+  const { cliVersion } = useCliVersion()
   const handleClick = useCallback(() => {
     const visibleNodeIds: string[] = nodes.map((node) => node.id)
     const mainPaneNodes = getNodes()
@@ -36,8 +38,9 @@ export const RelatedTables: FC<Props> = ({ table }) => {
     updateActiveTableName(undefined)
     openRelatedTablesLogEvent({
       tableId: table.name,
+      cliVer: cliVersion.version,
     })
-  }, [nodes, getNodes, table.name])
+  }, [nodes, getNodes, table.name, cliVersion.version])
 
   return (
     <div className={styles.wrapper}>

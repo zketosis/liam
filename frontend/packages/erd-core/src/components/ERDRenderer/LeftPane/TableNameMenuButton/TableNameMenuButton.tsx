@@ -1,4 +1,5 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
+import { useCliVersion } from '@/providers'
 import { updateActiveTableName, useUserEditingStore } from '@/stores'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import clsx from 'clsx'
@@ -6,11 +7,6 @@ import type { FC } from 'react'
 import type { TableNodeType } from '../../ERDContent'
 import styles from './TableNameMenuButton.module.css'
 import { VisibilityButton } from './VisibilityButton'
-
-const handleClickMenuButton = (tableId: string) => () => {
-  updateActiveTableName(tableId)
-  selectTableLogEvent({ ref: 'leftPane', tableId })
-}
 
 type Props = {
   node: TableNodeType
@@ -21,6 +17,18 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
     active: { tableName },
   } = useUserEditingStore()
   const name = node.data.table.name
+
+  // TODO: Move handleClickMenuButton outside of TableNameMenuButton
+  // after logging is complete
+  const { cliVersion } = useCliVersion()
+  const handleClickMenuButton = (tableId: string) => () => {
+    updateActiveTableName(tableId)
+    selectTableLogEvent({
+      ref: 'leftPane',
+      tableId,
+      cliVer: cliVersion.version,
+    })
+  }
 
   return (
     <SidebarMenuItem>
