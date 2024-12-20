@@ -5,6 +5,7 @@ type ToolbarActionLogEvent = {
   zoomLevel?: string
   showMode?: string
   cliVer: string
+  appEnv: string
 }
 
 export const toolbarActionLogEvent = ({
@@ -12,6 +13,7 @@ export const toolbarActionLogEvent = ({
   zoomLevel,
   showMode,
   cliVer,
+  appEnv,
 }: ToolbarActionLogEvent) => {
   pushToDataLayer({
     event: 'toolbarAction',
@@ -19,5 +21,6 @@ export const toolbarActionLogEvent = ({
     zoomLevel,
     showMode,
     cliVer,
+    appEnv,
   })
 }
