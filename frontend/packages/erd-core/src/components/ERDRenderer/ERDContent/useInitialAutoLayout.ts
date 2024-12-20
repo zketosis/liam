@@ -49,16 +49,20 @@ export const useInitialAutoLayout = (nodes: Node[]) => {
       updateActiveTableName(tableNameFromUrl)
       const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
       addHiddenNodeIds(hiddenNodeIds)
+      const appliedNodes = nodes.map((node) => ({
+        ...node,
+        hidden: hiddenNodeIds.includes(node.id),
+      }))
 
       const fitViewOptions = tableNameFromUrl
         ? { maxZoom: 1, duration: 300, nodes: [{ id: tableNameFromUrl }] }
         : undefined
 
       if (tableNodesInitialized) {
-        handleLayout(fitViewOptions, hiddenNodeIds)
+        handleLayout(appliedNodes, fitViewOptions)
       }
     }
 
     initialize()
-  }, [tableNodesInitialized, initializeComplete, handleLayout])
+  }, [tableNodesInitialized, initializeComplete, handleLayout, nodes])
 }

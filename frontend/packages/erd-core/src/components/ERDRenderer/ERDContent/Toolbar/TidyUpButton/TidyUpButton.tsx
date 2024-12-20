@@ -3,10 +3,12 @@ import { useCliVersion } from '@/providers'
 import { useUserEditingStore } from '@/stores'
 import { IconButton, TidyUpIcon } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
+import { useReactFlow } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
 import { useAutoLayout } from '../../useAutoLayout'
 
 export const TidyUpButton: FC = () => {
+  const { getNodes } = useReactFlow()
   const { handleLayout } = useAutoLayout()
   const { showMode } = useUserEditingStore()
   const { cliVersion } = useCliVersion()
@@ -16,8 +18,8 @@ export const TidyUpButton: FC = () => {
       showMode,
       cliVer: cliVersion.version,
     })
-    handleLayout()
-  }, [handleLayout, showMode, cliVersion.version])
+    handleLayout(getNodes())
+  }, [handleLayout, showMode, getNodes, cliVersion.version])
 
   return (
     <ToolbarButton asChild>
