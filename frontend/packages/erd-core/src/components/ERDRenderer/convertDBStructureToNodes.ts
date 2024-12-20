@@ -43,7 +43,7 @@ export const convertDBStructureToNodes = ({
         targetColumnCardinalities: tableColumnCardinalities.get(table.name),
       },
       position: { x: 0, y: 0 },
-      zIndex: 1,
+      zIndex: 2,
     }
   })
 

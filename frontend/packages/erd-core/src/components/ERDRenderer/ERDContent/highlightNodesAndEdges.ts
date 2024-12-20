@@ -66,12 +66,14 @@ const unhighlightNode = (node: TableNodeType): TableNodeType => ({
 const highlightEdge = (edge: Edge): Edge => ({
   ...edge,
   animated: true,
+  zIndex: 1,
   data: { ...edge.data, isHighlighted: true },
 })
 
 const unhighlightEdge = (edge: Edge): Edge => ({
   ...edge,
   animated: false,
+  zIndex: 0,
   data: { ...edge.data, isHighlighted: false },
 })
 
