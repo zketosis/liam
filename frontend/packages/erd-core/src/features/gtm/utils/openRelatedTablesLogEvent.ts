@@ -8,7 +8,7 @@ export const openRelatedTablesLogEvent = ({
   tableId,
 }: OpenRelatedTablesLogEvent) => {
   pushToDataLayer({
-    event: 'open_related_tables',
+    event: 'openRelatedTables',
     tableId,
   })
 }
