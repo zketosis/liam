@@ -158,7 +158,7 @@ export const ERDContentInner: FC<Props> = ({
         selectionOnDrag
         deleteKeyCode={null} // Turn off because it does not want to be deleted
       >
-        <CardinalityMarkers />
+        {!loading && <CardinalityMarkers />}
         <Background
           color="var(--color-gray-600)"
           variant={BackgroundVariant.Dots}
