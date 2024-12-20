@@ -2,7 +2,7 @@ import type { ShowMode } from '@/schemas/showMode'
 import type { Cardinality, DBStructure } from '@liam-hq/db-structure'
 import type { Edge, Node } from '@xyflow/react'
 import { columnHandleId } from './columnHandleId'
-import { Z_INDEX } from './constants'
+import { zIndex } from './constants'
 
 type Params = {
   dbStructure: DBStructure
@@ -44,7 +44,7 @@ export const convertDBStructureToNodes = ({
         targetColumnCardinalities: tableColumnCardinalities.get(table.name),
       },
       position: { x: 0, y: 0 },
-      zIndex: Z_INDEX.NODE_DEFAULT,
+      zIndex: zIndex.nodeDefault,
     }
   })
 

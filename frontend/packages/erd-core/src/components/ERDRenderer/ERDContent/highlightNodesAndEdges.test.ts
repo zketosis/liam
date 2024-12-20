@@ -1,7 +1,7 @@
 import { aTable } from '@liam-hq/db-structure'
 import type { Edge } from '@xyflow/react'
 import { describe, expect, it } from 'vitest'
-import { Z_INDEX } from '../constants'
+import { zIndex } from '../constants'
 import type { Data, TableNodeType } from './TableNode'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 
@@ -37,7 +37,7 @@ const anEdge = (
   target,
   targetHandle,
   animated: false,
-  zIndex: Z_INDEX.EDGE_DEFAULT,
+  zIndex: zIndex.edgeDefault,
   data: { isHighlighted: false, ...override?.data },
   ...override,
 })
@@ -182,12 +182,12 @@ describe(highlightNodesAndEdges, () => {
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
           animated: true,
-          zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+          zIndex: zIndex.edgeHighlighted,
           data: { isHighlighted: true },
         }),
         anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
           animated: true,
-          zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+          zIndex: zIndex.edgeHighlighted,
           data: { isHighlighted: true },
         }),
         anEdge(
@@ -229,12 +229,12 @@ describe(highlightNodesAndEdges, () => {
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
           animated: true,
-          zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+          zIndex: zIndex.edgeHighlighted,
           data: { isHighlighted: true },
         }),
         anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
           animated: true,
-          zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+          zIndex: zIndex.edgeHighlighted,
           data: { isHighlighted: true },
         }),
         anEdge(
@@ -254,12 +254,12 @@ describe(highlightNodesAndEdges, () => {
       expect(updatedEdges).toEqual([
         anEdge('users', 'posts', 'users-id', 'posts-user_id', {
           animated: true,
-          zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+          zIndex: zIndex.edgeHighlighted,
           data: { isHighlighted: true },
         }),
         anEdge('users', 'comment_users', 'users-id', 'comment_users-user_id', {
           animated: true,
-          zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+          zIndex: zIndex.edgeHighlighted,
           data: { isHighlighted: true },
         }),
         anEdge(
@@ -269,7 +269,7 @@ describe(highlightNodesAndEdges, () => {
           'comment_users-comment_id',
           {
             animated: true,
-            zIndex: Z_INDEX.EDGE_HIGHLIGHTED,
+            zIndex: zIndex.edgeHighlighted,
             data: { isHighlighted: true },
           },
         ),

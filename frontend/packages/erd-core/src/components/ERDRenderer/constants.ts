@@ -1,5 +1,5 @@
-export const Z_INDEX = {
-  NODE_DEFAULT: 2,
-  EDGE_HIGHLIGHTED: 1,
-  EDGE_DEFAULT: 0,
+export const zIndex = {
+  nodeDefault: 2,
+  edgeHighlighted: 1,
+  edgeDefault: 0,
 }
