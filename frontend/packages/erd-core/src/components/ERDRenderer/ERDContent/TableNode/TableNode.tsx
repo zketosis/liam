@@ -1,8 +1,7 @@
-import { useDBStructureStore, useUserEditingStore } from '@/stores'
+import { useUserEditingStore } from '@/stores'
 import type { Node, NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
-import { isRelatedToTable } from '../ERDContent'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
@@ -14,27 +13,16 @@ export const isTableNode = (node: Node): node is TableNodeType =>
 type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({ data }) => {
-  const { relationships } = useDBStructureStore()
-  const {
-    active: { tableName },
-    showMode,
-  } = useUserEditingStore()
-
-  // TODO: remove tableName and isRelatedToTable() from here
-  const isActive = data.isActiveHighlighted || tableName === data.table.name
-
-  const isTableHighlighted =
-    data.isHighlighted ||
-    isRelatedToTable(relationships, data.table.name, tableName)
+  const { showMode } = useUserEditingStore()
 
   return (
     <div
       className={clsx(
         styles.wrapper,
-        isTableHighlighted && styles.wrapperHighlighted,
-        isActive && styles.wrapperActive,
+        data.isHighlighted && styles.wrapperHighlighted,
+        data.isActiveHighlighted && styles.wrapperActive,
       )}
-      data-erd={isTableHighlighted && 'table-node-highlighted'}
+      data-erd={data.isHighlighted && 'table-node-highlighted'}
     >
       <TableHeader data={data} />
       {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
