@@ -117,8 +117,10 @@ export const ERDContentInner: FC<Props> = ({
 
   const handleDragStopNode: OnNodeDrag<Node> = useCallback(
     (_event, _node, nodes) => {
-      if (nodes.length === 1 && nodes[0]) {
-        repositionTableLogEvent({ tableId: nodes[0].id })
+      const operationId = `id_${new Date().getTime()}`
+      for (const node of nodes) {
+        const tableId = node.id
+        repositionTableLogEvent({ tableId, operationId })
       }
     },
     [],
