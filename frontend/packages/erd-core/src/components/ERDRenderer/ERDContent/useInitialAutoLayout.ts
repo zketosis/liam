@@ -1,7 +1,7 @@
 import type { QueryParam } from '@/schemas/queryParam'
 import { addHiddenNodeIds, updateActiveTableName } from '@/stores'
 import { decompressFromEncodedURIComponent } from '@/utils'
-import { useNodesInitialized } from '@xyflow/react'
+import { useNodesInitialized, useReactFlow } from '@xyflow/react'
 import { useEffect } from 'react'
 import { useERDContentContext } from './ERDContentContext'
 import { useAutoLayout } from './useAutoLayout'
@@ -27,6 +27,7 @@ const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
 
 export const useInitialAutoLayout = () => {
   const nodesInitialized = useNodesInitialized()
+  const { getNodes } = useReactFlow()
   const {
     state: { initializeComplete },
   } = useERDContentContext()
@@ -42,16 +43,21 @@ export const useInitialAutoLayout = () => {
       updateActiveTableName(tableNameFromUrl)
       const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
       addHiddenNodeIds(hiddenNodeIds)
+      const nodes = getNodes()
+      const appliedNodes = nodes.map((node) => ({
+        ...node,
+        hidden: hiddenNodeIds.includes(node.id),
+      }))
 
       const fitViewOptions = tableNameFromUrl
         ? { maxZoom: 1, duration: 300, nodes: [{ id: tableNameFromUrl }] }
         : undefined
 
       if (nodesInitialized) {
-        handleLayout(fitViewOptions, hiddenNodeIds)
+        handleLayout(appliedNodes, fitViewOptions)
       }
     }
 
     initialize()
-  }, [nodesInitialized, initializeComplete, handleLayout])
+  }, [nodesInitialized, initializeComplete, getNodes, handleLayout])
 }

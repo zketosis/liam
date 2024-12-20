@@ -5,25 +5,21 @@ import { useERDContentContext } from '../ERDContentContext'
 import { getElkLayout } from './getElkLayout'
 
 export const useAutoLayout = () => {
-  const { getNodes, setNodes, getEdges, fitView } = useReactFlow()
+  const { setNodes, getEdges, fitView } = useReactFlow()
   const {
     actions: { setLoading, setInitializeComplete },
   } = useERDContentContext()
 
   const handleLayout = useCallback(
-    async (
-      fitViewOptions: FitViewOptions = {},
-      initialHiddenNodeIds: string[] = [],
-    ) => {
+    async (nodes: Node[], fitViewOptions: FitViewOptions = {}) => {
       setLoading(true)
-      const nodes = getNodes()
       const edges = getEdges()
 
       const hiddenNodes: Node[] = []
       const visibleNodes: Node[] = []
       for (const node of nodes) {
-        if (initialHiddenNodeIds.includes(node.id) || node.hidden) {
-          hiddenNodes.push({ ...node, hidden: true })
+        if (node.hidden) {
+          hiddenNodes.push(node)
         } else {
           visibleNodes.push(node)
         }
@@ -47,7 +43,7 @@ export const useAutoLayout = () => {
         setInitializeComplete(true)
       }, 0)
     },
-    [getNodes, setNodes, getEdges, fitView, setLoading, setInitializeComplete],
+    [setNodes, getEdges, fitView, setLoading, setInitializeComplete],
   )
 
   return { handleLayout }
