@@ -14,9 +14,14 @@ export const ReleaseNoteButton: FC = () => {
     <TooltipProvider>
       <TooltipRoot>
         <TooltipTrigger asChild>
-          <button type="button" className={styles.iconWrapper}>
+          <a
+            href="https://github.com/liam-hq/liam/releases"
+            target="_blank"
+            rel="noreferrer"
+            className={styles.iconWrapper}
+          >
             <Megaphone className={styles.icon} />
-          </button>
+          </a>
         </TooltipTrigger>
         <TooltipPortal>
           <TooltipContent sideOffset={4}>Release Notes</TooltipContent>
