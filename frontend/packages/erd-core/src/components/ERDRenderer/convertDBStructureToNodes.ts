@@ -60,7 +60,10 @@ export const convertDBStructureToNodes = ({
       showMode === 'TABLE_NAME'
         ? null
         : columnHandleId(rel.foreignTableName, rel.foreignColumnName),
-    data: { relationship: rel },
+    data: {
+      relationship: rel,
+      cardinality: rel.cardinality,
+    },
   }))
 
   return { nodes, edges }

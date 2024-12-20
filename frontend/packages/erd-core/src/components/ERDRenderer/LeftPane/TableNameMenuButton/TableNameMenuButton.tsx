@@ -1,3 +1,4 @@
+import { selectTableLogEvent } from '@/features/gtm/utils'
 import { updateActiveTableName, useUserEditingStore } from '@/stores'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import clsx from 'clsx'
@@ -8,6 +9,7 @@ import { VisibilityButton } from './VisibilityButton'
 
 const handleClickMenuButton = (tableId: string) => () => {
   updateActiveTableName(tableId)
+  selectTableLogEvent({ ref: 'leftPane', tableId })
 }
 
 type Props = {

@@ -1,5 +1,6 @@
 import type { QueryParam } from '@/schemas/queryParam'
-import { updateActiveTableName } from '@/stores'
+import { addHiddenNodeIds, updateActiveTableName } from '@/stores'
+import { decompressFromEncodedURIComponent } from '@/utils'
 import { useNodesInitialized } from '@xyflow/react'
 import { useEffect } from 'react'
 import { useERDContentContext } from './ERDContentContext'
@@ -13,6 +14,17 @@ const getActiveTableNameFromUrl = (): string | undefined => {
   return tableName || undefined
 }
 
+const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const hiddenQueryParam: QueryParam = 'hidden'
+  const compressed = urlParams.get(hiddenQueryParam)
+  const hiddenNodeIds = compressed
+    ? await decompressFromEncodedURIComponent(compressed).catch(() => undefined)
+    : undefined
+
+  return hiddenNodeIds ? hiddenNodeIds.split(',') : []
+}
+
 export const useInitialAutoLayout = () => {
   const nodesInitialized = useNodesInitialized()
   const {
@@ -21,18 +33,25 @@ export const useInitialAutoLayout = () => {
   const { handleLayout } = useAutoLayout()
 
   useEffect(() => {
-    if (initializeComplete) {
-      return
+    const initialize = async () => {
+      if (initializeComplete) {
+        return
+      }
+
+      const tableNameFromUrl = getActiveTableNameFromUrl()
+      updateActiveTableName(tableNameFromUrl)
+      const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
+      addHiddenNodeIds(hiddenNodeIds)
+
+      const fitViewOptions = tableNameFromUrl
+        ? { maxZoom: 1, duration: 300, nodes: [{ id: tableNameFromUrl }] }
+        : undefined
+
+      if (nodesInitialized) {
+        handleLayout(fitViewOptions, hiddenNodeIds)
+      }
     }
 
-    const tableNameFromUrl = getActiveTableNameFromUrl()
-    updateActiveTableName(tableNameFromUrl)
-    const fitViewOptions = tableNameFromUrl
-      ? { maxZoom: 1, duration: 300, nodes: [{ id: tableNameFromUrl }] }
-      : undefined
-
-    if (nodesInitialized) {
-      handleLayout(fitViewOptions)
-    }
+    initialize()
   }, [nodesInitialized, initializeComplete, handleLayout])
 }
