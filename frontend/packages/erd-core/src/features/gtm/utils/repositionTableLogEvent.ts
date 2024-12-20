@@ -1,10 +1,10 @@
 import { pushToDataLayer } from './pushToDataLayer'
 
-type repositionTable = {
+type RepositionTable = {
   tableId: string
 }
 
-export const repositionTableLogEvent = ({ tableId }: repositionTable) => {
+export const repositionTableLogEvent = ({ tableId }: RepositionTable) => {
   pushToDataLayer({
     event: 'repositionTable',
     tableId,

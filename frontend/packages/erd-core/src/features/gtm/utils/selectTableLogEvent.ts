@@ -1,11 +1,11 @@
 import { pushToDataLayer } from './pushToDataLayer'
 
-type selectTable = {
+type SelectTable = {
   ref: 'leftPane' | 'mainArea'
   tableId: string
 }
 
-export const selectTableLogEvent = ({ ref, tableId }: selectTable) => {
+export const selectTableLogEvent = ({ ref, tableId }: SelectTable) => {
   pushToDataLayer({
     event: 'selectTable',
     ref,
