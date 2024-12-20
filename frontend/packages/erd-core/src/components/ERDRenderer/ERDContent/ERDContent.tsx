@@ -2,7 +2,6 @@ import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
 import { useCliVersion } from '@/providers'
 import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
-import type { Relationships } from '@liam-hq/db-structure'
 import {
   Background,
   BackgroundVariant,
@@ -45,23 +44,6 @@ type Props = {
         fitViewWhenActiveTableChange?: boolean | undefined
       }
     | undefined
-}
-
-export const isRelatedToTable = (
-  relationships: Relationships,
-  tableName: string,
-  targetTableName: string | undefined,
-) => {
-  if (!targetTableName) {
-    return false
-  }
-  return Object.values(relationships).some(
-    (relationship) =>
-      (relationship.primaryTableName === tableName ||
-        relationship.foreignTableName === tableName) &&
-      (relationship.primaryTableName === targetTableName ||
-        relationship.foreignTableName === targetTableName),
-  )
 }
 
 export const ERDContentInner: FC<Props> = ({
@@ -151,13 +133,7 @@ export const ERDContentInner: FC<Props> = ({
     <div className={styles.wrapper} data-loading={loading}>
       {loading && <Spinner className={styles.loading} />}
       <ReactFlow
-        nodes={nodes.map((node) => ({
-          ...node,
-          data: {
-            ...node.data,
-            onClick: handleNodeClick,
-          },
-        }))}
+        nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
