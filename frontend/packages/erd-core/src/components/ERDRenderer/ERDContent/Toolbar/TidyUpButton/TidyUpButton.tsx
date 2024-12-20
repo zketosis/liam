@@ -8,7 +8,7 @@ import { type FC, useCallback } from 'react'
 import { useAutoLayout } from '../../useAutoLayout'
 
 export const TidyUpButton: FC = () => {
-  const { getNodes } = useReactFlow()
+  const { getNodes, getEdges } = useReactFlow()
   const { handleLayout } = useAutoLayout()
   const { showMode } = useUserEditingStore()
   const { cliVersion } = useCliVersion()
@@ -19,8 +19,15 @@ export const TidyUpButton: FC = () => {
       cliVer: cliVersion.version,
       appEnv: cliVersion.envName,
     })
-    handleLayout(getNodes())
-  }, [handleLayout, showMode, getNodes, cliVersion.version, cliVersion.envName])
+    handleLayout(getNodes(), getEdges())
+  }, [
+    handleLayout,
+    showMode,
+    getNodes,
+    getEdges,
+    cliVersion.version,
+    cliVersion.envName,
+  ])
 
   return (
     <ToolbarButton asChild>

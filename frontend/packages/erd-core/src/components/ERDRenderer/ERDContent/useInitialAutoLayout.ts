@@ -1,9 +1,10 @@
 import type { QueryParam } from '@/schemas/queryParam'
 import { addHiddenNodeIds, updateActiveTableName } from '@/stores'
 import { decompressFromEncodedURIComponent } from '@/utils'
-import type { Node } from '@xyflow/react'
+import { type Node, useReactFlow } from '@xyflow/react'
 import { useEffect, useMemo } from 'react'
 import { useERDContentContext } from './ERDContentContext'
+import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useAutoLayout } from './useAutoLayout'
 
 const getActiveTableNameFromUrl = (): string | undefined => {
@@ -33,6 +34,7 @@ export const useInitialAutoLayout = (nodes: Node[]) => {
         .some((node) => node.measured),
     [nodes],
   )
+  const { getEdges } = useReactFlow()
 
   const {
     state: { initializeComplete },
@@ -45,24 +47,27 @@ export const useInitialAutoLayout = (nodes: Node[]) => {
         return
       }
 
-      const tableNameFromUrl = getActiveTableNameFromUrl()
-      updateActiveTableName(tableNameFromUrl)
+      const activeTableName = getActiveTableNameFromUrl()
+      updateActiveTableName(activeTableName)
       const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
       addHiddenNodeIds(hiddenNodeIds)
-      const appliedNodes = nodes.map((node) => ({
+      const edges = getEdges()
+      const hiddenNodes = nodes.map((node) => ({
         ...node,
         hidden: hiddenNodeIds.includes(node.id),
       }))
+      const { nodes: updatedNodes, edges: updatedEdges } =
+        highlightNodesAndEdges(hiddenNodes, edges, { activeTableName })
 
-      const fitViewOptions = tableNameFromUrl
-        ? { maxZoom: 1, duration: 300, nodes: [{ id: tableNameFromUrl }] }
+      const fitViewOptions = activeTableName
+        ? { maxZoom: 1, duration: 300, nodes: [{ id: activeTableName }] }
         : undefined
 
       if (tableNodesInitialized) {
-        handleLayout(appliedNodes, fitViewOptions)
+        handleLayout(updatedNodes, updatedEdges, fitViewOptions)
       }
     }
 
     initialize()
-  }, [tableNodesInitialized, initializeComplete, handleLayout, nodes])
+  }, [tableNodesInitialized, initializeComplete, handleLayout, nodes, getEdges])
 }

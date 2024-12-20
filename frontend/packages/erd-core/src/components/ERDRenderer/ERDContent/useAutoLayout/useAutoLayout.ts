@@ -1,20 +1,22 @@
 import { useReactFlow } from '@xyflow/react'
-import type { FitViewOptions, Node } from '@xyflow/react'
+import type { Edge, FitViewOptions, Node } from '@xyflow/react'
 import { useCallback } from 'react'
 import { useERDContentContext } from '../ERDContentContext'
 import { getElkLayout } from './getElkLayout'
 
 export const useAutoLayout = () => {
-  const { setNodes, getEdges, fitView } = useReactFlow()
+  const { setNodes, fitView } = useReactFlow()
   const {
     actions: { setLoading, setInitializeComplete },
   } = useERDContentContext()
 
   const handleLayout = useCallback(
-    async (nodes: Node[], fitViewOptions: FitViewOptions = {}) => {
+    async (
+      nodes: Node[],
+      edges: Edge[],
+      fitViewOptions: FitViewOptions = {},
+    ) => {
       setLoading(true)
-      const edges = getEdges()
-
       const hiddenNodes: Node[] = []
       const visibleNodes: Node[] = []
       for (const node of nodes) {
@@ -43,7 +45,7 @@ export const useAutoLayout = () => {
         setInitializeComplete(true)
       }, 0)
     },
-    [setNodes, getEdges, fitView, setLoading, setInitializeComplete],
+    [setNodes, fitView, setLoading, setInitializeComplete],
   )
 
   return { handleLayout }
