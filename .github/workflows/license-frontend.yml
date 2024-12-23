@@ -22,7 +22,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     timeout-minutes: 10
     env:
-      LICENSE_REPORT: frontend/docs/packages-license.md
+      LICENSE_REPORT: docs/packages-license.md
     steps:
       - name: Check if running in a fork
         id: fork-check
@@ -51,11 +51,11 @@ jobs:
         with:
           path: |
             .github/workflows/license-frontend.yml
-            frontend/config/dependency_decisions.yml
-            frontend/config/license_finder.yml
+            config/dependency_decisions.yml
+            config/license_finder.yml
             package.json
             pnpm-lock.yaml
-          key: license-frontend-${{ runner.os }}-${{ hashFiles('.github/workflows/license-frontend.yml', 'frontend/config/dependency_decisions.yml', 'frontend/config/license_finder.yml', 'package.json', 'pnpm-lock.yaml') }}
+          key: license-frontend-${{ runner.os }}-${{ hashFiles('.github/workflows/license-frontend.yml', 'config/dependency_decisions.yml', 'config/license_finder.yml', 'package.json', 'pnpm-lock.yaml') }}
       - name: Determine if files changed
         id: determine
         run: |
