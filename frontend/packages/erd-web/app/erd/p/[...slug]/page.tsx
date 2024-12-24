@@ -5,9 +5,10 @@ import ERDViewer from './erdViewer'
 export default async function Page({
   params,
 }: {
-  params: { slug: string[] }
+  params: Promise<{ slug: string[] }>
 }) {
-  const joinedPath = params.slug.join('/')
+  const { slug } = await params
+  const joinedPath = slug.join('/')
   if (!joinedPath) {
     notFound()
   }
