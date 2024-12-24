@@ -3,4 +3,4 @@
 "@liam-hq/cli": patch
 ---
 
-fix: Update css module for edge marker
+:recycle: Update css module for edge marker
