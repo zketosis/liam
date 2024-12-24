@@ -1,5 +1,15 @@
 # @liam-hq/cli
 
+## 0.0.15
+
+### Patch Changes
+
+- 9ba18b9: ⚡️ Disable edge animation in highlightNodesAndEdges
+- 31575c5: 💄 feat: Sticky positioning for related tables in TableDetail
+- d097cea: :bug: fix: Comment component to use `<span>` instead of `<p>`
+- e3f3f37: ⚒️ Fixing CSS Modules error with toolbar
+- 9ba18b9: 🚸 Add animated particles to highlighted relationship edges
+
 ## 0.0.14
 
 ### Patch Changes
