@@ -31,3 +31,9 @@
 .body {
   overflow-y: scroll;
 }
+
+.relatedTables {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--pane-background, #232526);
+}
