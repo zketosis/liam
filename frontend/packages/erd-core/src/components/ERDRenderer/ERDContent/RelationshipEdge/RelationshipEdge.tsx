@@ -6,7 +6,7 @@ import styles from './RelationshipEdge.module.css'
 import type { RelationshipEdgeType } from './type'
 
 const PARTICLE_COUNT = 6
-const ANIMATE_DURATION = 3
+const ANIMATE_DURATION = 6
 
 type Props = EdgeProps<RelationshipEdgeType>
 
@@ -72,7 +72,7 @@ export const RelationshipEdge: FC<Props> = ({
           <ellipse
             key={`particle-${i}-${ANIMATE_DURATION}`}
             rx="5"
-            ry="1.6"
+            ry="1.2"
             fill="url(#myGradient)"
           >
             <animateMotion
