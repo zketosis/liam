@@ -1,5 +1,12 @@
 # @liam-hq/ui
 
+## 0.0.5
+
+### Patch Changes
+
+- 28a9eb2: :lipstick: Update font-family settings across ERD Renderer components
+- 1c20fd1: ⚒️ Fixing the toolbar display bug
+
 ## 0.0.4
 
 ### Patch Changes

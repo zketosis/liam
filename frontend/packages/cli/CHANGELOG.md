@@ -1,5 +1,16 @@
 # @liam-hq/cli
 
+## 0.0.14
+
+### Patch Changes
+
+- 28a9eb2: :lipstick: Update font-family settings across ERD Renderer components
+- e3faa74: ⚒️ Adjust the appearance of the toolbar on mobile devices.
+- 34dd3eb: refactor: Remove unused isRelatedToTable function and simplify TableNode component logic
+- 1c20fd1: ⚒️ Fixing the toolbar display bug
+- 82ec743: 🐛 Fixed problem with TableNode not being highlighted when opened from URL with query parameter
+- 1eb5dc1: :recycle: Update css module for edge marker
+
 ## 0.0.13
 
 ### Patch Changes
