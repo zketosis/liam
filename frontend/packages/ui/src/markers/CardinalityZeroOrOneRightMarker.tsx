@@ -11,7 +11,7 @@ export const CardinalityZeroOrOneRightMarker: FC<MarkerProps> = ({
   ...props
 }) => {
   return (
-    <svg role="img" aria-label="Zero or One Right Marker">
+    <svg width="0" height="0" role="img" aria-label="Zero or One Right Marker">
       <defs>
         <marker
           id={id}
