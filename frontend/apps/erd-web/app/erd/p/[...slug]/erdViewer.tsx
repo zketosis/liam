@@ -12,9 +12,13 @@ import * as v from 'valibot'
 
 type ERDViewerProps = {
   dbStructure: DBStructure
+  defaultSidebarOpen: boolean
 }
 
-export default function ERDViewer({ dbStructure }: ERDViewerProps) {
+export default function ERDViewer({
+  dbStructure,
+  defaultSidebarOpen,
+}: ERDViewerProps) {
   useEffect(() => {
     initDBStructureStore(dbStructure)
   }, [dbStructure])
@@ -32,7 +36,7 @@ export default function ERDViewer({ dbStructure }: ERDViewerProps) {
   return (
     <div style={{ height: '100vh' }}>
       <CliVersionProvider cliVersion={cliVersion}>
-        <ERDRenderer />
+        <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
       </CliVersionProvider>
     </div>
   )
