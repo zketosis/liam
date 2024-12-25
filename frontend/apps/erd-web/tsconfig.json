@@ -19,7 +19,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./*", "../../packages/erd-core/src/*"]
+      "@/*": [
+        "./*",
+        "../../packages/erd-core/src/*",
+        "../../packages/db-structure/src/*"
+      ]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

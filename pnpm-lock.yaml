@@ -87,6 +87,12 @@ importers:
 
   frontend/apps/erd-web:
     dependencies:
+      '@liam-hq/db-structure':
+        specifier: workspace:*
+        version: link:../../packages/db-structure
+      '@liam-hq/erd-core':
+        specifier: workspace:*
+        version: link:../../packages/erd-core
       next:
         specifier: 15.1.2
         version: 15.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -103,12 +109,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam-hq/db-structure':
-        specifier: workspace:*
-        version: link:../../packages/db-structure
-      '@liam-hq/erd-core':
-        specifier: workspace:*
-        version: link:../../packages/erd-core
       '@types/node':
         specifier: 22.9.0
         version: 22.9.0
