@@ -1,5 +1,13 @@
 # @liam-hq/erd-core
 
+## 0.0.11
+
+### Patch Changes
+
+- 4e114d0: :lipstick: Eliminate overlap between rail and scrollbar
+- Updated dependencies [4e114d0]
+  - @liam-hq/ui@0.0.6
+
 ## 0.0.10
 
 ### Patch Changes

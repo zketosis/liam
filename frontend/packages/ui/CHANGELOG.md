@@ -1,5 +1,11 @@
 # @liam-hq/ui
 
+## 0.0.6
+
+### Patch Changes
+
+- 4e114d0: :lipstick: Eliminate overlap between rail and scrollbar
+
 ## 0.0.5
 
 ### Patch Changes
