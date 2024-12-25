@@ -33,6 +33,7 @@ jobs:
             src:
               - './.github/workflows/vercel-deploy.yml'
               - './frontend/apps/docs/**'
+              - './frontend/apps/erd-web/**'
 
   deploy:
     name: Deploy
@@ -45,6 +46,8 @@ jobs:
         apps:
           - name: docs
             vercel-project-id-key: VERCEL_PROJECT_ID_DOCS
+          - name: erd-web
+            vercel-project-id-key: VERCEL_PROJECT_ID_ERD_WEB
     environment:
       name: "${{ needs.setup-deployment.outputs.environment }} - ${{ matrix.apps.name }}"
       url: ${{ steps.deployment.outputs.deployment-url }}

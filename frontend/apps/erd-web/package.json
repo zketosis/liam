@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "dependencies": {
+    "@liam-hq/db-structure": "workspace:*",
+    "@liam-hq/erd-core": "workspace:*",
     "next": "15.1.2",
     "react": "18.3.1",
     "react-dom": "18",
@@ -10,8 +12,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam-hq/db-structure": "workspace:*",
-    "@liam-hq/erd-core": "workspace:*",
     "@types/node": "22.9.0",
     "@types/react": "18",
     "@types/react-dom": "18",
