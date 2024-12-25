@@ -1,4 +1,5 @@
 import { parse } from '@liam-hq/db-structure/parser'
+import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import ERDViewer from './erdViewer'
 
@@ -30,5 +31,13 @@ export default async function Page({
     }
   }
 
-  return <ERDViewer dbStructure={dbStructure} />
+  const cookieStore = await cookies()
+  const defaultSidebarOpen = cookieStore.get('sidebar:state')?.value === 'true'
+
+  return (
+    <ERDViewer
+      dbStructure={dbStructure}
+      defaultSidebarOpen={defaultSidebarOpen}
+    />
+  )
 }

@@ -35,10 +35,18 @@ const cliVersionData = {
 }
 const cliVersion = v.parse(cliVersionSchema, cliVersionData)
 
+function getSidebarStateFromCookie(): boolean {
+  const cookies = document.cookie.split('; ').map((cookie) => cookie.split('='))
+  const cookie = cookies.find(([key]) => key === 'sidebar:state')
+  return cookie ? cookie[1] === 'true' : false
+}
+
 function App() {
+  const defaultSidebarOpen = getSidebarStateFromCookie()
+
   return (
     <CliVersionProvider cliVersion={cliVersion}>
-      <ERDRenderer />
+      <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
     </CliVersionProvider>
   )
 }

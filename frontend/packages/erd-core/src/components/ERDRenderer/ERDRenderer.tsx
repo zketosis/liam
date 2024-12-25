@@ -1,10 +1,5 @@
 import '@xyflow/react/dist/style.css'
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  ToastProvider,
-  getSidebarStateFromCookie,
-} from '@liam-hq/ui'
+import { SidebarProvider, SidebarTrigger, ToastProvider } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
 import { type FC, useCallback, useState } from 'react'
 import { AppBar } from './AppBar'
@@ -20,9 +15,12 @@ import { Toolbar } from './ERDContent/Toolbar'
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
-export const ERDRenderer: FC = () => {
-  const defaultOpen = getSidebarStateFromCookie()
-  const [open, setOpen] = useState(defaultOpen)
+type Props = {
+  defaultSidebarOpen?: boolean | undefined
+}
+
+export const ERDRenderer: FC<Props> = ({ defaultSidebarOpen = false }) => {
+  const [open, setOpen] = useState(defaultSidebarOpen)
 
   const { showMode } = useUserEditingStore()
   const dbStructure = useDBStructureStore()
@@ -49,11 +47,7 @@ export const ERDRenderer: FC = () => {
     <div className={styles.wrapper}>
       <ToastProvider>
         <AppBar />
-        <SidebarProvider
-          open={open}
-          defaultOpen={defaultOpen}
-          onOpenChange={handleChangeOpen}
-        >
+        <SidebarProvider open={open} onOpenChange={handleChangeOpen}>
           <ReactFlowProvider>
             <div className={styles.mainWrapper}>
               <LeftPane />
