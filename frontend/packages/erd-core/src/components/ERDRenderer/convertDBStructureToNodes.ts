@@ -4,7 +4,7 @@ import type { Edge, Node } from '@xyflow/react'
 import { columnHandleId } from './columnHandleId'
 import { zIndex } from './constants'
 
-const NON_RELATED_TABLE_GROUP_NODE_ID = 'non-related-table-group'
+export const NON_RELATED_TABLE_GROUP_NODE_ID = 'non-related-table-group'
 
 type Params = {
   dbStructure: DBStructure
