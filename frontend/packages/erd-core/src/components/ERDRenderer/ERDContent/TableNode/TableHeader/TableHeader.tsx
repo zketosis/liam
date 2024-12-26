@@ -49,10 +49,20 @@ export const TableHeader: FC<Props> = ({ data }) => {
       {showMode === 'TABLE_NAME' && (
         <>
           {isTarget && (
-            <Handle id={name} type="target" position={Position.Left} />
+            <Handle
+              id={name}
+              type="target"
+              position={Position.Left}
+              className={styles.handle}
+            />
           )}
           {isSource && (
-            <Handle id={name} type="source" position={Position.Right} />
+            <Handle
+              id={name}
+              type="source"
+              position={Position.Right}
+              className={styles.handle}
+            />
           )}
         </>
       )}

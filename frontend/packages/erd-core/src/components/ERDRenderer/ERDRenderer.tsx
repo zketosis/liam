@@ -10,8 +10,10 @@ import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
 import { useCliVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
+import { CardinalityMarkers } from './CardinalityMarkers'
 // biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
 import { Toolbar } from './ERDContent/Toolbar'
+import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker'
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
@@ -45,6 +47,8 @@ export const ERDRenderer: FC<Props> = ({ defaultSidebarOpen = false }) => {
 
   return (
     <div className={styles.wrapper}>
+      <CardinalityMarkers />
+      <RelationshipEdgeParticleMarker />
       <ToastProvider>
         <AppBar />
         <SidebarProvider open={open} onOpenChange={handleChangeOpen}>

@@ -67,6 +67,7 @@ const unhighlightNode = (node: TableNodeType): TableNodeType => ({
 const highlightEdge = (edge: Edge): Edge => ({
   ...edge,
   animated: false,
+  selectable: false,
   zIndex: zIndex.edgeHighlighted,
   data: { ...edge.data, isHighlighted: true },
 })
@@ -74,6 +75,7 @@ const highlightEdge = (edge: Edge): Edge => ({
 const unhighlightEdge = (edge: Edge): Edge => ({
   ...edge,
   animated: false,
+  selectable: false,
   zIndex: zIndex.edgeDefault,
   data: { ...edge.data, isHighlighted: false },
 })
