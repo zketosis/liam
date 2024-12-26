@@ -32,6 +32,7 @@ const cliVersionData = {
   isReleasedGitHash:
     import.meta.env.VITE_CLI_VERSION_IS_RELEASED_GIT_HASH === '1',
   date: import.meta.env.VITE_CLI_VERSION_DATE,
+  displayedOn: 'web',
 }
 const cliVersion = v.parse(cliVersionSchema, cliVersionData)
 
