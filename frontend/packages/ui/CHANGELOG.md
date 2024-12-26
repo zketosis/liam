@@ -1,5 +1,12 @@
 # @liam-hq/ui
 
+## 0.0.7
+
+### Patch Changes
+
+- 7a97784: 🐛 : move CardinalityMarkers component in ERDRenderer
+- ef56f37: :recycle: Refactoring the process of getting sidebar state from cookie
+
 ## 0.0.6
 
 ### Patch Changes
