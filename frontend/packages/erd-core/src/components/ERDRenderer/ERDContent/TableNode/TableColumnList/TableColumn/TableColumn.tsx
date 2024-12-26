@@ -4,7 +4,6 @@ import type {
 } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound, Link } from '@liam-hq/ui'
 import { Handle, Position } from '@xyflow/react'
-import clsx from 'clsx'
 import type { FC } from 'react'
 import styles from './TableColumn.module.css'
 
@@ -70,7 +69,7 @@ export const TableColumn: FC<TableColumnProps> = ({
           id={handleId}
           type="source"
           position={Position.Right}
-          className={clsx([styles.handle])}
+          className={styles.handle}
         />
       )}
 
@@ -79,7 +78,7 @@ export const TableColumn: FC<TableColumnProps> = ({
           id={handleId}
           type="target"
           position={Position.Left}
-          className={clsx([styles.handle])}
+          className={styles.handle}
         />
       )}
     </li>
