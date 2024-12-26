@@ -6,6 +6,9 @@ const gitCommitHash = execSync('git rev-parse --short HEAD').toString().trim()
 const releaseDate = new Date().toISOString().split('T')[0]
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    '/erd/p/\\[\\.\\.\\.slug\\]': ['./prism.wasm'],
+  },
   env: {
     NEXT_PUBLIC_GIT_HASH: gitCommitHash,
     NEXT_PUBLIC_RELEASE_DATE: releaseDate,
