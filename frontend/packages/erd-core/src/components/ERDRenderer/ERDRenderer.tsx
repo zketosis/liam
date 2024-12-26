@@ -31,19 +31,19 @@ export const ERDRenderer: FC<Props> = ({ defaultSidebarOpen = false }) => {
     showMode,
   })
 
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
   const handleChangeOpen = useCallback(
     (open: boolean) => {
       setOpen(open)
-      cliVersion.displayedOn === 'cli' &&
+      version.displayedOn === 'cli' &&
         toggleLogEvent({
           element: 'leftPane',
           isShow: open,
-          cliVer: cliVersion.version,
-          appEnv: cliVersion.envName,
+          cliVer: version.version,
+          appEnv: version.envName,
         })
     },
-    [cliVersion],
+    [version],
   )
 
   return (

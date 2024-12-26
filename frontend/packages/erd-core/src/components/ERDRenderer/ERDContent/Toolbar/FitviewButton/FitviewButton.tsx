@@ -9,18 +9,18 @@ import { type FC, useCallback } from 'react'
 export const FitviewButton: FC = () => {
   const { fitView } = useReactFlow()
   const { showMode } = useUserEditingStore()
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
 
   const handleClick = useCallback(() => {
-    cliVersion.displayedOn === 'cli' &&
+    version.displayedOn === 'cli' &&
       toolbarActionLogEvent({
         element: 'fitview',
         showMode,
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
+        cliVer: version.version,
+        appEnv: version.envName,
       })
     fitView()
-  }, [fitView, showMode, cliVersion])
+  }, [fitView, showMode, version])
 
   return (
     <ToolbarButton asChild onClick={handleClick}>

@@ -17,15 +17,15 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
 
   // TODO: Move handleClickMenuButton outside of TableNameMenuButton
   // after logging is complete
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
   const handleClickMenuButton = (tableId: string) => () => {
     updateActiveTableName(tableId)
-    cliVersion.displayedOn === 'cli' &&
+    version.displayedOn === 'cli' &&
       selectTableLogEvent({
         ref: 'leftPane',
         tableId,
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
+        cliVer: version.version,
+        appEnv: version.envName,
       })
   }
 

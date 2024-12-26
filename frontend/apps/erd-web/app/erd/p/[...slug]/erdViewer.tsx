@@ -4,8 +4,8 @@ import type { DBStructure } from '@liam-hq/db-structure'
 import {
   CliVersionProvider,
   ERDRenderer,
-  cliVersionSchema,
   initDBStructureStore,
+  versionSchema,
 } from '@liam-hq/erd-core'
 import { useEffect } from 'react'
 import * as v from 'valibot'
@@ -28,11 +28,11 @@ export default function ERDViewer({
     date: process.env.NEXT_PUBLIC_RELEASE_DATE,
     displayedOn: 'web',
   }
-  const cliVersion = v.parse(cliVersionSchema, cliVersionData)
+  const version = v.parse(versionSchema, cliVersionData)
 
   return (
     <div style={{ height: '100vh' }}>
-      <CliVersionProvider cliVersion={cliVersion}>
+      <CliVersionProvider version={version}>
         <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
       </CliVersionProvider>
     </div>

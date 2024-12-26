@@ -11,21 +11,21 @@ type Props = {
 }
 
 export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
   const handleClick = useCallback(
     (event: MouseEvent) => {
       event.stopPropagation()
       toggleHiddenNodeId(tableName)
-      cliVersion.displayedOn === 'cli' &&
+      version.displayedOn === 'cli' &&
         toggleLogEvent({
           element: 'tableNameMenuButton',
           isShow: !!hidden,
           tableId: tableName,
-          cliVer: cliVersion.version,
-          appEnv: cliVersion.envName,
+          cliVer: version.version,
+          appEnv: version.envName,
         })
     },
-    [tableName, hidden, cliVersion],
+    [tableName, hidden, version],
   )
 
   return (

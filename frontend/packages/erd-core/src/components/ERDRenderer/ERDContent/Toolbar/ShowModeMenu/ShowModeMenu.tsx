@@ -25,7 +25,7 @@ const OPTION_LIST: { value: ShowMode; label: string }[] = [
 export const ShowModeMenu: FC = () => {
   const { showMode } = useUserEditingStore()
 
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
   const handleChangeValue = useCallback(
     (value: string) => {
       const parsed = safeParse(showModeSchema, value)
@@ -33,16 +33,16 @@ export const ShowModeMenu: FC = () => {
       if (parsed.success) {
         updateShowMode(parsed.output)
 
-        cliVersion.displayedOn === 'cli' &&
+        version.displayedOn === 'cli' &&
           toolbarActionLogEvent({
             element: 'changeShowMode',
             showMode: value,
-            cliVer: cliVersion.version,
-            appEnv: cliVersion.envName,
+            cliVer: version.version,
+            appEnv: version.envName,
           })
       }
     },
-    [cliVersion],
+    [version],
   )
 
   return (

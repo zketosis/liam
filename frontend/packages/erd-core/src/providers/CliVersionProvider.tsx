@@ -1,8 +1,8 @@
-import type { CliVersion } from '@/schemas/cliVersion'
+import type { Version } from '@/schemas/version'
 import { type FC, type ReactNode, createContext, useContext } from 'react'
 
 interface CliVersionContextProps {
-  cliVersion: CliVersion
+  version: Version
 }
 
 const CliVersionContext = createContext<CliVersionContextProps | undefined>(
@@ -18,11 +18,11 @@ export const useCliVersion = (): CliVersionContextProps => {
 }
 
 export const CliVersionProvider: FC<{
-  cliVersion: CliVersion
+  version: Version
   children: ReactNode
-}> = ({ cliVersion, children }) => {
+}> = ({ version, children }) => {
   return (
-    <CliVersionContext.Provider value={{ cliVersion }}>
+    <CliVersionContext.Provider value={{ version }}>
       {children}
     </CliVersionContext.Provider>
   )

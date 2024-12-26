@@ -64,19 +64,19 @@ export const ERDContentInner: FC<Props> = ({
   useSyncHighlightsActiveTableChange()
   useSyncHiddenNodesChange()
 
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
   const handleNodeClick = useCallback(
     (tableId: string) => {
       updateActiveTableName(tableId)
-      cliVersion.displayedOn === 'cli' &&
+      version.displayedOn === 'cli' &&
         selectTableLogEvent({
           ref: 'mainArea',
           tableId,
-          cliVer: cliVersion.version,
-          appEnv: cliVersion.envName,
+          cliVer: version.version,
+          appEnv: version.envName,
         })
     },
-    [cliVersion],
+    [version],
   )
 
   const handlePaneClick = useCallback(() => {
@@ -116,16 +116,16 @@ export const ERDContentInner: FC<Props> = ({
       const operationId = `id_${new Date().getTime()}`
       for (const node of nodes) {
         const tableId = node.id
-        cliVersion.displayedOn === 'cli' &&
+        version.displayedOn === 'cli' &&
           repositionTableLogEvent({
             tableId,
             operationId,
-            cliVer: cliVersion.version,
-            appEnv: cliVersion.envName,
+            cliVer: version.version,
+            appEnv: version.envName,
           })
       }
     },
-    [cliVersion],
+    [version],
   )
 
   const panOnDrag = [1, 2]

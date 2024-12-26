@@ -11,31 +11,31 @@ export const ZoomControls: FC = () => {
   const zoomLevel = useStore((store) => store.transform[2])
   const { zoomIn, zoomOut } = useReactFlow()
   const { showMode } = useUserEditingStore()
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
 
   const handleClickZoomOut = useCallback(() => {
-    cliVersion.displayedOn === 'cli' &&
+    version.displayedOn === 'cli' &&
       toolbarActionLogEvent({
         element: 'zoom',
         zoomLevel: zoomLevel.toFixed(2),
         showMode,
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
+        cliVer: version.version,
+        appEnv: version.envName,
       })
     zoomOut()
-  }, [zoomOut, zoomLevel, showMode, cliVersion])
+  }, [zoomOut, zoomLevel, showMode, version])
 
   const handleClickZoomIn = useCallback(() => {
-    cliVersion.displayedOn === 'cli' &&
+    version.displayedOn === 'cli' &&
       toolbarActionLogEvent({
         element: 'zoom',
         zoomLevel: zoomLevel.toFixed(2),
         showMode: showMode,
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
+        cliVer: version.version,
+        appEnv: version.envName,
       })
     zoomIn()
-  }, [zoomIn, zoomLevel, showMode, cliVersion])
+  }, [zoomIn, zoomLevel, showMode, version])
 
   return (
     <div className={styles.wrapper}>

@@ -2,8 +2,8 @@ import { dbStructureSchema } from '@liam-hq/db-structure'
 import {
   CliVersionProvider,
   ERDRenderer,
-  cliVersionSchema,
   initDBStructureStore,
+  versionSchema,
 } from '@liam-hq/erd-core'
 import * as v from 'valibot'
 
@@ -34,7 +34,7 @@ const cliVersionData = {
   date: import.meta.env.VITE_CLI_VERSION_DATE,
   displayedOn: 'cli',
 }
-const cliVersion = v.parse(cliVersionSchema, cliVersionData)
+const version = v.parse(versionSchema, cliVersionData)
 
 function getSidebarStateFromCookie(): boolean {
   const cookies = document.cookie.split('; ').map((cookie) => cookie.split('='))
@@ -46,7 +46,7 @@ function App() {
   const defaultSidebarOpen = getSidebarStateFromCookie()
 
   return (
-    <CliVersionProvider cliVersion={cliVersion}>
+    <CliVersionProvider version={version}>
       <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
     </CliVersionProvider>
   )

@@ -3,9 +3,9 @@ import type { FC } from 'react'
 import styles from './ReleaseVersion.module.css'
 
 export const ReleaseVersion: FC = () => {
-  const { cliVersion } = useCliVersion()
+  const { version } = useCliVersion()
 
-  // Example output for cliVersion:
+  // Example output for version:
   // - Released version:
   //   v0.0.11 (2024-12-19)
   // - Unreleased version:
@@ -15,22 +15,21 @@ export const ReleaseVersion: FC = () => {
   // - "Released version" means the current Git hash matches a tagged release.
   // - "Unreleased version" includes a short Git hash prefix to indicate changes since the last release.
   return (
-    <div className={styles.cliVersion}>
-      {cliVersion.displayedOn === 'cli' ? (
+    <div className={styles.version}>
+      {version.displayedOn === 'cli' ? (
         <>
-          <span>{`v${cliVersion.version}`}</span>
+          <span>{`v${version.version}`}</span>
           <span>
             {' '}
-            {cliVersion.isReleasedGitHash ||
-              `+ ${cliVersion.gitHash.slice(0, 7)} `}
+            {version.isReleasedGitHash || `+ ${version.gitHash.slice(0, 7)} `}
           </span>
-          <span>{`(${cliVersion.date})`}</span>
+          <span>{`(${version.date})`}</span>
         </>
       ) : (
         <>
-          <span>{cliVersion.gitHash.slice(0, 7)}</span>
+          <span>{version.gitHash.slice(0, 7)}</span>
           <span> </span>
-          <span>{`(${cliVersion.date})`}</span>
+          <span>{`(${version.date})`}</span>
         </>
       )}
     </div>
