@@ -1,5 +1,17 @@
 # @liam-hq/cli
 
+## 0.0.17
+
+### Patch Changes
+
+- 21e4ad4: 🐛 : move RelationshipEdgeParticleMarker for gradient rendering to ERDRenderer
+- 7a97784: 🐛 : move CardinalityMarkers component in ERDRenderer
+- 9ca556c: 🚸 : disable click events on RelationshipEdge
+- 95dd878: 🐛 update TableHeader styles and add handle positioning for connections
+- ef56f37: :recycle: Refactoring the process of getting sidebar state from cookie
+- 177ea71: :bug: Fix compatibility issue with Node.js v18 in ERD tool
+- 2235c2c: ♻️: Refactor ReleaseVersion for ERD Web
+
 ## 0.0.16
 
 ### Patch Changes
