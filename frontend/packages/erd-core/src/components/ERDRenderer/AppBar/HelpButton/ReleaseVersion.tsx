@@ -24,12 +24,12 @@ export const ReleaseVersion: FC = () => {
             {cliVersion.isReleasedGitHash ||
               `+ ${cliVersion.gitHash.slice(0, 7)} `}
           </span>
-          <span>{cliVersion.date && ` (${cliVersion.date})`}</span>
+          <span>{` (${cliVersion.date})`}</span>
         </>
       ) : (
         <>
           <span>{cliVersion.gitHash.slice(0, 7)}</span>
-          <span>{cliVersion.date && ` (${cliVersion.date})`}</span>
+          <span>{` (${cliVersion.date})`}</span>
         </>
       )}
     </div>
