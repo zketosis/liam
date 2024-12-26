@@ -23,13 +23,13 @@ export default function ERDViewer({
     initDBStructureStore(dbStructure)
   }, [dbStructure])
 
-  // TODO: Implement version data
   const cliVersionData = {
-    version: '0.0.0',
-    gitHash: '0000000',
-    envName: 'development',
+    version: '',
+    gitHash: process.env.NEXT_PUBLIC_GIT_HASH,
+    envName: '',
     isReleasedGitHash: false,
-    date: '2021-01-01T00:00:00Z',
+    date: process.env.NEXT_PUBLIC_RELEASE_DATE,
+    displayedOn: 'web',
   }
   const cliVersion = v.parse(cliVersionSchema, cliVersionData)
 

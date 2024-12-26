@@ -6,4 +6,5 @@ export const cliVersionSchema = v.object({
   envName: v.string(),
   isReleasedGitHash: v.boolean(),
   date: v.string(),
+  displayedOn: v.picklist(['cli', 'web']),
 })
