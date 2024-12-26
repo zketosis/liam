@@ -6,7 +6,7 @@ const webVersionSchema = v.object({
   displayedOn: v.literal('web'),
 })
 
-const innerCliVersionSchema = v.object({
+const cliVersionSchema = v.object({
   version: v.string(),
   gitHash: v.string(),
   envName: v.string(),
@@ -15,7 +15,4 @@ const innerCliVersionSchema = v.object({
   displayedOn: v.literal('cli'),
 })
 
-export const cliVersionSchema = v.union([
-  webVersionSchema,
-  innerCliVersionSchema,
-])
+export const versionSchema = v.union([webVersionSchema, cliVersionSchema])

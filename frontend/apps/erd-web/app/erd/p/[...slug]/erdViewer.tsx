@@ -2,10 +2,10 @@
 
 import type { DBStructure } from '@liam-hq/db-structure'
 import {
-  CliVersionProvider,
   ERDRenderer,
-  cliVersionSchema,
+  VersionProvider,
   initDBStructureStore,
+  versionSchema,
 } from '@liam-hq/erd-core'
 import { useEffect } from 'react'
 import * as v from 'valibot'
@@ -23,18 +23,18 @@ export default function ERDViewer({
     initDBStructureStore(dbStructure)
   }, [dbStructure])
 
-  const cliVersionData = {
+  const versionData = {
     gitHash: process.env.NEXT_PUBLIC_GIT_HASH,
     date: process.env.NEXT_PUBLIC_RELEASE_DATE,
     displayedOn: 'web',
   }
-  const cliVersion = v.parse(cliVersionSchema, cliVersionData)
+  const version = v.parse(versionSchema, versionData)
 
   return (
     <div style={{ height: '100vh' }}>
-      <CliVersionProvider cliVersion={cliVersion}>
+      <VersionProvider version={version}>
         <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
-      </CliVersionProvider>
+      </VersionProvider>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { updateActiveTableName } from '@/stores'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import clsx from 'clsx'
@@ -17,15 +17,15 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
 
   // TODO: Move handleClickMenuButton outside of TableNameMenuButton
   // after logging is complete
-  const { cliVersion } = useCliVersion()
+  const { version } = useVersion()
   const handleClickMenuButton = (tableId: string) => () => {
     updateActiveTableName(tableId)
-    cliVersion.displayedOn === 'cli' &&
+    version.displayedOn === 'cli' &&
       selectTableLogEvent({
         ref: 'leftPane',
         tableId,
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
+        cliVer: version.version,
+        appEnv: version.envName,
       })
   }
 

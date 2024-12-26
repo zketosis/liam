@@ -1,5 +1,5 @@
 import { clickLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import type { Table } from '@liam-hq/db-structure'
 import { DrawerClose, DrawerTitle, IconButton, XIcon } from '@liam-hq/ui'
 import type { FC } from 'react'
@@ -15,13 +15,13 @@ type Props = {
 }
 
 export const TableDetail: FC<Props> = ({ table }) => {
-  const { cliVersion } = useCliVersion()
+  const { version } = useVersion()
   const handleDrawerClose = () => {
-    cliVersion.displayedOn === 'cli' &&
+    version.displayedOn === 'cli' &&
       clickLogEvent({
         element: 'closeTableDetailButton',
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
+        cliVer: version.version,
+        appEnv: version.envName,
       })
   }
 
