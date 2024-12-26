@@ -24,7 +24,10 @@ export default function ERDViewer({
   }, [dbStructure])
 
   const cliVersionData = {
+    version: '',
     gitHash: process.env.NEXT_PUBLIC_GIT_HASH,
+    envName: '',
+    isReleasedGitHash: false,
     date: process.env.NEXT_PUBLIC_RELEASE_DATE,
     displayedOn: 'web',
   }
