@@ -1,9 +1,9 @@
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import type { FC } from 'react'
 import styles from './ReleaseVersion.module.css'
 
 export const ReleaseVersion: FC = () => {
-  const { version } = useCliVersion()
+  const { version } = useVersion()
 
   // Example output for version:
   // - Released version:

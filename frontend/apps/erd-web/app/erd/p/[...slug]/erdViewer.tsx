@@ -2,7 +2,7 @@
 
 import type { DBStructure } from '@liam-hq/db-structure'
 import {
-  CliVersionProvider,
+  VersionProvider,
   ERDRenderer,
   initDBStructureStore,
   versionSchema,
@@ -23,18 +23,18 @@ export default function ERDViewer({
     initDBStructureStore(dbStructure)
   }, [dbStructure])
 
-  const cliVersionData = {
+  const versionData = {
     gitHash: process.env.NEXT_PUBLIC_GIT_HASH,
     date: process.env.NEXT_PUBLIC_RELEASE_DATE,
     displayedOn: 'web',
   }
-  const version = v.parse(versionSchema, cliVersionData)
+  const version = v.parse(versionSchema, versionData)
 
   return (
     <div style={{ height: '100vh' }}>
-      <CliVersionProvider version={version}>
+      <VersionProvider version={version}>
         <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
-      </CliVersionProvider>
+      </VersionProvider>
     </div>
   )
 }

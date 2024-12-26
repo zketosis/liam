@@ -1,6 +1,6 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
 import {
   Background,
@@ -64,7 +64,7 @@ export const ERDContentInner: FC<Props> = ({
   useSyncHighlightsActiveTableChange()
   useSyncHiddenNodesChange()
 
-  const { version } = useCliVersion()
+  const { version } = useVersion()
   const handleNodeClick = useCallback(
     (tableId: string) => {
       updateActiveTableName(tableId)

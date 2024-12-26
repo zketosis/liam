@@ -1,1 +1,1 @@
-export * from './CliVersionProvider'
+export * from './versionProvider'

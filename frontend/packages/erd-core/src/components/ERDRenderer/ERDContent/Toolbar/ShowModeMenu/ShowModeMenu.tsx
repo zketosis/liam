@@ -1,5 +1,5 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { type ShowMode, showModeSchema } from '@/schemas/showMode'
 import { updateShowMode, useUserEditingStore } from '@/stores'
 import {
@@ -25,7 +25,7 @@ const OPTION_LIST: { value: ShowMode; label: string }[] = [
 export const ShowModeMenu: FC = () => {
   const { showMode } = useUserEditingStore()
 
-  const { version } = useCliVersion()
+  const { version } = useVersion()
   const handleChangeValue = useCallback(
     (value: string) => {
       const parsed = safeParse(showModeSchema, value)

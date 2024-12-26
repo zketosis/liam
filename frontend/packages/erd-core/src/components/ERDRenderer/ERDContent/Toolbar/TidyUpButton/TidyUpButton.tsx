@@ -1,5 +1,5 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { useUserEditingStore } from '@/stores'
 import { IconButton, TidyUpIcon } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
@@ -11,7 +11,7 @@ export const TidyUpButton: FC = () => {
   const { getNodes, getEdges } = useReactFlow()
   const { handleLayout } = useAutoLayout()
   const { showMode } = useUserEditingStore()
-  const { version } = useCliVersion()
+  const { version } = useVersion()
   const handleClick = useCallback(() => {
     version.displayedOn === 'cli' &&
       toolbarActionLogEvent({

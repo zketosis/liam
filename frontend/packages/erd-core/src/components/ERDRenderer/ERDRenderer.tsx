@@ -8,7 +8,7 @@ import styles from './ERDRenderer.module.css'
 import { LeftPane } from './LeftPane'
 import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
 import { CardinalityMarkers } from './CardinalityMarkers'
 // biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
@@ -31,7 +31,7 @@ export const ERDRenderer: FC<Props> = ({ defaultSidebarOpen = false }) => {
     showMode,
   })
 
-  const { version } = useCliVersion()
+  const { version } = useVersion()
   const handleChangeOpen = useCallback(
     (open: boolean) => {
       setOpen(open)

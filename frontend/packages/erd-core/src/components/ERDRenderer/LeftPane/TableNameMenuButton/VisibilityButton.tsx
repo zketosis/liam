@@ -1,5 +1,5 @@
 import { toggleLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { toggleHiddenNodeId } from '@/stores'
 import { Eye, EyeClosed, SidebarMenuAction } from '@liam-hq/ui'
 import { type FC, type MouseEvent, useCallback } from 'react'
@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
-  const { version } = useCliVersion()
+  const { version } = useVersion()
   const handleClick = useCallback(
     (event: MouseEvent) => {
       event.stopPropagation()

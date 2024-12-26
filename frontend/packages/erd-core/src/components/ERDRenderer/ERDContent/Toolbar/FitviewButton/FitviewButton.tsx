@@ -1,5 +1,5 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
-import { useCliVersion } from '@/providers'
+import { useVersion } from '@/providers'
 import { useUserEditingStore } from '@/stores'
 import { IconButton, Scan } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
@@ -9,7 +9,7 @@ import { type FC, useCallback } from 'react'
 export const FitviewButton: FC = () => {
   const { fitView } = useReactFlow()
   const { showMode } = useUserEditingStore()
-  const { version } = useCliVersion()
+  const { version } = useVersion()
 
   const handleClick = useCallback(() => {
     version.displayedOn === 'cli' &&
