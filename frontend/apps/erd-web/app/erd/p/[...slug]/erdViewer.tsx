@@ -2,8 +2,8 @@
 
 import type { DBStructure } from '@liam-hq/db-structure'
 import {
-  VersionProvider,
   ERDRenderer,
+  VersionProvider,
   initDBStructureStore,
   versionSchema,
 } from '@liam-hq/erd-core'

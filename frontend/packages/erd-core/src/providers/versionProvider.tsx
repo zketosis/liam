@@ -5,9 +5,7 @@ interface VersionContextProps {
   version: Version
 }
 
-const VersionContext = createContext<VersionContextProps | undefined>(
-  undefined,
-)
+const VersionContext = createContext<VersionContextProps | undefined>(undefined)
 
 export const useVersion = (): VersionContextProps => {
   const context = useContext(VersionContext)
