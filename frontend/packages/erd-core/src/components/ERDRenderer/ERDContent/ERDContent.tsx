@@ -14,7 +14,6 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
-import { CardinalityMarkers } from './CardinalityMarkers'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { NonRelatedTableGroupNode } from './NonRelatedTableGroupNode'
@@ -153,7 +152,6 @@ export const ERDContentInner: FC<Props> = ({
         selectionOnDrag
         deleteKeyCode={null} // Turn off because it does not want to be deleted
       >
-        <CardinalityMarkers />
         <Background
           color="var(--color-gray-600)"
           variant={BackgroundVariant.Dots}
