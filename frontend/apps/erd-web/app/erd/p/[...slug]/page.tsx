@@ -1,4 +1,6 @@
-import { parse } from '@liam-hq/db-structure/parser'
+// biome-ignore lint/correctness/noNodejsModules: Required for the server component to read the wasm file
+import path from 'node:path'
+import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import ERDViewer from './erdViewer'
@@ -22,6 +24,8 @@ export default async function Page({
   }
 
   const input = await res.text()
+
+  setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
 
   // Currently supports Postgres only
   const { value: dbStructure, errors } = await parse(input, 'postgres')
