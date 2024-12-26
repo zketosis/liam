@@ -27,8 +27,8 @@ export default async function Page({
 
   setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
 
-  // Currently supports Postgres only
-  const { value: dbStructure, errors } = await parse(input, 'postgres')
+  // Currently supports schema.rb only
+  const { value: dbStructure, errors } = await parse(input, 'schemarb')
   if (errors.length > 0) {
     for (const error of errors) {
       console.error(error)
