@@ -50,23 +50,6 @@ export const RelationshipEdge: FC<Props> = ({
         }
         className={clsx(styles.edge, data?.isHighlighted && styles.hovered)}
       />
-      <defs>
-        <radialGradient
-          id="myGradient"
-          cx="50%"
-          cy="50%"
-          r="50%"
-          fx="50%"
-          fy="50%"
-        >
-          <stop offset="0%" stopColor="var(--node-layout)" stopOpacity="1" />
-          <stop
-            offset="100%"
-            stopColor="var(--node-layout)"
-            stopOpacity="0.4"
-          />
-        </radialGradient>
-      </defs>
       {data?.isHighlighted &&
         [...Array(PARTICLE_COUNT)].map((_, i) => (
           <ellipse
