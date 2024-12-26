@@ -37,6 +37,7 @@ const anEdge = (
   target,
   targetHandle,
   animated: false,
+  selectable: false,
   zIndex: zIndex.edgeDefault,
   data: { isHighlighted: false, ...override?.data },
   ...override,

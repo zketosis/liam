@@ -4,10 +4,11 @@ import {
   CardinalityZeroOrOneRightMarker,
 } from '@liam-hq/ui'
 import type { FC } from 'react'
+import styles from './CardinalityMarkers.module.css'
 
 export const CardinalityMarkers: FC = () => {
   return (
-    <div>
+    <div className={styles.wrapper}>
       <CardinalityZeroOrOneLeftMarker
         id="zeroOrOneLeft"
         color="var(--pane-border-hover)"
