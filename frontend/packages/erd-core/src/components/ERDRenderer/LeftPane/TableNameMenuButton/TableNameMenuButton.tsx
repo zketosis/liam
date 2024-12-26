@@ -20,12 +20,13 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
   const { cliVersion } = useCliVersion()
   const handleClickMenuButton = (tableId: string) => () => {
     updateActiveTableName(tableId)
-    selectTableLogEvent({
-      ref: 'leftPane',
-      tableId,
-      cliVer: cliVersion.version,
-      appEnv: cliVersion.envName,
-    })
+    cliVersion.displayedOn === 'cli' &&
+      selectTableLogEvent({
+        ref: 'leftPane',
+        tableId,
+        cliVer: cliVersion.version,
+        appEnv: cliVersion.envName,
+      })
   }
 
   return (

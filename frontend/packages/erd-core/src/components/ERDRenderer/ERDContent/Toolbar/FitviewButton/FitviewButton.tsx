@@ -12,14 +12,15 @@ export const FitviewButton: FC = () => {
   const { cliVersion } = useCliVersion()
 
   const handleClick = useCallback(() => {
-    toolbarActionLogEvent({
-      element: 'fitview',
-      showMode,
-      cliVer: cliVersion.version,
-      appEnv: cliVersion.envName,
-    })
+    cliVersion.displayedOn === 'cli' &&
+      toolbarActionLogEvent({
+        element: 'fitview',
+        showMode,
+        cliVer: cliVersion.version,
+        appEnv: cliVersion.envName,
+      })
     fitView()
-  }, [fitView, showMode, cliVersion.version, cliVersion.envName])
+  }, [fitView, showMode, cliVersion])
 
   return (
     <ToolbarButton asChild onClick={handleClick}>

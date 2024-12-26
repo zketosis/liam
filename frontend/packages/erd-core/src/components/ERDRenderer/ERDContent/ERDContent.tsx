@@ -68,14 +68,15 @@ export const ERDContentInner: FC<Props> = ({
   const handleNodeClick = useCallback(
     (tableId: string) => {
       updateActiveTableName(tableId)
-      selectTableLogEvent({
-        ref: 'mainArea',
-        tableId,
-        cliVer: cliVersion.version,
-        appEnv: cliVersion.envName,
-      })
+      cliVersion.displayedOn === 'cli' &&
+        selectTableLogEvent({
+          ref: 'mainArea',
+          tableId,
+          cliVer: cliVersion.version,
+          appEnv: cliVersion.envName,
+        })
     },
-    [cliVersion.version, cliVersion.envName],
+    [cliVersion],
   )
 
   const handlePaneClick = useCallback(() => {
@@ -115,15 +116,16 @@ export const ERDContentInner: FC<Props> = ({
       const operationId = `id_${new Date().getTime()}`
       for (const node of nodes) {
         const tableId = node.id
-        repositionTableLogEvent({
-          tableId,
-          operationId,
-          cliVer: cliVersion.version,
-          appEnv: cliVersion.envName,
-        })
+        cliVersion.displayedOn === 'cli' &&
+          repositionTableLogEvent({
+            tableId,
+            operationId,
+            cliVer: cliVersion.version,
+            appEnv: cliVersion.envName,
+          })
       }
     },
-    [cliVersion.version, cliVersion.envName],
+    [cliVersion],
   )
 
   const panOnDrag = [1, 2]
