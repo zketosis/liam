@@ -23,3 +23,18 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.handle {
+  top: auto;
+  opacity: 0;
+}
+
+.handle[data-handlepos='right'] {
+  transform: translate(50%, 0%);
+  right: -17px;
+}
+
+.handle[data-handlepos='left'] {
+  transform: translate(-50%, 0%);
+  left: -20px;
+}
