@@ -21,8 +21,15 @@ import { WASI } from 'node:wasi'
 import type { ParseResult } from '@ruby/prism/src/deserialize.js'
 import { parsePrism } from '@ruby/prism/src/parsePrism.js'
 
+let overrideWasmUrl: string | undefined = undefined
+
+export const setPrismWasmUrl = (url: string): void => {
+  overrideWasmUrl = url
+}
+
 export async function loadPrism(): Promise<(source: string) => ParseResult> {
-  const path = fileURLToPath(new URL('prism.wasm', import.meta.url))
+  const path =
+    overrideWasmUrl ?? fileURLToPath(new URL('prism.wasm', import.meta.url))
   const wasm = await WebAssembly.compile(await readFile(path))
 
   const wasi = new WASI({ version: 'preview1' })
