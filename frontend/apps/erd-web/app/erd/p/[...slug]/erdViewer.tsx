@@ -30,6 +30,7 @@ export default function ERDViewer({
     envName: 'development',
     isReleasedGitHash: false,
     date: '2021-01-01T00:00:00Z',
+    displayedOn: 'web',
   }
   const cliVersion = v.parse(cliVersionSchema, cliVersionData)
 
