@@ -1,6 +1,10 @@
 // biome-ignore lint/correctness/noNodejsModules: Required for the server component to read the wasm file
 import path from 'node:path'
-import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
+import {
+  detectFormat,
+  parse,
+  setPrismWasmUrl,
+} from '@liam-hq/db-structure/parser'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import ERDViewer from './erdViewer'
@@ -27,8 +31,13 @@ export default async function Page({
 
   setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
 
-  // Currently supports schema.rb only
-  const { value: dbStructure, errors } = await parse(input, 'schemarb')
+  const format = detectFormat(contentUrl)
+  if (format === undefined) {
+    // TODO: Show error message in the UI
+    notFound()
+  }
+
+  const { value: dbStructure, errors } = await parse(input, format)
   if (errors.length > 0) {
     for (const error of errors) {
       console.error(error)
