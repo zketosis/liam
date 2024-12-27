@@ -7,6 +7,7 @@ export { setPrismWasmUrl } from './schemarb/index.js'
 export {
   supportedFormatSchema,
   type SupportedFormat,
+  detectFormat,
 } from './supportedFormat/index.js'
 
 export const parse = (
