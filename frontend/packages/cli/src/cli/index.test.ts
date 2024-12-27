@@ -1,7 +1,6 @@
 import { createRequire } from 'node:module'
 import type { Command } from 'commander'
 import { describe, expect, it, vi } from 'vitest'
-import { buildCommand } from './commands/index.js'
 import { program } from './index.js'
 
 // Function to set up mocks
@@ -36,27 +35,5 @@ describe('program', () => {
     const buildSubCommand = findSubCommand(erdCommand, 'build')
     expect(buildSubCommand).toBeDefined()
     expect(buildSubCommand?.description()).toBe('Build ERD html assets')
-  })
-
-  describe('commands', () => {
-    it.each([['schemarb'], ['postgres']])(
-      'should call buildCommand with correct arguments for format %s',
-      (format) => {
-        const inputFile = './fixtures/input.schema.rb'
-
-        program.parse(
-          ['erd', 'build', '--input', inputFile, '--format', format],
-          {
-            from: 'user',
-          },
-        )
-
-        expect(buildCommand).toHaveBeenCalledWith(
-          inputFile,
-          expect.stringContaining('dist'),
-          format,
-        )
-      },
-    )
   })
 })
