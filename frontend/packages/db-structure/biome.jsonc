@@ -8,6 +8,7 @@
   "linter": {
     "rules": {
       "correctness": {
+        "noNodejsModules": "error",
         "useImportExtensions": {
           "level": "error",
           "fix": "safe",
