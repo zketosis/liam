@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 889 MIT
+* 890 MIT
 * 59 ISC
 * 30 Apache 2.0
 * 14 Simplified BSD
@@ -11239,6 +11239,17 @@ Unknown manually approved
 
 <a name="yocto-queue"></a>
 ### yocto-queue v0.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="yoctocolors"></a>
+### yoctocolors v2.1.1
 #### 
 
 ##### Paths
