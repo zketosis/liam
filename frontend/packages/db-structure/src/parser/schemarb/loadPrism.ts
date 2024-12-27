@@ -16,8 +16,7 @@ Consider removing this patch once support for Node.js v18 is no longer necessary
 import { readFile } from 'node:fs/promises'
 // biome-ignore lint/correctness/noNodejsModules: This import is server-side specific because loadPrism() is exclusively invoked in server environments.
 import { fileURLToPath } from 'node:url'
-// biome-ignore lint/correctness/noNodejsModules: This import is server-side specific because loadPrism() is exclusively invoked in server environments.
-import { WASI } from 'node:wasi'
+
 import type { ParseResult } from '@ruby/prism/src/deserialize.js'
 import { parsePrism } from '@ruby/prism/src/parsePrism.js'
 
@@ -32,6 +31,9 @@ export async function loadPrism(): Promise<(source: string) => ParseResult> {
     overrideWasmUrl ?? fileURLToPath(new URL('prism.wasm', import.meta.url))
   const wasm = await WebAssembly.compile(await readFile(path))
 
+  // Dynamic import for WASI to avoid warnings unless necessary
+  // biome-ignore lint/correctness/noNodejsModules: This import is server-side specific because loadPrism() is exclusively invoked in server environments.
+  const { WASI } = await import('node:wasi')
   const wasi = new WASI({ version: 'preview1' })
 
   // Patch applied for compatibility
