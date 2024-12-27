@@ -1,5 +1,6 @@
 // biome-ignore lint/correctness/noNodejsModules: Required for the server component to read the wasm file
 import path from 'node:path'
+import type { PageProps } from '@/app/types'
 import {
   detectFormat,
   parse,
@@ -7,15 +8,20 @@ import {
 } from '@liam-hq/db-structure/parser'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
+import * as v from 'valibot'
 import ERDViewer from './erdViewer'
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ slug: string[] }>
-}) {
-  const { slug } = await params
-  const joinedPath = slug.join('/')
+const paramsSchema = v.object({
+  slug: v.array(v.string()),
+})
+
+export default async function Page({ params }: PageProps) {
+  const parsed = v.safeParse(paramsSchema, await params)
+  if (!parsed.success) {
+    notFound()
+  }
+
+  const joinedPath = parsed.output.slug.join('/')
   if (!joinedPath) {
     notFound()
   }
