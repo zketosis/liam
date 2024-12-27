@@ -18,8 +18,8 @@ program.addCommand(erdCommand)
 erdCommand
   .command('build')
   .description('Build ERD html assets')
-  .option('--input <path>', 'Path to the .sql file')
-  .option('--format <format>', 'Format of the input file')
+  .option('--input <path|url>', 'Path or URL to the .sql file')
+  .option('--format <format>', 'Format of the input file (postgres|schemarb)')
   .action((options) => buildCommand(options.input, distDir, options.format))
 
 export { program }
