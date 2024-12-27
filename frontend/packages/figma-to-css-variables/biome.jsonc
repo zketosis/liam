@@ -1,11 +1,3 @@
 {
-  "extends": ["../../packages/configs/biome.jsonc"],
-  "linter": {
-    "rules": {
-      "correctness": {
-        // Due to the unavoidable use of Node.js modules in server-side code.
-        "noNodejsModules": "off"
-      }
-    }
-  }
+  "extends": ["../../packages/configs/biome.jsonc"]
 }

@@ -1,4 +1,3 @@
-// biome-ignore lint/correctness/noNodejsModules: This code is only run in the Node.js environment.
 import { execSync } from 'node:child_process'
 import type { NextConfig } from 'next'
 
