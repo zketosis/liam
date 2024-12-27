@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const allPaths = pages.map((page) => page.url)
 
   return allPaths.map((path) => ({
-    url: `https://liam-docs-sigma.vercel.app${path}`,
+    url: `${process.env.SERVICE_SITE_URL}${path}`,
     lastModified: new Date().toISOString(),
   }))
 }
