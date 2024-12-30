@@ -1,5 +1,15 @@
 # @liam-hq/cli
 
+## 0.0.18
+
+### Patch Changes
+
+- a2999c5: :children_crossing: Delay the warning `ExperimentalWarning: WASI is an experimental feature and might change at any time` for prism/wasm until the actual moment prism is used.
+- e0c748c: :bug: Fixed problem with fitView not working properly while displaying only some tables
+- 69865f3: :sparkles: Add `initCommand` for interactive setup guidance (first step)
+- d10e628: 🐛: Fix ReleaseVersion display
+- 17746fd: ♻️ Rename cliVersion to version
+
 ## 0.0.17
 
 ### Patch Changes

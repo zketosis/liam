@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.4
+
+### Patch Changes
+
+- a2999c5: :children_crossing: Delay the warning `ExperimentalWarning: WASI is an experimental feature and might change at any time` for prism/wasm until the actual moment prism is used.
+
 ## 0.0.3
 
 ### Patch Changes

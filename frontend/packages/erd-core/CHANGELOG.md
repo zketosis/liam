@@ -1,5 +1,13 @@
 # @liam-hq/erd-core
 
+## 0.0.13
+
+### Patch Changes
+
+- e0c748c: :bug: Fixed problem with fitView not working properly while displaying only some tables
+- d10e628: 🐛: Fix ReleaseVersion display
+- 17746fd: ♻️ Rename cliVersion to version
+
 ## 0.0.12
 
 ### Patch Changes
