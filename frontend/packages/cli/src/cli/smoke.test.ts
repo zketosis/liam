@@ -35,6 +35,7 @@ describe('CLI Smoke Test', () => {
 
         Commands:
           erd             ERD commands
+          init            guide you interactively through the setup
           help [command]  display help for command
         "
       `)
