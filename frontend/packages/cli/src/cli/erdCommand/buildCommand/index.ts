@@ -4,13 +4,14 @@ import { dirname } from 'node:path'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { SupportedFormat } from '@liam-hq/db-structure/parser'
+import type { CliError } from '../../errors.js'
 import { runPreprocess } from '../runPreprocess.js'
 
 export const buildCommand = async (
   inputPath: string,
   outDir: string,
   format: SupportedFormat,
-) => {
+): Promise<CliError[]> => {
   // generate schema.json
   runPreprocess(inputPath, outDir, format)
 
@@ -22,7 +23,7 @@ export const buildCommand = async (
   // Check if the source directory exists
   if (!existsSync(cliHtmlPath)) {
     console.error(`The directory '${cliHtmlPath}' does not exist.`)
-    return
+    return []
   }
 
   // Ensure the output directory exists
@@ -42,4 +43,6 @@ export const buildCommand = async (
       },
     )
   })
+
+  return []
 }
