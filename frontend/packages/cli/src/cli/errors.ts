@@ -18,3 +18,10 @@ export class FileSystemError extends CriticalError {
     this.name = 'FileSystemError'
   }
 }
+
+export class ArgumentError extends CriticalError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'ArgumentError'
+  }
+}

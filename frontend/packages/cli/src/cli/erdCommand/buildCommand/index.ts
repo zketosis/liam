@@ -13,7 +13,14 @@ export const buildCommand = async (
   format: SupportedFormat,
 ): Promise<CliError[]> => {
   // generate schema.json
-  runPreprocess(inputPath, outDir, format)
+  const { errors: preprocessErrors } = await runPreprocess(
+    inputPath,
+    outDir,
+    format,
+  )
+  if (preprocessErrors.length > 0) {
+    return preprocessErrors
+  }
 
   // generate index.html
   const __filename = fileURLToPath(import.meta.url)
