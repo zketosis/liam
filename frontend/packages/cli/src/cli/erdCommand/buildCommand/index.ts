@@ -4,7 +4,7 @@ import { dirname } from 'node:path'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { SupportedFormat } from '@liam-hq/db-structure/parser'
-import type { CliError } from '../../errors.js'
+import { type CliError, FileSystemError } from '../../errors.js'
 import { runPreprocess } from '../runPreprocess.js'
 
 export const buildCommand = async (
@@ -19,17 +19,22 @@ export const buildCommand = async (
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = dirname(__filename)
   const cliHtmlPath = resolve(__dirname, '../html')
+  const errors: CliError[] = []
 
   // Check if the source directory exists
   if (!existsSync(cliHtmlPath)) {
-    console.error(`The directory '${cliHtmlPath}' does not exist.`)
-    return []
+    errors.push(
+      new FileSystemError(`The directory '${cliHtmlPath}' does not exist.`),
+    )
+    return errors
   }
 
   // Ensure the output directory exists
   execFile('mkdir', ['-p', outDir], (error) => {
     if (error) {
-      console.error('Error creating output directory:', error)
+      errors.push(
+        new FileSystemError(`Error creating output directory: ${error}`),
+      )
       return
     }
 
@@ -38,11 +43,11 @@ export const buildCommand = async (
       ['-R', `${cliHtmlPath}/.`, outDir],
       (error, _stdout, stderr) => {
         if (error) {
-          console.error('Error copying files:', stderr)
+          errors.push(new FileSystemError(`Error copying files: ${stderr}`))
         }
       },
     )
   })
 
-  return []
+  return errors
 }

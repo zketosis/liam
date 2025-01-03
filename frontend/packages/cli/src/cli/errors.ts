@@ -11,3 +11,10 @@ export class CriticalError extends CliError {
     this.name = 'CriticalError'
   }
 }
+
+export class FileSystemError extends CriticalError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'FileSystemError'
+  }
+}
