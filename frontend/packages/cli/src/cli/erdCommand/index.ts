@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { Command } from 'commander'
+import { red } from 'yoctocolors'
 import { buildCommand } from './buildCommand/index.js'
 
 const distDir = path.join(process.cwd(), 'dist')
@@ -7,7 +8,7 @@ const distDir = path.join(process.cwd(), 'dist')
 const erdCommand = new Command('erd').description('ERD commands')
 
 function actionErrorHandler(error: Error) {
-  console.error(error.message)
+  console.error(red(`ERROR: ${error.message}`))
 }
 
 export function actionRunner<T>(fn: (args: T) => Promise<Error[]>) {
