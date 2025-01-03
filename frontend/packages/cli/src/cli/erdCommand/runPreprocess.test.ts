@@ -22,7 +22,7 @@ describe('runPreprocess', () => {
         end
       `,
     },
-  ]
+  ] as const
 
   it.each(testCases)(
     'should create schema.json with the content in $format format',
@@ -32,11 +32,7 @@ describe('runPreprocess', () => {
 
       fs.writeFileSync(inputPath, content, 'utf8')
 
-      const outputFilePath = await runPreprocess(
-        inputPath,
-        tmpDir,
-        format as SupportedFormat,
-      )
+      const outputFilePath = await runPreprocess(inputPath, tmpDir, format)
       if (!outputFilePath) throw new Error('Failed to run preprocess')
 
       expect(fs.existsSync(outputFilePath)).toBe(true)
