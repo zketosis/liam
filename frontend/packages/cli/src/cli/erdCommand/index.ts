@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { Command } from 'commander'
 import { red } from 'yoctocolors'
+import { CriticalError } from '../errors.js'
 import { buildCommand } from './buildCommand/index.js'
 
 const distDir = path.join(process.cwd(), 'dist')
@@ -16,6 +17,10 @@ export function actionRunner<T>(fn: (args: T) => Promise<Error[]>) {
     const errors = await fn(args)
     if (errors.length > 0) {
       errors.forEach(actionErrorHandler)
+    }
+
+    if (errors.some((error) => error instanceof CriticalError)) {
+      process.exit(1)
     }
   }
 }
