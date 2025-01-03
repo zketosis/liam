@@ -25,3 +25,17 @@ export class ArgumentError extends CriticalError {
     this.name = 'ArgumentError'
   }
 }
+
+export class WarningError extends CliError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'WarningError'
+  }
+}
+
+export class WarningProcessingError extends WarningError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'WarningProcessingError'
+  }
+}

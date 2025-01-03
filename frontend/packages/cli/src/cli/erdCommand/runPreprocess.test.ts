@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import type { SupportedFormat } from '@liam-hq/db-structure/parser'
 import { describe, expect, it } from 'vitest'
-import { ArgumentError } from '../errors.js'
+import { ArgumentError, WarningProcessingError } from '../errors.js'
 import { runPreprocess } from './runPreprocess.js'
 
 describe('runPreprocess', () => {
@@ -67,6 +67,24 @@ describe('runPreprocess', () => {
     expect(errors).toEqual([
       new ArgumentError(
         '--format is missing, invalid, or specifies an unsupported format. Please provide a valid format (e.g., "schemarb" or "postgres").',
+      ),
+    ])
+  })
+
+  it('should return an error if failed parcing schema file', async () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-distDir-'))
+    const inputPath = path.join(tmpDir, 'input.sql')
+    fs.writeFileSync(inputPath, 'invalid;', 'utf8')
+
+    const { outputFilePath, errors } = await runPreprocess(
+      inputPath,
+      tmpDir,
+      'postgres',
+    )
+    expect(outputFilePath).toBeNull()
+    expect(errors).toEqual([
+      new WarningProcessingError(
+        'Error during parcing schema file: syntax error at or near "invalid"',
       ),
     ])
   })

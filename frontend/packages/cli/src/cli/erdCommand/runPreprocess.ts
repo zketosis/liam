@@ -6,7 +6,12 @@ import {
   supportedFormatSchema,
 } from '@liam-hq/db-structure/parser'
 import * as v from 'valibot'
-import { ArgumentError, type CliError, FileSystemError } from '../errors.js'
+import {
+  ArgumentError,
+  type CliError,
+  FileSystemError,
+  WarningProcessingError,
+} from '../errors.js'
 import { getInputContent } from './getInputContent.js'
 
 type Output = {
@@ -34,8 +39,14 @@ export async function runPreprocess(
 
   const { value: json, errors } = await parse(input, format)
   if (errors.length > 0) {
-    for (const error of errors) {
-      console.error(error)
+    return {
+      outputFilePath: null,
+      errors: errors.map(
+        (err) =>
+          new WarningProcessingError(
+            `Error during parcing schema file: ${err.message}`,
+          ),
+      ),
     }
   }
 
