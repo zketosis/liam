@@ -20,16 +20,20 @@ const searchParamsSchema = v.object({
   format: v.optional(supportedFormatSchema),
 })
 
-const getContentUrl = (url: string) => {
-  const parsedUrl = new URL(url)
+const resolveContentUrl = (url: string): string | undefined => {
+  try {
+    const parsedUrl = new URL(url)
 
-  if (parsedUrl.hostname === 'github.com' && url.includes('/blob/')) {
+    if (parsedUrl.hostname === 'github.com' && url.includes('/blob/')) {
+      return url
+        .replace('github.com', 'raw.githubusercontent.com')
+        .replace('/blob', '')
+    }
+
     return url
-      .replace('github.com', 'raw.githubusercontent.com')
-      .replace('/blob', '')
+  } catch {
+    return undefined
   }
-
-  return url
 }
 
 export default async function Page({
@@ -47,7 +51,8 @@ export default async function Page({
   }
 
   const url = `https://${joinedPath}`
-  const contentUrl = getContentUrl(url)
+  const contentUrl = resolveContentUrl(url)
+  if (!contentUrl) notFound()
 
   const res = await fetch(contentUrl, { cache: 'no-store' })
   if (!res.ok) {
