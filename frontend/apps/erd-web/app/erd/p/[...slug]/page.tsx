@@ -8,6 +8,7 @@ import {
   setPrismWasmUrl,
   supportedFormatSchema,
 } from '@liam-hq/db-structure/parser'
+import * as Sentry from '@sentry/nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
@@ -80,6 +81,7 @@ export default async function Page({
   // TODO: Show error message in the UI
   if (errors.length > 0) {
     for (const error of errors) {
+      Sentry.captureException(error)
       console.error(error)
     }
   }
