@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.5
+
+### Patch Changes
+
+- a0a7e7e: :sparkle: Added `detectFormat` function
+
 ## 0.0.4
 
 ### Patch Changes
