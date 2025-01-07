@@ -54,10 +54,10 @@ export default async function Page({
   const contentUrl = resolveContentUrl(url)
   if (!contentUrl) notFound()
 
-  const res = await fetch(contentUrl, { cache: 'no-store' })
-  if (!res.ok) {
+  const res = await fetch(contentUrl, { cache: 'no-store' }).catch(() => {
     notFound()
-  }
+  })
+  if (!res.ok) notFound()
 
   const input = await res.text()
 
