@@ -1,5 +1,13 @@
 # @liam-hq/cli
 
+## 0.0.19
+
+### Patch Changes
+
+- 75053da: 🐛 Fix unnecessary whitespace generation
+- 950f375: :bug: No focus when Active table in Related Tables
+- 9c6bcc6: ✨ feat: Enable browser back and forward for active table
+
 ## 0.0.18
 
 ### Patch Changes

@@ -10,6 +10,7 @@ type UserEditingStore = {
   }
   showMode: ShowMode
   hiddenNodeIds: Set<string>
+  isPopstateNavigation: boolean
 }
 
 export const userEditingStore = proxy<UserEditingStore>({
@@ -18,10 +19,12 @@ export const userEditingStore = proxy<UserEditingStore>({
   },
   showMode: 'TABLE_NAME',
   hiddenNodeIds: proxySet<string>(),
+  isPopstateNavigation: false,
 })
 
 subscribe(userEditingStore.active, () => {
   const newTableName = userEditingStore.active.tableName
+  const isPopstateNavigation = userEditingStore.isPopstateNavigation
   const url = new URL(window.location.href)
   const activeQueryParam: QueryParam = 'active'
 
@@ -31,7 +34,9 @@ subscribe(userEditingStore.active, () => {
     url.searchParams.delete(activeQueryParam)
   }
 
-  window.history.pushState({}, '', url)
+  if (!isPopstateNavigation) {
+    window.history.pushState({}, '', url)
+  }
 })
 
 subscribe(userEditingStore.hiddenNodeIds, async () => {

@@ -23,6 +23,7 @@ import { TableNode } from './TableNode'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
+import { usePopStateListener } from './usePopStateListener'
 import { useSyncHiddenNodesChange } from './useSyncHiddenNodesChange'
 import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTableChange'
 
@@ -41,6 +42,7 @@ type Props = {
   enabledFeatures?:
     | {
         fitViewWhenActiveTableChange?: boolean | undefined
+        initialFitViewToActiveTable?: boolean | undefined
       }
     | undefined
 }
@@ -57,12 +59,16 @@ export const ERDContentInner: FC<Props> = ({
   } = useERDContentContext()
   const { tableName: activeTableName } = useUserEditingActiveStore()
 
-  useInitialAutoLayout(nodes)
+  useInitialAutoLayout(
+    nodes,
+    enabledFeatures?.initialFitViewToActiveTable ?? true,
+  )
   useFitViewWhenActiveTableChange(
     enabledFeatures?.fitViewWhenActiveTableChange ?? true,
   )
   useSyncHighlightsActiveTableChange()
   useSyncHiddenNodesChange()
+  usePopStateListener()
 
   const { version } = useVersion()
   const handleNodeClick = useCallback(
