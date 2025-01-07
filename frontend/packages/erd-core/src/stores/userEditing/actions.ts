@@ -3,10 +3,10 @@ import { userEditingStore } from './store'
 
 export const updateActiveTableName = (
   tableName: string | undefined,
-  isPopstateNavigation?: boolean,
+  isPopstateInProgress?: boolean,
 ) => {
   userEditingStore.active.tableName = tableName
-  userEditingStore.isPopstateNavigation = isPopstateNavigation ?? false
+  userEditingStore.isPopstateInProgress = isPopstateInProgress ?? false
 }
 
 export const updateShowMode = (showMode: ShowMode) => {
