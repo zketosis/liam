@@ -1,12 +1,8 @@
 import type { ShowMode } from '@/schemas/showMode'
 import { userEditingStore } from './store'
 
-export const updateActiveTableName = (
-  tableName: string | undefined,
-  isPopstateInProgress?: boolean,
-) => {
+export const updateActiveTableName = (tableName: string | undefined) => {
   userEditingStore.active.tableName = tableName
-  userEditingStore.isPopstateInProgress = isPopstateInProgress ?? false
 }
 
 export const updateShowMode = (showMode: ShowMode) => {
