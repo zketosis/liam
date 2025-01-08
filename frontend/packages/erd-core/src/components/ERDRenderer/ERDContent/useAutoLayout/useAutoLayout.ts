@@ -39,10 +39,16 @@ export const useAutoLayout = () => {
       })
 
       setNodes([...hiddenNodes, ...newNodes])
+
+      // TODO: Investigate which approach works best. It's possible that both are needed.
+      // The use of `window.requestAnimationFrame` aligns with practices demonstrated in React Flow examples.
+      // ref: https://reactflow.dev/learn/layouting/layouting
       setTimeout(() => {
-        fitView(fitViewOptions)
-        setLoading(false)
-        setInitializeComplete(true)
+        window.requestAnimationFrame(() => {
+          fitView(fitViewOptions)
+          setLoading(false)
+          setInitializeComplete(true)
+        })
       }, 0)
     },
     [setNodes, fitView, setLoading, setInitializeComplete],
