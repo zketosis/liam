@@ -13,7 +13,10 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_GIT_HASH: gitCommitHash,
     NEXT_PUBLIC_RELEASE_DATE: releaseDate,
   },
-  assetPrefix: process.env.ASSET_PREFIX,
+  assetPrefix:
+    process.env.NEXT_PUBLIC_ENV_NAME === 'production'
+      ? process.env.ASSET_PREFIX
+      : undefined,
 }
 
 export default withSentryConfig(nextConfig, {
