@@ -1,4 +1,4 @@
-import { updateActiveTableName } from '@/stores'
+import { updateActiveTableName, updateIsPopstateInProgress } from '@/stores'
 import { useEffect } from 'react'
 
 export const usePopStateListener = () => {
@@ -7,7 +7,12 @@ export const usePopStateListener = () => {
       const url = new URL(window.location.href)
       const tableName = url.searchParams.get('active')
 
-      updateActiveTableName(tableName ?? undefined, true)
+      updateIsPopstateInProgress(true)
+      updateActiveTableName(tableName ?? undefined)
+
+      setTimeout(() => {
+        updateIsPopstateInProgress(false)
+      }, 0)
     }
 
     window.addEventListener('popstate', handlePopState)
