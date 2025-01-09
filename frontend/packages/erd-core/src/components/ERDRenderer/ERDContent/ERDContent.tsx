@@ -159,6 +159,7 @@ export const ERDContentInner: FC<Props> = ({
         panOnDrag={panOnDrag}
         selectionOnDrag
         deleteKeyCode={null} // Turn off because it does not want to be deleted
+        attributionPosition="bottom-left"
       >
         <Background
           color="var(--color-gray-600)"
