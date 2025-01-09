@@ -1,5 +1,12 @@
 # @liam-hq/erd-core
 
+## 0.0.15
+
+### Patch Changes
+
+- 6a37715: ♻️ refactor usePopStateListener
+- 1f6107b: 🐛 Apply `window.requestAnimationFrame` to resolve conflicts between auto-layout and fitView operations
+
 ## 0.0.14
 
 ### Patch Changes

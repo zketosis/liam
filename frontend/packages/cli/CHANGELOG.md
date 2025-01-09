@@ -1,5 +1,16 @@
 # @liam-hq/cli
 
+## 0.0.20
+
+### Patch Changes
+
+- 6caac30: :sparkle: Improved error output
+
+  - Output logs are now prefixed with `ERROR:` and `WARN:` and output in color.
+  - In case of `ERROR` exit 1.
+
+- 6a37715: ♻️ refactor usePopStateListener
+
 ## 0.0.19
 
 ### Patch Changes
