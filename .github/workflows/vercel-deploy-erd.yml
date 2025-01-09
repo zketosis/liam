@@ -1,4 +1,4 @@
-# This workflow specifically deploys the `apps/erd-sample` app.
+# This workflow specifically deploys the `apps/erd-sample` and `apps/erd-web` app.
 # For deployments of other `apps/*` apps, see `.github/workflows/vercel-deploy.yml`.
 name: Vercel Deployment erd-sample
 
@@ -31,8 +31,9 @@ jobs:
         with:
           filters: |
             src:
-              - './.github/workflows/vercel-deploy-erd-sample.yml'
+              - './.github/workflows/vercel-deploy-erd.yml'
               - './frontend/apps/erd-sample/**'
+              - './frontend/apps/erd-web/**'
               - './frontend/packages/cli/**'
               - './frontend/packages/db-structure/**'
               - './frontend/packages/erd-core/**'
@@ -49,6 +50,8 @@ jobs:
         apps:
           - name: "@liam-hq/erd-sample"
             vercel-project-id-key: VERCEL_PROJECT_ID_ERD_SAMPLE
+          - name: erd-web
+            vercel-project-id-key: VERCEL_PROJECT_ID_ERD_WEB
     environment:
       name: "${{ needs.setup-deployment.outputs.environment }} - ${{ matrix.apps.name }}"
       url: ${{ steps.deployment.outputs.deployment-url }}
