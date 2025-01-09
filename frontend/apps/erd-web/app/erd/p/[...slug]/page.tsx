@@ -99,6 +99,8 @@ export default async function Page({
   })
   if (!res.ok) notFound()
 
+  const input = await res.text()
+
   setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
 
   let format: SupportedFormat | undefined
@@ -113,13 +115,6 @@ export default async function Page({
     // TODO: Show error message in the UI
     notFound()
   }
-
-  const input = `
-  create_table "companies", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "store companies", force: :cascade do |t|
-  t.string "name", null: false
-  t.string "address", null: false
-end
-  `
 
   const { value: dbStructure, errors } = await parse(input, format)
   // TODO: Show error message in the UI
