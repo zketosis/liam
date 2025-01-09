@@ -9,6 +9,7 @@ import {
   supportedFormatSchema,
 } from '@liam-hq/db-structure/parser'
 import * as Sentry from '@sentry/nextjs'
+import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
@@ -34,6 +35,44 @@ const resolveContentUrl = (url: string): string | undefined => {
     return url
   } catch {
     return undefined
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const parsedParams = v.safeParse(paramsSchema, await params)
+  if (!parsedParams.success) return notFound()
+
+  const rawUrl = parsedParams.output.slug.join('/')
+  if (!rawUrl) notFound()
+
+  const projectUrl = `https://${rawUrl}`
+
+  const res = await fetch(projectUrl).catch(() => null)
+
+  const projectName = await (async () => {
+    if (res?.ok) {
+      const html = await res.text()
+      const ogTitleMatch = html.match(
+        /<meta property="og:title" content="([^"]+)" \/>/,
+      )
+      const htmlTitleMatch = html.match(/<title>([^<]+)<\/title>/)
+      return ogTitleMatch?.[1] ?? htmlTitleMatch?.[1] ?? rawUrl
+    }
+    return rawUrl
+  })()
+
+  const metaTitle = `${projectName} - Liam ERD`
+  const metaDescription =
+    'Generate ER diagrams effortlessly by entering a schema file URL. Ideal for visualizing, reviewing, and documenting database structures.'
+
+  return {
+    title: metaTitle,
+    description: metaDescription,
+    openGraph: {
+      url: `https://liambx.com/erd/p/${rawUrl}`,
+    },
   }
 }
 
