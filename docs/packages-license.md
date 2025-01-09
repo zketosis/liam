@@ -2,10 +2,10 @@
 
 
 ## Summary
-* 965 MIT
+* 975 MIT
 * 68 Apache 2.0
-* 60 ISC
-* 19 Simplified BSD
+* 61 ISC
+* 27 Simplified BSD
 * 17 New BSD
 * 3 MIT OR Apache-2.0
 * 3 BlueOak-1.0.0
@@ -4002,6 +4002,17 @@ Python-2.0 manually approved
 
 
 
+<a name="boolbase"></a>
+### boolbase v1.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
 <a name="brace-expansion"></a>
 ### brace-expansion v1.1.11
 #### 
@@ -4285,6 +4296,28 @@ CC-BY-4.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="cheerio"></a>
+### cheerio v1.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="cheerio-select"></a>
+### cheerio-select v2.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
 
 
 
@@ -4681,6 +4714,28 @@ CC-BY-4.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="css-select"></a>
+### css-select v5.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
+<a name="css-what"></a>
+### css-what v6.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
 
 
 
@@ -5157,6 +5212,50 @@ CC-BY-4.0 permitted
 
 
 
+<a name="dom-serializer"></a>
+### dom-serializer v2.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="domelementtype"></a>
+### domelementtype v2.3.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
+<a name="domhandler"></a>
+### domhandler v5.0.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
+<a name="domutils"></a>
+### domutils v3.2.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
 <a name="dot-case"></a>
 ### dot-case v2.1.1
 #### 
@@ -5267,6 +5366,17 @@ CC-BY-4.0 permitted
 
 
 
+<a name="encoding-sniffer"></a>
+### encoding-sniffer v0.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="enhanced-resolve"></a>
 ### enhanced-resolve v5.17.1
 #### 
@@ -5286,6 +5396,17 @@ CC-BY-4.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="entities"></a>
+### entities v4.5.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
 
 
 
@@ -6655,6 +6776,17 @@ CC-BY-4.0 permitted
 
 <a name="html-void-elements"></a>
 ### html-void-elements v3.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="htmlparser2"></a>
+### htmlparser2 v9.1.0
 #### 
 
 ##### Paths
@@ -9044,6 +9176,17 @@ Public Domain manually approved
 
 
 
+<a name="nth-check"></a>
+### nth-check v2.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
 <a name="object-assign"></a>
 ### object-assign v4.1.1
 #### 
@@ -9387,6 +9530,39 @@ BlueOak-1.0.0 permitted
 
 <a name="parse-json"></a>
 ### parse-json v5.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="parse5"></a>
+### parse5 v7.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="parse5-htmlparser2-tree-adapter"></a>
+### parse5-htmlparser2-tree-adapter v7.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="parse5-parser-stream"></a>
+### parse5-parser-stream v7.1.2
 #### 
 
 ##### Paths
@@ -11930,6 +12106,17 @@ Unknown manually approved
 
 
 
+<a name="undici"></a>
+### undici v6.21.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="undici-types"></a>
 ### undici-types v6.19.8
 #### 
@@ -12394,6 +12581,28 @@ Unknown manually approved
 
 <a name="webpack-virtual-modules"></a>
 ### webpack-virtual-modules v0.5.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="whatwg-encoding"></a>
+### whatwg-encoding v3.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="whatwg-mimetype"></a>
+### whatwg-mimetype v4.0.0
 #### 
 
 ##### Paths
