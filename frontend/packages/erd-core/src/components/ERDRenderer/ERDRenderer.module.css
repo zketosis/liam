@@ -55,5 +55,7 @@
   :global([data-state='expanded']) + .main .toolbarWrapper {
     opacity: 0;
     visibility: hidden;
+    width: 0;
+    margin: 0;
   }
 }
