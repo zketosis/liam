@@ -1,6 +1,6 @@
 'use client'
 
-import type { DBStructure } from '@liam-hq/db-structure'
+import type { DBStructure, ProcessError } from '@liam-hq/db-structure'
 import {
   ERDRenderer,
   VersionProvider,
@@ -12,11 +12,13 @@ import * as v from 'valibot'
 
 type ERDViewerProps = {
   dbStructure: DBStructure
+  errors: ProcessError[]
   defaultSidebarOpen: boolean
 }
 
 export default function ERDViewer({
   dbStructure,
+  errors,
   defaultSidebarOpen,
 }: ERDViewerProps) {
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function ERDViewer({
   return (
     <div style={{ height: '100vh' }}>
       <VersionProvider version={version}>
-        <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
+        <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} errors={errors} />
       </VersionProvider>
     </div>
   )
