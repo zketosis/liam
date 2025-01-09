@@ -16,7 +16,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Liam ERD',
   description:
-    'Automatically generates beautiful and easy-to-read ER diagrams from your schema URL.',
+    'Automatically generates beautiful and easy-to-read ER diagrams from your database.',
+  openGraph: {
+    siteName: 'Liam',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {},
 }
 
 export default function RootLayout({
