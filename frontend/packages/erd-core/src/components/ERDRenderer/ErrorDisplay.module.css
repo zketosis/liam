@@ -118,4 +118,44 @@
   line-height: 160%;
 }
 
+@media screen and (max-width: 768px) {
+  .message1 {
+    gap: var(--spacing-1, 4px);
+  }
+
+  .message1Title {
+    font-size: var(--font-size-6);
+  }
+
+  .message1Sentence {
+    font-size: var(--font-size-3);
+  }
+
+  .message2 {
+    gap: var(--spacing-1, 4px);
+  }
+
+  .message2Title {
+    font-size: var(--font-size-5);
+  }
+
+  .message2Sentence {
+    font-size: var(--font-size-3);
+  }
+
+  .callout {
+    font-size: var(--font-size-3);
+  }
+
+  .message3 {
+    gap: var(--spacing-1, 4px);
+  }
+
+  .message3Title {
+    font-size: var(--font-size-3);
+  }
+
+  .message3Sentence {
+    font-size: var(--font-size-3);
+  }
 }
