@@ -43,7 +43,7 @@ export const ErrorDisplay: FC<Props> = ({ errors }) => {
               </p>
             </div>
             <a
-              href="https://liambx.com/docs"
+              href="https://liambx.com/docs/parser/troubleshooting"
               target="_blank"
               className={styles.callout}
               rel="noreferrer"
