@@ -13,8 +13,8 @@ create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "
   t.uuid "department_id", null: false
   t.datetime "created_at", null: false
   t.string "name", default: "new user", null: true
-  t.string "age", default: 30, null: true
-  t.string "is_deleted", default: false, null: true
+  t.integer "age", default: 30, null: true
+  t.boolean "is_deleted", default: false, null: true
   t.string "user_name", null: false
 end
 
@@ -26,6 +26,7 @@ end
 create_table "user_roles", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "join table for users and roles", force: :cascade do |t|
   t.uuid "user_id", null: false
   t.uuid "role_id", null: false
+  t.index ["user_id", "role_id"], unique: true
 end
 
 create_table "projects", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "store projects", force: :cascade do |t|
@@ -38,6 +39,7 @@ add_foreign_key "projects", "companies", column: "company_id", name: "fk_project
 create_table "project_assignments", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "join table for users and projects", force: :cascade do |t|
   t.uuid "user_id", null: false
   t.uuid "project_id", null: false
+  t.index ["user_id", "project_id"], unique: true
 end
 
 create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "store tasks", force: :cascade do |t|
@@ -64,14 +66,6 @@ create_table "timesheets", id: :uuid, default: -> { "gen_random_uuid()" }, comme
   t.integer "duration_minutes", null: false
 end
 
-create_table "invoices", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "store invoices", force: :cascade do |t|
-  t.uuid "project_id", null: false
-  t.uuid "company_id", null: false
-  t.decimal "amount", null: false, precision: 10, scale: 2
-  t.datetime "invoice_date", null: false
-  t.datetime "due_date"
-end
-
 add_foreign_key "departments", "companies", column: "company_id", name: "fk_departments_company_id", on_update: :restrict, on_delete: :cascade
 add_foreign_key "users", "companies", column: "company_id", name: "fk_users_company_id", on_update: :restrict, on_delete: :cascade
 add_foreign_key "users", "departments", column: "department_id", name: "fk_users_department_id", on_update: :restrict, on_delete: :cascade
@@ -85,5 +79,14 @@ add_foreign_key "comments", "tasks", column: "task_id", name: "fk_comments_task_
 add_foreign_key "comments", "users", column: "user_id", name: "fk_comments_user_id", on_update: :restrict, on_delete: :cascade
 add_foreign_key "timesheets", "users", column: "user_id", name: "fk_timesheets_user_id", on_update: :restrict, on_delete: :cascade
 add_foreign_key "timesheets", "tasks", column: "task_id", name: "fk_timesheets_task_id", on_update: :restrict, on_delete: :cascade
-add_foreign_key "invoices", "projects", column: "project_id", name: "fk_invoices_project_id", on_update: :restrict, on_delete: :cascade
-add_foreign_key "invoices", "companies", column: "company_id", name: "fk_invoices_company_id", on_update: :restrict, on_delete: :cascade
+
+add_index "departments", "company_id"
+add_index "users", "company_id"
+add_index "users", "department_id"
+add_index "projects", "company_id"
+add_index "tasks", "project_id"
+add_index "tasks", "assigned_user_id"
+add_index "comments", "task_id"
+add_index "comments", "user_id"
+add_index "timesheets", "user_id"
+add_index "timesheets", "task_id"
