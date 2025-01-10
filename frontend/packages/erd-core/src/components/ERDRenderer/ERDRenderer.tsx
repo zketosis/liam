@@ -21,12 +21,12 @@ import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 type Props = {
   defaultSidebarOpen?: boolean | undefined
-  errors: ProcessError[]
+  errors?: ProcessError[] | undefined
 }
 
 export const ERDRenderer: FC<Props> = ({
   defaultSidebarOpen = false,
-  errors,
+  errors = [],
 }) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
 
