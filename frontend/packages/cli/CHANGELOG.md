@@ -1,5 +1,11 @@
 # @liam-hq/cli
 
+## 0.0.22
+
+### Patch Changes
+
+- aa74483: 🐛 Fix argument type of errors
+
 ## 0.0.21
 
 ### Patch Changes

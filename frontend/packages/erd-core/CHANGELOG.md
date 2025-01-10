@@ -1,5 +1,11 @@
 # @liam-hq/erd-core
 
+## 0.0.17
+
+### Patch Changes
+
+- aa74483: 🐛 Fix argument type of errors
+
 ## 0.0.16
 
 ### Patch Changes
