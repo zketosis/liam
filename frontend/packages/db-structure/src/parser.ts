@@ -4,4 +4,5 @@ export {
   supportedFormatSchema,
   detectFormat,
   setPrismWasmUrl,
+  ProcessError,
 } from './parser/index.js'

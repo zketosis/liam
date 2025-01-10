@@ -1,4 +1,5 @@
 import '@xyflow/react/dist/style.css'
+import type { ProcessError } from '@liam-hq/db-structure'
 import { SidebarProvider, SidebarTrigger, ToastProvider } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
 import { type FC, useCallback, useState } from 'react'
@@ -13,15 +14,20 @@ import { useDBStructureStore, useUserEditingStore } from '@/stores'
 import { CardinalityMarkers } from './CardinalityMarkers'
 // biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
 import { Toolbar } from './ERDContent/Toolbar'
+import { ErrorDisplay } from './ErrorDisplay'
 import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker'
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 type Props = {
   defaultSidebarOpen?: boolean | undefined
+  errors: ProcessError[]
 }
 
-export const ERDRenderer: FC<Props> = ({ defaultSidebarOpen = false }) => {
+export const ERDRenderer: FC<Props> = ({
+  defaultSidebarOpen = false,
+  errors,
+}) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
 
   const { showMode } = useUserEditingStore()
@@ -61,15 +67,20 @@ export const ERDRenderer: FC<Props> = ({ defaultSidebarOpen = false }) => {
                   <SidebarTrigger />
                 </div>
                 <TableDetailDrawerRoot>
-                  <ERDContent
-                    key={`${nodes.length}-${showMode}`}
-                    nodes={nodes}
-                    edges={edges}
-                  />
-                  <div className={styles.toolbarWrapper}>
-                    <Toolbar />
-                  </div>
-                  <TableDetailDrawer />
+                  {errors.length > 0 && <ErrorDisplay errors={errors} />}
+                  {errors.length > 0 || (
+                    <>
+                      <ERDContent
+                        key={`${nodes.length}-${showMode}`}
+                        nodes={nodes}
+                        edges={edges}
+                      />
+                      <div className={styles.toolbarWrapper}>
+                        <Toolbar />
+                      </div>
+                      <TableDetailDrawer />
+                    </>
+                  )}
                 </TableDetailDrawerRoot>
               </main>
             </div>
