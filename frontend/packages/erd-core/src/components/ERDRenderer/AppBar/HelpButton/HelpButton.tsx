@@ -46,8 +46,7 @@ export const HelpButton = forwardRef<HTMLButtonElement>((_, ref) => {
           <DropdownMenuItem
             size="sm"
             leftIcon={<BookText />}
-            // TODO: Update the URL
-            onSelect={handleSelect('https://liam-docs-sigma.vercel.app/docs')}
+            onSelect={handleSelect('https://liambx.com/docs')}
           >
             Documentation
           </DropdownMenuItem>
