@@ -118,6 +118,7 @@
   line-height: 160%;
 }
 
+/* TODO: This component has been partially adjusted for responsiveness, but confirm the designer's intentions and make any necessary corrections if needed. */
 @media screen and (max-width: 768px) {
   .message1 {
     gap: var(--spacing-1, 4px);
