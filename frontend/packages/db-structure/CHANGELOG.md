@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.6
+
+### Patch Changes
+
+- 71b6f60: 🚸 Add ErrorDisplay component for handling and displaying errors in ERDViewer
+
 ## 0.0.5
 
 ### Patch Changes

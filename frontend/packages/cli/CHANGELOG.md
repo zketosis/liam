@@ -1,5 +1,12 @@
 # @liam-hq/cli
 
+## 0.0.21
+
+### Patch Changes
+
+- d0858af: 🚸 delete unnecessary margin on mobile
+- 40dffc8: 💄 Move react flow attribution from bottom-right to bottom-left
+
 ## 0.0.20
 
 ### Patch Changes
