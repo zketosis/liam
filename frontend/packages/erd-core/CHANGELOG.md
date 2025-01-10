@@ -1,5 +1,15 @@
 # @liam-hq/erd-core
 
+## 0.0.16
+
+### Patch Changes
+
+- 71b6f60: 🚸 Add ErrorDisplay component for handling and displaying errors in ERDViewer
+- d0858af: 🚸 delete unnecessary margin on mobile
+- 40dffc8: 💄 Move react flow attribution from bottom-right to bottom-left
+- Updated dependencies [46cd9e6]
+  - @liam-hq/ui@0.0.8
+
 ## 0.0.15
 
 ### Patch Changes

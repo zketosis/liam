@@ -1,5 +1,11 @@
 # @liam-hq/ui
 
+## 0.0.8
+
+### Patch Changes
+
+- 46cd9e6: 🐛 Fix CSS import issue and improve font handling in `erd-web`
+
 ## 0.0.7
 
 ### Patch Changes
