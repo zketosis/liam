@@ -1,5 +1,10 @@
 import type { QueryParam } from '@/schemas/queryParam'
-import { addHiddenNodeIds, updateActiveTableName } from '@/stores'
+import type { ShowMode } from '@/schemas/showMode'
+import {
+  addHiddenNodeIds,
+  updateActiveTableName,
+  updateShowMode,
+} from '@/stores'
 import { decompressFromEncodedURIComponent } from '@/utils'
 import { type Node, useReactFlow } from '@xyflow/react'
 import { useEffect, useMemo } from 'react'
@@ -24,6 +29,14 @@ const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
     : undefined
 
   return hiddenNodeIds ? hiddenNodeIds.split(',') : []
+}
+
+const getShowModeFromUrl = (): string | undefined => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const showModeQueryParam: QueryParam = 'showMode'
+  const showMode = urlParams.get(showModeQueryParam)
+
+  return showMode || 'TABLE_NAME'
 }
 
 export const useInitialAutoLayout = (
@@ -66,6 +79,9 @@ export const useInitialAutoLayout = (
         shouldFitViewToActiveTable && activeTableName
           ? { maxZoom: 1, duration: 300, nodes: [{ id: activeTableName }] }
           : undefined
+
+      const showMode = getShowModeFromUrl()
+      updateShowMode(showMode as ShowMode)
 
       if (tableNodesInitialized) {
         handleLayout(updatedNodes, updatedEdges, fitViewOptions)

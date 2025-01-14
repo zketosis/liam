@@ -52,3 +52,18 @@ subscribe(userEditingStore.hiddenNodeIds, async () => {
 
   window.history.pushState({}, '', url)
 })
+
+let previousShowMode = userEditingStore.showMode
+subscribe(userEditingStore, () => {
+  const newShowMode = userEditingStore.showMode
+  if (newShowMode !== previousShowMode) {
+    previousShowMode = newShowMode
+    const url = new URL(window.location.href)
+    const showModeQueryParam: QueryParam = 'showMode'
+
+    if (newShowMode) {
+      url.searchParams.set(showModeQueryParam, newShowMode)
+      window.history.pushState({}, '', url)
+    }
+  }
+})
