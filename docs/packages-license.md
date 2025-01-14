@@ -3,7 +3,7 @@
 
 ## Summary
 * 975 MIT
-* 68 Apache 2.0
+* 77 Apache 2.0
 * 61 ISC
 * 27 Simplified BSD
 * 17 New BSD
@@ -1391,8 +1391,107 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@prisma/debug"></a>
+### @prisma/debug v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/engines"></a>
+### @prisma/engines v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/engines-version"></a>
+### @prisma/engines-version v6.2.0-14.4123509d24aa4dede1e864b46351bf2790323b69
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/fetch-engine"></a>
+### @prisma/fetch-engine v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/generator-helper"></a>
+### @prisma/generator-helper v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/get-platform"></a>
+### @prisma/get-platform v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
 <a name="@prisma/instrumentation"></a>
 ### @prisma/instrumentation v5.22.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/internals"></a>
+### @prisma/internals v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/prisma-schema-wasm"></a>
+### @prisma/prisma-schema-wasm v6.2.0-14.4123509d24aa4dede1e864b46351bf2790323b69
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/schema-files-loader"></a>
+### @prisma/schema-files-loader v6.2.1
 #### 
 
 ##### Paths
