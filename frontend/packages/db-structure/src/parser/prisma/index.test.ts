@@ -48,5 +48,26 @@ describe(processor, () => {
 
       expect(value).toEqual(expected)
     })
+
+    it('nullable', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          description String?
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          description: aColumn({
+            name: 'description',
+            type: 'String',
+            notNull: false,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
   })
 })
