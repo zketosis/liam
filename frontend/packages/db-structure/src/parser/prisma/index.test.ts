@@ -7,8 +7,8 @@ describe(processor, () => {
   const userTable = (override?: Partial<Table>) =>
     aDBStructure({
       tables: {
-        User: aTable({
-          name: 'User',
+        users: aTable({
+          name: 'users',
           columns: {
             id: aColumn({
               name: 'id',
@@ -30,7 +30,7 @@ describe(processor, () => {
   describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
       const { value } = await processor(`
-        model User {
+        model users {
           id   Int    @id @default(autoincrement())
           name String
         }
