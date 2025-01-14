@@ -1,10 +1,14 @@
-import type { ProcessError } from '@liam-hq/db-structure'
 import { InfoIcon } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './ErrorDisplay.module.css'
 
+type ErrorObject = {
+  name: string
+  message: string
+}
+
 type Props = {
-  errors: ProcessError[]
+  errors: ErrorObject[]
 }
 
 export const ErrorDisplay: FC<Props> = ({ errors }) => {
@@ -17,12 +21,27 @@ export const ErrorDisplay: FC<Props> = ({ errors }) => {
         <div className={styles.inner}>
           <div className={styles.message1}>
             <div className={styles.message1Title}>
-              Oh no! We’ve encountered {errors.length} errors 🛸💫
+              Oh no! We’ve encountered some errors 🛸💫
             </div>
+
+            {errors[0] && (
+              <div className={styles.message1Sentence}>
+                <details>
+                  <summary>View errors</summary>
+                  <ul>
+                    <li key={errors[0].name}>
+                      <code>
+                        {errors[0].name}: {errors[0].message}
+                      </code>
+                    </li>
+                  </ul>
+                </details>
+              </div>
+            )}
             <div className={styles.message1Sentence}>
               <p>
-                It seems {errors.length} SQL statements couldn’t make it through
-                the parser’s orbit.
+                It seems some SQL statements couldn’t make it through the
+                parser’s orbit.
               </p>
               <p>
                 Parsing every SQL dialect is like navigating an asteroid

@@ -1,5 +1,4 @@
 import '@xyflow/react/dist/style.css'
-import type { ProcessError } from '@liam-hq/db-structure'
 import { SidebarProvider, SidebarTrigger, ToastProvider } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
 import { type FC, useCallback, useState } from 'react'
@@ -19,14 +18,19 @@ import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
+type ErrorObject = {
+  name: string
+  message: string
+}
+
 type Props = {
   defaultSidebarOpen?: boolean | undefined
-  errors?: ProcessError[] | undefined
+  errorObjects?: ErrorObject[] | undefined
 }
 
 export const ERDRenderer: FC<Props> = ({
   defaultSidebarOpen = false,
-  errors = [],
+  errorObjects = [],
 }) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
 
@@ -67,8 +71,10 @@ export const ERDRenderer: FC<Props> = ({
                   <SidebarTrigger />
                 </div>
                 <TableDetailDrawerRoot>
-                  {errors.length > 0 && <ErrorDisplay errors={errors} />}
-                  {errors.length > 0 || (
+                  {errorObjects.length > 0 && (
+                    <ErrorDisplay errors={errorObjects} />
+                  )}
+                  {errorObjects.length > 0 || (
                     <>
                       <ERDContent
                         key={`${nodes.length}-${showMode}`}
