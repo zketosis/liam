@@ -16,7 +16,7 @@ import type {
   Relationship,
   Table,
 } from '../../../schema/index.js'
-import { UnexpectedTokenWarningError } from '../../errors.js'
+import { type ProcessError, UnexpectedTokenWarningError } from '../../errors.js'
 import type { ProcessResult } from '../../types.js'
 import {
   defaultRelationshipName,
@@ -101,7 +101,7 @@ const constraintToRelationship = (
 export const convertToDBStructure = (stmts: RawStmt[]): ProcessResult => {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
-  const errors: Error[] = []
+  const errors: ProcessError[] = []
 
   function isConstraintNode(node: Node): node is { Constraint: Constraint } {
     return (node as { Constraint: Constraint }).Constraint !== undefined
