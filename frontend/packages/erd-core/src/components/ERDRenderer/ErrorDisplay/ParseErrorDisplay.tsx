@@ -34,12 +34,12 @@ export const ParseErrorDisplay: FC<Props> = ({ errors }) => {
         )}
         <div className={styles.message1Sentence}>
           <p>
-            It seems some SQL statements couldn’t make it through the
-            parser’s orbit.
+            It seems some SQL statements couldn’t make it through the parser’s
+            orbit.
           </p>
           <p>
-            Parsing every SQL dialect is like navigating an asteroid
-            field—it’s tricky, but we’re working on it!
+            Parsing every SQL dialect is like navigating an asteroid field—it’s
+            tricky, but we’re working on it!
           </p>
         </div>
       </div>
@@ -86,4 +86,3 @@ export const ParseErrorDisplay: FC<Props> = ({ errors }) => {
     </div>
   )
 }
-

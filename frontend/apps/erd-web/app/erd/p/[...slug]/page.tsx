@@ -84,13 +84,65 @@ export default async function Page({
   const joinedPath = parsedParams.output.slug.join('/')
 
   const url = `https://${joinedPath}`
-  const contentUrl = resolveContentUrl(url)
-  if (!contentUrl) notFound()
 
-  const res = await fetch(contentUrl, { cache: 'no-store' }).catch(() => {
-    notFound()
+  const blankDbStructure = { tables: {}, relationships: {} }
+
+  const contentUrl = resolveContentUrl(url)
+  if (!contentUrl) {
+    return (
+      <ERDViewer
+        dbStructure={blankDbStructure}
+        defaultSidebarOpen={false}
+        errorObjects={[{ name: 'NetworkError', message: 'Invalid URL' }]}
+      />
+    )
+  }
+  const networkErrorObjects: {
+    name: 'NetworkError'
+    message: string
+  }[] = []
+  const pleaseCheck = `Please check the URL ${url} and try again`
+  const res = await fetch(contentUrl, { cache: 'no-store' }).catch((e) => {
+    if (e instanceof Error) {
+      networkErrorObjects.push({
+        name: 'NetworkError',
+        message: `${e.name}: ${e.message}. ${pleaseCheck}.`,
+      })
+    } else {
+      networkErrorObjects.push({
+        name: 'NetworkError',
+        message: `Unknown error. ${pleaseCheck}.`,
+      })
+    }
   })
-  if (!res.ok) notFound()
+  if (!res && networkErrorObjects.length === 0)
+    networkErrorObjects.push({
+      name: 'NetworkError',
+      message: `Unknown error. ${pleaseCheck}.`,
+    })
+  if (!res || networkErrorObjects.length > 0) {
+    return (
+      <ERDViewer
+        dbStructure={blankDbStructure}
+        defaultSidebarOpen={false}
+        errorObjects={networkErrorObjects}
+      />
+    )
+  }
+  if (!res.ok) {
+    return (
+      <ERDViewer
+        dbStructure={blankDbStructure}
+        defaultSidebarOpen={false}
+        errorObjects={[
+          {
+            name: 'NetworkError',
+            message: `HTTP status is ${res.status}: ${res.statusText}. ${pleaseCheck}.`,
+          },
+        ]}
+      />
+    )
+  }
 
   const input = await res.text()
 
@@ -105,8 +157,20 @@ export default async function Page({
     format = detectFormat(contentUrl)
   }
   if (format === undefined) {
-    // TODO: Show error message in the UI
-    notFound()
+    // Strictly speaking, this is not always a network error, but the error name is temporarily set as "NetworkError" for display purposes.
+    // TODO: Update the error name to something more appropriate.
+    return (
+      <ERDViewer
+        dbStructure={blankDbStructure}
+        defaultSidebarOpen={false}
+        errorObjects={[
+          {
+            name: 'NetworkError',
+            message: 'We could not detect the format of the file',
+          },
+        ]}
+      />
+    )
   }
 
   const { value: dbStructure, errors } = await parse(input, format)
