@@ -45,7 +45,6 @@ export async function generateMetadata({
   if (!parsedParams.success) return notFound()
 
   const joinedPath = parsedParams.output.slug.join('/')
-  if (!joinedPath) notFound()
 
   const projectUrl = `https://${joinedPath}`
 
@@ -80,14 +79,9 @@ export default async function Page({
   searchParams: _searchParams,
 }: PageProps) {
   const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) {
-    notFound()
-  }
+  if (!parsedParams.success) notFound()
 
   const joinedPath = parsedParams.output.slug.join('/')
-  if (!joinedPath) {
-    notFound()
-  }
 
   const url = `https://${joinedPath}`
   const contentUrl = resolveContentUrl(url)
