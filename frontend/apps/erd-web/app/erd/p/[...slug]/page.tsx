@@ -116,12 +116,13 @@ export default async function Page({
   }
 
   const { value: dbStructure, errors } = await parse(input, format)
-  if (errors.length > 0) {
-    for (const error of errors) {
-      Sentry.captureException(error)
-    }
+  for (const error of errors) {
+    Sentry.captureException(error)
   }
-
+  const errorObjects = errors.map((error) => ({
+    name: error.name,
+    message: error.message,
+  }))
   const cookieStore = await cookies()
   const defaultSidebarOpen = cookieStore.get('sidebar:state')?.value === 'true'
 
@@ -129,7 +130,7 @@ export default async function Page({
     <ERDViewer
       dbStructure={dbStructure}
       defaultSidebarOpen={defaultSidebarOpen}
-      errors={errors}
+      errorObjects={errorObjects}
     />
   )
 }

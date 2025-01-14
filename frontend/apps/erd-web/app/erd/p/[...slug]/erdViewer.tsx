@@ -10,15 +10,20 @@ import {
 import { useEffect } from 'react'
 import * as v from 'valibot'
 
+type ErrorObject = {
+  name: string
+  message: string
+}
+
 type ERDViewerProps = {
   dbStructure: DBStructure
-  errors: ProcessError[]
+  errorObjects: ErrorObject[]
   defaultSidebarOpen: boolean
 }
 
 export default function ERDViewer({
   dbStructure,
-  errors,
+  errorObjects,
   defaultSidebarOpen,
 }: ERDViewerProps) {
   useEffect(() => {
@@ -35,7 +40,10 @@ export default function ERDViewer({
   return (
     <div style={{ height: '100vh' }}>
       <VersionProvider version={version}>
-        <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} errors={errors} />
+        <ERDRenderer
+          defaultSidebarOpen={defaultSidebarOpen}
+          errorObjects={errorObjects}
+        />
       </VersionProvider>
     </div>
   )

@@ -71,7 +71,7 @@ describe('runPreprocess', () => {
     ])
   })
 
-  it('should return an error if failed parcing schema file', async () => {
+  it('should return an error if failed parsing schema file', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-distDir-'))
     const inputPath = path.join(tmpDir, 'input.sql')
     fs.writeFileSync(inputPath, 'invalid;', 'utf8')
@@ -84,7 +84,7 @@ describe('runPreprocess', () => {
     expect(outputFilePath).toBeNull()
     expect(errors).toEqual([
       new WarningProcessingError(
-        'Error during parcing schema file: syntax error at or near "invalid"',
+        'Error during parsing schema file: syntax error at or near "invalid"',
       ),
     ])
   })

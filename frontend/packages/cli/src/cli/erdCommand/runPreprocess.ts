@@ -44,7 +44,7 @@ export async function runPreprocess(
       errors: errors.map(
         (err) =>
           new WarningProcessingError(
-            `Error during parcing schema file: ${err.message}`,
+            `Error during parsing schema file: ${err.message}`,
           ),
       ),
     }
