@@ -7,8 +7,8 @@ describe(processor, () => {
   const userTable = (override?: Partial<Table>) =>
     aDBStructure({
       tables: {
-        User: aTable({
-          name: 'User',
+        users: aTable({
+          name: 'users',
           columns: {
             id: aColumn({
               name: 'id',
@@ -27,14 +27,14 @@ describe(processor, () => {
       },
     })
 
-  describe('Prisma Schema Parser', () => {
+  describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
-      const schema = `
-        model User {
+      const { value } = await processor(`
+        model users {
           id   Int    @id @default(autoincrement())
           name String
         }
-      `
+      `)
 
       const expected = userTable({
         columns: {
@@ -46,7 +46,26 @@ describe(processor, () => {
         },
       })
 
-      const { value } = await processor(schema)
+      expect(value).toEqual(expected)
+    })
+
+    it('nullable', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          description String?
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          description: aColumn({
+            name: 'description',
+            type: 'String',
+            notNull: false,
+          }),
+        },
+      })
 
       expect(value).toEqual(expected)
     })
