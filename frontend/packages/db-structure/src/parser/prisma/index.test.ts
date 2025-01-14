@@ -27,14 +27,14 @@ describe(processor, () => {
       },
     })
 
-  describe('Prisma Schema Parser', () => {
+  describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
-      const schema = `
+      const { value } = await processor(`
         model User {
           id   Int    @id @default(autoincrement())
           name String
         }
-      `
+      `)
 
       const expected = userTable({
         columns: {
@@ -45,8 +45,6 @@ describe(processor, () => {
           }),
         },
       })
-
-      const { value } = await processor(schema)
 
       expect(value).toEqual(expected)
     })
