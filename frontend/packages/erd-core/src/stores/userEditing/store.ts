@@ -2,7 +2,7 @@ import type { QueryParam } from '@/schemas/queryParam'
 import type { ShowMode } from '@/schemas/showMode'
 import { compressToEncodedURIComponent } from '@/utils'
 import { proxy, subscribe } from 'valtio'
-import { proxySet } from 'valtio/utils'
+import { proxySet, subscribeKey } from 'valtio/utils'
 
 type UserEditingStore = {
   active: {
@@ -51,4 +51,14 @@ subscribe(userEditingStore.hiddenNodeIds, async () => {
   }
 
   window.history.pushState({}, '', url)
+})
+
+subscribeKey(userEditingStore, 'showMode', (newShowMode) => {
+  const url = new URL(window.location.href)
+  const showModeQueryParam: QueryParam = 'showMode'
+
+  if (newShowMode) {
+    url.searchParams.set(showModeQueryParam, newShowMode)
+    window.history.pushState({}, '', url)
+  }
 })
