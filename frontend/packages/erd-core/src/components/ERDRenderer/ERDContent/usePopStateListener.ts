@@ -1,10 +1,11 @@
-import type { ShowMode } from '@/schemas/showMode'
+import { showModeSchema } from '@/schemas/showMode'
 import {
   updateActiveTableName,
   updateIsPopstateInProgress,
   updateShowMode,
 } from '@/stores'
 import { useEffect } from 'react'
+import * as v from 'valibot'
 
 export const usePopStateListener = () => {
   useEffect(() => {
@@ -16,8 +17,20 @@ export const usePopStateListener = () => {
       updateIsPopstateInProgress(true)
       updateActiveTableName(tableName ?? undefined)
 
-      updateShowMode(showMode as ShowMode)
+      if (!showMode) {
+        updateShowMode('TABLE_NAME')
+        setTimeout(() => {
+          updateIsPopstateInProgress(false)
+        }, 0)
+        return
+      }
 
+      const result = v.safeParse(showModeSchema, showMode)
+      if (result.success && result.output) {
+        updateShowMode(result.output)
+      }
+
+      updateShowMode('TABLE_NAME')
       setTimeout(() => {
         updateIsPopstateInProgress(false)
       }, 0)
