@@ -17,20 +17,11 @@ export const usePopStateListener = () => {
       updateIsPopstateInProgress(true)
       updateActiveTableName(tableName ?? undefined)
 
-      if (!showMode) {
-        updateShowMode('TABLE_NAME')
-        setTimeout(() => {
-          updateIsPopstateInProgress(false)
-        }, 0)
-        return
-      }
-
       const result = v.safeParse(showModeSchema, showMode)
       if (result.success && result.output) {
         updateShowMode(result.output)
       }
 
-      updateShowMode('TABLE_NAME')
       setTimeout(() => {
         updateIsPopstateInProgress(false)
       }, 0)

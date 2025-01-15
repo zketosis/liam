@@ -37,10 +37,6 @@ const getShowModeFromUrl = (): ShowMode => {
   const showModeQueryParam: QueryParam = 'showMode'
   const showMode = urlParams.get(showModeQueryParam)
 
-  if (!showMode) {
-    return 'TABLE_NAME'
-  }
-
   const result = v.safeParse(showModeSchema, showMode)
   if (result.success && result.output) {
     return result.output
