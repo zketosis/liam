@@ -1,5 +1,13 @@
 # @liam-hq/erd-core
 
+## 0.0.18
+
+### Patch Changes
+
+- dd1e7b4: 🚸 Add dedicated handling for network-related errors with a new `NetworkErrorDisplay` component.
+- 97c5996: ✨ Implement show mode handling in URL parameters and state management
+- 6a34d7b: 🚸 Enhanced error rendering in the `ErrorDisplay` component, adding detailed error summaries
+
 ## 0.0.17
 
 ### Patch Changes

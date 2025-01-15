@@ -1,5 +1,13 @@
 # @liam-hq/cli
 
+## 0.0.23
+
+### Patch Changes
+
+- b628bcb: ✨️ Add interactive init command with Inquirer and optional GitHub Actions workflow
+- 97c5996: ✨ Implement show mode handling in URL parameters and state management
+- 6a34d7b: 🚸 Enhanced error rendering in the `ErrorDisplay` component, adding detailed error summaries
+
 ## 0.0.22
 
 ### Patch Changes
