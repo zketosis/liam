@@ -1,3 +1,6 @@
+// NOTE: Linked from `frontend/apps/docs`.
+// Please be cautious when renaming, updating, or deleting this file.
+
 import type { SupportedFormat } from './index.js'
 
 const nameToFormatMap: Record<string, SupportedFormat> = {
