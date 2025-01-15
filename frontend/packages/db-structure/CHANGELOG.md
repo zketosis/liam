@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.7
+
+### Patch Changes
+
+- 1d30918: ✨ Introduce Prisma parser
+
 ## 0.0.6
 
 ### Patch Changes
