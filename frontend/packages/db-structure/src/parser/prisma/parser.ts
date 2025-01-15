@@ -1,6 +1,10 @@
-import { getDMMF } from '@prisma/internals'
+import pkg from '@prisma/internals'
 import type { Columns, Relationship, Table } from '../../schema/index.js'
 import type { ProcessResult, Processor } from '../types.js'
+
+// NOTE: Workaround for CommonJS module import issue with @prisma/internals
+// CommonJS module can not support all module.exports as named exports
+const { getDMMF } = pkg
 
 async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   const dmmf = await getDMMF({ datamodel: schemaString })
