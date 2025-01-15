@@ -71,7 +71,6 @@ For more details about Liam ERD usage and advanced configurations, check out:
 ${yocto.blueBright('https://liambx.com/docs')}
 `)
 
-  console.info('\n--- Output ---')
   console.info('\n--- Next Steps ---')
 
   console.info(
