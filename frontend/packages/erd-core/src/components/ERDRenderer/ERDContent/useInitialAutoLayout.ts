@@ -1,5 +1,5 @@
 import type { QueryParam } from '@/schemas/queryParam'
-import type { ShowMode } from '@/schemas/showMode'
+import { type ShowMode, showModeSchema } from '@/schemas/showMode'
 import {
   addHiddenNodeIds,
   updateActiveTableName,
@@ -8,6 +8,7 @@ import {
 import { decompressFromEncodedURIComponent } from '@/utils'
 import { type Node, useReactFlow } from '@xyflow/react'
 import { useEffect, useMemo } from 'react'
+import * as v from 'valibot'
 import { useERDContentContext } from './ERDContentContext'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 import { useAutoLayout } from './useAutoLayout'
@@ -31,12 +32,21 @@ const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
   return hiddenNodeIds ? hiddenNodeIds.split(',') : []
 }
 
-const getShowModeFromUrl = (): string | undefined => {
+const getShowModeFromUrl = (): ShowMode => {
   const urlParams = new URLSearchParams(window.location.search)
   const showModeQueryParam: QueryParam = 'showMode'
   const showMode = urlParams.get(showModeQueryParam)
 
-  return showMode || 'TABLE_NAME'
+  if (!showMode) {
+    return 'TABLE_NAME'
+  }
+
+  const result = v.safeParse(showModeSchema, showMode)
+  if (result.success && result.output) {
+    return result.output
+  }
+
+  return 'TABLE_NAME'
 }
 
 export const useInitialAutoLayout = (
@@ -81,7 +91,7 @@ export const useInitialAutoLayout = (
           : undefined
 
       const showMode = getShowModeFromUrl()
-      updateShowMode(showMode as ShowMode)
+      updateShowMode(showMode)
 
       if (tableNodesInitialized) {
         handleLayout(updatedNodes, updatedEdges, fitViewOptions)
