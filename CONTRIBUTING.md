@@ -14,7 +14,27 @@ To set up a development environment, please follow these steps:
    git clone https://github.com/liam-hq/liam
    ```
 
-2. [TODO]
+2. Install npm package
+
+   ```sh
+   corepack enable
+   corepack prepare
+   pnpm install
+   ```
+
+3. Development
+
+   ```sh
+   pnpm dev
+   ```
+
+4. Open apps
+
+   | package | url |
+   | --- | --- |
+   | @liam-hq/erd-web | http://localhost:3001 |
+   | @liam-hq/cli | http://localhost:5173 |
+   | @liam-hq/docs | http://localhost:3002 |
 
 ## Issues and feature requests
 
