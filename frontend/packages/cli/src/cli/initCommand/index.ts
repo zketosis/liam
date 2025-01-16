@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { exit } from 'node:process'
 import { Command } from 'commander'
 import inquirer from 'inquirer'
 import * as yocto from 'yoctocolors'
@@ -8,11 +9,12 @@ const initCommand = new Command('init').description(
   'guide you interactively through the setup',
 )
 
+// Map user-friendly selections to the correct --format value
 const formatMap: Record<string, string> = {
   PostgreSQL: 'postgresql',
   'Ruby on Rails (schema.rb)': 'schemarb',
   'Prisma (schema.prisma)': 'prisma',
-  // 'Drizzle': 'drizzle', // Not included in formatMap yet
+  Drizzle: 'postgresql', // Drizzle also uses --format postgres
 }
 
 initCommand.action(async () => {
@@ -24,7 +26,7 @@ This \`init\` subcommand will guide you interactively through the setup.
 ${yocto.greenBright('🌟 This init command is a work in progress! 🌟')}
 We’re continuously improving it. Don’t forget to run \`npx @liam-hq/cli init\` after updates for the latest features.
 
-💡 Have feedback? Share it with us!  
+💡 Have feedback? Share it with us!
 Visit ${yocto.blueBright('https://github.com/liam-hq/liam/discussions')} to submit ideas or report issues.
 
 🌟️ ${yocto.bold('Love Liam ERD')}? Help us grow by starring our GitHub repository:  
@@ -46,7 +48,8 @@ Now, let’s get started with setting up your Liam ERD project.
         'PostgreSQL',
         'Ruby on Rails (schema.rb)',
         'Prisma (schema.prisma)',
-        // 'Drizzle', // commented out for now
+        'Drizzle',
+        'Others (MySQL, SQLite, etc.)',
       ],
       default: 'PostgreSQL',
     },
@@ -56,6 +59,7 @@ Now, let’s get started with setting up your Liam ERD project.
   // Step 2: Depending on dbOrOrm, ask follow-up questions
   //
   let inputFilePath = ''
+
   if (dbOrOrm === 'PostgreSQL') {
     // Ask if pg_dump .sql can be used
     const { usePgDump } = await inquirer.prompt<{ usePgDump: boolean }>([
@@ -87,6 +91,26 @@ ${yocto.yellow(
 )}
 `)
     }
+  } else if (dbOrOrm === 'Drizzle') {
+    // Show Drizzle-specific guidance
+    console.info(`
+${yocto.yellow(
+  `For Drizzle, please run your DB migrations, then use 'pg_dump --schema-only' to generate a dump file. You can then use it with --format postgresql.`,
+)}
+`)
+    // We won't ask for a file path here; user will handle it as for PostgreSQL later.
+  } else if (dbOrOrm === 'Others (MySQL, SQLite, etc.)') {
+    // For other DBs, Sorry we don't support them yet.
+    console.info(`
+💔 ${yocto.yellowBright("For other DBs, Sorry we don't support them yet")} 💔
+
+Visit ${yocto.yellowBright('https://github.com/liam-hq/liam/discussions/364')} to suggest support for your database or ORM!
+
+For more details about Liam ERD usage and advanced configurations, check out:
+${yocto.blueBright('https://liambx.com/docs')}
+`)
+
+    exit(0)
   } else {
     // For Rails/Prisma, we do ask for the schema file path
     let defaultSchemaPath = ''
@@ -139,7 +163,18 @@ ${yocto.blueBright('https://liambx.com/docs')}
   //
   console.info('\n--- Next Steps ---')
 
-  if (inputFilePath) {
+  if (dbOrOrm === 'Drizzle' && !inputFilePath) {
+    // If user is using Drizzle but didn't specify any input file,
+    // advise them to eventually produce a dump file.
+    console.info(
+      '1) After you generate a dump file via pg_dump --schema-only, run:',
+    )
+    console.info(
+      yocto.blueBright(
+        '   $ npx @liam-hq/cli erd build --input <dump.sql> --format postgresql',
+      ),
+    )
+  } else if (inputFilePath) {
     console.info(
       '1) Build your ERD from the specified file using the following command:',
     )
@@ -167,7 +202,7 @@ ${yocto.blueBright('https://liambx.com/docs')}
   // (Optional) Generate GitHub Actions file
   //
   if (addGhActions) {
-    // The user might not have a path if they chose "No" to pg_dump. We'll just show <dump.sql> if empty
+    // The user might not have a path if they chose "No" to pg_dump or if Drizzle was chosen
     const effectivePath = inputFilePath || '<dump.sql>'
     const workflowContent = `name: ERD Build
 on:
