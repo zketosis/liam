@@ -1,3 +1,16 @@
 {
-  "extends": ["../../packages/configs/biome.jsonc"]
+  "extends": ["../../packages/configs/biome.jsonc"],
+  "linter": {
+    "rules": {
+      "nursery": {
+        "noRestrictedImports": {
+          "options": {
+            "paths": {
+              "fumadocs-ui/components/tabs": "Use '@/components' instead."
+            }
+          }
+        }
+      }
+    }
+  }
 }
