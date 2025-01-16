@@ -1,6 +1,6 @@
 <h1 align="center">
-  <img src="./assets/logo-light.png#gh-light-mode-only" alt="Liam" width="400">
-  <img src="./assets/logo-dark.png#gh-dark-mode-only" alt="Liam" width="400">
+  <img src="./assets/logo-light.png#gh-light-mode-only" alt="Liam" width="300">
+  <img src="./assets/logo-dark.png#gh-dark-mode-only" alt="Liam" width="300">
 </h1>
 
 <h2 align="center">
