@@ -1,5 +1,13 @@
 # @liam-hq/cli
 
+## 0.0.24
+
+### Patch Changes
+
+- c32feec: ♻️ Refactor initCommand to split Inquirer prompts, allowing conditional questions for pg_dump usage
+- a7ed268: ✨ Add support for Prisma format in parser
+- f5ee4ea: ✨ Enhance format detection by adding support for prisma
+
 ## 0.0.23
 
 ### Patch Changes
