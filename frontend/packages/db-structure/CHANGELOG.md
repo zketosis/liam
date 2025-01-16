@@ -1,5 +1,12 @@
 # @liam-hq/db-structure
 
+## 0.0.8
+
+### Patch Changes
+
+- a7ed268: ✨ Add support for Prisma format in parser
+- f5ee4ea: ✨ Enhance format detection by adding support for prisma
+
 ## 0.0.7
 
 ### Patch Changes
