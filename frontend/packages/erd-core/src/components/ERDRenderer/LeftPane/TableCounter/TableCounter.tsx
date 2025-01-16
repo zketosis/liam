@@ -4,9 +4,10 @@ import type { FC } from 'react'
 import styles from './TableCounter.module.css'
 
 export const TableCounter: FC = () => {
-  const nodes = useNodes()
-  const allCount = nodes.length
-  const visibleCount = nodes.filter((node) => !node.hidden).length
+  const tableNodes = useNodes().filter((node) => node.type === 'table')
+
+  const allCount = tableNodes.length
+  const visibleCount = tableNodes.filter((node) => !node.hidden).length
 
   return (
     <div className={styles.wrapper}>
