@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 // The `import 'wasi'` statement is dynamically imported within the db-structure package.
 // However, `import 'wasi';` gets included in the build output.
 // To address this, the buildEnd hook removes it from the build artifact.
-export function renameImportWasi(): Plugin {
+export function removeImportWasi(): Plugin {
   return {
     name: 'remove-import-wasi',
     buildEnd() {
@@ -16,4 +16,4 @@ export function renameImportWasi(): Plugin {
   }
 }
 
-export default renameImportWasi
+export default removeImportWasi
