@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { exit } from 'node:process'
 import { Command } from 'commander'
 import inquirer from 'inquirer'
 import * as yocto from 'yoctocolors'
@@ -48,6 +49,7 @@ Now, let’s get started with setting up your Liam ERD project.
         'Ruby on Rails (schema.rb)',
         'Prisma (schema.prisma)',
         'Drizzle',
+        'Others (MySQL, SQLite, etc.)',
       ],
       default: 'PostgreSQL',
     },
@@ -97,6 +99,18 @@ ${yocto.yellow(
 )}
 `)
     // We won't ask for a file path here; user will handle it as for PostgreSQL later.
+  } else if (dbOrOrm === 'Others (MySQL, SQLite, etc.)') {
+    // For other DBs, Sorry we don't support them yet.
+    console.info(`
+💔 ${yocto.yellowBright("For other DBs, Sorry we don't support them yet")} 💔
+
+Visit ${yocto.yellowBright('https://github.com/liam-hq/liam/discussions/364')} to suggest support for your database or ORM!
+
+For more details about Liam ERD usage and advanced configurations, check out:
+${yocto.blueBright('https://liambx.com/docs')}
+`)
+
+    exit(0)
   } else {
     // For Rails/Prisma, we do ask for the schema file path
     let defaultSchemaPath = ''
