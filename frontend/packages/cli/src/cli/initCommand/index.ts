@@ -59,6 +59,7 @@ Now, let’s get started with setting up your Liam ERD project.
   // Step 2: Depending on dbOrOrm, ask follow-up questions
   //
   let inputFilePath = ''
+  let cannotSupportNow = false
 
   if (dbOrOrm === 'PostgreSQL') {
     // Ask if pg_dump .sql can be used
@@ -92,25 +93,27 @@ ${yocto.yellow(
 `)
     }
   } else if (dbOrOrm === 'Drizzle') {
-    // Show Drizzle-specific guidance
-    console.info(`
+    const { usePostgres } = await inquirer.prompt<{ usePostgres: boolean }>([
+      {
+        type: 'confirm',
+        name: 'usePostgres',
+        message: 'Using PostgreSQL?',
+        default: false,
+      },
+    ])
+
+    if (usePostgres) {
+      // Show Drizzle-specific guidance
+      console.info(`
 ${yocto.yellow(
   `For Drizzle, please run your DB migrations, then use 'pg_dump --schema-only' to generate a dump file. You can then use it with --format postgresql.`,
 )}
 `)
-    // We won't ask for a file path here; user will handle it as for PostgreSQL later.
+    } else {
+      cannotSupportNow = true
+    }
   } else if (dbOrOrm === 'Others (MySQL, SQLite, etc.)') {
-    // For other DBs, Sorry we don't support them yet.
-    console.info(`
-💔 ${yocto.yellowBright("For other DBs, Sorry we don't support them yet")} 💔
-
-Visit ${yocto.yellowBright('https://github.com/liam-hq/liam/discussions/364')} to suggest support for your database or ORM!
-
-For more details about Liam ERD usage and advanced configurations, check out:
-${yocto.blueBright('https://liambx.com/docs')}
-`)
-
-    exit(0)
+    cannotSupportNow = true
   } else {
     // For Rails/Prisma, we do ask for the schema file path
     let defaultSchemaPath = ''
@@ -131,6 +134,18 @@ ${yocto.blueBright('https://liambx.com/docs')}
       },
     ])
     inputFilePath = schemaFilePath
+  }
+
+  if (cannotSupportNow) {
+    console.info(`
+💔 ${yocto.yellowBright("For other DBs, Sorry we don't support them yet")} 💔
+
+Visit ${yocto.yellowBright('https://github.com/liam-hq/liam/discussions/364')} to suggest support for your database or ORM!
+
+For more details about Liam ERD usage and advanced configurations, check out:
+${yocto.blueBright('https://liambx.com/docs')}
+`)
+    exit(0)
   }
 
   //
