@@ -6,7 +6,9 @@
         "noRestrictedImports": {
           "options": {
             "paths": {
-              "fumadocs-ui/components/tabs": "Use '@/components' instead."
+              "fumadocs-ui/components/tabs": "Use '@/components' instead.",
+              "fumadocs-ui/components/callout": "Use '@/components' instead.",
+              "fumadocs-ui/components/heading": "Use '@/components' instead."
             }
           }
         }
