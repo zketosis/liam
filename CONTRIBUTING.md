@@ -58,7 +58,7 @@ Please try to create bug reports that are:
    * If your changes include modifications to any packages within the ``frontend/packages`` directory:
       * Use `pnpm changeset` at the top level of this project.
       * Select the packages that have been modified.
-    * **Write a clear and concise commit message using gitmoji.** A list of supported gitmojis can be found [here](https://gitmoji.dev/). Examples:
+    * **Write a clear and concise commit message using the emoji (e.g., ✨) itself, not the textual representation (e.g., :sparkles:).** A list of supported gitmojis can be found [here](https://gitmoji.dev/). Examples:
        * ✨ Added a new feature to filter tables
        * 🐛 Fixed a typo in the welcome message
        * 📝 Updated README.md with new installation instructions
