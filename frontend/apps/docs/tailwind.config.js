@@ -16,6 +16,11 @@ const config = {
   ],
   theme: {
     extend: {
+      colors: {
+        'primary-background': 'var(--primary-background)',
+        warn: 'hsl(var(--warn) / <alpha-value>)',
+        danger: 'hsl(var(--danger) / <alpha-value>)',
+      },
       typography: {
         DEFAULT: {
           css: {

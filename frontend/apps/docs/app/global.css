@@ -39,6 +39,11 @@
 
   /* Color Semantics */
   :root {
+    --primary-background: hsl(149 85% 52% / 0.05);
+    --warn: 37 95% 53%;
+    --danger: 2 92% 63%;
+
+    /* Overrides for Fumadocs */
     --fd-background: 0 0% 98%;
     --fd-foreground: var(--liam-gray-1000);
     --fd-muted: var(--liam-gray-5);
@@ -61,6 +66,10 @@
   }
 
   .dark {
+    --primary-background: hsl(149 85% 52% / 0.1);
+    --warn: 47 100% 64%;
+
+    /* Overrides for Fumadocs */
     --fd-background: var(--liam-gray-1100);
     --fd-foreground: var(--liam-gray-0);
     --fd-muted: var(--liam-gray-900);
