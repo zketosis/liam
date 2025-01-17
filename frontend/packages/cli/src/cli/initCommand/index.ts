@@ -138,7 +138,7 @@ ${yocto.yellow(
 
   if (cannotSupportNow) {
     console.info(`
-💔 ${yocto.yellowBright("For other DBs, Sorry we don't support them yet")} 💔
+💔 ${yocto.yellowBright("For other DBs or ORMs, Sorry we don't support them yet")} 💔
 
 Visit ${yocto.yellowBright('https://github.com/liam-hq/liam/discussions/364')} to suggest support for your database or ORM!
 
