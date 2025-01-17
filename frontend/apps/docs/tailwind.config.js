@@ -17,6 +17,13 @@ const config = {
   theme: {
     extend: {
       colors: {
+        'liam-green': {
+          300: 'hsl(var(--liam-green-300))',
+          400: 'hsl(var(--liam-green-400))',
+          700: 'hsl(var(--liam-green-700))',
+        },
+        'base-black': 'hsl(var(--base-black) / <alpha-value>)',
+        'base-white': 'hsl(var(--base-white) / <alpha-value>)',
         'primary-background': 'var(--primary-background)',
         warn: 'hsl(var(--warn) / <alpha-value>)',
         danger: 'hsl(var(--danger) / <alpha-value>)',
