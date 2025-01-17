@@ -54,6 +54,14 @@ Please try to create bug reports that are:
 1. Search our repository for open or closed [Pull Requests](https://github.com/liam-hq/liam/pulls) that relate to your submission. You don't want to duplicate effort.
 2. Fork the project
 3. Create your feature branch (`git switch -c feat/amazing_feature`)
-4. Commit your changes (`git commit -m 'feat: add amazing_feature'`)
-5. Push to the branch (`git push origin feat/amazing_feature`)
-6. [Open a Pull Request](https://github.com/liam-hq/liam/compare?expand=1)
+4. **Write a clear and concise changeset description**
+   * If your changes include modifications to any packages within the ``frontend/packages`` directory:
+      * Use `pnpm changeset` at the top level of this project.
+      * Select the packages that have been modified.
+    * **Write a clear and concise commit message using gitmoji.** A list of supported gitmojis can be found [here](https://gitmoji.dev/). Examples:
+       * ✨ Added a new feature to filter tables
+       * 🐛 Fixed a typo in the welcome message
+       * 📝 Updated README.md with new installation instructions
+5. Commit your changes (`git commit -m 'feat: add amazing_feature'`)
+6. Push to the branch (`git push origin feat/amazing_feature`)
+7. [Open a Pull Request](https://github.com/liam-hq/liam/compare?expand=1)
