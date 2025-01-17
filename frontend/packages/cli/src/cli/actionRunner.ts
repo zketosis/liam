@@ -1,5 +1,6 @@
 import { red, yellow } from 'yoctocolors'
 import { CriticalError, WarningError } from './errors.js'
+import { TroubleshootingUrl } from './urls.js'
 
 function actionErrorHandler(error: Error) {
   if (error instanceof CriticalError) {
@@ -13,11 +14,16 @@ function actionErrorHandler(error: Error) {
   }
 }
 
+function printTroubleshootingUrl() {
+  console.info(`For more information, see ${TroubleshootingUrl}`)
+}
+
 export function actionRunner<T>(fn: (args: T) => Promise<Error[]>) {
   return async (args: T) => {
     const errors = await fn(args)
     if (errors.length > 0) {
       errors.forEach(actionErrorHandler)
+      printTroubleshootingUrl()
     }
 
     if (errors.some((error) => error instanceof CriticalError)) {
