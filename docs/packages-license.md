@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 990 MIT
+* 991 MIT
 * 77 Apache 2.0
 * 61 ISC
 * 27 Simplified BSD
@@ -11789,6 +11789,17 @@ Unknown manually approved
 
 <a name="tailwind-merge"></a>
 ### tailwind-merge v2.5.5
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="tailwind-variants"></a>
+### tailwind-variants v0.3.0
 #### 
 
 ##### Paths

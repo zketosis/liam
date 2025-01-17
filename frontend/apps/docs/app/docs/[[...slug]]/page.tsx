@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@/components'
+import { Callout, Tab, Tabs } from '@/components'
 import { source } from '@/lib/source'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import {
@@ -37,6 +37,7 @@ export default async function Page(props: {
             ...defaultMdxComponents,
             Tabs,
             Tab,
+            Callout,
           }}
         />
       </DocsBody>
