@@ -1,3 +1,4 @@
+import { Banner } from '@/components'
 import './global.css'
 import { RootProvider } from 'fumadocs-ui/provider'
 import { Inter } from 'next/font/google'
@@ -18,6 +19,10 @@ export default function Layout({ children }: { children: ReactNode }) {
             },
           }}
         >
+          {/* TODO: set a link to the Release Blog */}
+          <Banner id="banner-dark" variant="dark" link="/">
+            {"We're launched Liam ERD!"}
+          </Banner>
           {children}
         </RootProvider>
       </body>
