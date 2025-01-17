@@ -15,6 +15,9 @@ concurrency:
 jobs:
   setup-deployment:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       environment: ${{ steps.environment.outputs.environment }}
       has-changes: ${{ steps.changes.outputs.src }}
@@ -55,6 +58,9 @@ jobs:
     environment:
       name: "${{ needs.setup-deployment.outputs.environment }} - ${{ matrix.apps.name }}"
       url: ${{ steps.deployment.outputs.deployment-url }}
+    permissions:
+      contents: read
+      deployments: write
     outputs:
       app-name: ${{ matrix.apps.name }}
       url: ${{ steps.deployment.outputs.deployment-url }}
