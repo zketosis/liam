@@ -13,11 +13,17 @@ function actionErrorHandler(error: Error) {
   }
 }
 
+function printTroubleshootingUrl() {
+  const url = 'https://liambx.com/docs/parser/troubleshooting'
+  console.info(`For more information, see ${url}`)
+}
+
 export function actionRunner<T>(fn: (args: T) => Promise<Error[]>) {
   return async (args: T) => {
     const errors = await fn(args)
     if (errors.length > 0) {
       errors.forEach(actionErrorHandler)
+      printTroubleshootingUrl()
     }
 
     if (errors.some((error) => error instanceof CriticalError)) {
