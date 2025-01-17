@@ -1,5 +1,6 @@
 import { red, yellow } from 'yoctocolors'
 import { CriticalError, WarningError } from './errors.js'
+import { TroubleshootingUrl } from './urls.js'
 
 function actionErrorHandler(error: Error) {
   if (error instanceof CriticalError) {
@@ -14,8 +15,7 @@ function actionErrorHandler(error: Error) {
 }
 
 function printTroubleshootingUrl() {
-  const url = 'https://liambx.com/docs/parser/troubleshooting'
-  console.info(`For more information, see ${url}`)
+  console.info(`For more information, see ${TroubleshootingUrl}`)
 }
 
 export function actionRunner<T>(fn: (args: T) => Promise<Error[]>) {
