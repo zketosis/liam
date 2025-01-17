@@ -1,4 +1,4 @@
-import { Callout, Tab, Tabs } from '@/components'
+import { Callout, Heading, Tab, Tabs } from '@/components'
 import { source } from '@/lib/source'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import {
@@ -38,6 +38,12 @@ export default async function Page(props: {
             Tabs,
             Tab,
             Callout,
+            h1: (props) => <Heading as="h1" {...props} />,
+            h2: (props) => <Heading as="h2" {...props} />,
+            h3: (props) => <Heading as="h3" {...props} />,
+            h4: (props) => <Heading as="h4" {...props} />,
+            h5: (props) => <Heading as="h5" {...props} />,
+            h6: (props) => <Heading as="h6" {...props} />,
           }}
         />
       </DocsBody>
