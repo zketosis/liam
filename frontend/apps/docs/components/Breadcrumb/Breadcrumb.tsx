@@ -1,16 +1,16 @@
 'use client'
 
+import { source } from '@/lib/source'
 import { useBreadcrumb } from 'fumadocs-core/breadcrumb'
-import type { PageTree } from 'fumadocs-core/server'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type FC, Fragment } from 'react'
 import { tv } from 'tailwind-variants'
 
-export const Breadcrumb: FC<{ tree: PageTree.Root }> = ({ tree }) => {
+export const Breadcrumb: FC = () => {
   const pathname = usePathname()
-  const items = useBreadcrumb(pathname, tree)
+  const items = useBreadcrumb(pathname, source.pageTree)
 
   const textStyle = tv({
     base: 'truncate text-base text-fd-muted-foreground font-normal',

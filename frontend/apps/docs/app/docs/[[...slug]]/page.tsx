@@ -37,7 +37,7 @@ export default async function Page(props: {
       }}
       breadcrumb={{
         enabled: true,
-        component: <Breadcrumb tree={source.pageTree} />,
+        component: <Breadcrumb />,
       }}
       footer={{
         enabled: true,
