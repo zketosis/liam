@@ -1,5 +1,6 @@
 export * from './Breadcrumb'
 export * from './Callout'
 export * from './Heading'
+export * from './FooterNavi'
 export * from './LiamLogo'
 export * from './Tabs'

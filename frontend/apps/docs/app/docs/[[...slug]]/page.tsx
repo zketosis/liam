@@ -1,4 +1,11 @@
-import { Breadcrumb, Callout, Heading, Tab, Tabs } from '@/components'
+import {
+  Breadcrumb,
+  Callout,
+  FooterNavi,
+  Heading,
+  Tab,
+  Tabs,
+} from '@/components'
 import { source } from '@/lib/source'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import {
@@ -30,7 +37,11 @@ export default async function Page(props: {
       }}
       breadcrumb={{
         enabled: true,
-        component: <Breadcrumb tree={source.pageTree} />,
+        component: <Breadcrumb />,
+      }}
+      footer={{
+        enabled: true,
+        component: <FooterNavi />,
       }}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
