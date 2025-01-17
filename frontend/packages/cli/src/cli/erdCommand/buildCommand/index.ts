@@ -56,5 +56,14 @@ export const buildCommand = async (
     )
   })
 
+  if (errors.length === 0) {
+    console.info(`
+ERD has been generated successfully in the \`dist/\` directory.
+Note: You cannot open this file directly using \`file://\`.
+Please serve the \`dist/\` directory with an HTTP server and access it via \`http://\`.
+Example:
+  npx http-server dist/
+`)
+  }
   return errors
 }

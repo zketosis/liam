@@ -59,7 +59,16 @@ describe('CLI Smoke Test', () => {
       ) {
         expect(stderr).toBe('')
       }
-      expect(stdout).toBe('')
+
+      expect(stdout).toBe(`
+ERD has been generated successfully in the \`dist/\` directory.
+Note: You cannot open this file directly using \`file://\`.
+Please serve the \`dist/\` directory with an HTTP server and access it via \`http://\`.
+Example:
+  npx http-server dist/
+
+`)
+
       const { stdout: lsOutput } = await execAsync('ls ./dist')
       expect(lsOutput.trim().length).toBeGreaterThan(0)
     } catch (error) {
