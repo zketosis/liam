@@ -97,6 +97,7 @@ export default async function Page({
       />
     )
   }
+  console.warn(`Fetching content from ${contentUrl}`)
   const networkErrorObjects: {
     name: 'NetworkError'
     message: string
