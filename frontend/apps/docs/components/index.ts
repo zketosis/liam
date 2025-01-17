@@ -1,3 +1,4 @@
+export * from './Breadcrumb'
 export * from './Callout'
 export * from './Heading'
 export * from './LiamLogo'
