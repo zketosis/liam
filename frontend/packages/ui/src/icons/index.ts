@@ -25,4 +25,11 @@ export * from './CardinalityZeroOrOneLeftIcon'
 export * from './Eye'
 export * from './EyeClosed'
 
-export { KeyRound, Hash, Link } from 'lucide-react'
+export {
+  KeyRound,
+  Hash,
+  Link,
+  AlertTriangle,
+  Info,
+  XCircle,
+} from 'lucide-react'
