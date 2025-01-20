@@ -35,6 +35,17 @@ const nextConfig: NextConfig = {
       config.externals['@prisma/schema-files-loader'] =
         '@prisma/schema-files-loader'
     }
+    config.plugins.push({
+      // biome-ignore lint/suspicious/noExplicitAny: webpack types are incomplete so we need to use any here
+      apply: (compiler: any) => {
+        compiler.hooks.afterEmit.tap('InstallPrismaInternals', () => {
+          execSync('node scripts/install-prisma-internals.mjs', {
+            stdio: 'inherit',
+            cwd: __dirname,
+          })
+        })
+      },
+    })
 
     return config
   },
