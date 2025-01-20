@@ -37,13 +37,19 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
 
   for (const model of dmmf.datamodel.models) {
     for (const field of model.fields) {
-      if (field.relationName) {
+      if (
+        field.relationName &&
+        (field.relationFromFields?.length ?? 0) > 0 &&
+        (field.relationToFields?.length ?? 0) > 0 &&
+        field.relationFromFields?.[0] &&
+        field.relationToFields?.[0]
+      ) {
         const relationship: Relationship = {
           name: field.relationName,
-          primaryTableName: model.name,
-          primaryColumnName: field.relationFromFields?.[0] || '',
-          foreignTableName: field.type,
-          foreignColumnName: field.relationToFields?.[0] || '',
+          primaryTableName: field.type,
+          primaryColumnName: field.relationToFields[0],
+          foreignTableName: model.name,
+          foreignColumnName: field.relationFromFields[0],
           cardinality: 'ONE_TO_MANY',
           updateConstraint: 'NO_ACTION',
           deleteConstraint: 'NO_ACTION',
