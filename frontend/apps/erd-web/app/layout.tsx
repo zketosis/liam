@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: 'Liam',
     type: 'website',
     locale: 'en_US',
-    images: imageUrl ? [imageUrl] : [],
+    images: imageUrl,
   },
   twitter: {},
 }
