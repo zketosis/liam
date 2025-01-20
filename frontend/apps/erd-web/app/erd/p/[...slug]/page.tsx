@@ -65,11 +65,14 @@ export async function generateMetadata({
   const metaDescription =
     'Generate ER diagrams effortlessly by entering a schema file URL. Ideal for visualizing, reviewing, and documenting database structures.'
 
+  const imageUrl = '/assets/liam_erd.png'
+
   return {
     title: metaTitle,
     description: metaDescription,
     openGraph: {
       url: `https://liambx.com/erd/p/${joinedPath}`,
+      images: imageUrl ? [{ url: imageUrl }] : [],
     },
   }
 }
