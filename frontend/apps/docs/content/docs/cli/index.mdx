@@ -10,33 +10,6 @@ The fastest way to get started with Liam ERD is using the interactive setup comm
 npx @liam-hq/cli init
 ```
 
-This command will guide you through the setup process with the following steps:
-
-1. **Select Your Technology**
-   - Choose from supported technologies:
-     - PostgreSQL
-     - Ruby on Rails (schema.rb)
-     - Prisma (schema.prisma)
-     - Others (see [Supported Formats](/docs/parser/supported-formats))
-
-2. **Configure Input Source**
-   - For PostgreSQL:
-     - Specify dump file path
-   - For Rails/Prisma:
-     - Specify schema file path
-   - For Others:
-     - PostgreSQL dump file is supported
-
-3. **GitHub Actions Setup (Optional)**
-   - Option to generate workflow file
-   - Automatically creates `.github/workflows/erd.yml`
-   - Configures automated ERD generation
-
-After setup completion, follow the provided next steps to:
-
-1. Build your ERD using the generated command
-2. Serve the generated files using a local HTTP server or your preferred hosting service
-
 ## Manual Setup
 
 For more control over the ERD generation process, you can use the `erd` command directly:
@@ -65,26 +38,6 @@ You can use any hosting service of your choice to serve the generated files.
 
 - `--input <path|url>`: Path to your schema file or URL
 - `--format <format>`: Schema format specification
-  - `postgresql`: For PostgreSQL dump files
-  - `schemarb`: For Ruby on Rails schema.rb files
-  - `prisma`: For Prisma schema files
-
-### Supported Formats
-
-1. **PostgreSQL**
-   ```package-install
-   npx @liam-hq/cli erd build --input dump.sql --format postgresql
-   ```
-
-2. **Ruby on Rails**
-   ```package-install
-   npx @liam-hq/cli erd build --input db/schema.rb --format schemarb
-   ```
-
-3. **Prisma**
-   ```package-install
-   npx @liam-hq/cli erd build --input prisma/schema.prisma --format prisma
-   ```
 
 ### From GitHub Public Repository
 
@@ -100,11 +53,7 @@ npx @liam-hq/cli erd build --input https://raw.githubusercontent.com/user/repo/m
 
 ### Output
 
-The command generates ERD files in the `dist` directory of your current working directory. These files include:
-
-- HTML visualization
-- Associated assets
-- Interactive diagram components
+The command generates a simple web application using [Vite](https://vite.dev/), which includes JavaScript, CSS, and HTML files, in the `dist` directory of your current working directory.
 
 To view the generated ERD, serve the `dist` directory using any HTTP server:
 
