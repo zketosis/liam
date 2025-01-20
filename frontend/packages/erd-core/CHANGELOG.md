@@ -1,5 +1,11 @@
 # @liam-hq/erd-core
 
+## 0.0.19
+
+### Patch Changes
+
+- 48ae2c2: 🐛 Update TableCounter to count only table nodes
+
 ## 0.0.18
 
 ### Patch Changes
