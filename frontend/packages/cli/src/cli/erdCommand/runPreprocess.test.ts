@@ -66,7 +66,8 @@ describe('runPreprocess', () => {
     expect(outputFilePath).toBeNull()
     expect(errors).toEqual([
       new ArgumentError(
-        '--format is missing, invalid, or specifies an unsupported format. Please provide a valid format (e.g., "schemarb" or "postgres").',
+        `--format is missing, invalid, or specifies an unsupported format. Please provide a valid format.
+Invalid type: Expected ("schemarb" | "postgres" | "prisma") but received "invalid"`,
       ),
     ])
   })
