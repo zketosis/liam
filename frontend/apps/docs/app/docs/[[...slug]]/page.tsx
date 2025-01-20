@@ -70,6 +70,8 @@ export async function generateStaticParams() {
   return source.generateParams()
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
+
 export async function generateMetadata(props: {
   params: Promise<{ slug?: string[] }>
 }) {
@@ -78,6 +80,7 @@ export async function generateMetadata(props: {
   if (!page) notFound()
 
   return {
+    metadataBase: new URL(baseUrl),
     title: page.data.title,
     description: page.data.description,
     openGraph: {
