@@ -1,5 +1,17 @@
 # @liam-hq/cli
 
+## 0.0.25
+
+### Patch Changes
+
+- 20752a3: 🐛 Update `erd build` to exit with status 1 if there is at least one error
+- 60881ef: ✨ initCommand: Add `Drizzle` intruction support and `Other` option
+- 48ae2c2: 🐛 Update TableCounter to count only table nodes
+- 3f211a4: 🚸 Improve success/error message at `erd build`
+
+  - Clarified the success message when an ERD is generated.
+  - Included a troubleshooting URL when errors occur
+
 ## 0.0.24
 
 ### Patch Changes
