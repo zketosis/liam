@@ -13,6 +13,8 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const imageUrl = '/assets/liam_erd.png'
+
 export const metadata: Metadata = {
   title: 'Liam ERD',
   description:
@@ -21,6 +23,7 @@ export const metadata: Metadata = {
     siteName: 'Liam',
     type: 'website',
     locale: 'en_US',
+    images: imageUrl,
   },
   twitter: {},
 }
