@@ -1,6 +1,7 @@
 export {
   parse,
   type SupportedFormat,
+  supportedFormats,
   supportedFormatSchema,
   detectFormat,
   setPrismWasmUrl,

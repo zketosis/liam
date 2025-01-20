@@ -6,4 +6,10 @@ export const supportedFormatSchema = v.union([
   v.literal('prisma'),
 ])
 
+export const supportedFormats: SupportedFormat[] = [
+  'schemarb',
+  'postgres',
+  'prisma',
+]
+
 export type SupportedFormat = v.InferOutput<typeof supportedFormatSchema>
