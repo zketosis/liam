@@ -72,7 +72,7 @@ export async function generateMetadata({
     description: metaDescription,
     openGraph: {
       url: `https://liambx.com/erd/p/${joinedPath}`,
-      images: imageUrl ? [{ url: imageUrl }] : [],
+      images: imageUrl ? [imageUrl] : [],
     },
   }
 }
