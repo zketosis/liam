@@ -69,5 +69,35 @@ describe(processor, () => {
 
       expect(value).toEqual(expected)
     })
+
+    it('relationship', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          posts posts[]
+        }
+
+        model posts {
+          id   Int    @id @default(autoincrement())
+          user users @relation(fields: [user_id], references: [id])
+          user_id Int
+        }
+      `)
+
+      const expected = {
+        postsTousers: {
+          name: 'postsTousers',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      }
+
+      expect(value.relationships).toEqual(expected)
+    })
   })
 })
