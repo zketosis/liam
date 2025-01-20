@@ -7,7 +7,6 @@ import type { ProcessResult } from './types.js'
 export { ProcessError } from './errors.js'
 export { setPrismWasmUrl } from './schemarb/index.js'
 export {
-  supportedFormats,
   supportedFormatSchema,
   type SupportedFormat,
   detectFormat,
