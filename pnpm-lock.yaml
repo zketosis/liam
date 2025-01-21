@@ -252,6 +252,9 @@ importers:
       '@pgsql/types':
         specifier: 15.0.2
         version: 15.0.2
+      '@prisma/generator-helper':
+        specifier: 6.2.1
+        version: 6.2.1
       typescript:
         specifier: '5'
         version: 5.6.2
