@@ -22,7 +22,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         notNull: field.isRequired,
         unique: field.isUnique,
         primary: field.isId,
-        comment: null,
+        comment: field.documentation ?? null,
         check: null,
       }
     }
