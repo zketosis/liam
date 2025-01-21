@@ -46,7 +46,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         (field.relationFromFields?.length ?? 0) > 0
 
       const relationship: Relationship = isTargetField
-        ? {
+        ? ({
             name: field.relationName,
             primaryTableName: field.type,
             primaryColumnName: field.relationToFields[0] ?? '',
@@ -55,8 +55,8 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
             updateConstraint: 'NO_ACTION',
             deleteConstraint: 'NO_ACTION',
-          }
-        : {
+          } as const)
+        : ({
             name: field.relationName,
             primaryTableName: existingRelationship?.primaryTableName ?? '',
             primaryColumnName: existingRelationship?.primaryColumnName ?? '',
@@ -65,7 +65,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             cardinality: field.isList ? 'ONE_TO_MANY' : 'ONE_TO_ONE',
             updateConstraint: 'NO_ACTION',
             deleteConstraint: 'NO_ACTION',
-          }
+          } as const)
 
       relationships[relationship.name] = relationship
     }
