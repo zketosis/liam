@@ -92,6 +92,21 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('table comment', async () => {
+      const { value } = await processor(`
+        /// store our users.
+        model users {
+          id   Int    @id @default(autoincrement())
+        }
+      `)
+
+      const expected = userTable({
+        comment: 'store our users.',
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     it('relationship', async () => {
       const { value } = await processor(`
         model users {

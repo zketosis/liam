@@ -30,7 +30,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     tables[model.name] = {
       name: model.name,
       columns,
-      comment: null,
+      comment: model.documentation ?? null,
       indices: {},
     }
   }
