@@ -87,6 +87,8 @@ describe(processor, () => {
 
     it('default value as string', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           description String @default("user's description")
@@ -109,6 +111,8 @@ describe(processor, () => {
 
     it('default value as integer', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           age  Int    @default(30)
@@ -131,6 +135,8 @@ describe(processor, () => {
 
     it('default value as boolean', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id     Int     @id @default(autoincrement())
           active Boolean @default(true)
