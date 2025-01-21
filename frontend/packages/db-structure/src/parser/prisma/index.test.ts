@@ -27,9 +27,22 @@ describe(processor, () => {
       },
     })
 
+  const prismaSchemaHeader = `
+    generator client {
+      provider = "prisma-client-js"
+    }
+
+    datasource db {
+      provider = "postgresql"
+      url = env("DATABASE_URL")
+    }
+  `
+
   describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           name String
@@ -51,6 +64,8 @@ describe(processor, () => {
 
     it('nullable', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           description String?
@@ -72,6 +87,8 @@ describe(processor, () => {
 
     it('column comment', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           /// this is description
@@ -94,6 +111,8 @@ describe(processor, () => {
 
     it('table comment', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         /// store our users.
         model users {
           id   Int    @id @default(autoincrement())
@@ -109,6 +128,8 @@ describe(processor, () => {
 
     it('relationship (one-to-many)', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           posts posts[]
@@ -139,6 +160,8 @@ describe(processor, () => {
 
     it('relationship (one-to-one)', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           post posts?
