@@ -70,6 +70,28 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('column comment', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          /// this is description
+          description String?
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          description: aColumn({
+            name: 'description',
+            type: 'String',
+            comment: 'this is description',
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     it('relationship', async () => {
       const { value } = await processor(`
         model users {
