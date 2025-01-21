@@ -73,12 +73,15 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
 function extractDefaultValue(field: DMMF.Field) {
   const value = field.default?.valueOf()
   const defaultValue = value === undefined ? null : value
-  // NOTE: When `@default(autoincrement())` is specified, defaultValue becomes
-  // an object in the form of `{"name":"autoincrement","args":[]}`.
-  // For now, to align with other parsers, return null if the value is an object.
-  return typeof defaultValue === 'object' && defaultValue !== null
-    ? null
-    : defaultValue
+  // NOTE: For example, when `@default(autoincrement())` is specified, `defaultValue`
+  // becomes an object like `{"name":"autoincrement","args":[]}` (DMMF.FieldDefault).
+  // Currently, to maintain consistency with other parsers, only primitive types
+  // (DMMF.FieldDefaultScalar as `string | number | boolean`) are accepted.
+  return typeof defaultValue === 'string' ||
+    typeof defaultValue === 'number' ||
+    typeof defaultValue === 'boolean'
+    ? defaultValue
+    : null
 }
 
 export const processor: Processor = (str) => parsePrismaSchema(str)
