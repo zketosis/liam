@@ -70,7 +70,7 @@ export async function generateStaticParams() {
   return source.generateParams()
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3002'
 
 export async function generateMetadata(props: {
   params: Promise<{ slug?: string[] }>
