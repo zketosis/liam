@@ -1,3 +1,4 @@
+export * from './Banner'
 export * from './Breadcrumb'
 export * from './Callout'
 export * from './Heading'

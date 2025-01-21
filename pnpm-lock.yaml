@@ -26,6 +26,9 @@ importers:
       '@liam-hq/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@rive-app/react-canvas':
+        specifier: 4.17.6
+        version: 4.17.6(react@18.3.1)
       fumadocs-core:
         specifier: 14.5.4
         version: 14.5.4(@types/react@18.3.12)(next@15.1.2(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2064,6 +2067,14 @@ packages:
 
   '@radix-ui/rect@1.1.0':
     resolution: {integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==}
+
+  '@rive-app/canvas@2.25.4':
+    resolution: {integrity: sha512-g0z2ldp77gQr8J2ePmDROq1//8ZWeLZX1myCBDrDs3TJ/tFVuBoLCo3Oa2YrLlT99jrJJU2RhPwvV3otHdn3Cw==}
+
+  '@rive-app/react-canvas@4.17.6':
+    resolution: {integrity: sha512-gF52RIqf3euq2p6kPmO5UAlGgiWE2XmdcGNFXCbhVXKSQynMc3MAF9lwVUxbHbmjQ7fZlJJ9rcFe9cZfSi8mUg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   '@rollup/plugin-commonjs@28.0.1':
     resolution: {integrity: sha512-+tNWdlWKbpB3WgBN7ijjYkq9X5uhjmcvyjEght4NmH5fAU++zfQzAJ6wumLS+dNcvwEZhKx2Z+skY8m7v0wGSA==}
@@ -8702,6 +8713,13 @@ snapshots:
       '@types/react-dom': 19.0.2(@types/react@18.3.12)
 
   '@radix-ui/rect@1.1.0': {}
+
+  '@rive-app/canvas@2.25.4': {}
+
+  '@rive-app/react-canvas@4.17.6(react@18.3.1)':
+    dependencies:
+      '@rive-app/canvas': 2.25.4
+      react: 18.3.1
 
   '@rollup/plugin-commonjs@28.0.1(rollup@3.29.5)':
     dependencies:
