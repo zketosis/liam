@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 991 MIT
+* 993 MIT
 * 77 Apache 2.0
 * 61 ISC
 * 27 Simplified BSD
@@ -2097,6 +2097,28 @@ LGPL-3.0-or-later permitted
 
 <a name="@radix-ui/rect"></a>
 ### @radix-ui/rect v1.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@rive-app/canvas"></a>
+### @rive-app/canvas v2.25.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@rive-app/react-canvas"></a>
+### @rive-app/react-canvas v4.17.6
 #### 
 
 ##### Paths
