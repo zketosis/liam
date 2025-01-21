@@ -1,3 +1,4 @@
+import { Banner } from '@/components'
 import './global.css'
 import { RootProvider } from 'fumadocs-ui/provider'
 import { Inter } from 'next/font/google'
@@ -18,6 +19,13 @@ export default function Layout({ children }: { children: ReactNode }) {
             },
           }}
         >
+          <Banner
+            id="liam-erd-introduction"
+            variant="dark"
+            link="https://liambx.com/blog/liam-erd-introduction"
+          >
+            {"We're launched Liam ERD!"}
+          </Banner>
           {children}
         </RootProvider>
       </body>
