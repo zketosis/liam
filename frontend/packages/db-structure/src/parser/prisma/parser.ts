@@ -24,7 +24,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         notNull: field.isRequired,
         unique: field.isUnique,
         primary: field.isId,
-        comment: null,
+        comment: field.documentation ?? null,
         check: null,
       }
     }
@@ -32,32 +32,44 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     tables[model.name] = {
       name: model.name,
       columns,
-      comment: null,
+      comment: model.documentation ?? null,
       indices: {},
     }
   }
-
   for (const model of dmmf.datamodel.models) {
     for (const field of model.fields) {
-      if (
-        field.relationName &&
-        (field.relationFromFields?.length ?? 0) > 0 &&
+      if (!field.relationName) continue
+
+      const existingRelationship = relationships[field.relationName]
+      const isTargetField =
+        field.relationToFields?.[0] &&
         (field.relationToFields?.length ?? 0) > 0 &&
         field.relationFromFields?.[0] &&
-        field.relationToFields?.[0]
-      ) {
-        const relationship: Relationship = {
-          name: field.relationName,
-          primaryTableName: field.type,
-          primaryColumnName: field.relationToFields[0],
-          foreignTableName: model.name,
-          foreignColumnName: field.relationFromFields[0],
-          cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        }
-        relationships[relationship.name] = relationship
-      }
+        (field.relationFromFields?.length ?? 0) > 0
+
+      const relationship: Relationship = isTargetField
+        ? ({
+            name: field.relationName,
+            primaryTableName: field.type,
+            primaryColumnName: field.relationToFields[0] ?? '',
+            foreignTableName: model.name,
+            foreignColumnName: field.relationFromFields[0] ?? '',
+            cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
+            updateConstraint: 'NO_ACTION',
+            deleteConstraint: 'NO_ACTION',
+          } as const)
+        : ({
+            name: field.relationName,
+            primaryTableName: existingRelationship?.primaryTableName ?? '',
+            primaryColumnName: existingRelationship?.primaryColumnName ?? '',
+            foreignTableName: existingRelationship?.foreignTableName ?? '',
+            foreignColumnName: existingRelationship?.foreignColumnName ?? '',
+            cardinality: field.isList ? 'ONE_TO_MANY' : 'ONE_TO_ONE',
+            updateConstraint: 'NO_ACTION',
+            deleteConstraint: 'NO_ACTION',
+          } as const)
+
+      relationships[relationship.name] = relationship
     }
   }
 

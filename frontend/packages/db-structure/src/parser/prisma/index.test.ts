@@ -27,9 +27,22 @@ describe(processor, () => {
       },
     })
 
+  const prismaSchemaHeader = `
+    generator client {
+      provider = "prisma-client-js"
+    }
+
+    datasource db {
+      provider = "postgresql"
+      url = env("DATABASE_URL")
+    }
+  `
+
   describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           name String
@@ -51,6 +64,8 @@ describe(processor, () => {
 
     it('nullable', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           description String?
@@ -136,8 +151,51 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
-    it('relationship', async () => {
+    it('column comment', async () => {
       const { value } = await processor(`
+        ${prismaSchemaHeader}
+
+        model users {
+          id   Int    @id @default(autoincrement())
+          /// this is description
+          description String?
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          description: aColumn({
+            name: 'description',
+            type: 'String',
+            comment: 'this is description',
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('table comment', async () => {
+      const { value } = await processor(`
+        ${prismaSchemaHeader}
+
+        /// store our users.
+        model users {
+          id   Int    @id @default(autoincrement())
+        }
+      `)
+
+      const expected = userTable({
+        comment: 'store our users.',
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('relationship (one-to-many)', async () => {
+      const { value } = await processor(`
+        ${prismaSchemaHeader}
+
         model users {
           id   Int    @id @default(autoincrement())
           posts posts[]
@@ -158,6 +216,38 @@ describe(processor, () => {
           foreignTableName: 'posts',
           foreignColumnName: 'user_id',
           cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      }
+
+      expect(value.relationships).toEqual(expected)
+    })
+
+    it('relationship (one-to-one)', async () => {
+      const { value } = await processor(`
+        ${prismaSchemaHeader}
+
+        model users {
+          id   Int    @id @default(autoincrement())
+          post posts?
+        }
+
+        model posts {
+          id      Int    @id @default(autoincrement())
+          user    users  @relation(fields: [user_id], references: [id])
+          user_id Int    @unique
+        }
+      `)
+
+      const expected = {
+        postsTousers: {
+          name: 'postsTousers',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_ONE',
           updateConstraint: 'NO_ACTION',
           deleteConstraint: 'NO_ACTION',
         },
