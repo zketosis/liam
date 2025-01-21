@@ -1,3 +1,4 @@
+import type { DMMF } from '@prisma/generator-helper'
 import pkg from '@prisma/internals'
 import type { Columns, Relationship, Table } from '../../schema/index.js'
 import type { ProcessResult, Processor } from '../types.js'
@@ -15,10 +16,11 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   for (const model of dmmf.datamodel.models) {
     const columns: Columns = {}
     for (const field of model.fields) {
+      const defaultValue = extractDefaultValue(field)
       columns[field.name] = {
         name: field.name,
         type: field.type,
-        default: null,
+        default: defaultValue,
         notNull: field.isRequired,
         unique: field.isUnique,
         primary: field.isId,
@@ -78,6 +80,20 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     },
     errors: errors,
   }
+}
+
+function extractDefaultValue(field: DMMF.Field) {
+  const value = field.default?.valueOf()
+  const defaultValue = value === undefined ? null : value
+  // NOTE: For example, when `@default(autoincrement())` is specified, `defaultValue`
+  // becomes an object like `{"name":"autoincrement","args":[]}` (DMMF.FieldDefault).
+  // Currently, to maintain consistency with other parsers, only primitive types
+  // (DMMF.FieldDefaultScalar as `string | number | boolean`) are accepted.
+  return typeof defaultValue === 'string' ||
+    typeof defaultValue === 'number' ||
+    typeof defaultValue === 'boolean'
+    ? defaultValue
+    : null
 }
 
 export const processor: Processor = (str) => parsePrismaSchema(str)
