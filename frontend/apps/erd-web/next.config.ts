@@ -6,13 +6,47 @@ const gitCommitHash = execSync('git rev-parse --short HEAD').toString().trim()
 const releaseDate = new Date().toISOString().split('T')[0]
 
 const nextConfig: NextConfig = {
-  // NOTE: Exclude '@prisma/internals' from the client-side bundle
-  // This module is server-side only and should not be included in the client build
+  // NOTE: Exclude Prisma-related packages from the bundle
+  // These packages are installed separately in the node_modules/@prisma directory
+  // Excluding them prevents `Error: Cannot find module 'fs'` errors in the build process
   webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@prisma/internals': false,
+    if (Array.isArray(config.externals)) {
+      config.externals.push(
+        '@prisma/debug',
+        '@prisma/engines',
+        '@prisma/engines-version',
+        '@prisma/fetch-engine',
+        '@prisma/generator-helper',
+        '@prisma/get-platform',
+        '@prisma/internals',
+        '@prisma/prisma-schema-wasm',
+        '@prisma/schema-files-loader',
+      )
+    } else {
+      config.externals['@prisma/debug'] = '@prisma/debug'
+      config.externals['@prisma/engines'] = '@prisma/engines'
+      config.externals['@prisma/engines-version'] = '@prisma/engines-version'
+      config.externals['@prisma/fetch-engine'] = '@prisma/fetch-engine'
+      config.externals['@prisma/generator-helper'] = '@prisma/generator-helper'
+      config.externals['@prisma/get-platform'] = '@prisma/get-platform'
+      config.externals['@prisma/internals'] = '@prisma/internals'
+      config.externals['@prisma/prisma-schema-wasm'] =
+        '@prisma/prisma-schema-wasm'
+      config.externals['@prisma/schema-files-loader'] =
+        '@prisma/schema-files-loader'
     }
+    config.plugins.push({
+      // biome-ignore lint/suspicious/noExplicitAny: webpack types are incomplete so we need to use any here
+      apply: (compiler: any) => {
+        compiler.hooks.afterEmit.tap('InstallPrismaInternals', () => {
+          execSync('node scripts/install-prisma-internals.mjs', {
+            stdio: 'inherit',
+            cwd: __dirname,
+          })
+        })
+      },
+    })
+
     return config
   },
   outputFileTracingIncludes: {

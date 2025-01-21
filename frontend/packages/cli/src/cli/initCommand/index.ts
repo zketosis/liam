@@ -4,6 +4,12 @@ import { exit } from 'node:process'
 import { Command } from 'commander'
 import inquirer from 'inquirer'
 import * as yocto from 'yoctocolors'
+import {
+  DbOrmDiscussionUrl,
+  DiscussionUrl,
+  DocsUrl,
+  RepositoryUrl,
+} from '../urls.js'
 
 const initCommand = new Command('init').description(
   'guide you interactively through the setup',
@@ -27,10 +33,10 @@ ${yocto.greenBright('🌟 This init command is a work in progress! 🌟')}
 We’re continuously improving it. Don’t forget to run \`npx @liam-hq/cli init\` after updates for the latest features.
 
 💡 Have feedback? Share it with us!
-Visit ${yocto.blueBright('https://github.com/liam-hq/liam/discussions')} to submit ideas or report issues.
+Visit ${yocto.blueBright(DiscussionUrl)} to submit ideas or report issues.
 
 🌟️ ${yocto.bold('Love Liam ERD')}? Help us grow by starring our GitHub repository:  
-${yocto.blueBright('https://github.com/liam-hq/liam')}
+${yocto.blueBright(RepositoryUrl)}
 
 ----
 Now, let’s get started with setting up your Liam ERD project.
@@ -140,10 +146,10 @@ ${yocto.yellow(
     console.info(`
 💔 ${yocto.yellowBright("For other DBs or ORMs, Sorry we don't support them yet")} 💔
 
-Visit ${yocto.yellowBright('https://github.com/liam-hq/liam/discussions/364')} to suggest support for your database or ORM!
+Visit ${yocto.yellowBright(DbOrmDiscussionUrl)} to suggest support for your database or ORM!
 
 For more details about Liam ERD usage and advanced configurations, check out:
-${yocto.blueBright('https://liambx.com/docs')}
+${yocto.blueBright(DocsUrl)}
 `)
     exit(0)
   }
@@ -170,7 +176,7 @@ ${yocto.blueBright('https://liambx.com/docs')}
   //
   console.info(`
 For more details about Liam ERD usage and advanced configurations, check out:
-${yocto.blueBright('https://liambx.com/docs')}
+${yocto.blueBright(DocsUrl)}
 `)
 
   //
