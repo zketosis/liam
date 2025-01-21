@@ -121,5 +121,49 @@ describe(processor, () => {
 
       expect(value.relationships).toEqual(expected)
     })
+
+    it('unique', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String @unique
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+            unique: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('not unique', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+            unique: false,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
   })
 })
