@@ -61,8 +61,6 @@
     --fd-accent-foreground: var(--liam-gray-500);
 
     --fd-ring: 221 83% 53%;
-
-    --fd-sidebar-width: 16.25rem;
   }
 
   .dark {
