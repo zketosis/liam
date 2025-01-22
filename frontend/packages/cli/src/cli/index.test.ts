@@ -58,6 +58,8 @@ describe('program', () => {
   it('should have an "init" command with subcommands', () => {
     const initCommand = program.commands.find((cmd) => cmd.name() === 'init')
     expect(initCommand).toBeDefined()
-    expect(initCommand?.description()).toBe('guide you interactively through the setup')
+    expect(initCommand?.description()).toBe(
+      'guide you interactively through the setup',
+    )
   })
 })

@@ -1,6 +1,6 @@
 import fs from 'node:fs'
-import { afterEach, describe, expect, it, vi } from 'vitest'
 import { glob } from 'glob'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getInputContent } from './getInputContent.js'
 
 vi.mock('node:fs')
@@ -93,14 +93,8 @@ describe('getInputContent', () => {
   })
 
   it('should read and combine multiple files when given a glob pattern', async () => {
-    const mockFiles = [
-      '/path/to/file1.sql',
-      '/path/to/file2.sql',
-    ]
-    const mockContents = [
-      'Content of file 1',
-      'Content of file 2',
-    ]
+    const mockFiles = ['/path/to/file1.sql', '/path/to/file2.sql']
+    const mockContents = ['Content of file 1', 'Content of file 2']
 
     vi.mocked(glob).mockImplementation(async (pattern) => {
       if (pattern === '/path/to/*.sql') {

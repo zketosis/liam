@@ -19,7 +19,9 @@ function isGitHubFileUrl(url: string): boolean {
 async function readLocalFiles(pattern: string): Promise<string> {
   const files = await glob(pattern)
   if (files.length === 0) {
-    throw new Error('No files found matching the pattern. Please provide valid file(s).')
+    throw new Error(
+      'No files found matching the pattern. Please provide valid file(s).',
+    )
   }
 
   const contents = await Promise.all(
