@@ -32,6 +32,8 @@ Liam ERD generates beautiful, interactive ER diagrams from your database. Whethe
 - **High Performance**: Optimized for both small and large projects, easily handling 100+ tables.
 - **Fully Open-Source**: Contribute to the project and shape Liam ERD to fit your needs.
 
+<img src="./assets/jack.gif" alt="Jack" width="16"> **Don't forget to give it a star! ⭐**
+
 ## Documentation
 
 Check out the full documentation on [the website](https://liambx.com/docs).
