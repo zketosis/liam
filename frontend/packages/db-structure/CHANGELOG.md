@@ -1,5 +1,17 @@
 # @liam-hq/db-structure
 
+## 0.0.9
+
+### Patch Changes
+
+- 77c079a: ✨ Add support for column comments in Prisma schema
+- b31ad8e: 🐛 fix: exclude model type from columns in Prisma parser
+- 851e966: 🐛 Fix prisma relationship direction
+- bd2a4ca: 🚸 Updated CLI help text to dynamically display supported formats
+- 0fea145: ✨️ feat(db-structure): support parsing default values in Prisma schema
+- 433df21: ✨ Support Prisma relationship cardinality
+- 577ee06: ✨ Add support for table comments in Prisma schema
+
 ## 0.0.8
 
 ### Patch Changes
