@@ -1,23 +1,15 @@
 import { pushToDataLayer } from './pushToDataLayer'
+import type { CommonLogEvent } from './types'
 
-type OpenRelatedTablesLogEvent = {
+type OpenRelatedTablesLogEvent = CommonLogEvent & {
   tableId: string
-  platform: string
-  ver: string
-  appEnv: string
 }
 
-export const openRelatedTablesLogEvent = ({
-  tableId,
-  platform,
-  ver,
-  appEnv,
-}: OpenRelatedTablesLogEvent) => {
+export const openRelatedTablesLogEvent = (
+  params: OpenRelatedTablesLogEvent,
+) => {
   pushToDataLayer({
     event: 'openRelatedTables',
-    tableId,
-    platform,
-    ver,
-    appEnv,
+    ...params,
   })
 }

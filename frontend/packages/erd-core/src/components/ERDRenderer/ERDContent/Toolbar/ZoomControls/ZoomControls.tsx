@@ -19,8 +19,9 @@ export const ZoomControls: FC = () => {
       zoomLevel: zoomLevel.toFixed(2),
       showMode,
       platform: version.displayedOn,
-      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
-      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+      gitHash: version.gitHash,
+      ver: version.version,
+      appEnv: version.envName,
     })
     zoomOut()
   }, [zoomOut, zoomLevel, showMode, version])
@@ -31,8 +32,9 @@ export const ZoomControls: FC = () => {
       zoomLevel: zoomLevel.toFixed(2),
       showMode: showMode,
       platform: version.displayedOn,
-      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
-      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+      gitHash: version.gitHash,
+      ver: version.version,
+      appEnv: version.envName,
     })
     zoomIn()
   }, [zoomIn, zoomLevel, showMode, version])

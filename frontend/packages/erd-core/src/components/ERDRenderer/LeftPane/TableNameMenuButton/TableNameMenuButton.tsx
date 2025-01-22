@@ -24,8 +24,9 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
       ref: 'leftPane',
       tableId,
       platform: version.displayedOn,
-      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
-      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+      gitHash: version.gitHash,
+      ver: version.version,
+      appEnv: version.envName,
     })
   }
 

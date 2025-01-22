@@ -34,8 +34,9 @@ export const CopyLinkButton: FC = () => {
     clickLogEvent({
       element: 'copyLinkButton',
       platform: version.displayedOn,
-      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
-      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+      ver: version.version,
+      gitHash: version.gitHash,
+      appEnv: version.envName,
     })
   }, [toast, version])
 
