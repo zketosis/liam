@@ -9,7 +9,7 @@ const RiveComponent = () => {
     src: `${baseUrl}/rivs/jack_animation_for_light.riv`,
     stateMachines: 'State Machine 1',
     layout: new Layout({
-      fit: Fit.Cover,
+      fit: Fit.Contain,
     }),
     autoplay: true,
   })
@@ -19,7 +19,7 @@ const RiveComponent = () => {
 
 export const JackAnimationForLight: FC = () => {
   return (
-    <div className="w-[1.875rem] h-[1.875rem]">
+    <div className="w-[20px] h-[20px] sm:w-[1.875rem] sm:h-[1.875rem]">
       <RiveComponent />
     </div>
   )

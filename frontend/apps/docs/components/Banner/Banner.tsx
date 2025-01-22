@@ -43,7 +43,7 @@ export const Banner: FC<Props> = ({
   }, [globalKey])
 
   const wrapperStyle = tv({
-    base: 'sticky top-0 z-40 flex h-[var(--fd-banner-height)] items-center justify-center px-4 bg-[url("/images/banner_bg.png")] bg-blend-overlay',
+    base: 'sticky top-0 z-40 flex h-[var(--fd-banner-height)] items-center justify-center px-8 bg-[url("/images/banner_bg.png")] bg-blend-overlay',
     variants: {
       variant: {
         light: 'bg-liam-green-300',
@@ -53,7 +53,7 @@ export const Banner: FC<Props> = ({
   })
 
   const textStyle = tv({
-    base: 'text-sm font-mono font-medium',
+    base: 'text-[10px] sm:text-sm font-mono font-medium overflow-hidden text-overflow-ellipsis line-clamp-2 leading-snug',
     variants: {
       variant: {
         light: 'text-base-black',
@@ -63,7 +63,7 @@ export const Banner: FC<Props> = ({
   })
 
   const linkStyle = tv({
-    base: 'py-0.5 px-2 text-base-black text-xs font-medium font-mono hover:underline',
+    base: 'py-0.5 px-2 text-base-black text-[10px] sm:text-sm font-medium font-mono whitespace-nowrap hover:underline',
     variants: {
       variant: {
         light: 'bg-base-white',
@@ -104,7 +104,7 @@ export const Banner: FC<Props> = ({
           />
         </>
       )}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         <div className="flex items-center gap-4">
           {match(variant)
             .with('light', () => <JackAnimationForLight />)
