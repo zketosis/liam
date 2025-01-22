@@ -3,6 +3,7 @@ import pkg from '@prisma/internals'
 import type {
   Columns,
   ForeignKeyConstraint,
+  Index,
   Relationship,
   Table,
 } from '../../schema/index.js'
@@ -79,6 +80,14 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       relationships[relationship.name] = relationship
     }
   }
+  for (const index of dmmf.datamodel.indexes) {
+    const table = tables[index.model]
+    if (!table) continue
+
+    const indexInfo = extractIndex(index)
+    if (!indexInfo) continue
+    table.indices[indexInfo.name] = indexInfo
+  }
 
   return {
     value: {
@@ -86,6 +95,35 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       relationships,
     },
     errors: errors,
+  }
+}
+
+function extractIndex(index: DMMF.Index): Index | null {
+  switch (index.type) {
+    case 'id':
+      return {
+        name: `${index.model}_pkey`,
+        unique: true,
+        columns: index.fields.map((field) => field.name),
+      }
+    case 'unique':
+      return {
+        name: `${index.model}_${index.fields.map((field) => field.name).join('_')}_key`,
+        unique: true,
+        columns: index.fields.map((field) => field.name),
+      }
+    case 'normal':
+      return {
+        name: `${index.model}_${index.fields.map((field) => field.name).join('_')}_idx`,
+        unique: false,
+        columns: index.fields.map((field) => field.name),
+      }
+    // NOTE: fulltext index is not supported for postgres
+    // ref: https://www.prisma.io/docs/orm/prisma-schema/data-model/indexes#full-text-indexes-mysql-and-mongodb
+    case 'fulltext':
+      return null
+    default:
+      return null
   }
 }
 

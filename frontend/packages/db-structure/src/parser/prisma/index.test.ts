@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
+import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
 import { processor as _processor } from './index.js'
 
 describe(_processor, () => {
@@ -20,6 +20,11 @@ describe(_processor, () => {
             ...override?.columns,
           },
           indices: {
+            users_pkey: anIndex({
+              name: 'users_pkey',
+              unique: true,
+              columns: ['id'],
+            }),
             ...override?.indices,
           },
           comment: override?.comment ?? null,
@@ -186,6 +191,69 @@ describe(_processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('index (unique: false)', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String
+          @@index([id, email])
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+          }),
+        },
+        indices: {
+          users_id_email_idx: anIndex({
+            name: 'users_id_email_idx',
+            unique: false,
+            columns: ['id', 'email'],
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('index (unique: true)', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String
+          @@unique([id, email])
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+          }),
+        },
+        indices: {
+          users_pkey: anIndex({
+            name: 'users_pkey',
+            unique: true,
+            columns: ['id'],
+          }),
+          users_id_email_key: anIndex({
+            name: 'users_id_email_key',
+            unique: true,
+            columns: ['id', 'email'],
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     it('relationship (one-to-many)', async () => {
       const { value } = await processor(`
         model users {
@@ -339,6 +407,13 @@ describe(_processor, () => {
             type: 'String',
             notNull: true,
             unique: true,
+          }),
+        },
+        indices: {
+          users_email_key: anIndex({
+            name: 'users_email_key',
+            unique: true,
+            columns: ['email'],
           }),
         },
       })
