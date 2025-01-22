@@ -4,9 +4,6 @@ import type { CommonLogEvent } from './types'
 type SelectTable = CommonLogEvent & {
   ref: 'leftPane' | 'mainArea'
   tableId: string
-  platform: string
-  ver: string
-  appEnv: string
 }
 
 export const selectTableLogEvent = ({
