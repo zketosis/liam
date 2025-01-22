@@ -1,26 +1,15 @@
 import { pushToDataLayer } from './pushToDataLayer'
+import type { CommonLogEvent } from './types'
 
-type ToolbarActionLogEvent = {
+type ToolbarActionLogEvent = CommonLogEvent & {
   element: string
   zoomLevel?: string
   showMode?: string
-  cliVer: string
-  appEnv: string
 }
 
-export const toolbarActionLogEvent = ({
-  element,
-  zoomLevel,
-  showMode,
-  cliVer,
-  appEnv,
-}: ToolbarActionLogEvent) => {
+export const toolbarActionLogEvent = (params: ToolbarActionLogEvent) => {
   pushToDataLayer({
     event: 'toolbarAction',
-    element,
-    zoomLevel,
-    showMode,
-    cliVer,
-    appEnv,
+    ...params,
   })
 }

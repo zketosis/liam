@@ -1,16 +1,13 @@
 import { pushToDataLayer } from './pushToDataLayer'
+import type { CommonLogEvent } from './types'
 
-type ClickLogEvent = {
+type ClickLogEvent = CommonLogEvent & {
   element: string
-  cliVer: string
-  appEnv: string
 }
 
-export const clickLogEvent = ({ element, cliVer, appEnv }: ClickLogEvent) => {
+export const clickLogEvent = (params: ClickLogEvent) => {
   pushToDataLayer({
     event: 'click',
-    element,
-    cliVer,
-    appEnv,
+    ...params,
   })
 }
