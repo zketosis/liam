@@ -45,13 +45,13 @@ export const ERDRenderer: FC<Props> = ({
   const handleChangeOpen = useCallback(
     (open: boolean) => {
       setOpen(open)
-      version.displayedOn === 'cli' &&
-        toggleLogEvent({
-          element: 'leftPane',
-          isShow: open,
-          cliVer: version.version,
-          appEnv: version.envName,
-        })
+      toggleLogEvent({
+        element: 'leftPane',
+        isShow: open,
+        platform: version.displayedOn,
+        ver: version.displayedOn === 'web' ? version.gitHash : version.version,
+        appEnv: version.displayedOn === 'web' ? '' : version.envName,
+      })
     },
     [version],
   )

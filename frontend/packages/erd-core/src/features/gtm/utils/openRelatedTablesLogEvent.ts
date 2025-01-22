@@ -2,19 +2,22 @@ import { pushToDataLayer } from './pushToDataLayer'
 
 type OpenRelatedTablesLogEvent = {
   tableId: string
-  cliVer: string
+  platform: string
+  ver: string
   appEnv: string
 }
 
 export const openRelatedTablesLogEvent = ({
   tableId,
-  cliVer,
+  platform,
+  ver,
   appEnv,
 }: OpenRelatedTablesLogEvent) => {
   pushToDataLayer({
     event: 'openRelatedTables',
     tableId,
-    cliVer,
+    platform,
+    ver,
     appEnv,
   })
 }

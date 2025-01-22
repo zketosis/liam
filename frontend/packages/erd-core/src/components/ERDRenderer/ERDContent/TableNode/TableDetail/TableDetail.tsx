@@ -17,12 +17,12 @@ type Props = {
 export const TableDetail: FC<Props> = ({ table }) => {
   const { version } = useVersion()
   const handleDrawerClose = () => {
-    version.displayedOn === 'cli' &&
-      clickLogEvent({
-        element: 'closeTableDetailButton',
-        cliVer: version.version,
-        appEnv: version.envName,
-      })
+    clickLogEvent({
+      element: 'closeTableDetailButton',
+      platform: version.displayedOn,
+      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
+      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+    })
   }
 
   return (

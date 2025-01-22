@@ -4,7 +4,8 @@ type ToggleLogEvent = {
   element: string
   isShow: boolean
   tableId?: string
-  cliVer: string
+  platform: string
+  ver: string
   appEnv: string
 }
 

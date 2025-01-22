@@ -33,13 +33,14 @@ export const ShowModeMenu: FC = () => {
       if (parsed.success) {
         updateShowMode(parsed.output)
 
-        version.displayedOn === 'cli' &&
-          toolbarActionLogEvent({
-            element: 'changeShowMode',
-            showMode: value,
-            cliVer: version.version,
-            appEnv: version.envName,
-          })
+        toolbarActionLogEvent({
+          element: 'changeShowMode',
+          showMode: value,
+          platform: version.displayedOn,
+          ver:
+            version.displayedOn === 'web' ? version.gitHash : version.version,
+          appEnv: version.displayedOn === 'web' ? '' : version.envName,
+        })
       }
     },
     [version],

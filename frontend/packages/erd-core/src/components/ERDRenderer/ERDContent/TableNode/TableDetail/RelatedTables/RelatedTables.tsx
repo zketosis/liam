@@ -36,12 +36,12 @@ export const RelatedTables: FC<Props> = ({ table }) => {
 
     replaceHiddenNodeIds(hiddenNodeIds)
     updateActiveTableName(undefined)
-    version.displayedOn === 'cli' &&
-      openRelatedTablesLogEvent({
-        tableId: table.name,
-        cliVer: version.version,
-        appEnv: version.envName,
-      })
+    openRelatedTablesLogEvent({
+      tableId: table.name,
+      platform: version.displayedOn,
+      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
+      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+    })
   }, [nodes, getNodes, table.name, version])
 
   return (

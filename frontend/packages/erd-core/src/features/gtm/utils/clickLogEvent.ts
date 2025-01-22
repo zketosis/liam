@@ -2,15 +2,22 @@ import { pushToDataLayer } from './pushToDataLayer'
 
 type ClickLogEvent = {
   element: string
-  cliVer: string
+  platform: string
+  ver: string
   appEnv: string
 }
 
-export const clickLogEvent = ({ element, cliVer, appEnv }: ClickLogEvent) => {
+export const clickLogEvent = ({
+  element,
+  platform,
+  ver,
+  appEnv,
+}: ClickLogEvent) => {
   pushToDataLayer({
     event: 'click',
     element,
-    cliVer,
+    platform,
+    ver,
     appEnv,
   })
 }

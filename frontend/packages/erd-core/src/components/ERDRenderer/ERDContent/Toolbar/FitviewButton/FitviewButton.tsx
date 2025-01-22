@@ -12,13 +12,13 @@ export const FitviewButton: FC = () => {
   const { version } = useVersion()
 
   const handleClick = useCallback(() => {
-    version.displayedOn === 'cli' &&
-      toolbarActionLogEvent({
-        element: 'fitview',
-        showMode,
-        cliVer: version.version,
-        appEnv: version.envName,
-      })
+    toolbarActionLogEvent({
+      element: 'fitview',
+      showMode,
+      platform: version.displayedOn,
+      ver: version.displayedOn === 'web' ? version.gitHash : version.version,
+      appEnv: version.displayedOn === 'web' ? '' : version.envName,
+    })
     fitView()
   }, [fitView, showMode, version])
 
