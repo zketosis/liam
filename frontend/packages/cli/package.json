@@ -13,6 +13,7 @@
   "dependencies": {
     "@prisma/internals": "6.2.1",
     "commander": "12.1.0",
+    "glob": "^11.0.1",
     "inquirer": "12.3.2",
     "react": "18.3.1",
     "react-dom": "18",
@@ -25,6 +26,7 @@
     "@liam-hq/erd-core": "workspace:*",
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-typescript": "12.1.1",
+    "@types/glob": "^8.1.0",
     "@types/node": "22.9.0",
     "@types/react": "18",
     "@types/react-dom": "18",

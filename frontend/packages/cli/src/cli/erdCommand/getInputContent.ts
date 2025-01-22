@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import { URL } from 'node:url'
+import { glob } from 'glob'
 
 function isValidUrl(url: string): boolean {
   try {
@@ -15,11 +16,22 @@ function isGitHubFileUrl(url: string): boolean {
   return parsedUrl.hostname === 'github.com' && url.includes('/blob/')
 }
 
-function readLocalFile(filePath: string): string {
-  if (!fs.existsSync(filePath)) {
-    throw new Error('Invalid input path. Please provide a valid file.')
+async function readLocalFiles(pattern: string): Promise<string> {
+  const files = await glob(pattern)
+  if (files.length === 0) {
+    throw new Error('No files found matching the pattern. Please provide valid file(s).')
   }
-  return fs.readFileSync(filePath, 'utf8')
+
+  const contents = await Promise.all(
+    files.map(async (filePath) => {
+      if (!fs.existsSync(filePath)) {
+        throw new Error(`File not found: ${filePath}`)
+      }
+      return fs.readFileSync(filePath, 'utf8')
+    }),
+  )
+
+  return contents.join('\n')
 }
 
 async function downloadGitHubRawContent(githubUrl: string): Promise<string> {
@@ -40,7 +52,7 @@ async function downloadFile(url: string): Promise<string> {
 
 export async function getInputContent(inputPath: string): Promise<string> {
   if (!isValidUrl(inputPath)) {
-    return readLocalFile(inputPath)
+    return await readLocalFiles(inputPath)
   }
 
   return isGitHubFileUrl(inputPath)
