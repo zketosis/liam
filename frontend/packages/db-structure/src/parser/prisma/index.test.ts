@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
 import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
-import { processor } from './index.js'
+import { processor as _processor } from './index.js'
 
-describe(processor, () => {
+describe(_processor, () => {
   const userTable = (override?: Partial<Table>) =>
     aDBStructure({
       tables: {
@@ -26,6 +26,19 @@ describe(processor, () => {
         }),
       },
     })
+
+  const prismaSchemaHeader = `
+    generator client {
+      provider = "prisma-client-js"
+    }
+
+    datasource db {
+      provider = "postgresql"
+      url = env("DATABASE_URL")
+    }
+  `
+  const processor = async (schema: string) =>
+    _processor(`${prismaSchemaHeader}\n\n${schema}`)
 
   describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
@@ -70,6 +83,72 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('default value as string', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          description String @default("user's description")
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          description: aColumn({
+            name: 'description',
+            type: 'String',
+            default: "user's description",
+            notNull: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('default value as integer', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          age  Int    @default(30)
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          age: aColumn({
+            name: 'age',
+            type: 'Int',
+            default: 30,
+            notNull: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('default value as boolean', async () => {
+      const { value } = await processor(`
+        model users {
+          id     Int     @id @default(autoincrement())
+          active Boolean @default(true)
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          active: aColumn({
+            name: 'active',
+            type: 'Boolean',
+            default: true,
+            notNull: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     it('column comment', async () => {
       const { value } = await processor(`
         model users {
@@ -92,7 +171,22 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
-    it('relationship', async () => {
+    it('table comment', async () => {
+      const { value } = await processor(`
+        /// store our users.
+        model users {
+          id   Int    @id @default(autoincrement())
+        }
+      `)
+
+      const expected = userTable({
+        comment: 'store our users.',
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('relationship (one-to-many)', async () => {
       const { value } = await processor(`
         model users {
           id   Int    @id @default(autoincrement())
@@ -114,6 +208,36 @@ describe(processor, () => {
           foreignTableName: 'posts',
           foreignColumnName: 'user_id',
           cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      }
+
+      expect(value.relationships).toEqual(expected)
+    })
+
+    it('relationship (one-to-one)', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          post posts?
+        }
+
+        model posts {
+          id      Int    @id @default(autoincrement())
+          user    users  @relation(fields: [user_id], references: [id])
+          user_id Int    @unique
+        }
+      `)
+
+      const expected = {
+        postsTousers: {
+          name: 'postsTousers',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          cardinality: 'ONE_TO_ONE',
           updateConstraint: 'NO_ACTION',
           deleteConstraint: 'NO_ACTION',
         },

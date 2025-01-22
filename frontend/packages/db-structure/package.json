@@ -18,6 +18,7 @@
     "@biomejs/biome": "1.9.3",
     "@liam-hq/configs": "workspace:*",
     "@pgsql/types": "15.0.2",
+    "@prisma/generator-helper": "6.2.1",
     "typescript": "5",
     "vitest": "2.1.4"
   },
