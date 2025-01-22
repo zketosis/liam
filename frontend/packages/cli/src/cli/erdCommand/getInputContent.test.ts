@@ -135,4 +135,12 @@ describe('getInputContent', () => {
       'File not found: /path/to/nonexistent.sql',
     )
   })
+
+  it('should throw an error if no files match the glob pattern', async () => {
+    vi.mocked(glob).mockImplementation(async () => [])
+
+    await expect(getInputContent('*.nonexistent')).rejects.toThrow(
+      'No files found matching the pattern. Please provide valid file(s).',
+    )
+  })
 })
