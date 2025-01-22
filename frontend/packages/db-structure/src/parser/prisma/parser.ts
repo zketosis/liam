@@ -16,6 +16,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   for (const model of dmmf.datamodel.models) {
     const columns: Columns = {}
     for (const field of model.fields) {
+      if (field.relationName) continue
       const defaultValue = extractDefaultValue(field)
       columns[field.name] = {
         name: field.name,
