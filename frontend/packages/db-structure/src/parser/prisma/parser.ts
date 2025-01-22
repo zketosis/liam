@@ -13,9 +13,11 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   const relationships: Record<string, Relationship> = {}
   const errors: Error[] = []
 
+  const modelNames = dmmf.datamodel.models.map((model) => model.name)
   for (const model of dmmf.datamodel.models) {
     const columns: Columns = {}
     for (const field of model.fields) {
+      if (modelNames.includes(field.type)) continue
       const defaultValue = extractDefaultValue(field)
       columns[field.name] = {
         name: field.name,

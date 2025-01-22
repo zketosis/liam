@@ -245,5 +245,40 @@ describe(_processor, () => {
 
       expect(value.relationships).toEqual(expected)
     })
+
+    it('columns do not include model type', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          posts posts[]
+        }
+
+        model posts {
+          id   Int    @id @default(autoincrement())
+          user users @relation(fields: [user_id], references: [id])
+          user_id Int
+        }
+      `)
+
+      // biome-ignore lint/complexity/useLiteralKeys: for readability and simplicity
+      const usersTable = value.tables['users']
+      // biome-ignore lint/complexity/useLiteralKeys: for readability and simplicity
+      const postsTable = value.tables['posts']
+
+      if (!usersTable || !usersTable.columns) {
+        throw new Error('Users table or columns are undefined')
+      }
+      if (!postsTable || !postsTable.columns) {
+        throw new Error('Posts table or columns are undefined')
+      }
+
+      const usersColumnNames = Object.keys(usersTable.columns)
+      const postsColumnNames = Object.keys(postsTable.columns)
+
+      expect(usersColumnNames).toEqual(['id'])
+      expect(usersColumnNames).not.toContain('posts')
+      expect(postsColumnNames).toEqual(['id', 'user_id'])
+      expect(postsColumnNames).not.toContain('user')
+    })
   })
 })
