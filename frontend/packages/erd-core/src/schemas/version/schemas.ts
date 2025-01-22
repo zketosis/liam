@@ -1,7 +1,9 @@
 import * as v from 'valibot'
 
 const webVersionSchema = v.object({
+  version: v.string(),
   gitHash: v.string(),
+  envName: v.string(),
   date: v.string(),
   displayedOn: v.literal('web'),
 })
