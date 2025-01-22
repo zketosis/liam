@@ -246,6 +246,49 @@ describe(_processor, () => {
       expect(value.relationships).toEqual(expected)
     })
 
+    describe('foreign key constraints (on delete)', () => {
+      const constraintCases = [
+        ['Cascade', 'CASCADE'],
+        ['Restrict', 'RESTRICT'],
+        ['NoAction', 'NO_ACTION'],
+        ['SetNull', 'SET_NULL'],
+        ['SetDefault', 'SET_DEFAULT'],
+      ] as const
+
+      it.each(constraintCases)(
+        'on delete %s',
+        async (prismaAction: string, expectedAction: string) => {
+          const { value } = await processor(`
+          model users {
+            id   Int    @id @default(autoincrement())
+            posts posts[]
+          }
+
+          model posts {
+            id   Int    @id @default(autoincrement())
+            user users @relation(fields: [user_id], references: [id], onDelete: ${prismaAction})
+            user_id Int
+          }
+        `)
+
+          const expected = {
+            postsTousers: {
+              name: 'postsTousers',
+              primaryTableName: 'users',
+              primaryColumnName: 'id',
+              foreignTableName: 'posts',
+              foreignColumnName: 'user_id',
+              cardinality: 'ONE_TO_MANY',
+              updateConstraint: 'NO_ACTION',
+              deleteConstraint: expectedAction,
+            },
+          }
+
+          expect(value.relationships).toEqual(expected)
+        },
+      )
+    })
+
     it('columns do not include model type', async () => {
       const { value } = await processor(`
         model users {
