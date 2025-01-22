@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
 import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
-import { processor } from './index.js'
+import { processor as _processor } from './index.js'
 
-describe(processor, () => {
+describe(_processor, () => {
   const userTable = (override?: Partial<Table>) =>
     aDBStructure({
       tables: {
@@ -37,12 +37,12 @@ describe(processor, () => {
       url = env("DATABASE_URL")
     }
   `
+  const processor = async (schema: string) =>
+    _processor(`${prismaSchemaHeader}\n\n${schema}`)
 
   describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
       const { value } = await processor(`
-        ${prismaSchemaHeader}
-
         model users {
           id   Int    @id @default(autoincrement())
           name String
@@ -64,8 +64,6 @@ describe(processor, () => {
 
     it('nullable', async () => {
       const { value } = await processor(`
-        ${prismaSchemaHeader}
-
         model users {
           id   Int    @id @default(autoincrement())
           description String?
@@ -153,8 +151,6 @@ describe(processor, () => {
 
     it('column comment', async () => {
       const { value } = await processor(`
-        ${prismaSchemaHeader}
-
         model users {
           id   Int    @id @default(autoincrement())
           /// this is description
@@ -177,8 +173,6 @@ describe(processor, () => {
 
     it('table comment', async () => {
       const { value } = await processor(`
-        ${prismaSchemaHeader}
-
         /// store our users.
         model users {
           id   Int    @id @default(autoincrement())
@@ -194,8 +188,6 @@ describe(processor, () => {
 
     it('relationship (one-to-many)', async () => {
       const { value } = await processor(`
-        ${prismaSchemaHeader}
-
         model users {
           id   Int    @id @default(autoincrement())
           posts posts[]
@@ -226,8 +218,6 @@ describe(processor, () => {
 
     it('relationship (one-to-one)', async () => {
       const { value } = await processor(`
-        ${prismaSchemaHeader}
-
         model users {
           id   Int    @id @default(autoincrement())
           post posts?
