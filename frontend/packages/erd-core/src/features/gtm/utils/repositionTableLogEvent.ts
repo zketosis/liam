@@ -1,23 +1,14 @@
 import { pushToDataLayer } from './pushToDataLayer'
+import type { CommonLogEvent } from './types'
 
-type RepositionTable = {
+type RepositionTable = CommonLogEvent & {
   tableId: string
   operationId: string
-  cliVer: string
-  appEnv: string
 }
 
-export const repositionTableLogEvent = ({
-  tableId,
-  operationId,
-  cliVer,
-  appEnv,
-}: RepositionTable) => {
+export const repositionTableLogEvent = (params: RepositionTable) => {
   pushToDataLayer({
     event: 'repositionTable',
-    tableId,
-    operationId,
-    cliVer,
-    appEnv,
+    ...params,
   })
 }

@@ -13,13 +13,14 @@ export const TidyUpButton: FC = () => {
   const { showMode } = useUserEditingStore()
   const { version } = useVersion()
   const handleClick = useCallback(() => {
-    version.displayedOn === 'cli' &&
-      toolbarActionLogEvent({
-        element: 'tidyUp',
-        showMode,
-        cliVer: version.version,
-        appEnv: version.envName,
-      })
+    toolbarActionLogEvent({
+      element: 'tidyUp',
+      showMode,
+      platform: version.displayedOn,
+      gitHash: version.gitHash,
+      ver: version.version,
+      appEnv: version.envName,
+    })
     handleLayout(getNodes(), getEdges())
   }, [handleLayout, showMode, getNodes, getEdges, version])
 

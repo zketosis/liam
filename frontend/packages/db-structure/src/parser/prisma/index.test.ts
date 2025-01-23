@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
+import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
 import { processor as _processor } from './index.js'
 
 describe(_processor, () => {
@@ -20,6 +20,11 @@ describe(_processor, () => {
             ...override?.columns,
           },
           indices: {
+            users_pkey: anIndex({
+              name: 'users_pkey',
+              unique: true,
+              columns: ['id'],
+            }),
             ...override?.indices,
           },
           comment: override?.comment ?? null,
@@ -186,6 +191,69 @@ describe(_processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('index (unique: false)', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String
+          @@index([id, email])
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+          }),
+        },
+        indices: {
+          users_id_email_idx: anIndex({
+            name: 'users_id_email_idx',
+            unique: false,
+            columns: ['id', 'email'],
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('index (unique: true)', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String
+          @@unique([id, email])
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+          }),
+        },
+        indices: {
+          users_pkey: anIndex({
+            name: 'users_pkey',
+            unique: true,
+            columns: ['id'],
+          }),
+          users_id_email_key: anIndex({
+            name: 'users_id_email_key',
+            unique: true,
+            columns: ['id', 'email'],
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     it('relationship (one-to-many)', async () => {
       const { value } = await processor(`
         model users {
@@ -246,6 +314,49 @@ describe(_processor, () => {
       expect(value.relationships).toEqual(expected)
     })
 
+    describe('foreign key constraints (on delete)', () => {
+      const constraintCases = [
+        ['Cascade', 'CASCADE'],
+        ['Restrict', 'RESTRICT'],
+        ['NoAction', 'NO_ACTION'],
+        ['SetNull', 'SET_NULL'],
+        ['SetDefault', 'SET_DEFAULT'],
+      ] as const
+
+      it.each(constraintCases)(
+        'on delete %s',
+        async (prismaAction: string, expectedAction: string) => {
+          const { value } = await processor(`
+          model users {
+            id   Int    @id @default(autoincrement())
+            posts posts[]
+          }
+
+          model posts {
+            id   Int    @id @default(autoincrement())
+            user users @relation(fields: [user_id], references: [id], onDelete: ${prismaAction})
+            user_id Int
+          }
+        `)
+
+          const expected = {
+            postsTousers: {
+              name: 'postsTousers',
+              primaryTableName: 'users',
+              primaryColumnName: 'id',
+              foreignTableName: 'posts',
+              foreignColumnName: 'user_id',
+              cardinality: 'ONE_TO_MANY',
+              updateConstraint: 'NO_ACTION',
+              deleteConstraint: expectedAction,
+            },
+          }
+
+          expect(value.relationships).toEqual(expected)
+        },
+      )
+    })
+
     it('columns do not include model type', async () => {
       const { value } = await processor(`
         model users {
@@ -279,6 +390,57 @@ describe(_processor, () => {
       expect(usersColumnNames).not.toContain('posts')
       expect(postsColumnNames).toEqual(['id', 'user_id'])
       expect(postsColumnNames).not.toContain('user')
+    })
+
+    it('unique', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String @unique
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+            unique: true,
+          }),
+        },
+        indices: {
+          users_email_key: anIndex({
+            name: 'users_email_key',
+            unique: true,
+            columns: ['email'],
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('not unique', async () => {
+      const { value } = await processor(`
+        model users {
+          id   Int    @id @default(autoincrement())
+          email String
+        }
+      `)
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'String',
+            notNull: true,
+            unique: false,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
     })
   })
 })

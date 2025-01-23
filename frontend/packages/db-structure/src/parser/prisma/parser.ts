@@ -1,8 +1,13 @@
 import type { DMMF } from '@prisma/generator-helper'
 import pkg from '@prisma/internals'
-import type { Columns, Relationship, Table } from '../../schema/index.js'
+import type {
+  Columns,
+  ForeignKeyConstraint,
+  Index,
+  Relationship,
+  Table,
+} from '../../schema/index.js'
 import type { ProcessResult, Processor } from '../types.js'
-
 // NOTE: Workaround for CommonJS module import issue with @prisma/internals
 // CommonJS module can not support all module.exports as named exports
 const { getDMMF } = pkg
@@ -57,7 +62,9 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             foreignColumnName: field.relationFromFields[0] ?? '',
             cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
             updateConstraint: 'NO_ACTION',
-            deleteConstraint: 'NO_ACTION',
+            deleteConstraint: normalizeConstraintName(
+              field.relationOnDelete ?? '',
+            ),
           } as const)
         : ({
             name: field.relationName,
@@ -73,6 +80,14 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       relationships[relationship.name] = relationship
     }
   }
+  for (const index of dmmf.datamodel.indexes) {
+    const table = tables[index.model]
+    if (!table) continue
+
+    const indexInfo = extractIndex(index)
+    if (!indexInfo) continue
+    table.indices[indexInfo.name] = indexInfo
+  }
 
   return {
     value: {
@@ -80,6 +95,35 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       relationships,
     },
     errors: errors,
+  }
+}
+
+function extractIndex(index: DMMF.Index): Index | null {
+  switch (index.type) {
+    case 'id':
+      return {
+        name: `${index.model}_pkey`,
+        unique: true,
+        columns: index.fields.map((field) => field.name),
+      }
+    case 'unique':
+      return {
+        name: `${index.model}_${index.fields.map((field) => field.name).join('_')}_key`,
+        unique: true,
+        columns: index.fields.map((field) => field.name),
+      }
+    case 'normal':
+      return {
+        name: `${index.model}_${index.fields.map((field) => field.name).join('_')}_idx`,
+        unique: false,
+        columns: index.fields.map((field) => field.name),
+      }
+    // NOTE: fulltext index is not supported for postgres
+    // ref: https://www.prisma.io/docs/orm/prisma-schema/data-model/indexes#full-text-indexes-mysql-and-mongodb
+    case 'fulltext':
+      return null
+    default:
+      return null
   }
 }
 
@@ -95,6 +139,22 @@ function extractDefaultValue(field: DMMF.Field) {
     typeof defaultValue === 'boolean'
     ? defaultValue
     : null
+}
+
+function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
+  // ref: https://www.prisma.io/docs/orm/prisma-schema/data-model/relations/referential-actions
+  switch (constraint) {
+    case 'Cascade':
+      return 'CASCADE'
+    case 'Restrict':
+      return 'RESTRICT'
+    case 'SetNull':
+      return 'SET_NULL'
+    case 'SetDefault':
+      return 'SET_DEFAULT'
+    default:
+      return 'NO_ACTION'
+  }
 }
 
 export const processor: Processor = (str) => parsePrismaSchema(str)

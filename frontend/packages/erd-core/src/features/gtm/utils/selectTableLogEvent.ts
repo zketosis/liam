@@ -1,23 +1,26 @@
 import { pushToDataLayer } from './pushToDataLayer'
+import type { CommonLogEvent } from './types'
 
-type SelectTable = {
+type SelectTable = CommonLogEvent & {
   ref: 'leftPane' | 'mainArea'
   tableId: string
-  cliVer: string
-  appEnv: string
 }
 
 export const selectTableLogEvent = ({
   ref,
   tableId,
-  cliVer,
+  platform,
+  ver,
+  gitHash,
   appEnv,
 }: SelectTable) => {
   pushToDataLayer({
     event: 'selectTable',
     ref,
     tableId,
-    cliVer,
+    platform,
+    ver,
+    gitHash,
     appEnv,
   })
 }
