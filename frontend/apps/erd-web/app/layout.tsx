@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {process.env.NEXT_PUBLIC_ENV_NAME === 'development' && (
+      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && (
         <>
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
           <GtagScript />
@@ -49,9 +49,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        {process.env.NEXT_PUBLIC_ENV_NAME === 'development' && (
-          <CookieConsent />
-        )}
+        {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && <CookieConsent />}
       </body>
     </html>
   )
