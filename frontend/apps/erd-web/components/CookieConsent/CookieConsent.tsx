@@ -61,9 +61,9 @@ export const CookieConsent: FC = () => {
             cookies on your device to enhance site navigation, analyze site
             usage, and assist in our marketing efforts.
           </p>
-          <Link href="/legal/privacy" className={styles.link}>
+          <a href="/legal/privacy" className={styles.link}>
             Privacy Policy
-          </Link>
+          </a>
         </div>
       </div>
       <div className={styles.controls}>
