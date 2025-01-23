@@ -2,9 +2,9 @@
 
 
 ## Summary
-* 993 MIT
+* 994 MIT
 * 77 Apache 2.0
-* 61 ISC
+* 62 ISC
 * 27 Simplified BSD
 * 17 New BSD
 * 3 MIT OR Apache-2.0
@@ -1085,6 +1085,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@next/swc-linux-x64-musl"></a>
 ### @next/swc-linux-x64-musl v15.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@next/third-parties"></a>
+### @next/third-parties v15.1.5
 #### 
 
 ##### Paths
@@ -11927,6 +11938,17 @@ Unknown manually approved
 * /home/runner/work/liam/liam
 
 <a href="https://unlicense.org/">The Unlicense</a> permitted
+
+
+
+<a name="third-party-capital"></a>
+### third-party-capital v1.0.20
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
 
 
 
