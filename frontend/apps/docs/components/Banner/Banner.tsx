@@ -1,7 +1,6 @@
 'use client'
 
 import { X } from 'lucide-react'
-import Link from 'next/link'
 import {
   type FC,
   type HTMLAttributes,
@@ -115,9 +114,10 @@ export const Banner: FC<Props> = ({
             {children}
           </p>
         </div>
-        <Link href={link} className={linkStyle({ variant })}>
+        {/* NOTE: The link might be on the same domain, but it's likely a different application than `docs`, so we don't use Link. */}
+        <a href={link} className={linkStyle({ variant })}>
           Learn More
-        </Link>
+        </a>
       </div>
       {id && (
         <button
