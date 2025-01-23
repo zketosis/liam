@@ -2,13 +2,18 @@
 title: Liam ERD CLI
 ---
 
+import { Tab, Tabs } from "@/components";
+
 ## Quick Start
 
 The fastest way to get started with Liam ERD is using the interactive setup command:
 
-```package-install
-npx @liam-hq/cli init
-```
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm" copyable>npx @liam-hq/cli init</Tab>
+  <Tab value="pnpm" copyable>pnpm dlx @liam-hq/cli init</Tab>
+  <Tab value="yarn" copyable>yarn dlx @liam-hq/cli init</Tab>
+  <Tab value="bun" copyable>bun x @liam-hq/cli init</Tab>
+</Tabs>
 
 ## Manual Setup
 
@@ -18,17 +23,23 @@ For more control over the ERD generation process, you can use the `erd` command 
 
 Generate an ERD from your schema file using the following command:
 
-```package-install
-npx @liam-hq/cli erd build --input <path|url> --format <format>
-```
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm" copyable>{`npx @liam-hq/cli erd build --input <path|url> --format <format>`}</Tab>
+  <Tab value="pnpm" copyable>{`pnpm dlx @liam-hq/cli erd build --input <path|url> --format <format>`}</Tab>
+  <Tab value="yarn" copyable>{`yarn dlx @liam-hq/cli erd build --input <path|url> --format <format>`}</Tab>
+  <Tab value="bun" copyable>{`bun x @liam-hq/cli erd build --input <path|url> --format <format>`}</Tab>
+</Tabs>
 
 This command processes your schema file and generates interactive ERD visualization files in the `dist` directory.
 
 Once the ERD is generated, you can view it by serving the files using a local HTTP server:
 
-```package-install
-npx http-server dist
-```
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm" copyable>npx http-server dist</Tab>
+  <Tab value="pnpm" copyable>pnpm dlx http-server dist</Tab>
+  <Tab value="yarn" copyable>yarn dlx http-server dist</Tab>
+  <Tab value="bun" copyable>bun x http-server dist</Tab>
+</Tabs>
 
 The server will start and provide you with a local URL (typically http://localhost:8080) where you can view your ERD in a web browser.
 
@@ -43,13 +54,21 @@ You can use any hosting service of your choice to serve the generated files.
 
 You can directly specify URLs to schema files stored in public GitHub repositories. Using raw URLs allows you to generate ERDs directly from remote schema files.
 
-```package-install
-npx @liam-hq/cli erd build --input https://github.com/user/repo/blob/main/examples/schema.sql --format postgresql
-```
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm" copyable>{`npx @liam-hq/cli erd build --input https://github.com/user/repo/blob/main/examples/schema.sql --format postgresql`}</Tab>
+  <Tab value="pnpm" copyable>{`pnpm dlx @liam-hq/cli erd build --input https://github.com/user/repo/blob/main/examples/schema.sql --format postgresql`}</Tab>
+  <Tab value="yarn" copyable>{`yarn dlx @liam-hq/cli erd build --input https://github.com/user/repo/blob/main/examples/schema.sql --format postgresql`}</Tab>
+  <Tab value="bun" copyable>{`bun x @liam-hq/cli erd build --input https://github.com/user/repo/blob/main/examples/schema.sql --format postgresql`}</Tab>
+</Tabs>
 
-```package-install
-npx @liam-hq/cli erd build --input https://raw.githubusercontent.com/user/repo/main/examples/schema.sql --format postgresql
-```
+
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm" copyable>{`npx @liam-hq/cli erd build --input https://raw.githubusercontent.com/user/repo/main/examples/schema.sql --format postgresql`}</Tab>
+  <Tab value="pnpm" copyable>{`pnpm dlx @liam-hq/cli erd build --input https://raw.githubusercontent.com/user/repo/main/examples/schema.sql --format postgresql`}</Tab>
+  <Tab value="yarn" copyable>{`yarn dlx @liam-hq/cli erd build --input https://raw.githubusercontent.com/user/repo/main/examples/schema.sql --format postgresql`}</Tab>
+  <Tab value="bun" copyable>{`bun x @liam-hq/cli erd build --input https://raw.githubusercontent.com/user/repo/main/examples/schema.sql --format postgresql`}</Tab>
+</Tabs>
+
 
 ### Output
 
@@ -57,6 +76,9 @@ The command generates a simple web application using [Vite](https://vite.dev/), 
 
 To view the generated ERD, serve the `dist` directory using any HTTP server:
 
-```package-install
-npx http-server dist
-```
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm" copyable>npx http-server dist</Tab>
+  <Tab value="pnpm" copyable>pnpm dlx http-server dist</Tab>
+  <Tab value="yarn" copyable>yarn dlx http-server dist</Tab>
+  <Tab value="bun" copyable>bun x http-server dist</Tab>
+</Tabs>
