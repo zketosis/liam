@@ -1,5 +1,13 @@
 # @liam-hq/db-structure
 
+## 0.0.10
+
+### Patch Changes
+
+- e63a29d: ✨ Support index for Prisma parser
+- 65194ce: ✅ Add tests for unique fields in Prisma model
+- d243467: ✨ Support on delete fk constraint in Prisma parser
+
 ## 0.0.9
 
 ### Patch Changes
