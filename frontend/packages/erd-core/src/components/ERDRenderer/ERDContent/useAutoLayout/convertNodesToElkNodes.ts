@@ -18,6 +18,7 @@ export function convertNodesToElkNodes(nodes: Node[]): ElkNode[] {
          */
         'elk.aspectRatio':
           node.type === 'nonRelatedTableGroup' ? '0.5625' : '1.6f',
+        'elk.alignment': 'LEFT',
       },
     }
     nodeMap[node.id] = elkNode
