@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type React from 'react'
 import './globals.css'
-import { CookieConsent } from '@/components/CookieConsent'
 import { GTMConsent, GtagScript } from '@/libs/gtm'
 import { GoogleTagManager } from '@next/third-parties/google'
 
@@ -49,7 +48,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && <CookieConsent />}
       </body>
     </html>
   )
