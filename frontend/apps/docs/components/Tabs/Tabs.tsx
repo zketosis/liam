@@ -6,6 +6,7 @@ import {
   // biome-ignore lint/nursery/noRestrictedImports: Make original Tabs/Tab component
 } from 'fumadocs-ui/components/tabs'
 import type { ComponentProps, PropsWithChildren } from 'react'
+import { CopyButton } from '../CopyButton'
 
 type TabsProps = PropsWithChildren<FumadocsTabsProps>
 
@@ -24,8 +25,22 @@ export const Tabs = ({ children, ...props }: TabsProps) => {
   )
 }
 
-type TabProps = PropsWithChildren<ComponentProps<typeof Primitive.TabsContent>>
+type TabProps = PropsWithChildren<
+  ComponentProps<typeof Primitive.TabsContent>
+> & {
+  copyable?: boolean
+}
 
-export const Tab = ({ children, ...props }: TabProps) => {
-  return <Primitive.TabsContent {...props}>{children}</Primitive.TabsContent>
+export const Tab = ({ children, copyable, ...props }: TabProps) => {
+  return (
+    <Primitive.TabsContent {...props} className="relative group">
+      {children}
+      {copyable && typeof children === 'string' && (
+        <CopyButton
+          onCopy={() => navigator.clipboard.writeText(children)}
+          className="absolute top-3 right-3"
+        />
+      )}
+    </Primitive.TabsContent>
+  )
 }
