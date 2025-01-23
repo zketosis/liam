@@ -12,7 +12,7 @@ type TabsProps = PropsWithChildren<FumadocsTabsProps>
 
 export const Tabs = ({ children, ...props }: TabsProps) => {
   return (
-    <Primitive.Tabs {...props} defaultValue={props.items?.[0]}>
+    <Primitive.Tabs {...props} defaultValue={props.items?.[0]} className="mb-5">
       <Primitive.TabsList className="bg-fd-muted">
         {props.items?.map((item) => (
           <Primitive.TabsTrigger key={item} value={item}>
