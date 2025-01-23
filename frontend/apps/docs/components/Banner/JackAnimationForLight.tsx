@@ -19,7 +19,7 @@ const RiveComponent = () => {
 
 export const JackAnimationForLight: FC = () => {
   return (
-    <div className="w-[20px] h-[20px] sm:w-[1.875rem] sm:h-[1.875rem]">
+    <div className="w-[1.25rem] h-[1.25rem] sm:w-[1.875rem] sm:h-[1.875rem]">
       <RiveComponent />
     </div>
   )
