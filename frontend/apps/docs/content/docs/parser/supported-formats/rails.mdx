@@ -25,11 +25,13 @@ If the above command runs without issue, you should see an ER diagram generated.
 - Liam CLI does not run an internal Ruby or Rails runtime. In other words, there is no Ruby process running under the hood.
 - Instead, it analyzes the content of `db/schema.rb` using the [`ruby/prisma` parser](https://github.com/ruby/prism).
 
-## If You Don’t Have `db/schema.rb` but Use `db/structure.sql`
+## Trouble Shooting
+
+### If You Don’t Have `db/schema.rb` but Use `db/structure.sql`
 
 If your Rails app doesn’t have `db/schema.rb` and instead uses `db/structure.sql`, here’s what you need to know.
 
-### For Rails 7.0 or Later
+#### For Rails 7.0 or Later
 
 Somewhere under `config` (most commonly `config/application.rb`), you may have `config.active_record.schema_format = :sql`.  
 In such cases, running the dump command `rails db:schema:dump` will generate `db/structure.sql`.
@@ -40,11 +42,11 @@ If you want to obtain `db/schema.rb`, run the following in an environment with d
 - Alternatively, set the environment variable `SCHEMA_FORMAT=ruby` and run `rails db:schema:dump`.
   - For example: `SCHEMA_FORMAT=ruby rails db:schema:dump`
 
-### For Rails 6.1 or Earlier
+#### For Rails 6.1 or Earlier
 
 To generate `db/schema.rb` in an environment with database access, set the environment variable `SCHEMA_FORMAT=ruby` and run `rails db:schema:dump`.
 
-### Using `db/structure.sql` Directly
+#### Using `db/structure.sql` Directly
 
 If you’re using PostgreSQL, you can hand `db/structure.sql` directly to Liam CLI, and it should be parsed correctly.
 
@@ -57,17 +59,7 @@ In that case, the usage is the same as [--format=postgres](/docs/parser/supporte
   <Tab value="bun" copyable>bun x @liam-hq/cli erd build --format postgres --input db/structure.sql</Tab>
 </Tabs>
 
-## Pro Tips: Using `Schemafile` Instead of `db/schema.rb`
-
-<Callout title="warn" type="warn">Please note that this approach can be somewhat complicated or may not work as expected.</Callout>
-
-If your project uses a tool called [Ridgepole](https://github.com/ridgepole/ridgepole), you might have a `Schemafile` instead of a `db/schema.rb`.
-
-A `Schemafile` uses a DSL similar to what appears in `db/schema.rb`, so handing `Schemafile` directly to Liam CLI might work in some cases.
-
-However, because users can write arbitrary Ruby code in a `Schemafile`, there may be scenarios where it isn’t fully compatible. If the output is not what you expect, consider generating a `db/schema.rb` using the methods described above (e.g., `rails db:schema:dump`) and then parsing that file.
-
-## Pro Tips: When Associations Don’t Appear in the ER Diagram
+### When Associations Don’t Appear in the ER Diagram
 
 <Callout title="warn" type="warn">Please note that this approach can be somewhat complicated or may not work as expected.</Callout>
 
@@ -111,3 +103,12 @@ end.join("\n")
 
 By taking these steps to define foreign keys, you can produce an ER diagram closer to your expectations.
 
+## Pro Tips: Using `Schemafile` Instead of `db/schema.rb`
+
+<Callout title="warn" type="warn">Please note that this approach can be somewhat complicated or may not work as expected.</Callout>
+
+If your project uses a tool called [Ridgepole](https://github.com/ridgepole/ridgepole), you might have a `Schemafile` instead of a `db/schema.rb`.
+
+A `Schemafile` uses a DSL similar to what appears in `db/schema.rb`, so handing `Schemafile` directly to Liam CLI might work in some cases.
+
+However, because users can write arbitrary Ruby code in a `Schemafile`, there may be scenarios where it isn’t fully compatible. If the output is not what you expect, consider generating a `db/schema.rb` using the methods described above (e.g., `rails db:schema:dump`) and then parsing that file.
