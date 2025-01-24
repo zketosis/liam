@@ -64,7 +64,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
-      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && (
+      {process.env.NEXT_PUBLIC_ENV_NAME === 'production' && (
         <>
           <GoogleTagManager gtmId={GTM_ID} />
           <GtagScript />
@@ -88,7 +88,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </Banner>
           {children}
         </RootProvider>
-        {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && (
+        {process.env.NEXT_PUBLIC_ENV_NAME === 'production' && (
           <CookieConsent
             open={open}
             onClickAccept={handleClickAccept}
