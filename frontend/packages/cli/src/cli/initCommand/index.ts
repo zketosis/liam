@@ -86,7 +86,7 @@ Now, let’s get started with setting up your Liam ERD project.
           type: 'input',
           name: 'dumpFilePath',
           message: 'What is your dump file path?',
-          default: 'dump.sql',
+          default: 'schema.sql',
         },
       ])
       inputFilePath = dumpFilePath
@@ -192,7 +192,7 @@ ${yocto.blueBright(DocsUrl)}
     )
     console.info(
       yocto.blueBright(
-        '   $ npx @liam-hq/cli erd build --input <dump.sql> --format postgresql',
+        '   $ npx @liam-hq/cli erd build --input <schema.sql> --format postgresql',
       ),
     )
   } else if (inputFilePath) {
@@ -211,7 +211,7 @@ ${yocto.blueBright(DocsUrl)}
     )
     console.info(
       yocto.blueBright(
-        '   $ npx @liam-hq/cli erd build --input <dump.sql> --format postgresql',
+        '   $ npx @liam-hq/cli erd build --input <schema.sql> --format postgresql',
       ),
     )
   }
@@ -224,7 +224,7 @@ ${yocto.blueBright(DocsUrl)}
   //
   if (addGhActions) {
     // The user might not have a path if they chose "No" to pg_dump or if Drizzle was chosen
-    const effectivePath = inputFilePath || '<dump.sql>'
+    const effectivePath = inputFilePath || '<schema.sql>'
     const workflowContent = `name: ERD Build
 on:
   push:
