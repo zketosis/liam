@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type React from 'react'
 import './globals.css'
+import { GTMConsent, GtagScript } from '@/libs/gtm'
 import { GoogleTagManager } from '@next/third-parties/google'
 
 const geistSans = Geist({
@@ -36,8 +37,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {process.env.NEXT_PUBLIC_ENV_NAME === 'development' && (
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
+      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && (
+        <>
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
+          <GtagScript />
+          <GTMConsent />
+        </>
       )}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

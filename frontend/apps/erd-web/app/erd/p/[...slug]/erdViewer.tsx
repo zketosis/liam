@@ -1,5 +1,6 @@
 'use client'
 
+import { CookieConsent } from '@/components/CookieConsent'
 import type { DBStructure, ProcessError } from '@liam-hq/db-structure'
 import {
   ERDRenderer,
@@ -47,6 +48,7 @@ export default function ERDViewer({
           errorObjects={errorObjects}
         />
       </VersionProvider>
+      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && <CookieConsent />}
     </div>
   )
 }
