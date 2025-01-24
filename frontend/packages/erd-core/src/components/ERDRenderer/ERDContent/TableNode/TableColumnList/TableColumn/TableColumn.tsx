@@ -60,7 +60,7 @@ export const TableColumn: FC<TableColumnProps> = ({
       ) : null}
 
       <span className={styles.columnNameWrapper}>
-        <span className={styles.columnName}>{column.name}</span>
+        <span>{column.name}</span>
         <span className={styles.columnType}>{column.type}</span>
       </span>
 
