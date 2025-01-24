@@ -1,5 +1,17 @@
 # @liam-hq/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 4ac6174: ✨ Support glob pattern as input paths
+
+### Patch Changes
+
+- e63a29d: ✨ Support index for Prisma parser
+- 65194ce: ✅ Add tests for unique fields in Prisma model
+- d243467: ✨ Support on delete fk constraint in Prisma parser
+
 ## 0.1.0
 
 ### Minor Changes
