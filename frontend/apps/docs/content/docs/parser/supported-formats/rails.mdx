@@ -77,33 +77,40 @@ Below is a conceptual example code snippet showing how you might gather table na
 
 ```ruby
 # Prerequisite: The database must be accessible.
-
 Rails.application.eager_load!
 
 # Filter out models that have valid table_name
 models_with_table = ActiveRecord::Base.descendants.select do |model|
   model.table_exists? && model.table_name.present?
 end
-
 # Map belongs_to associations to the corresponding referenced tables
 assoc_map = models_with_table.map do |model|
   target_tables = model.reflect_on_all_associations(:belongs_to).map do |assoc|
-    assoc.class_name.safe_constantize&.table_name
+    {
+      table_name: assoc.class_name.safe_constantize&.table_name,
+      column_name: "#{assoc.name}_id",
+    }
   end.compact
-
   [model.table_name, target_tables]
 end.to_h
-
 # Generate add_foreign_key statements from the mapped relationships
 # This is a simple example, so in practice you’d need to handle duplicates carefully
 content = assoc_map.flat_map do |from_table, to_tables|
-  to_tables.map { |to_table| %(add_foreign_key "#{from_table}", "#{to_table}") }
+  to_tables.map { |to_table| %(add_foreign_key "#{from_table}", "#{to_table[:table_name]}", column: "#{to_table[:column_name]}") }
 end.join("\n")
 
 # Write or append this content to db/schema.rb in some way
+File.open("db/schema.rb", "a") do |file|
+  file.puts(content) if content.present?
+end
 ```
 
 By taking these steps to define foreign keys, you can produce an ER diagram closer to your expectations.
+
+You can find sample implementations for this case on GitHub:
+
+- GitHub Actions: [.github/workflows/rails-add-association-foreign-key.yml](https://github.com/liam-hq/liam-erd-samples/blob/main/.github/workflows/rails-add-association-foreign-key.yml)
+- Rails App: [samples/rails-add-association-foreign-key](https://github.com/liam-hq/liam-erd-samples/tree/main/samples/rails-add-association-foreign-key)
 
 ## Pro Tips: Using `Schemafile` Instead of `db/schema.rb`
 
