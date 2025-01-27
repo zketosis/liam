@@ -42,6 +42,11 @@ If you want to obtain `db/schema.rb`, run the following in an environment with d
 - Alternatively, set the environment variable `SCHEMA_FORMAT=ruby` and run `rails db:schema:dump`.
   - For example: `SCHEMA_FORMAT=ruby rails db:schema:dump`
 
+You can find sample implementations for this case on GitHub:
+
+- GitHub Actions: [.github/workflows/rails-8-0-db-structure.yml](https://github.com/liam-hq/liam-erd-samples/blob/main/.github/workflows/rails-8-0-db-structure.yml)
+- Rails App: [samples/rails-8-0-db-structure](https://github.com/liam-hq/liam-erd-samples/tree/main/samples/rails-8-0-db-structure)
+
 #### For Rails 6.1 or Earlier
 
 To generate `db/schema.rb` in an environment with database access, set the environment variable `SCHEMA_FORMAT=ruby` and run `rails db:schema:dump`.
