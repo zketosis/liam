@@ -86,4 +86,13 @@
     --fd-accent: var(--liam-gray-800);
     --fd-accent-foreground: var(--liam-gray-30);
   }
+
+  /* Overrides for Fumadocs package-install component */
+  div[role='tabpanel'] figure {
+    background-color: var(--fd-secondary) !important;
+  }
+
+  div[role='tablist'] {
+    background-color: hsl(var(--fd-muted)) !important;
+  }
 }
