@@ -2,6 +2,8 @@
 title: schema.rb (Ruby on Rails)
 ---
 
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'; // For package-install code blocks
+
 If you’re using Ruby on Rails with ActiveRecord, in most cases you can automatically generate a useful ER diagram with Liam ERD. This page provides instructions and tips for generating an ER diagram in a Rails project.
 
 ## ActiveRecord and db/schema.rb
@@ -11,12 +13,9 @@ Since `db/schema.rb` is recommended to be kept under version control, most proje
 
 When using Liam CLI, specify `--format schemarb` and `--input db/schema.rb` as follows:
 
-<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
-  <Tab value="npm" copyable>npx @liam-hq/cli erd build --format schemarb --input db/schema.rb</Tab>
-  <Tab value="pnpm" copyable>pnpm dlx @liam-hq/cli erd build --format schemarb --input db/schema.rb</Tab>
-  <Tab value="yarn" copyable>yarn dlx @liam-hq/cli erd build --format schemarb --input db/schema.rb</Tab>
-  <Tab value="bun" copyable>bun x @liam-hq/cli erd build --format schemarb --input db/schema.rb</Tab>
-</Tabs>
+```package-install
+npx @liam-hq/cli erd build --format schemarb --input db/schema.rb
+```
 
 If the above command runs without issue, you should see an ER diagram generated.
 
@@ -57,12 +56,10 @@ If you’re using PostgreSQL, you can hand `db/structure.sql` directly to Liam C
 
 In that case, the usage is the same as [--format=postgres](/docs/parser/supported-formats/postgresql):
 
-<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
-  <Tab value="npm" copyable>npx @liam-hq/cli erd build --format postgres --input db/structure.sql</Tab>
-  <Tab value="pnpm" copyable>pnpm dlx @liam-hq/cli erd build --format postgres --input db/structure.sql</Tab>
-  <Tab value="yarn" copyable>yarn dlx @liam-hq/cli erd build --format postgres --input db/structure.sql</Tab>
-  <Tab value="bun" copyable>bun x @liam-hq/cli erd build --format postgres --input db/structure.sql</Tab>
-</Tabs>
+
+```package-install
+npx @liam-hq/cli erd build --format postgres --input db/structure.sql
+```
 
 ### When Associations Don’t Appear in the ER Diagram
 

@@ -4,7 +4,7 @@ description: Liam ERD is a tool that effortlessly generates beautiful and easy-t
 ---
 
 import { Package, Globe } from "lucide-react";
-import { Tab, Tabs } from "@/components";
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'; // For package-install code blocks
 
 ![Liam logo](/images/liam_erd.png)
 
@@ -47,12 +47,9 @@ For detailed instructions, check out [Web version](/docs/web).
 
 For internal or private repositories, run this command to start an interactive setup:
 
-<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
-  <Tab value="npm" copyable>npx @liam-hq/cli init</Tab>
-  <Tab value="pnpm" copyable>pnpm dlx @liam-hq/cli init</Tab>
-  <Tab value="yarn" copyable>yarn dlx @liam-hq/cli init</Tab>
-  <Tab value="bun" copyable>bun x @liam-hq/cli init</Tab>
-</Tabs>
+```package-install
+npx @liam-hq/cli init
+```
 
 Then follow the prompts to build a static version of your diagrams.
 

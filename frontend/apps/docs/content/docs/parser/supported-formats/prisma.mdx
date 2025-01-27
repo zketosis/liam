@@ -2,6 +2,8 @@
 title: Prisma
 ---
 
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'; // For package-install code blocks
+
 If you’re using [Prisma](https://www.prisma.io/), in most cases you can automatically generate a useful ER diagram with Liam ERD. This page provides instructions and tips for generating an ER diagram in a Prisma project.
 
 ## Prisma and `schema.prisma`
@@ -10,12 +12,9 @@ When a Prisma project manages migrations using the Prisma CLI, the latest databa
 
 When using Liam CLI, specify `--format prisma` and `--input path/to/schema.prisma` as follows:
 
-<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
-  <Tab value="npm" copyable>npx @liam-hq/cli erd build --format prisma --input prisma/schema.prisma</Tab>
-  <Tab value="pnpm" copyable>pnpm dlx @liam-hq/cli erd build --format prisma --input prisma/schema.prisma</Tab>
-  <Tab value="yarn" copyable>yarn dlx @liam-hq/cli erd build --format prisma --input prisma/schema.prisma</Tab>
-  <Tab value="bun" copyable>bun x @liam-hq/cli erd build --format prisma --input prisma/schema.prisma</Tab>
-</Tabs>
+```package-install
+npx @liam-hq/cli erd build --format prisma --input prisma/schema.prisma
+```
 
 If the above command runs without issue, you should see an ER diagram generated.
 
