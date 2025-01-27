@@ -1,5 +1,18 @@
 {
   "name": "@liam-hq/cli",
+  "description": "Command-line tool designed to generate a web application that displays ER diagrams. See https://liambx.com/docs/cli",
+  "keywords": [
+    "data-visualization",
+    "entity-relationship-diagram",
+    "er-diagram",
+    "erd"
+  ],
+  "homepage": "https://github.com/liam-hq/liam",
+  "bugs": "https://github.com/liam-hq/liam/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liam-hq/liam.git"
+  },
   "license": "Apache-2.0",
   "private": false,
   "version": "0.2.1",
