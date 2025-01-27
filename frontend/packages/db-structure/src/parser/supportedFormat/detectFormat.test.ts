@@ -37,4 +37,8 @@ describe('detectFormat', () => {
   it('should return undefined for path without file name', () => {
     expect(detectFormat('path/to/')).toBeUndefined()
   })
+
+  it('should return "tbls" for schema.json', () => {
+    expect(detectFormat('path/to/schema.json')).toBe('tbls')
+  })
 })
