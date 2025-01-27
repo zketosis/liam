@@ -8,7 +8,7 @@ import {
   initDBStructureStore,
   versionSchema,
 } from '@liam-hq/erd-core'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import * as v from 'valibot'
 
 type ErrorObject = {
@@ -27,8 +27,11 @@ export default function ERDViewer({
   errorObjects,
   defaultSidebarOpen,
 }: ERDViewerProps) {
+  const [isIframe, setIsIframe] = useState(false)
+
   useEffect(() => {
     initDBStructureStore(dbStructure)
+    setIsIframe(window !== window.parent)
   }, [dbStructure])
 
   const versionData = {
@@ -39,7 +42,6 @@ export default function ERDViewer({
     displayedOn: 'web',
   }
   const version = v.parse(versionSchema, versionData)
-  const isIframe = window !== window.parent
 
   return (
     <div style={{ height: '100vh' }}>
