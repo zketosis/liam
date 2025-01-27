@@ -12,7 +12,8 @@ describe(_processor, () => {
           columns: {
             id: aColumn({
               name: 'id',
-              type: 'integer',
+              type: 'serial',
+              default: 'autoincrement()',
               notNull: true,
               primary: true,
               unique: false,
