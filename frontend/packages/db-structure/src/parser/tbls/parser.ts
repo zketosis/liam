@@ -19,7 +19,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
         tables: {},
         relationships: {},
       },
-      errors: [new Error('Invalid schema format')],
+      errors: [new Error(`Invalid schema format: ${result.error}`)],
     }
   }
 
