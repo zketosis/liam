@@ -64,13 +64,12 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
-      {process.env.NEXT_PUBLIC_ENV_NAME === 'production' && (
-        <>
-          <GoogleTagManager gtmId={GTM_ID} />
-          <GtagScript />
-          <GTMConsent />
-        </>
-      )}
+      <GoogleTagManager
+        gtmId={GTM_ID}
+        dataLayer={{ appEnv: process.env.NEXT_PUBLIC_ENV_NAME ?? '' }}
+      />
+      <GtagScript />
+      <GTMConsent />
       <body className="flex flex-col min-h-screen">
         <RootProvider
           search={{
@@ -88,13 +87,11 @@ export default function Layout({ children }: { children: ReactNode }) {
           </Banner>
           {children}
         </RootProvider>
-        {process.env.NEXT_PUBLIC_ENV_NAME === 'production' && (
-          <CookieConsent
-            open={open}
-            onClickAccept={handleClickAccept}
-            onClickDeny={handleClickDeny}
-          />
-        )}
+        <CookieConsent
+          open={open}
+          onClickAccept={handleClickAccept}
+          onClickDeny={handleClickDeny}
+        />
       </body>
     </html>
   )
