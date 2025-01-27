@@ -1,5 +1,13 @@
 # @liam-hq/erd-core
 
+## 0.0.20
+
+### Patch Changes
+
+- 2137216: 💄 Add elk.alignment property to node conversion for centralized layout
+- 76bc7be: 🚸 Make node width variable to accommodate table/column name and type
+- 18e75a3: 🚧 Prevent omission of TableColumn
+
 ## 0.0.19
 
 ### Patch Changes
