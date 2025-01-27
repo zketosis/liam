@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && (
+      {process.env.NEXT_PUBLIC_ENV_NAME === 'production' && (
         <>
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
           <GtagScript />
