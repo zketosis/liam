@@ -1,6 +1,12 @@
 {
+  "formatRepository": false,
   "sortFirst": [
     "name",
+    "description",
+    "keywords",
+    "homepage",
+    "bugs",
+    "repository",
     "license",
     "private",
     "version",
