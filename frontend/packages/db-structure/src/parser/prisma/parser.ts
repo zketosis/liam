@@ -157,6 +157,7 @@ function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
   }
 }
 
+// ref: https://www.prisma.io/docs/orm/reference/prisma-schema-reference#model-field-scalar-types
 function convertToPostgresColumnType(type: string): string {
   switch (type) {
     case 'String':
