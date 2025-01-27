@@ -8,6 +8,8 @@ import type {
   Table,
 } from '../../schema/index.js'
 import type { ProcessResult, Processor } from '../types.js'
+import { convertToPostgresColumnType } from './convertToPostgresColumnType.js'
+
 // NOTE: Workaround for CommonJS module import issue with @prisma/internals
 // CommonJS module can not support all module.exports as named exports
 const { getDMMF } = pkg
@@ -25,7 +27,11 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       const defaultValue = extractDefaultValue(field)
       columns[field.name] = {
         name: field.name,
-        type: convertToPostgresColumnType(field.type),
+        type: convertToPostgresColumnType(
+          field.type,
+          field.nativeType,
+          defaultValue,
+        ),
         default: defaultValue,
         notNull: field.isRequired,
         unique: field.isUnique,
@@ -132,8 +138,13 @@ function extractDefaultValue(field: DMMF.Field) {
   const defaultValue = value === undefined ? null : value
   // NOTE: For example, when `@default(autoincrement())` is specified, `defaultValue`
   // becomes an object like `{"name":"autoincrement","args":[]}` (DMMF.FieldDefault).
-  // Currently, to maintain consistency with other parsers, only primitive types
-  // (DMMF.FieldDefaultScalar as `string | number | boolean`) are accepted.
+  // This function now supports both primitive types (DMMF.FieldDefaultScalar as `string | number | boolean`)
+  // and object types. For object types, it returns a string representation like `name(args)`.
+  if (typeof defaultValue === 'object' && defaultValue !== null) {
+    if ('name' in defaultValue && 'args' in defaultValue) {
+      return `${defaultValue.name}(${defaultValue.args})`
+    }
+  }
   return typeof defaultValue === 'string' ||
     typeof defaultValue === 'number' ||
     typeof defaultValue === 'boolean'
@@ -154,32 +165,6 @@ function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
       return 'SET_DEFAULT'
     default:
       return 'NO_ACTION'
-  }
-}
-
-// ref: https://www.prisma.io/docs/orm/reference/prisma-schema-reference#model-field-scalar-types
-function convertToPostgresColumnType(type: string): string {
-  switch (type) {
-    case 'String':
-      return 'text'
-    case 'Boolean':
-      return 'boolean'
-    case 'Int':
-      return 'integer'
-    case 'BigInt':
-      return 'bigint'
-    case 'Float':
-      return 'double precision'
-    case 'DateTime':
-      return 'timestamp(3)'
-    case 'Json':
-      return 'jsonb'
-    case 'Decimal':
-      return 'decimal(65,30)'
-    case 'Bytes':
-      return 'bytea'
-    default:
-      return type
   }
 }
 
