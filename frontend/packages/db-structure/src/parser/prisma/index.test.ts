@@ -12,7 +12,7 @@ describe(_processor, () => {
           columns: {
             id: aColumn({
               name: 'id',
-              type: 'Int',
+              type: 'integer',
               notNull: true,
               primary: true,
               unique: false,
@@ -58,7 +58,7 @@ describe(_processor, () => {
         columns: {
           name: aColumn({
             name: 'name',
-            type: 'String',
+            type: 'text',
             notNull: true,
           }),
         },
@@ -79,7 +79,7 @@ describe(_processor, () => {
         columns: {
           description: aColumn({
             name: 'description',
-            type: 'String',
+            type: 'text',
             notNull: false,
           }),
         },
@@ -100,7 +100,7 @@ describe(_processor, () => {
         columns: {
           description: aColumn({
             name: 'description',
-            type: 'String',
+            type: 'text',
             default: "user's description",
             notNull: true,
           }),
@@ -122,7 +122,7 @@ describe(_processor, () => {
         columns: {
           age: aColumn({
             name: 'age',
-            type: 'Int',
+            type: 'integer',
             default: 30,
             notNull: true,
           }),
@@ -144,7 +144,7 @@ describe(_processor, () => {
         columns: {
           active: aColumn({
             name: 'active',
-            type: 'Boolean',
+            type: 'boolean',
             default: true,
             notNull: true,
           }),
@@ -167,7 +167,7 @@ describe(_processor, () => {
         columns: {
           description: aColumn({
             name: 'description',
-            type: 'String',
+            type: 'text',
             comment: 'this is description',
           }),
         },
@@ -204,7 +204,7 @@ describe(_processor, () => {
         columns: {
           email: aColumn({
             name: 'email',
-            type: 'String',
+            type: 'text',
             notNull: true,
           }),
         },
@@ -233,7 +233,7 @@ describe(_processor, () => {
         columns: {
           email: aColumn({
             name: 'email',
-            type: 'String',
+            type: 'text',
             notNull: true,
           }),
         },
@@ -404,7 +404,7 @@ describe(_processor, () => {
         columns: {
           email: aColumn({
             name: 'email',
-            type: 'String',
+            type: 'text',
             notNull: true,
             unique: true,
           }),
@@ -433,7 +433,7 @@ describe(_processor, () => {
         columns: {
           email: aColumn({
             name: 'email',
-            type: 'String',
+            type: 'text',
             notNull: true,
             unique: false,
           }),

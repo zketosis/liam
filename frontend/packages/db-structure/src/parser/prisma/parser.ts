@@ -25,7 +25,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       const defaultValue = extractDefaultValue(field)
       columns[field.name] = {
         name: field.name,
-        type: field.type,
+        type: convertToPostgresColumnType(field.type),
         default: defaultValue,
         notNull: field.isRequired,
         unique: field.isUnique,
@@ -154,6 +154,32 @@ function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
       return 'SET_DEFAULT'
     default:
       return 'NO_ACTION'
+  }
+}
+
+// ref: https://www.prisma.io/docs/orm/reference/prisma-schema-reference#model-field-scalar-types
+function convertToPostgresColumnType(type: string): string {
+  switch (type) {
+    case 'String':
+      return 'text'
+    case 'Boolean':
+      return 'boolean'
+    case 'Int':
+      return 'integer'
+    case 'BigInt':
+      return 'bigint'
+    case 'Float':
+      return 'double precision'
+    case 'DateTime':
+      return 'timestamp(3)'
+    case 'Json':
+      return 'jsonb'
+    case 'Decimal':
+      return 'decimal(65,30)'
+    case 'Bytes':
+      return 'bytea'
+    default:
+      return type
   }
 }
 
