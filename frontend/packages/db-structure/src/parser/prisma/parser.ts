@@ -171,11 +171,11 @@ function convertToPostgresColumnType(type: string): string {
     case 'Float':
       return 'double precision'
     case 'DateTime':
-      return 'timestamp'
+      return 'timestamp(3)'
     case 'Json':
       return 'jsonb'
     case 'Decimal':
-      return 'decimal'
+      return 'decimal(65,30)'
     case 'Bytes':
       return 'bytea'
     default:
