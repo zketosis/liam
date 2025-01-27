@@ -37,13 +37,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {process.env.NEXT_PUBLIC_ENV_NAME === 'production' && (
-        <>
-          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
-          <GtagScript />
-          <GTMConsent />
-        </>
-      )}
+      <>
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
+        <GtagScript />
+        <GTMConsent />
+      </>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
