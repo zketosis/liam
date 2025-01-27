@@ -18,6 +18,18 @@ npx @liam-hq/cli erd build --format prisma --input prisma/schema.prisma
 
 If the above command runs without issue, you should see an ER diagram generated.
 
+### Handling Multiple Prisma Schema Files
+
+If you use the `prismaSchemaFolder` option in your Prisma configuration, you can still generate the ER diagram by specifying a glob pattern to include all `.prisma` files in the folder. 
+
+For example, if you have multiple `.prisma` files in the `prisma/schema/` directory, use the following command:
+
+```package-install
+npx @liam-hq/cli erd build --format prisma --input "prisma/schema/*.prisma"
+```
+
+This allows you to generate the ER diagram.
+
 ## Under the Hood
 
 Liam CLI analyzes the content of your `schema.prisma` file using a dedicated parser that relies on [`@prisma/internals`](https://www.npmjs.com/package/@prisma/internals) to build the ER diagram.
