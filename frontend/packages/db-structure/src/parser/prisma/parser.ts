@@ -136,10 +136,11 @@ function extractIndex(index: DMMF.Index): Index | null {
 function extractDefaultValue(field: DMMF.Field) {
   const value = field.default?.valueOf()
   const defaultValue = value === undefined ? null : value
-  // NOTE: For example, when `@default(autoincrement())` is specified, `defaultValue`
-  // becomes an object like `{"name":"autoincrement","args":[]}` (DMMF.FieldDefault).
-  // This function now supports both primitive types (DMMF.FieldDefaultScalar as `string | number | boolean`)
-  // and object types. For object types, it returns a string representation like `name(args)`.
+  // NOTE: When `@default(autoincrement())` is specified, `defaultValue` becomes an object
+  // like `{"name":"autoincrement","args":[]}` (DMMF.FieldDefault).
+  // This function handles both primitive types (`string | number | boolean`) and objects,
+  // returning a string like `name(args)` for objects.
+  // Note: `FieldDefaultScalar[]` is not supported.
   if (typeof defaultValue === 'object' && defaultValue !== null) {
     if ('name' in defaultValue && 'args' in defaultValue) {
       return `${defaultValue.name}(${defaultValue.args})`
