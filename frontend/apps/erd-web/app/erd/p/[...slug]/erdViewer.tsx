@@ -27,11 +27,11 @@ export default function ERDViewer({
   errorObjects,
   defaultSidebarOpen,
 }: ERDViewerProps) {
-  const [isIframe, setIsIframe] = useState(false)
+  const [isShowCookieConsent, setShowCookieConsent] = useState(false)
 
   useEffect(() => {
     initDBStructureStore(dbStructure)
-    setIsIframe(window !== window.parent)
+    setShowCookieConsent(window === window.parent)
   }, [dbStructure])
 
   const versionData = {
@@ -51,9 +51,8 @@ export default function ERDViewer({
           errorObjects={errorObjects}
         />
       </VersionProvider>
-      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && !isIframe && (
-        <CookieConsent />
-      )}
+      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' &&
+        isShowCookieConsent && <CookieConsent />}
     </div>
   )
 }
