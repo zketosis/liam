@@ -1,5 +1,14 @@
 # @liam-hq/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- 2137216: 💄 Add elk.alignment property to node conversion for centralized layout
+- 76bc7be: 🚸 Make node width variable to accommodate table/column name and type
+- 7a8dd85: 💬 tweak: Rename default placeholder .sql file to 'schema.sql'
+- 18e75a3: 🚧 Prevent omission of TableColumn
+
 ## 0.2.0
 
 ### Minor Changes
