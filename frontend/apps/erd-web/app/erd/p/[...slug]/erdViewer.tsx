@@ -39,6 +39,7 @@ export default function ERDViewer({
     displayedOn: 'web',
   }
   const version = v.parse(versionSchema, versionData)
+  const isIframe = window !== window.parent
 
   return (
     <div style={{ height: '100vh' }}>
@@ -48,7 +49,9 @@ export default function ERDViewer({
           errorObjects={errorObjects}
         />
       </VersionProvider>
-      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && <CookieConsent />}
+      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' && !isIframe && (
+        <CookieConsent />
+      )}
     </div>
   )
 }
