@@ -25,7 +25,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       const defaultValue = extractDefaultValue(field)
       columns[field.name] = {
         name: field.name,
-        type: convertToPostgresColumnType(field.type, dmmf.datamodel.enums),
+        type: convertToPostgresColumnType(field.type),
         default: defaultValue,
         notNull: field.isRequired,
         unique: field.isUnique,
@@ -157,16 +157,7 @@ function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
   }
 }
 
-function convertToPostgresColumnType(
-  type: string,
-  enums: readonly DMMF.DatamodelEnum[],
-): string {
-  const enumNames = enums.map((e) => e.name)
-
-  if (enumNames.includes(type)) {
-    return 'enum'
-  }
-
+function convertToPostgresColumnType(type: string): string {
   switch (type) {
     case 'String':
       return 'text'
@@ -187,7 +178,7 @@ function convertToPostgresColumnType(
     case 'Bytes':
       return 'bytea'
     default:
-      return ''
+      return type
   }
 }
 
