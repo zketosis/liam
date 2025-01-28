@@ -1,5 +1,16 @@
 # @liam-hq/cli
 
+## 0.2.2
+
+### Patch Changes
+
+- 2002de6: ✨ Add initial tbls parser
+- 5417568: ✨ Add support for unique column constraints in tbls parser
+- 7085005: 🔧 Implement convertToPostgresColumnType function for PostgreSQL type conversion and update parser to utilize it
+- cc4a49b: ✨ Support relationship cardinality parsing for tbls schema
+- 971143e: 🔧 Update Prisma column types to match PostgreSQL standards
+- 3dbc04c: ✨ Add JSON Schema to Zod generation for tbls schema
+
 ## 0.2.1
 
 ### Patch Changes
