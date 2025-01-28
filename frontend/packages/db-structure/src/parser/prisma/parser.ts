@@ -34,7 +34,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         ),
         default: defaultValue,
         notNull: field.isRequired,
-        unique: field.isUnique,
+        unique: field.isId || field.isUnique,
         primary: field.isId,
         comment: field.documentation ?? null,
         check: null,
