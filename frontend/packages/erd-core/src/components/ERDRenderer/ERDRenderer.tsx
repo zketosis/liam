@@ -82,15 +82,17 @@ export const ERDRenderer: FC<Props> = ({
                         nodes={nodes}
                         edges={edges}
                       />
-                      <div className={styles.toolbarWrapper}>
-                        <DesktopToolbar />
-                      </div>
                       <TableDetailDrawer />
                     </>
                   )}
                 </TableDetailDrawerRoot>
               </main>
             </div>
+            {errorObjects.length > 0 || (
+              <div className={styles.toolbarWrapper}>
+                <DesktopToolbar />
+              </div>
+            )}
           </ReactFlowProvider>
         </SidebarProvider>
       </ToastProvider>
