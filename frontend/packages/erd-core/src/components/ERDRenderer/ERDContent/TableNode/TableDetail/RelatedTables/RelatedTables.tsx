@@ -7,7 +7,7 @@ import {
   useDBStructureStore,
 } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
-import { GotoIcon, IconButton } from '@liam-hq/ui'
+import { GotoIcon, IconButton, Waypoints as WaypointsIcon } from '@liam-hq/ui'
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
 import { ERDContent } from '../../../ERDContent'
@@ -48,7 +48,10 @@ export const RelatedTables: FC<Props> = ({ table }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h2 className={styles.heading}>Related tables</h2>
+        <div className={styles.iconTitleContainer}>
+          <WaypointsIcon width={12} />
+          <h2 className={styles.heading}>Related tables</h2>
+        </div>
         <IconButton
           icon={<GotoIcon />}
           tooltipContent="Open in main area"
