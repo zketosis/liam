@@ -337,6 +337,85 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('table comment', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+              ],
+              comment: 'store our users.',
+            },
+          ],
+        }),
+      )
+
+      const expected = aDBStructure({
+        tables: {
+          users: aTable({
+            name: 'users',
+            columns: {
+              id: aColumn({
+                name: 'id',
+                type: 'int',
+                notNull: true,
+                primary: false,
+                unique: false,
+              }),
+            },
+            comment: 'store our users.',
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('column comment', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                  comment: 'this is description',
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          id: aColumn({
+            name: 'id',
+            type: 'int',
+            notNull: true,
+            primary: false,
+            unique: false,
+            comment: 'this is description',
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     describe('relationship', () => {
       const relationshipCases = [
         ['exactly_one', 'zero_or_one', 'ONE_TO_ONE'],
