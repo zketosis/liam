@@ -54,19 +54,19 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
         .map((constraint) => constraint.columns?.[0]),
     )
 
-    for (const tblsColumn of tblsTable.columns) {
-      const isPrimaryKey = !!tblsTable.constraints?.some(
-        (constraint) =>
-          constraint.type === 'PRIMARY KEY' &&
-          constraint.columns?.includes(tblsColumn.name),
-      )
+    const primaryKeyColumnNames = new Set(
+      tblsTable.constraints
+        ?.filter((constraint) => constraint.type === 'PRIMARY KEY')
+        .flatMap((constraint) => constraint.columns ?? []),
+    )
 
+    for (const tblsColumn of tblsTable.columns) {
       columns[tblsColumn.name] = aColumn({
         name: tblsColumn.name,
         type: tblsColumn.type,
         notNull: !tblsColumn.nullable,
         default: tblsColumn.default ?? null,
-        primary: isPrimaryKey,
+        primary: primaryKeyColumnNames.has(tblsColumn.name),
         comment: tblsColumn.comment ?? null,
         unique: uniqueColumnNames.has(tblsColumn.name),
       })
