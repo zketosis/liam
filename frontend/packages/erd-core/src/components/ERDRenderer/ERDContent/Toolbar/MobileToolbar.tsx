@@ -6,6 +6,7 @@ import { IconButton, Minus, Plus } from '@liam-hq/ui'
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
 import { useReactFlow, useStore } from '@xyflow/react'
+import clsx from 'clsx'
 import { useState } from 'react'
 import { type FC, useCallback } from 'react'
 import { FitviewButton } from './FitviewButton'
@@ -59,9 +60,15 @@ export const MobileToolbar: FC<Props> = ({ className }) => {
 
   return (
     <ToolbarPrimitive.Root
-      className={`${styles.root} ${
-        isOpen ? styles.open : hasInteracted ? styles.closed : styles.initial
-      } ${className || ''}`}
+      className={clsx(
+        styles.root,
+        {
+          [styles.open]: isOpen,
+          [styles.closed]: hasInteracted && !isOpen,
+          [styles.initial]: !hasInteracted && !isOpen,
+        },
+        className,
+      )}
     >
       <div className={isOpen ? styles.hidden : styles.ellipsis}>
         <button type="button" onClick={toggle}>

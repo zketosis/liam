@@ -1,4 +1,5 @@
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
+import clsx from 'clsx'
 import type { FC } from 'react'
 import styles from './DesktopToolbar.module.css'
 import { FitviewButton } from './FitviewButton'
@@ -12,7 +13,7 @@ type Props = {
 
 export const DesktopToolbar: FC<Props> = ({ className }) => {
   return (
-    <ToolbarPrimitive.Root className={`${styles.root} ${className || ''}`}>
+    <ToolbarPrimitive.Root className={clsx(styles.root, className)}>
       <ZoomControls />
       <ToolbarPrimitive.Separator className={styles.separator} />
       <div className={styles.buttons}>
