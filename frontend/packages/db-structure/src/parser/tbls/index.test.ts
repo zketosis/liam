@@ -91,6 +91,91 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('not unique', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+                {
+                  name: 'email',
+                  type: 'text',
+                  nullable: true,
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'text',
+            unique: false,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('unique', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+                {
+                  name: 'email',
+                  type: 'text',
+                  nullable: true,
+                },
+              ],
+              constraints: [
+                {
+                  name: 'users_email_key',
+                  type: 'UNIQUE',
+                  def: 'UNIQUE KEY users_email_key (email)',
+                  table: 'users',
+                  columns: ['email'],
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'text',
+            unique: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     describe('relationship', () => {
       const relationshipCases = [
         ['exactly_one', 'zero_or_one', 'ONE_TO_ONE'],

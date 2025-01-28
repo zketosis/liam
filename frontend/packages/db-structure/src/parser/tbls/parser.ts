@@ -45,6 +45,15 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     const columns: Columns = {}
     const indices: Indices = {}
 
+    const uniqueColumnNames = new Set(
+      tblsTable.constraints
+        ?.filter(
+          (constraint) =>
+            constraint.type === 'UNIQUE' && constraint.columns?.length === 1,
+        )
+        .map((constraint) => constraint.columns?.[0]),
+    )
+
     for (const tblsColumn of tblsTable.columns) {
       const isPrimaryKey = !!tblsTable.constraints?.some(
         (constraint) =>
@@ -59,6 +68,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
         default: tblsColumn.default ?? null,
         primary: isPrimaryKey,
         comment: tblsColumn.comment ?? null,
+        unique: uniqueColumnNames.has(tblsColumn.name),
       })
     }
 

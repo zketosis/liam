@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
 import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
+import { createParserTestCases } from '../__tests__/index.js'
 import { processor as _processor } from './index.js'
 
 describe(_processor, () => {
@@ -12,11 +13,11 @@ describe(_processor, () => {
           columns: {
             id: aColumn({
               name: 'id',
-              type: 'serial',
+              type: 'bigserial',
               default: 'autoincrement()',
               notNull: true,
               primary: true,
-              unique: false,
+              unique: true,
             }),
             ...override?.columns,
           },
@@ -46,11 +47,13 @@ describe(_processor, () => {
   const processor = async (schema: string) =>
     _processor(`${prismaSchemaHeader}\n\n${schema}`)
 
+  const parserTestCases = createParserTestCases(userTable)
+
   describe('should parse prisma schema correctly', () => {
     it('not null', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           name String
         }
       `)
@@ -71,50 +74,29 @@ describe(_processor, () => {
     it('nullable', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           description String?
         }
       `)
 
-      const expected = userTable({
-        columns: {
-          description: aColumn({
-            name: 'description',
-            type: 'text',
-            notNull: false,
-          }),
-        },
-      })
-
-      expect(value).toEqual(expected)
+      expect(value).toEqual(parserTestCases.nullable)
     })
 
     it('default value as string', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
-          description String @default("user's description")
+          id   BigInt    @id @default(autoincrement())
+          description String? @default("user's description")
         }
       `)
 
-      const expected = userTable({
-        columns: {
-          description: aColumn({
-            name: 'description',
-            type: 'text',
-            default: "user's description",
-            notNull: true,
-          }),
-        },
-      })
-
-      expect(value).toEqual(expected)
+      expect(value).toEqual(parserTestCases['default value as string'])
     })
 
     it('default value as integer', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           age  Int    @default(30)
         }
       `)
@@ -136,7 +118,7 @@ describe(_processor, () => {
     it('default value as boolean', async () => {
       const { value } = await processor(`
         model users {
-          id     Int     @id @default(autoincrement())
+          id     BigInt     @id @default(autoincrement())
           active Boolean @default(true)
         }
       `)
@@ -158,84 +140,54 @@ describe(_processor, () => {
     it('column comment', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           /// this is description
           description String?
         }
       `)
 
-      const expected = userTable({
-        columns: {
-          description: aColumn({
-            name: 'description',
-            type: 'text',
-            comment: 'this is description',
-          }),
-        },
-      })
-
-      expect(value).toEqual(expected)
+      expect(value).toEqual(parserTestCases['column comment'])
     })
 
     it('table comment', async () => {
       const { value } = await processor(`
         /// store our users.
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
         }
       `)
 
-      const expected = userTable({
-        comment: 'store our users.',
-      })
-
-      expect(value).toEqual(expected)
+      expect(value).toEqual(parserTestCases['table comment'])
     })
 
     it('index (unique: false)', async () => {
+      const indexName = 'users_id_email_idx'
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
-          email String
+          id   BigInt    @id @default(autoincrement())
+          email String? @db.VarChar
           @@index([id, email])
         }
       `)
-
-      const expected = userTable({
-        columns: {
-          email: aColumn({
-            name: 'email',
-            type: 'text',
-            notNull: true,
-          }),
-        },
-        indices: {
-          users_id_email_idx: anIndex({
-            name: 'users_id_email_idx',
-            unique: false,
-            columns: ['id', 'email'],
-          }),
-        },
-      })
-
-      expect(value).toEqual(expected)
+      expect(value).toEqual(parserTestCases['index (unique: false)'](indexName))
     })
 
     it('index (unique: true)', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
-          email String
-          @@unique([id, email])
+          id   BigInt    @id @default(autoincrement())
+          mention String? @unique
+          @@unique([id, mention])
         }
       `)
 
       const expected = userTable({
         columns: {
-          email: aColumn({
-            name: 'email',
+          mention: aColumn({
+            name: 'mention',
             type: 'text',
-            notNull: true,
+            notNull: false,
+            unique: true,
           }),
         },
         indices: {
@@ -244,10 +196,15 @@ describe(_processor, () => {
             unique: true,
             columns: ['id'],
           }),
-          users_id_email_key: anIndex({
-            name: 'users_id_email_key',
+          users_id_mention_key: anIndex({
+            name: 'users_id_mention_key',
             unique: true,
-            columns: ['id', 'email'],
+            columns: ['id', 'mention'],
+          }),
+          users_mention_key: anIndex({
+            name: 'users_mention_key',
+            unique: true,
+            columns: ['mention'],
           }),
         },
       })
@@ -256,63 +213,43 @@ describe(_processor, () => {
     })
 
     it('relationship (one-to-many)', async () => {
+      const keyName = 'postsTousers'
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           posts posts[]
         }
 
         model posts {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           user users @relation(fields: [user_id], references: [id])
-          user_id Int
+          user_id BigInt
         }
       `)
 
-      const expected = {
-        postsTousers: {
-          name: 'postsTousers',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_MANY',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        },
-      }
-
-      expect(value.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-many)'](keyName),
+      )
     })
 
     it('relationship (one-to-one)', async () => {
+      const keyName = 'postsTousers'
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           post posts?
         }
 
         model posts {
-          id      Int    @id @default(autoincrement())
+          id      BigInt    @id @default(autoincrement())
           user    users  @relation(fields: [user_id], references: [id])
-          user_id Int    @unique
+          user_id BigInt    @unique
         }
       `)
 
-      const expected = {
-        postsTousers: {
-          name: 'postsTousers',
-          primaryTableName: 'users',
-          primaryColumnName: 'id',
-          foreignTableName: 'posts',
-          foreignColumnName: 'user_id',
-          cardinality: 'ONE_TO_ONE',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        },
-      }
-
-      expect(value.relationships).toEqual(expected)
+      expect(value.relationships).toEqual(
+        parserTestCases['foreign key (one-to-one)'](keyName),
+      )
     })
 
     describe('foreign key constraints (on delete)', () => {
@@ -329,14 +266,14 @@ describe(_processor, () => {
         async (prismaAction: string, expectedAction: string) => {
           const { value } = await processor(`
           model users {
-            id   Int    @id @default(autoincrement())
+            id   BigInt    @id @default(autoincrement())
             posts posts[]
           }
 
           model posts {
-            id   Int    @id @default(autoincrement())
+            id   BigInt    @id @default(autoincrement())
             user users @relation(fields: [user_id], references: [id], onDelete: ${prismaAction})
-            user_id Int
+            user_id BigInt
           }
         `)
 
@@ -361,14 +298,14 @@ describe(_processor, () => {
     it('columns do not include model type', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           posts posts[]
         }
 
         model posts {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           user users @relation(fields: [user_id], references: [id])
-          user_id Int
+          user_id BigInt
         }
       `)
 
@@ -396,7 +333,7 @@ describe(_processor, () => {
     it('unique', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           email String @unique
         }
       `)
@@ -425,7 +362,7 @@ describe(_processor, () => {
     it('not unique', async () => {
       const { value } = await processor(`
         model users {
-          id   Int    @id @default(autoincrement())
+          id   BigInt    @id @default(autoincrement())
           email String
         }
       `)

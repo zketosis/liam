@@ -51,8 +51,7 @@ export default function ERDViewer({
           errorObjects={errorObjects}
         />
       </VersionProvider>
-      {process.env.NEXT_PUBLIC_ENV_NAME !== 'production' &&
-        isShowCookieConsent && <CookieConsent />}
+      {isShowCookieConsent && <CookieConsent />}
     </div>
   )
 }

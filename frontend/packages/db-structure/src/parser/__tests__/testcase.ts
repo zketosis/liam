@@ -1,35 +1,13 @@
 import {
+  type DBStructure,
   type Table,
   aColumn,
-  aDBStructure,
-  aTable,
   anIndex,
 } from '../../schema/index.js'
 
-const userTable = (override?: Partial<Table>) =>
-  aDBStructure({
-    tables: {
-      users: aTable({
-        name: 'users',
-        columns: {
-          id: aColumn({
-            name: 'id',
-            type: 'bigserial',
-            notNull: true,
-            primary: true,
-            unique: true,
-          }),
-          ...override?.columns,
-        },
-        indices: {
-          ...override?.indices,
-        },
-        comment: override?.comment ?? null,
-      }),
-    },
-  })
-
-export const parserTestCases = {
+export const createParserTestCases = (
+  userTable: (override?: Partial<Table>) => DBStructure,
+) => ({
   'table comment': userTable({
     comment: 'store our users.',
   }),
@@ -96,20 +74,21 @@ export const parserTestCases = {
       }),
     },
   }),
-  'index (unique: false)': userTable({
-    columns: {
-      email: aColumn({
-        name: 'email',
-      }),
-    },
-    indices: {
-      index_users_on_id_and_email: anIndex({
-        name: 'index_users_on_id_and_email',
-        unique: false,
-        columns: ['id', 'email'],
-      }),
-    },
-  }),
+  'index (unique: false)': (indexName: string) =>
+    userTable({
+      columns: {
+        email: aColumn({
+          name: 'email',
+        }),
+      },
+      indices: {
+        [indexName]: anIndex({
+          name: indexName,
+          unique: false,
+          columns: ['id', 'email'],
+        }),
+      },
+    }),
   'index (unique: true)': userTable({
     columns: {
       email: aColumn({
@@ -136,9 +115,9 @@ export const parserTestCases = {
       deleteConstraint: 'NO_ACTION',
     },
   }),
-  'foreign key (one-to-one)': {
-    users_id_to_posts_user_id: {
-      name: 'users_id_to_posts_user_id',
+  'foreign key (one-to-one)': (name: string) => ({
+    [name]: {
+      name,
       primaryTableName: 'users',
       primaryColumnName: 'id',
       foreignTableName: 'posts',
@@ -147,7 +126,7 @@ export const parserTestCases = {
       updateConstraint: 'NO_ACTION',
       deleteConstraint: 'NO_ACTION',
     },
-  },
+  }),
   'foreign key with action': {
     fk_posts_user_id: {
       name: 'fk_posts_user_id',
@@ -160,4 +139,4 @@ export const parserTestCases = {
       deleteConstraint: 'CASCADE',
     },
   },
-}
+})
