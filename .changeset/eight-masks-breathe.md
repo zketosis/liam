@@ -4,4 +4,4 @@
 "@liam-hq/cli": patch
 ---
 
-✨️ Add new Mobilie Toolbar
+🚸 Add new Mobilie Toolbar
