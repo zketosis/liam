@@ -14,7 +14,7 @@ describe(processor, () => {
               name: 'id',
               type: 'int',
               notNull: true,
-              primary: true,
+              primary: false,
               unique: false,
             }),
             ...override?.columns,
@@ -37,15 +37,6 @@ describe(processor, () => {
                   name: 'id',
                   type: 'int',
                   nullable: false,
-                },
-              ],
-              constraints: [
-                {
-                  name: 'PRIMARY',
-                  type: 'PRIMARY KEY',
-                  columns: ['id'],
-                  def: 'PRIMARY KEY (id)',
-                  table: 'users',
                 },
               ],
             },
@@ -169,6 +160,49 @@ describe(processor, () => {
             name: 'email',
             type: 'text',
             unique: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('primary key', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+              ],
+              constraints: [
+                {
+                  name: 'users_pkey',
+                  type: 'PRIMARY KEY',
+                  def: 'PRIMARY KEY (id)',
+                  table: 'users',
+                  columns: ['id'],
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          id: aColumn({
+            name: 'id',
+            type: 'int',
+            primary: true,
+            notNull: true,
           }),
         },
       })
