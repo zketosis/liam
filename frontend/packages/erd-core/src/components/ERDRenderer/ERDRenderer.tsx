@@ -60,46 +60,48 @@ export const ERDRenderer: FC<Props> = ({
   )
 
   return (
-    <div className={styles.wrapper}>
+    <SidebarProvider
+      className={styles.wrapper}
+      open={open}
+      onOpenChange={handleChangeOpen}
+    >
       <CardinalityMarkers />
       <RelationshipEdgeParticleMarker />
       <ToastProvider>
         <AppBar />
-        <SidebarProvider open={open} onOpenChange={handleChangeOpen}>
-          <ReactFlowProvider>
-            <div className={styles.mainWrapper}>
-              <LeftPane />
-              <main className={styles.main}>
-                <div className={styles.triggerWrapper}>
-                  <SidebarTrigger />
-                </div>
-                <TableDetailDrawerRoot>
-                  {errorObjects.length > 0 && (
-                    <ErrorDisplay errors={errorObjects} />
-                  )}
-                  {errorObjects.length > 0 || (
-                    <>
-                      <ERDContent
-                        key={`${nodes.length}-${showMode}`}
-                        nodes={nodes}
-                        edges={edges}
-                      />
-                      <TableDetailDrawer />
-                    </>
-                  )}
-                </TableDetailDrawerRoot>
-              </main>
-            </div>
-
-            {errorObjects.length === 0 && (
-              <div className={styles.toolbarWrapper}>
-                <DesktopToolbar />
-                <MobileToolbar />
+        <ReactFlowProvider>
+          <div className={styles.mainWrapper}>
+            <LeftPane />
+            <main className={styles.main}>
+              <div className={styles.triggerWrapper}>
+                <SidebarTrigger />
               </div>
-            )}
-          </ReactFlowProvider>
-        </SidebarProvider>
+              <TableDetailDrawerRoot>
+                {errorObjects.length > 0 && (
+                  <ErrorDisplay errors={errorObjects} />
+                )}
+                {errorObjects.length > 0 || (
+                  <>
+                    <ERDContent
+                      key={`${nodes.length}-${showMode}`}
+                      nodes={nodes}
+                      edges={edges}
+                    />
+                    <TableDetailDrawer />
+                  </>
+                )}
+              </TableDetailDrawerRoot>
+            </main>
+          </div>
+
+          {errorObjects.length === 0 && (
+            <div className={styles.toolbarWrapper}>
+              <DesktopToolbar />
+              <MobileToolbar />
+            </div>
+          )}
+        </ReactFlowProvider>
       </ToastProvider>
-    </div>
+    </SidebarProvider>
   )
 }
