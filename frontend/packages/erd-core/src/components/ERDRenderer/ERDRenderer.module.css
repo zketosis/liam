@@ -62,3 +62,15 @@
     overflow: hidden;
   }
 }
+
+@media screen and (max-width: 767px) {
+  .desktopToolbar {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .mobileToolbar {
+    display: none !important;
+  }
+}

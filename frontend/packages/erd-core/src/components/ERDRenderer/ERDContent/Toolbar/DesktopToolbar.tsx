@@ -6,9 +6,13 @@ import { ShowModeMenu } from './ShowModeMenu'
 import { TidyUpButton } from './TidyUpButton'
 import { ZoomControls } from './ZoomControls'
 
-export const DesktopToolbar: FC = () => {
+type Props = {
+  className?: string
+}
+
+export const DesktopToolbar: FC<Props> = ({ className }) => {
   return (
-    <ToolbarPrimitive.Root className={styles.root}>
+    <ToolbarPrimitive.Root className={`${styles.root} ${className || ''}`}>
       <ZoomControls />
       <ToolbarPrimitive.Separator className={styles.separator} />
       <div className={styles.buttons}>
