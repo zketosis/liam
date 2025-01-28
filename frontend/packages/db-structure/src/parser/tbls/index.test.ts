@@ -19,6 +19,7 @@ describe(processor, () => {
             }),
             ...override?.columns,
           },
+          indices: override?.indices ?? {},
         }),
       },
     })
