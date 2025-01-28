@@ -58,12 +58,12 @@ export const ERDRenderer: FC<Props> = ({
   )
 
   return (
-    <div className={styles.wrapper}>
-      <CardinalityMarkers />
-      <RelationshipEdgeParticleMarker />
-      <ToastProvider>
-        <AppBar />
-        <SidebarProvider open={open} onOpenChange={handleChangeOpen}>
+    <SidebarProvider open={open} onOpenChange={handleChangeOpen}>
+      <div className={styles.wrapper}>
+        <CardinalityMarkers />
+        <RelationshipEdgeParticleMarker />
+        <ToastProvider>
+          <AppBar />
           <ReactFlowProvider>
             <div className={styles.mainWrapper}>
               <LeftPane />
@@ -92,8 +92,8 @@ export const ERDRenderer: FC<Props> = ({
               </main>
             </div>
           </ReactFlowProvider>
-        </SidebarProvider>
-      </ToastProvider>
-    </div>
+        </ToastProvider>
+      </div>
+    </SidebarProvider>
   )
 }
