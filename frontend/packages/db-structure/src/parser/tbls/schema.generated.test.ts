@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import sampleSchema from './input/schema.json'
+import mysqlSchema from './input/mysql/schema.json'
+import postgresqlSchema from './input/postgresql/schema.json'
 import schema from './schema.generated'
 
 describe('tbls schema validation', () => {
@@ -88,9 +89,13 @@ describe('tbls schema validation', () => {
     expect(result.success).toBe(true)
   })
 
-  // ref: https://github.com/k1LoW/tbls/blob/v1.81.0/spec/tbls.schema.json_schema.json
-  it('validates sample schema.json', () => {
-    const result = schema.safeParse(sampleSchema)
+  it('validates mysql schema.json', () => {
+    const result = schema.safeParse(mysqlSchema)
+    expect(result.success).toBe(true)
+  })
+
+  it('validates postgresql schema.json', () => {
+    const result = schema.safeParse(postgresqlSchema)
     expect(result.success).toBe(true)
   })
 })
