@@ -16,13 +16,13 @@ Currently, BigQuery is supported through the tbls integration. While direct BigQ
 3. Use tbls to generate a schema.json file from your BigQuery dataset:
 
 ```bash
-tbls out -t json -o schema.json "bigquery://project-id/dataset-name"
+tbls out -t json -o schema.json "bigquery://project-id/dataset-id"
 ```
 
 Replace the following with your BigQuery details:
 
 - `project-id`: Your Google Cloud project ID
-- `dataset-name`: Your BigQuery dataset name
+- `dataset-id`: Your BigQuery dataset id
 
 4. Use the generated schema.json with Liam:
 
