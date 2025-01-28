@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import { aColumn, aDBStructure, aTable } from '../../schema/index.js'
+import { aColumn, aDBStructure, aTable, anIndex } from '../../schema/index.js'
 import { processor } from './index.js'
 
 describe(processor, () => {
@@ -160,6 +160,112 @@ describe(processor, () => {
             name: 'email',
             type: 'text',
             unique: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('index (unique: false)', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+                {
+                  name: 'email',
+                  type: 'text',
+                  nullable: true,
+                },
+              ],
+              indexes: [
+                {
+                  name: 'users_email_idx',
+                  def: 'CREATE INDEX users_email_idx ON users USING btree (email)',
+                  table: 'users',
+                  columns: ['email'],
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'text',
+            unique: false,
+          }),
+        },
+        indices: {
+          users_email_idx: anIndex({
+            name: 'users_email_idx',
+            columns: ['email'],
+            unique: false,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('index (unique: true)', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+                {
+                  name: 'email',
+                  type: 'text',
+                  nullable: true,
+                },
+              ],
+              indexes: [
+                {
+                  name: 'users_email_key',
+                  def: 'CREATE UNIQUE INDEX users_email_key ON users USING btree (email)',
+                  table: 'users',
+                  columns: ['email'],
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          email: aColumn({
+            name: 'email',
+            type: 'text',
+            notNull: false,
+          }),
+        },
+        indices: {
+          users_email_key: anIndex({
+            name: 'users_email_key',
+            unique: true,
+            columns: ['email'],
           }),
         },
       })
