@@ -167,6 +167,133 @@ describe(processor, () => {
       expect(value).toEqual(expected)
     })
 
+    it('default value as string', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                  default: "nextval('users_id_seq'::regclass)",
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          id: aColumn({
+            name: 'id',
+            type: 'int',
+            notNull: true,
+            default: "nextval('users_id_seq'::regclass)",
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('default value as integer', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+                {
+                  name: 'age',
+                  type: 'int',
+                  nullable: false,
+                  // NOTE: tblsColumn.default is of type string | null | undefined
+                  default: '30',
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          id: aColumn({
+            name: 'id',
+            type: 'int',
+            notNull: true,
+          }),
+          age: aColumn({
+            name: 'age',
+            type: 'int',
+            notNull: true,
+            default: 30,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
+    it('default value as boolean', async () => {
+      const { value } = await processor(
+        JSON.stringify({
+          name: 'testdb',
+          tables: [
+            {
+              name: 'users',
+              type: 'TABLE',
+              columns: [
+                {
+                  name: 'id',
+                  type: 'int',
+                  nullable: false,
+                },
+                {
+                  name: 'active',
+                  type: 'bool',
+                  nullable: false,
+                  // NOTE: tblsColumn.default is of type string | null | undefined
+                  default: 'true',
+                },
+              ],
+            },
+          ],
+        }),
+      )
+
+      const expected = userTable({
+        columns: {
+          id: aColumn({
+            name: 'id',
+            type: 'int',
+            notNull: true,
+          }),
+          active: aColumn({
+            name: 'active',
+            type: 'bool',
+            notNull: true,
+            default: true,
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
+    })
+
     describe('relationship', () => {
       const relationshipCases = [
         ['exactly_one', 'zero_or_one', 'ONE_TO_ONE'],

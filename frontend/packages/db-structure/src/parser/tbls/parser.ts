@@ -55,11 +55,13 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     )
 
     for (const tblsColumn of tblsTable.columns) {
+      const defaultValue = extractDefaultValue(tblsColumn.default)
+
       columns[tblsColumn.name] = aColumn({
         name: tblsColumn.name,
         type: tblsColumn.type,
         notNull: !tblsColumn.nullable,
-        default: tblsColumn.default ?? null,
+        default: defaultValue,
         comment: tblsColumn.comment ?? null,
         unique: uniqueColumnNames.has(tblsColumn.name),
       })
@@ -116,6 +118,29 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     },
     errors,
   }
+}
+
+function extractDefaultValue(
+  value: string | null | undefined,
+): Columns[string]['default'] {
+  if (value === null || value === undefined) {
+    return null
+  }
+
+  // Convert string to number if it represents a number
+  if (!Number.isNaN(Number(value))) {
+    return Number(value)
+  }
+
+  // Convert string to boolean if it represents a boolean
+  if (value.toLowerCase() === 'true') {
+    return true
+  }
+  if (value.toLowerCase() === 'false') {
+    return false
+  }
+
+  return value
 }
 
 export const processor: Processor = (str) => parseTblsSchema(str)
