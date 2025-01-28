@@ -595,6 +595,69 @@ describe(processor, () => {
           expect(value.relationships).toEqual(expected)
         },
       )
+
+      it('foreign key with actions', async () => {
+        const { value } = await processor(
+          JSON.stringify({
+            name: 'testdb',
+            tables: [
+              {
+                name: 'users',
+                type: 'TABLE',
+                columns: [
+                  {
+                    name: 'id',
+                    type: 'int',
+                    nullable: false,
+                  },
+                ],
+              },
+              {
+                name: 'posts',
+                type: 'TABLE',
+                columns: [
+                  {
+                    name: 'id',
+                    type: 'int',
+                    nullable: false,
+                  },
+                  {
+                    name: 'user_id',
+                    type: 'int',
+                    nullable: false,
+                  },
+                ],
+              },
+            ],
+            relations: [
+              {
+                table: 'posts',
+                columns: ['user_id'],
+                cardinality: 'zero_or_more',
+                parent_table: 'users',
+                parent_columns: ['id'],
+                parent_cardinality: 'exactly_one',
+                def: 'FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE RESTRICT ON DELETE SET NULL',
+              },
+            ],
+          }),
+        )
+
+        const expected = {
+          users_id_to_posts_user_id: {
+            name: 'users_id_to_posts_user_id',
+            primaryTableName: 'users',
+            primaryColumnName: 'id',
+            foreignTableName: 'posts',
+            foreignColumnName: 'user_id',
+            cardinality: 'ONE_TO_MANY',
+            updateConstraint: 'RESTRICT',
+            deleteConstraint: 'SET_NULL',
+          },
+        }
+
+        expect(value.relationships).toEqual(expected)
+      })
     })
   })
 })

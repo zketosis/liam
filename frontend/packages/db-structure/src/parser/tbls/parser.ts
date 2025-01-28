@@ -1,6 +1,7 @@
 import type {
   Cardinality,
   Columns,
+  ForeignKeyConstraint,
   Indices,
   Relationship,
   Tables,
@@ -21,6 +22,53 @@ function extractCardinality(cardinality: string): Cardinality {
     return 'ONE_TO_MANY'
   }
   return 'ONE_TO_MANY'
+}
+
+const FK_ACTIONS = 'SET NULL|SET DEFAULT|RESTRICT|CASCADE|NO ACTION'
+
+function extractForeignKeyActions(def: string): {
+  updateConstraint: ForeignKeyConstraint
+  deleteConstraint: ForeignKeyConstraint
+} {
+  const defaultAction: ForeignKeyConstraint = 'NO_ACTION'
+  const actions: {
+    updateConstraint: ForeignKeyConstraint
+    deleteConstraint: ForeignKeyConstraint
+  } = {
+    updateConstraint: defaultAction,
+    deleteConstraint: defaultAction,
+  }
+
+  const updateMatch = def.match(new RegExp(`ON UPDATE (${FK_ACTIONS})`))
+  if (updateMatch?.[1]) {
+    actions.updateConstraint = normalizeConstraintName(
+      updateMatch[1].toLowerCase(),
+    )
+  }
+
+  const deleteMatch = def.match(new RegExp(`ON DELETE (${FK_ACTIONS})`))
+  if (deleteMatch?.[1]) {
+    actions.deleteConstraint = normalizeConstraintName(
+      deleteMatch[1].toLowerCase(),
+    )
+  }
+
+  return actions
+}
+
+function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
+  switch (constraint) {
+    case 'cascade':
+      return 'CASCADE'
+    case 'restrict':
+      return 'RESTRICT'
+    case 'set null':
+      return 'SET_NULL'
+    case 'set default':
+      return 'SET_DEFAULT'
+    default:
+      return 'NO_ACTION'
+  }
 }
 
 async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
@@ -105,6 +153,8 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
         relation.columns[0],
       )
 
+      const actions = extractForeignKeyActions(relation.def)
+
       relationships[name] = aRelationship({
         name,
         primaryTableName: relation.parent_table,
@@ -112,8 +162,8 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
         foreignTableName: relation.table,
         foreignColumnName: relation.columns[0],
         cardinality: extractCardinality(relation.cardinality ?? ''),
-        deleteConstraint: 'NO_ACTION',
-        updateConstraint: 'NO_ACTION',
+        deleteConstraint: actions.deleteConstraint,
+        updateConstraint: actions.updateConstraint,
       })
     }
   }
