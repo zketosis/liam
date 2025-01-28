@@ -14,7 +14,7 @@ describe(processor, () => {
               name: 'id',
               type: 'int',
               notNull: true,
-              primary: false, // TODO: should be true
+              primary: true,
               unique: false,
             }),
             ...override?.columns,
@@ -37,6 +37,15 @@ describe(processor, () => {
                   name: 'id',
                   type: 'int',
                   nullable: false,
+                },
+              ],
+              constraints: [
+                {
+                  name: 'PRIMARY',
+                  type: 'PRIMARY KEY',
+                  columns: ['id'],
+                  def: 'PRIMARY KEY (id)',
+                  table: 'users',
                 },
               ],
             },

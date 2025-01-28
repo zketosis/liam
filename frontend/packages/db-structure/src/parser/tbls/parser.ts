@@ -46,11 +46,18 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     const indices: Indices = {}
 
     for (const tblsColumn of tblsTable.columns) {
+      const isPrimaryKey = !!tblsTable.constraints?.some(
+        (constraint) =>
+          constraint.type === 'PRIMARY KEY' &&
+          constraint.columns?.includes(tblsColumn.name),
+      )
+
       columns[tblsColumn.name] = aColumn({
         name: tblsColumn.name,
         type: tblsColumn.type,
         notNull: !tblsColumn.nullable,
         default: tblsColumn.default ?? null,
+        primary: isPrimaryKey,
         comment: tblsColumn.comment ?? null,
       })
     }
