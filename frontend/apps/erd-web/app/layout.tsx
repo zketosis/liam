@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import type React from 'react'
 import './globals.css'
 import { GTMConsent, GtagScript } from '@/libs/gtm'
+import { GTM_ID } from '@/libs/gtm'
 import { GoogleTagManager } from '@next/third-parties/google'
 
 const geistSans = Geist({
@@ -39,7 +40,7 @@ export default function RootLayout({
     <html lang="en">
       <>
         <GoogleTagManager
-          gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''}
+          gtmId={GTM_ID}
           dataLayer={{ appEnv: process.env.NEXT_PUBLIC_ENV_NAME ?? '' }}
         />
         <GtagScript />
