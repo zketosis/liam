@@ -1,4 +1,5 @@
 import type {
+  Cardinality,
   Columns,
   Indices,
   Relationship,
@@ -8,6 +9,19 @@ import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
 import type { ProcessResult, Processor } from '../types.js'
 import { defaultRelationshipName } from '../utils/index.js'
 import schema from './schema.generated.js'
+
+function extractCardinality(cardinality: string): Cardinality {
+  if (cardinality === 'zero_or_one') {
+    return 'ONE_TO_ONE'
+  }
+  if (cardinality === 'zero_or_more') {
+    return 'ONE_TO_MANY'
+  }
+  if (cardinality === 'one_or_more') {
+    return 'ONE_TO_MANY'
+  }
+  return 'ONE_TO_MANY'
+}
 
 async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
   const parsedSchema = JSON.parse(schemaString)
@@ -78,6 +92,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
         primaryColumnName: relation.parent_columns[0],
         foreignTableName: relation.table,
         foreignColumnName: relation.columns[0],
+        cardinality: extractCardinality(relation.cardinality ?? ''),
         deleteConstraint: 'NO_ACTION',
         updateConstraint: 'NO_ACTION',
       })
