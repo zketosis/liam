@@ -1,12 +1,12 @@
 import {
+  type DBStructure,
   type Table,
   aColumn,
-  type aDBStructure,
   anIndex,
 } from '../../schema/index.js'
 
 export const createParserTestCases = (
-  userTable: (override?: Partial<Table>) => ReturnType<typeof aDBStructure>,
+  userTable: (override?: Partial<Table>) => DBStructure,
 ) => ({
   'table comment': userTable({
     comment: 'store our users.',
