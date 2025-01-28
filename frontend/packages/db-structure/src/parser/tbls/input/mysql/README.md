@@ -1,4 +1,4 @@
-# PostgreSQL Schema Sample
+# MySQL Schema Sample
 
 This `schema.json` is copied from:
 https://github.com/k1LoW/tbls/blob/v1.81.0/sample/mysql/schema.json
