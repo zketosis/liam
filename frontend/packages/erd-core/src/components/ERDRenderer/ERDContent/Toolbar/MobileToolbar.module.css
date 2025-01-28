@@ -19,6 +19,18 @@
   }
 }
 
+@media screen and (max-width: 767px) {
+  .root {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .root {
+    display: none;
+  }
+}
+
 .root {
   border: 1px solid var(--global-border);
   border-radius: var(--border-radius-lg);

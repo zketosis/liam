@@ -14,11 +14,7 @@ import styles from './MobileToolbar.module.css'
 import { ShowModeMenu } from './ShowModeMenu'
 import { TidyUpButton } from './TidyUpButton'
 
-type Props = {
-  className?: string
-}
-
-export const MobileToolbar: FC<Props> = ({ className }) => {
+export const MobileToolbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
 
@@ -60,15 +56,11 @@ export const MobileToolbar: FC<Props> = ({ className }) => {
 
   return (
     <ToolbarPrimitive.Root
-      className={clsx(
-        styles.root,
-        {
-          [styles.open]: isOpen,
-          [styles.closed]: hasInteracted && !isOpen,
-          [styles.initial]: !hasInteracted && !isOpen,
-        },
-        className,
-      )}
+      className={clsx(styles.root, {
+        [styles.open]: isOpen,
+        [styles.closed]: hasInteracted && !isOpen,
+        [styles.initial]: !hasInteracted && !isOpen,
+      })}
     >
       <div className={isOpen ? styles.hidden : styles.ellipsis}>
         <button type="button" onClick={toggle}>

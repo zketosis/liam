@@ -93,8 +93,8 @@ export const ERDRenderer: FC<Props> = ({
 
             {errorObjects.length > 0 || (
               <div className={styles.toolbarWrapper}>
-                <DesktopToolbar className={styles.desktopToolbar} />
-                <MobileToolbar className={styles.mobileToolbar} />
+                <DesktopToolbar />
+                <MobileToolbar />
               </div>
             )}
           </ReactFlowProvider>
