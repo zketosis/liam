@@ -6,7 +6,7 @@ import {
   Rows3 as Rows3Icon,
 } from '@liam-hq/ui'
 import clsx from 'clsx'
-import { type FC, useState } from 'react'
+import { type FC, type MouseEvent, useState } from 'react'
 import styles from './Columns.module.css'
 import { ColumnsItem } from './ColumnsItem'
 
@@ -16,17 +16,18 @@ type Props = {
 
 export const Columns: FC<Props> = ({ columns }) => {
   const [isClosed, setIsClosed] = useState(false)
-  const handleClose = () => {
+  const handleClose = (event: MouseEvent) => {
+    event.stopPropagation()
     setIsClosed(!isClosed)
   }
   const handleKeyDown = (event: { key: string }) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      handleClose()
+      setIsClosed(!isClosed)
     }
   }
 
   return (
-    <div className={styles.wrapper}>
+    <>
       <div
         className={styles.header}
         // biome-ignore lint/a11y/useSemanticElements: Implemented with div button to be button in button
@@ -53,6 +54,6 @@ export const Columns: FC<Props> = ({ columns }) => {
           <ColumnsItem column={column} />
         </div>
       ))}
-    </div>
+    </>
   )
 }

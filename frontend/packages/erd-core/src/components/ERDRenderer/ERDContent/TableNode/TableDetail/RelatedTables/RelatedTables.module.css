@@ -5,6 +5,7 @@
   justify-content: space-between;
   padding: var(--spacing-2);
   border-bottom: 1px solid var(--global-border);
+  cursor: pointer;
 }
 
 .iconTitleContainer {
@@ -15,6 +16,13 @@
   color: var(--overlay-70);
 }
 
+.iconContainer {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--spacing-1);
+  align-items: center;
+}
+
 .heading {
   color: var(--global-foreground);
   font-size: var(--font-size-2);
@@ -23,13 +31,21 @@
 }
 
 .outerWrapper {
-  padding: var(--spacing-3);
+  max-height: 0;
+  transition: max-height 0.1s var(--default-timing-function);
+  overflow: hidden;
+}
+
+.outerWrapper.visible {
+  max-height: 100vh;
+  border-bottom: 1px solid var(--global-border);
 }
 
 .contentWrapper {
   border-radius: var(--border-radius-smbase);
   border: 1px solid var(--pane-border);
   background: var(--global-background);
-  width: 100%;
+  width: 92%;
   height: 333px;
+  margin: var(--spacing-3);
 }
