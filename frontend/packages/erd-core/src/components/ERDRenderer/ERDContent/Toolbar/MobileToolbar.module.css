@@ -131,6 +131,7 @@
 
 .zoomPercent {
   color: var(--global-foreground, #fff);
+  font-family: var(--code-font, 'IBM Plex Mono');
   text-align: center;
   font-size: var(--font-size-3, 12px);
 }
