@@ -9,6 +9,7 @@
   justify-content: space-between;
   padding: var(--spacing-2);
   border-bottom: 1px solid var(--global-border);
+  cursor: pointer;
 }
 
 .iconTitleContainer {

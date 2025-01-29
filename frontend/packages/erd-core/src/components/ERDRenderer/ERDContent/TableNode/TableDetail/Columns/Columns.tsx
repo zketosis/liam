@@ -19,9 +19,22 @@ export const Columns: FC<Props> = ({ columns }) => {
   const handleClose = () => {
     setIsClosed(!isClosed)
   }
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      handleClose()
+    }
+  }
+
   return (
     <div className={styles.wrapper}>
-      <div className={styles.header}>
+      <div
+        className={styles.header}
+        // biome-ignore lint/a11y/useSemanticElements: Implemented with div button to be button in button
+        role="button"
+        tabIndex={0}
+        onClick={handleClose}
+        onKeyDown={handleKeyDown}
+      >
         <div className={styles.iconTitleContainer}>
           <Rows3Icon width={12} />
           <h2 className={styles.heading}>Columns</h2>
