@@ -91,7 +91,7 @@ export const ERDRenderer: FC<Props> = ({
               </main>
             </div>
 
-            {errorObjects.length > 0 || (
+            {errorObjects.length === 0 && (
               <div className={styles.toolbarWrapper}>
                 <DesktopToolbar />
                 <MobileToolbar />
