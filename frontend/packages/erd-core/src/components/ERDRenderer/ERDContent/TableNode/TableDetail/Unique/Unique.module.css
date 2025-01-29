@@ -1,7 +1,3 @@
-.wrapper {
-  border-bottom: 1px solid var(--global-border);
-}
-
 .header {
   display: grid;
   grid-auto-flow: column;
@@ -9,6 +5,7 @@
   justify-content: space-between;
   padding: var(--spacing-2);
   border-bottom: 1px solid var(--global-border);
+  cursor: pointer;
 }
 
 .iconTitleContainer {
@@ -24,6 +21,17 @@
   font-size: var(--font-size-2);
   font-style: normal;
   line-height: normal;
+}
+
+.listWrapper {
+  max-height: 0;
+  transition: max-height 0.1s var(--default-timing-function);
+  overflow: hidden;
+}
+
+.listWrapper.visible {
+  max-height: 100vh;
+  border-bottom: 1px solid var(--global-border);
 }
 
 .list {
