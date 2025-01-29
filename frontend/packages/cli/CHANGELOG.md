@@ -1,5 +1,18 @@
 # @liam-hq/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- e87929c: ✨Add tbls, MySQL, SQLite, BigQuery setup to init command
+
+### Patch Changes
+
+- 18db4ca: 💄Fixed icon size
+- 70741a0: ✨ Add support for primary key constraints in tbls parser
+- 44975cc: ✨ Add support for default values in tbls parser and tests
+- 9cba809: 💄 Add icons to the table detail component and update the header style.
+
 ## 0.2.2
 
 ### Patch Changes
