@@ -6,7 +6,7 @@ Please include the following sections in each ADR file.
 
 ---
 
-# {YYYYMMDD}. {TITLE}
+# {YYYYMMDD} - {TITLE}
 
 ## Status
 
