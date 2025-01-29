@@ -1,6 +1,6 @@
 @keyframes collapse {
   from {
-    width: 200px;
+    width: 170px; /* TODO: 157px */
     height: 150px;
   }
   to {
@@ -15,7 +15,7 @@
     height: 40px;
   }
   to {
-    width: 200px;
+    width: 170px;
   }
 }
 
@@ -59,7 +59,7 @@
 }
 
 .initialOpen {
-  width: 200px;
+  width: 170px;
   animation: none;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .divider {
-  width: 100%;
+  width: 141px;
   height: 1px;
   color: #383a3b;
 }
