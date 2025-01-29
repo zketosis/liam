@@ -11,10 +11,7 @@ import { toggleLogEvent } from '@/features/gtm/utils'
 import { useVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
 import { CardinalityMarkers } from './CardinalityMarkers'
-// biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
-import { MobileToolbar } from './ERDContent/Toolbar'
-// biome-ignore lint/nursery/useImportRestrictions: Fixed in the next PR.
-import { DesktopToolbar } from './ERDContent/Toolbar'
+import { Toolbar } from './ERDContent'
 import { ErrorDisplay } from './ErrorDisplay'
 import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker'
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
@@ -96,8 +93,7 @@ export const ERDRenderer: FC<Props> = ({
 
           {errorObjects.length === 0 && (
             <div className={styles.toolbarWrapper}>
-              <DesktopToolbar />
-              <MobileToolbar />
+              <Toolbar />
             </div>
           )}
         </ReactFlowProvider>
