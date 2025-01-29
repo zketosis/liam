@@ -5,7 +5,7 @@ import { IconButton, TidyUpIcon } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
 import { useReactFlow } from '@xyflow/react'
 import { type FC, type ReactNode, useCallback } from 'react'
-import { useAutoLayout } from '../../useAutoLayout'
+import { useAutoLayout } from '../../ERDContent'
 import styles from './TidyUpButton.module.css'
 
 interface TidyUpButtonProps {
