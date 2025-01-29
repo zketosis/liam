@@ -24,6 +24,7 @@ const formatMap: Record<string, string> = {
   'MySQL (via tbls)': 'tbls',
   'SQLite (via tbls)': 'tbls',
   'BigQuery (via tbls)': 'tbls',
+  tbls: 'tbls',
 }
 
 initCommand.action(async () => {
@@ -58,6 +59,7 @@ Now, let’s get started with setting up your Liam ERD project.
         'Ruby on Rails (schema.rb)',
         'Prisma (schema.prisma)',
         'Drizzle',
+        'tbls',
         'MySQL (via tbls)',
         'SQLite (via tbls)',
         'BigQuery (via tbls)',
@@ -125,6 +127,19 @@ ${yocto.yellow(
     } else {
       cannotSupportNow = true
     }
+  } else if (dbOrOrm === 'tbls') {
+    const { schemaFilePath } = await inquirer.prompt<{
+      schemaFilePath: string
+    }>([
+      {
+        type: 'input',
+        name: 'schemaFilePath',
+        message:
+          'What is the path to the schema.json file? (It is located in the output directory of the tbls doc)',
+        default: 'docs/schema.json',
+      },
+    ])
+    inputFilePath = schemaFilePath
   } else if (dbOrOrm.includes('(via tbls)')) {
     console.info(`
 ${yocto.yellow("Note: Direct support is not available yet. You'll need to use tbls as a bridge.")}
