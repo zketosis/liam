@@ -19,19 +19,8 @@
   }
 }
 
-@media screen and (max-width: 767px) {
-  .root {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .root {
-    display: none;
-  }
-}
-
 .root {
+  display: none;
   border: 1px solid var(--global-border);
   border-radius: var(--border-radius-lg);
   background-color: var(--pane-background);
@@ -46,6 +35,12 @@
   transition: width 150ms ease, height 150ms ease;
   min-height: 40px;
   z-index: var(--z-index-toolbar);
+}
+
+@media screen and (max-width: 767px) {
+  .root {
+    display: block;
+  }
 }
 
 .initial {
