@@ -74,7 +74,6 @@ Now, let’s get started with setting up your Liam ERD project.
   //
   let inputFilePath = ''
   let cannotSupportNow = false
-  const tblsInstruction = '   $ tbls out -t json -o schema.json'
 
   if (dbOrOrm === 'PostgreSQL') {
     // Ask if pg_dump .sql can be used
@@ -150,7 +149,7 @@ To use tbls with Liam ERD:
 
 2. Generate a schema.json file using tbls:
 
-${yocto.blueBright(tblsInstruction)}
+${yocto.blueBright('   $ tbls out -t json -o schema.json')}
 
 For more details about using tbls with Liam ERD, see:
 ${yocto.blueBright(`${DocsUrl}/parser/supported-formats/tbls`)}
@@ -227,13 +226,13 @@ ${yocto.blueBright(DocsUrl)}
   let stepNum = 1
 
   if (dbOrOrm.includes('(via tbls)')) {
-    console.info(`${stepNum}) Generate schema.json using tbls:`)
+    console.info(`${stepNum}) Build your ERD using the generated schema.json:`)
     stepNum++
-    console.info(`${yocto.blueBright(tblsInstruction)}
-
-${stepNum}) Build your ERD using the generated schema.json:
-${yocto.blueBright('   $ npx @liam-hq/cli erd build --input schema.json --format tbls')}`)
-    stepNum++
+    console.info(
+      yocto.blueBright(
+        '   $ npx @liam-hq/cli erd build --input schema.json --format tbls',
+      ),
+    )
   } else if (dbOrOrm === 'Drizzle' && !inputFilePath) {
     // If user is using Drizzle but didn't specify any input file,
     // advise them to eventually produce a dump file.
