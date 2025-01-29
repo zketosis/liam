@@ -13,6 +13,16 @@
   gap: var(--spacing-1, 4px);
 }
 
+.message1TitleWrapper {
+  display: flex;
+  gap: var(--spacing-2, 8px);
+}
+
+.iconWrapper {
+  min-width: 24px;
+  padding-top: var(--spacing-1, 4px);
+}
+
 .message1Title {
   color: var(--callout-warning-text, #c3b476);
   font-family: var(--message-font, Montserrat);
@@ -33,6 +43,10 @@
 @media screen and (min-width: 768px) {
   .message1 {
     gap: var(--spacing-2, 8px);
+  }
+
+  .iconWrapper {
+    display: none;
   }
 
   .message1Title {

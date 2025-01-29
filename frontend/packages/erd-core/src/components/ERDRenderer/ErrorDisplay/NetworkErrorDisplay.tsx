@@ -1,3 +1,4 @@
+import { InfoIcon } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './NetworkErrorDisplay.module.css'
 
@@ -14,8 +15,13 @@ export const NetworkErrorDisplay: FC<Props> = ({ errors }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.message1}>
-        <div className={styles.message1Title}>
-          Oh no! We’ve encountered some NetworkErrors 🛸💫
+        <div className={styles.message1TitleWrapper}>
+          <div className={styles.iconWrapper}>
+            <InfoIcon color="var(--callout-warning-text)" />
+          </div>
+          <div className={styles.message1Title}>
+            Oh no! We’ve encountered some NetworkErrors 🛸💫
+          </div>
         </div>
 
         {errors[0] && (
