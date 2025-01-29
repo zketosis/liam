@@ -21,6 +21,10 @@ const formatMap: Record<string, string> = {
   'Ruby on Rails (schema.rb)': 'schemarb',
   'Prisma (schema.prisma)': 'prisma',
   Drizzle: 'postgresql', // Drizzle also uses --format postgres
+  'MySQL (via tbls)': 'tbls',
+  'SQLite (via tbls)': 'tbls',
+  'BigQuery (via tbls)': 'tbls',
+  tbls: 'tbls',
 }
 
 initCommand.action(async () => {
@@ -35,7 +39,7 @@ We’re continuously improving it. Don’t forget to run \`npx @liam-hq/cli init
 💡 Have feedback? Share it with us!
 Visit ${yocto.blueBright(DiscussionUrl)} to submit ideas or report issues.
 
-🌟️ ${yocto.bold('Love Liam ERD')}? Help us grow by starring our GitHub repository:  
+🌟️ ${yocto.bold('Love Liam ERD')}? Help us grow by starring our GitHub repository:
 ${yocto.blueBright(RepositoryUrl)}
 
 ----
@@ -55,7 +59,11 @@ Now, let’s get started with setting up your Liam ERD project.
         'Ruby on Rails (schema.rb)',
         'Prisma (schema.prisma)',
         'Drizzle',
-        'Others (MySQL, SQLite, etc.)',
+        'tbls',
+        'MySQL (via tbls)',
+        'SQLite (via tbls)',
+        'BigQuery (via tbls)',
+        'Others',
       ],
       default: 'PostgreSQL',
     },
@@ -66,6 +74,7 @@ Now, let’s get started with setting up your Liam ERD project.
   //
   let inputFilePath = ''
   let cannotSupportNow = false
+  const tblsInstruction = '   $ tbls out -t json -o schema.json'
 
   if (dbOrOrm === 'PostgreSQL') {
     // Ask if pg_dump .sql can be used
@@ -118,7 +127,39 @@ ${yocto.yellow(
     } else {
       cannotSupportNow = true
     }
-  } else if (dbOrOrm === 'Others (MySQL, SQLite, etc.)') {
+  } else if (dbOrOrm === 'tbls') {
+    const { schemaFilePath } = await inquirer.prompt<{
+      schemaFilePath: string
+    }>([
+      {
+        type: 'input',
+        name: 'schemaFilePath',
+        message:
+          'What is the path to the schema.json file? (It is located in the output directory of the tbls doc)',
+        default: 'docs/schema.json',
+      },
+    ])
+    inputFilePath = schemaFilePath
+  } else if (dbOrOrm.includes('(via tbls)')) {
+    console.info(`
+${yocto.yellow("Note: Direct support is not available yet. You'll need to use tbls as a bridge.")}
+
+To use tbls with Liam ERD:
+
+1. Install tbls from: https://github.com/k1LoW/tbls?tab=readme-ov-file#install
+
+2. Generate a schema.json file using tbls:
+
+${yocto.blueBright(tblsInstruction)}
+
+For more details about using tbls with Liam ERD, see:
+${yocto.blueBright(`${DocsUrl}/parser/supported-formats/tbls`)}
+
+Want direct support without using tbls? Let us know at:
+${yocto.blueBright(DbOrmDiscussionUrl)}
+`)
+    inputFilePath = 'schema.json'
+  } else if (dbOrOrm === 'Others') {
     cannotSupportNow = true
   } else {
     // For Rails/Prisma, we do ask for the schema file path
@@ -183,13 +224,23 @@ ${yocto.blueBright(DocsUrl)}
   // Next Steps
   //
   console.info('\n--- Next Steps ---')
+  let stepNum = 1
 
-  if (dbOrOrm === 'Drizzle' && !inputFilePath) {
+  if (dbOrOrm.includes('(via tbls)')) {
+    console.info(`${stepNum}) Generate schema.json using tbls:`)
+    stepNum++
+    console.info(`${yocto.blueBright(tblsInstruction)}
+
+${stepNum}) Build your ERD using the generated schema.json:
+${yocto.blueBright('   $ npx @liam-hq/cli erd build --input schema.json --format tbls')}`)
+    stepNum++
+  } else if (dbOrOrm === 'Drizzle' && !inputFilePath) {
     // If user is using Drizzle but didn't specify any input file,
     // advise them to eventually produce a dump file.
     console.info(
-      '1) After you generate a dump file via pg_dump --schema-only, run:',
+      `${stepNum}) After you generate a dump file via pg_dump --schema-only, run:`,
     )
+    stepNum++
     console.info(
       yocto.blueBright(
         '   $ npx @liam-hq/cli erd build --input <schema.sql> --format postgresql',
@@ -197,8 +248,9 @@ ${yocto.blueBright(DocsUrl)}
     )
   } else if (inputFilePath) {
     console.info(
-      '1) Build your ERD from the specified file using the following command:',
+      `${stepNum}) Build your ERD from the specified file using the following command:`,
     )
+    stepNum++
     console.info(
       yocto.blueBright(
         `   $ npx @liam-hq/cli erd build --input ${inputFilePath} --format ${selectedFormat}`,
@@ -207,8 +259,9 @@ ${yocto.blueBright(DocsUrl)}
   } else {
     // If the user didn't specify a dump file (e.g., said "No" to pg_dump)
     console.info(
-      '1) Once you generate a dump file, build your ERD using the following command:',
+      `${stepNum}) Once you generate a dump file, build your ERD using the following command:`,
     )
+    stepNum++
     console.info(
       yocto.blueBright(
         '   $ npx @liam-hq/cli erd build --input <schema.sql> --format postgresql',
@@ -216,7 +269,9 @@ ${yocto.blueBright(DocsUrl)}
     )
   }
 
-  console.info('\n2) Start your favorite httpd for serving dist. e.g.:')
+  console.info(
+    `\n${stepNum}) Start your favorite httpd for serving dist. e.g.:`,
+  )
   console.info(yocto.blueBright('   $ npx http-server dist'))
 
   //
@@ -225,6 +280,18 @@ ${yocto.blueBright(DocsUrl)}
   if (addGhActions) {
     // The user might not have a path if they chose "No" to pg_dump or if Drizzle was chosen
     const effectivePath = inputFilePath || '<schema.sql>'
+    let setupSteps = ''
+
+    if (dbOrOrm.includes('(via tbls)')) {
+      setupSteps = `
+      - name: Setup tbls
+        uses: k1low/setup-tbls@v1
+
+      - name: Generate schema.json
+        run: tbls out -t json -o schema.json
+`
+    }
+
     const workflowContent = `name: ERD Build
 on:
   push:
@@ -235,9 +302,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+${setupSteps}
       - name: Generate ER Diagrams
         run: npx @liam-hq/cli erd build --input ${effectivePath} --format ${selectedFormat}
-    
+
     # - Next step: Deploy ERD \`./dist\` to your preferred hosting service for easy sharing and access.
 `
 
