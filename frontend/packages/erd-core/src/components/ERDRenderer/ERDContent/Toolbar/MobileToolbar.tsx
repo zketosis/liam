@@ -7,7 +7,7 @@ import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
 import { useReactFlow, useStore } from '@xyflow/react'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { type FC, useCallback } from 'react'
 import { FitviewButton } from './FitviewButton'
 import styles from './MobileToolbar.module.css'
@@ -22,6 +22,15 @@ export const MobileToolbar: FC = () => {
     setIsOpen((prev) => !prev)
     setHasInteracted(true)
   }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setHasInteracted(false)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const zoomLevel = useStore((store) => store.transform[2])
   const { zoomIn, zoomOut } = useReactFlow()
@@ -57,7 +66,8 @@ export const MobileToolbar: FC = () => {
   return (
     <ToolbarPrimitive.Root
       className={clsx(styles.root, {
-        [styles.open]: isOpen,
+        [styles.open]: hasInteracted && isOpen,
+        [styles.initialOpen]: !hasInteracted && isOpen,
         [styles.closed]: hasInteracted && !isOpen,
         [styles.initial]: !hasInteracted && !isOpen,
       })}
