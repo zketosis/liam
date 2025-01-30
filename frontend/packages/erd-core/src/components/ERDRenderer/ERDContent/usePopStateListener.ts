@@ -23,12 +23,12 @@ export const usePopStateListener = () => {
       await new Promise<void>((resolve) => {
         updateActiveTableName(tableName ?? undefined)
         updateShowMode(showMode)
-        setTimeout(resolve, 0)
+        setTimeout(resolve, 1)
       })
 
       await new Promise<void>((resolve) => {
         replaceHiddenNodeIds(hiddenNodeIds)
-        setTimeout(resolve, 0)
+        setTimeout(resolve, 1)
       })
 
       updateIsPopstateInProgress(false)
