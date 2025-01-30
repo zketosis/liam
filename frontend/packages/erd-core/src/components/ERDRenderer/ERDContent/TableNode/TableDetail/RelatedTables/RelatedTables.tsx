@@ -7,17 +7,11 @@ import {
   useDBStructureStore,
 } from '@/stores'
 import type { Table } from '@liam-hq/db-structure'
-import {
-  ChevronDown,
-  ChevronUp,
-  GotoIcon,
-  IconButton,
-  Waypoints as WaypointsIcon,
-} from '@liam-hq/ui'
+import { GotoIcon, IconButton, Waypoints as WaypointsIcon } from '@liam-hq/ui'
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
-import clsx from 'clsx'
-import { type FC, type MouseEvent, useCallback, useState } from 'react'
+import { type FC, type MouseEvent, useCallback } from 'react'
 import { ERDContent } from '../../../ERDContent'
+import { CollapsibleHeader } from '../CollapsibleHeader'
 import styles from './RelatedTables.module.css'
 import { extractDBStructureForTable } from './extractDBStructureForTable'
 
@@ -55,45 +49,22 @@ export const RelatedTables: FC<Props> = ({ table }) => {
     },
     [nodes, getNodes, table.name, version],
   )
-  const [isClosed, setIsClosed] = useState(false)
-  const handleClose = (event: MouseEvent) => {
-    event.stopPropagation()
-    setIsClosed(!isClosed)
-  }
-  const handleKeyDown = (event: { key: string }) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      setIsClosed(!isClosed)
-    }
-  }
 
   return (
-    <>
-      <div
-        className={styles.header}
-        // biome-ignore lint/a11y/useSemanticElements: Implemented with div button to be button in button
-        role="button"
-        tabIndex={0}
-        onClick={handleClose}
-        onKeyDown={handleKeyDown}
-      >
-        <div className={styles.iconTitleContainer}>
-          <WaypointsIcon width={12} />
-          <h2 className={styles.heading}>Related tables</h2>
-        </div>
-        <div className={styles.iconContainer}>
-          <IconButton
-            icon={<GotoIcon />}
-            tooltipContent="Open in main area"
-            onClick={handleClick}
-          />
-          <IconButton
-            icon={isClosed ? <ChevronDown /> : <ChevronUp />}
-            tooltipContent={isClosed ? 'Open' : 'Close'}
-            onClick={handleClose}
-          />
-        </div>
-      </div>
-      <div className={clsx(!isClosed && styles.visible, styles.outerWrapper)}>
+    <CollapsibleHeader
+      title="Related tables"
+      icon={<WaypointsIcon width={12} />}
+      isContentVisible={true}
+      // NOTE: Header height for Columns/Indices/Unique sections:
+      // (40px (content) + 1px (borders)) * 3 = 123px
+      stickyTopHeight={123}
+      additionalButtons=<IconButton
+        icon={<GotoIcon />}
+        tooltipContent="Open in main area"
+        onClick={handleClick}
+      />
+    >
+      <div className={styles.outerWrapper}>
         <div className={styles.contentWrapper}>
           <ReactFlowProvider>
             <ERDContent
@@ -107,6 +78,6 @@ export const RelatedTables: FC<Props> = ({ table }) => {
           </ReactFlowProvider>
         </div>
       </div>
-    </>
+    </CollapsibleHeader>
   )
 }

@@ -1,7 +1,8 @@
 import type { Columns } from '@liam-hq/db-structure'
-import { ChevronDown, ChevronUp, Fingerprint, IconButton } from '@liam-hq/ui'
+import { Fingerprint } from '@liam-hq/ui'
 import clsx from 'clsx'
-import { type FC, type MouseEvent, useState } from 'react'
+import type { FC } from 'react'
+import { CollapsibleHeader } from '../CollapsibleHeader'
 import styles from './Unique.module.css'
 
 type Props = {
@@ -9,39 +10,16 @@ type Props = {
 }
 
 export const Unique: FC<Props> = ({ columns }) => {
-  const [isClosed, setIsClosed] = useState(false)
-  const handleClose = (event: MouseEvent) => {
-    event.stopPropagation()
-    setIsClosed(!isClosed)
-  }
-  const handleKeyDown = (event: { key: string }) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      setIsClosed(!isClosed)
-    }
-  }
-
   return (
-    <>
-      <div
-        className={styles.header}
-        // biome-ignore lint/a11y/useSemanticElements: Implemented with div button to be button in button
-        role="button"
-        tabIndex={0}
-        onClick={handleClose}
-        onKeyDown={handleKeyDown}
-      >
-        <div className={styles.iconTitleContainer}>
-          <Fingerprint width={12} />
-          <h2 className={styles.heading}>Unique</h2>
-        </div>
-        <IconButton
-          icon={isClosed ? <ChevronDown /> : <ChevronUp />}
-          tooltipContent={isClosed ? 'Open' : 'Close'}
-          onClick={handleClose}
-        />
-      </div>
-
-      <div className={clsx(!isClosed && styles.visible, styles.listWrapper)}>
+    <CollapsibleHeader
+      title="Unique"
+      icon={<Fingerprint width={12} />}
+      isContentVisible={true}
+      // NOTE: Header height for Columns/Indices sections:
+      // (40px (content) + 1px (borders)) * 2 = 82px
+      stickyTopHeight={82}
+    >
+      <div className={clsx(styles.listWrapper)}>
         <ul className={styles.list}>
           {Object.entries(columns).map(([key, column]) => {
             if (!column.unique) return null
@@ -53,6 +31,6 @@ export const Unique: FC<Props> = ({ columns }) => {
           })}
         </ul>
       </div>
-    </>
+    </CollapsibleHeader>
   )
 }

@@ -7,13 +7,11 @@
   border-bottom: 1px solid var(--global-border);
   background-color: var(--pane-background);
   cursor: pointer;
-  transition: top 1s ease, position 1s ease;
 }
 
 @media screen and (max-width: 767px) {
   .header {
     position: sticky;
-    top: 0;
   }
   .header[data-state='closed'] {
     position: relative;
@@ -31,7 +29,7 @@
 
 .heading {
   color: var(--global-foreground);
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-3);
   font-style: normal;
   line-height: normal;
 }
