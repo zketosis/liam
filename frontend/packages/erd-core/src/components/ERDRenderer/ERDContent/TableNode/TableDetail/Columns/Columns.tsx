@@ -35,6 +35,7 @@ export const Columns: FC<Props> = ({ columns }) => {
         tabIndex={0}
         onClick={handleClose}
         onKeyDown={handleKeyDown}
+        data-state={isClosed ? 'closed' : 'open'}
       >
         <div className={styles.iconTitleContainer}>
           <Rows3Icon width={12} />

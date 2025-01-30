@@ -5,7 +5,16 @@
   justify-content: space-between;
   padding: var(--spacing-2);
   border-bottom: 1px solid var(--global-border);
+  background-color: var(--pane-background);
   cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+  .header {
+    position: sticky;
+    /* Columns section header height */
+    top: 41px;
+  }
 }
 
 .iconTitleContainer {
