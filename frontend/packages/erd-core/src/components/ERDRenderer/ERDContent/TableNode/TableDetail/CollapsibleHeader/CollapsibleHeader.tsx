@@ -1,5 +1,4 @@
 import { ChevronDown, ChevronUp, IconButton } from '@liam-hq/ui'
-import clsx from 'clsx'
 import type React from 'react'
 import { type MouseEvent, useState } from 'react'
 import styles from './CollapsibleHeader.module.css'
@@ -10,6 +9,7 @@ type CollapsibleHeaderProps = {
   children: React.ReactNode
   isContentVisible: boolean
   stickyTopHeight: number
+  contentMaxHeight: number
   additionalButtons?: React.ReactNode
 }
 
@@ -19,6 +19,7 @@ export const CollapsibleHeader: React.FC<CollapsibleHeaderProps> = ({
   children,
   isContentVisible,
   stickyTopHeight,
+  contentMaxHeight,
   additionalButtons,
 }) => {
   const [isClosed, setIsClosed] = useState(!isContentVisible)
@@ -60,7 +61,10 @@ export const CollapsibleHeader: React.FC<CollapsibleHeaderProps> = ({
           />
         </div>
       </div>
-      <div className={clsx(styles.content, { [styles.visible]: !isClosed })}>
+      <div
+        className={styles.content}
+        style={{ maxHeight: isClosed ? '0' : `${contentMaxHeight}px` }}
+      >
         {children}
       </div>
     </>

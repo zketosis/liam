@@ -58,6 +58,8 @@ export const RelatedTables: FC<Props> = ({ table }) => {
       // NOTE: Header height for Columns/Indices/Unique sections:
       // (40px (content) + 1px (borders)) * 3 = 123px
       stickyTopHeight={123}
+      // NOTE: 360px is the height of the content
+      contentMaxHeight={360}
       additionalButtons=<IconButton
         icon={<GotoIcon />}
         tooltipContent="Open in main area"

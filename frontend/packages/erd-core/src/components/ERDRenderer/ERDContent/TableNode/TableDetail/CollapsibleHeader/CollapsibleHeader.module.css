@@ -41,13 +41,8 @@
   align-items: center;
 }
 
-.content.visible {
-  max-height: max-content;
-  overflow: hidden;
-  transition: max-height 0.1s var(animation-timing-function);
-}
-
 .content {
   max-height: 0;
   overflow: hidden;
+  transition: max-height 0.1s var(--default-timing-function);
 }

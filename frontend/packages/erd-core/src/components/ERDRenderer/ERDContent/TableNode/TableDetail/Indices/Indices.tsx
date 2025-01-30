@@ -10,6 +10,10 @@ type Props = {
 }
 
 export const Indices: FC<Props> = ({ indices }) => {
+  // NOTE: 17px is the height of one item in the list
+  // 24px is the padding of the list
+  // 1px is the border of the list
+  const contentMaxHeight = Object.keys(indices).length * 17 + 24 + 1
   return (
     <CollapsibleHeader
       title="Indices"
@@ -18,6 +22,7 @@ export const Indices: FC<Props> = ({ indices }) => {
       // NOTE: Header height for Columns section:
       // 40px (content) + 1px (border) = 41px
       stickyTopHeight={41}
+      contentMaxHeight={contentMaxHeight}
     >
       {Object.keys(indices).length !== 0 && (
         <div className={clsx(styles.listWrapper)}>
