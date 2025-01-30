@@ -43,14 +43,17 @@ subscribe(userEditingStore.hiddenNodeIds, async () => {
   const url = new URL(window.location.href)
   const activeQueryParam: QueryParam = 'hidden'
   const hiddenNodeIds = Array.from(userEditingStore.hiddenNodeIds).join(',')
-
+  const isPopstateInProgress = userEditingStore.isPopstateInProgress
   url.searchParams.delete(activeQueryParam)
+
   if (hiddenNodeIds) {
     const compressed = await compressToEncodedURIComponent(hiddenNodeIds)
     url.searchParams.set(activeQueryParam, compressed)
   }
 
-  window.history.pushState({}, '', url)
+  if (!isPopstateInProgress) {
+    window.history.pushState({}, '', url)
+  }
 })
 
 subscribeKey(userEditingStore, 'showMode', (newShowMode) => {

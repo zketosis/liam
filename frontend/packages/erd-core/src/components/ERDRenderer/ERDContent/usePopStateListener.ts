@@ -1,30 +1,37 @@
-import { showModeSchema } from '@/schemas/showMode'
 import {
+  replaceHiddenNodeIds,
   updateActiveTableName,
   updateIsPopstateInProgress,
   updateShowMode,
 } from '@/stores'
+import {
+  getActiveTableNameFromUrl,
+  getHiddenNodeIdsFromUrl,
+  getShowModeFromUrl,
+} from '@/utils'
 import { useEffect } from 'react'
-import * as v from 'valibot'
 
 export const usePopStateListener = () => {
   useEffect(() => {
     const handlePopState = async () => {
-      const url = new URL(window.location.href)
-      const tableName = url.searchParams.get('active')
-      const showMode = url.searchParams.get('showMode')
+      const tableName = getActiveTableNameFromUrl()
+      const showMode = getShowModeFromUrl()
+      const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
 
       updateIsPopstateInProgress(true)
-      updateActiveTableName(tableName ?? undefined)
 
-      const result = v.safeParse(showModeSchema, showMode)
-      if (result.success && result.output) {
-        updateShowMode(result.output)
-      }
+      await new Promise<void>((resolve) => {
+        updateActiveTableName(tableName ?? undefined)
+        updateShowMode(showMode)
+        setTimeout(resolve, 1)
+      })
 
-      setTimeout(() => {
-        updateIsPopstateInProgress(false)
-      }, 0)
+      await new Promise<void>((resolve) => {
+        replaceHiddenNodeIds(hiddenNodeIds)
+        setTimeout(resolve, 1)
+      })
+
+      updateIsPopstateInProgress(false)
     }
 
     window.addEventListener('popstate', handlePopState)
