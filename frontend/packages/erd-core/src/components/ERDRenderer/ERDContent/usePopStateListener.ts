@@ -19,13 +19,19 @@ export const usePopStateListener = () => {
       const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
 
       updateIsPopstateInProgress(true)
-      updateActiveTableName(tableName ?? undefined)
-      replaceHiddenNodeIds(hiddenNodeIds)
-      updateShowMode(showMode)
 
-      setTimeout(() => {
-        updateIsPopstateInProgress(false)
-      }, 0)
+      await new Promise<void>((resolve) => {
+        updateActiveTableName(tableName ?? undefined)
+        updateShowMode(showMode)
+        setTimeout(resolve, 0)
+      })
+
+      await new Promise<void>((resolve) => {
+        replaceHiddenNodeIds(hiddenNodeIds)
+        setTimeout(resolve, 0)
+      })
+
+      updateIsPopstateInProgress(false)
     }
 
     window.addEventListener('popstate', handlePopState)
