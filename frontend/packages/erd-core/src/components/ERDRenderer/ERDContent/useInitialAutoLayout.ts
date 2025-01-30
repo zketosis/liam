@@ -21,7 +21,7 @@ const getActiveTableNameFromUrl = (): string | undefined => {
   return tableName || undefined
 }
 
-const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
+export const getHiddenNodeIdsFromUrl = async (): Promise<string[]> => {
   const urlParams = new URLSearchParams(window.location.search)
   const hiddenQueryParam: QueryParam = 'hidden'
   const compressed = urlParams.get(hiddenQueryParam)
