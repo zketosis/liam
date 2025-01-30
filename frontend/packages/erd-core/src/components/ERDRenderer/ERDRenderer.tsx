@@ -11,10 +11,10 @@ import { toggleLogEvent } from '@/features/gtm/utils'
 import { useVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
 import { CardinalityMarkers } from './CardinalityMarkers'
-import { Toolbar } from './ERDContent'
 import { ErrorDisplay } from './ErrorDisplay'
 import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker'
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
+import { Toolbar } from './Toolbar'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 type ErrorObject = {
