@@ -59,9 +59,12 @@ subscribe(userEditingStore.hiddenNodeIds, async () => {
 subscribeKey(userEditingStore, 'showMode', (newShowMode) => {
   const url = new URL(window.location.href)
   const showModeQueryParam: QueryParam = 'showMode'
+  const isPopstateInProgress = userEditingStore.isPopstateInProgress
 
   if (newShowMode) {
     url.searchParams.set(showModeQueryParam, newShowMode)
-    window.history.pushState({}, '', url)
+    if (!isPopstateInProgress) {
+      window.history.pushState({}, '', url)
+    }
   }
 })
