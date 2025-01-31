@@ -1,4 +1,3 @@
-import { InfoIcon } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './ParseErrorDisplay.module.css'
 
@@ -15,13 +14,8 @@ export const ParseErrorDisplay: FC<Props> = ({ errors }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.message1}>
-        <div className={styles.message1TitleWrapper}>
-          <div className={styles.iconWrapper}>
-            <InfoIcon color="var(--callout-warning-text)" />
-          </div>
-          <div className={styles.message1Title}>
-            Oh no! We’ve encountered some errors 🛸💫
-          </div>
+        <div className={styles.message1Title}>
+          Oh no! We’ve encountered some errors 🛸💫
         </div>
 
         {errors[0] && (
