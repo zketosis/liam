@@ -80,6 +80,10 @@
   background: var(--pane-background-hover);
 }
 
+.sidebarMenuButton:focus-visible {
+  outline: 1px solid var(--primary-color);
+}
+
 .sidebarMenuAction {
   position: absolute;
   top: 0;
