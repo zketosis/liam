@@ -22,6 +22,12 @@ export const userEditingStore = proxy<UserEditingStore>({
   isPopstateInProgress: false,
 })
 
+const pushStateIfNeeded = (url: URL, isPopstateInProgress: boolean) => {
+  if (!isPopstateInProgress) {
+    window.history.pushState({}, '', url)
+  }
+}
+
 subscribe(userEditingStore.active, () => {
   const newTableName = userEditingStore.active.tableName
   const isPopstateInProgress = userEditingStore.isPopstateInProgress
@@ -34,9 +40,7 @@ subscribe(userEditingStore.active, () => {
     url.searchParams.delete(activeQueryParam)
   }
 
-  if (!isPopstateInProgress) {
-    window.history.pushState({}, '', url)
-  }
+  pushStateIfNeeded(url, isPopstateInProgress)
 })
 
 subscribe(userEditingStore.hiddenNodeIds, async () => {
@@ -51,17 +55,16 @@ subscribe(userEditingStore.hiddenNodeIds, async () => {
     url.searchParams.set(activeQueryParam, compressed)
   }
 
-  if (!isPopstateInProgress) {
-    window.history.pushState({}, '', url)
-  }
+  pushStateIfNeeded(url, isPopstateInProgress)
 })
 
 subscribeKey(userEditingStore, 'showMode', (newShowMode) => {
   const url = new URL(window.location.href)
   const showModeQueryParam: QueryParam = 'showMode'
+  const isPopstateInProgress = userEditingStore.isPopstateInProgress
 
   if (newShowMode) {
     url.searchParams.set(showModeQueryParam, newShowMode)
-    window.history.pushState({}, '', url)
+    pushStateIfNeeded(url, isPopstateInProgress)
   }
 })
