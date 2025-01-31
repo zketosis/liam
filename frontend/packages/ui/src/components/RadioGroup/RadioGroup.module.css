@@ -1,6 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
+  align-self: stretch;
 }
 
 .radioWrapper {
