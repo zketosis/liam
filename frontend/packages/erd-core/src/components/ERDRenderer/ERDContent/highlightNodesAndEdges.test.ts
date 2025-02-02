@@ -70,7 +70,10 @@ describe(highlightNodesAndEdges, () => {
 
       expect(updatedNodes).toEqual([
         aTableNode('users', {
-          data: aTableData('users', { isActiveHighlighted: true }),
+          data: aTableData('users', {
+            isActiveHighlighted: true,
+            isHighlighted: true,
+          }),
         }),
         aTableNode('posts', {
           data: aTableData('posts', {
@@ -97,7 +100,10 @@ describe(highlightNodesAndEdges, () => {
           }),
         }),
         aTableNode('posts', {
-          data: aTableData('posts', { isActiveHighlighted: true }),
+          data: aTableData('posts', {
+            isActiveHighlighted: true,
+            isHighlighted: true,
+          }),
         }),
         aTableNode('comments'),
         aTableNode('comment_users'),
@@ -155,7 +161,10 @@ describe(highlightNodesAndEdges, () => {
 
       expect(updatedNodes).toEqual([
         aTableNode('users', {
-          data: aTableData('users', { isActiveHighlighted: true }),
+          data: aTableData('users', {
+            isActiveHighlighted: true,
+            isHighlighted: true,
+          }),
         }),
         aTableNode('posts', {
           data: aTableData('posts', {

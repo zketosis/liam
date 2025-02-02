@@ -44,6 +44,7 @@ const activeHighlightNode = (node: TableNodeType): TableNodeType => ({
   data: {
     ...node.data,
     isActiveHighlighted: true,
+    isHighlighted: true,
   },
 })
 
