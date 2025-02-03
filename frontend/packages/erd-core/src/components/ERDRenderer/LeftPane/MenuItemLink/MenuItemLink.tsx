@@ -22,7 +22,7 @@ export const MenuItemLink: FC<Props> = ({
           className={styles.link}
           href={href}
           target={isExternalLink ? '_blank' : '_self'}
-          rel={isExternalLink ? 'noreferrer' : ''}
+          rel={'noreferrer'}
         >
           {icon}
           <span className={styles.label}>{label}</span>
