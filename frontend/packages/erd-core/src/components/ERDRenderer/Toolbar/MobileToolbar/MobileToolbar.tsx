@@ -1,7 +1,7 @@
 import { Ellipsis } from '@liam-hq/ui'
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FC } from 'react'
 import styles from './MobileToolbar.module.css'
 import { OpenedMobileToolbar } from './OpenedMobileToolbar'
@@ -10,6 +10,7 @@ import { ShowModeMenu } from './ShowModeMenu'
 export const MobileToolbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isShowModeMenu, setIsShowModeMenu] = useState(false)
+  const toolbarRef = useRef<HTMLDivElement>(null)
 
   const toggleOpenClose = () => {
     setIsOpen((prev) => !prev)
@@ -19,8 +20,31 @@ export const MobileToolbar: FC = () => {
     setIsShowModeMenu((prev) => !prev)
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) {
+        return
+      }
+
+      if (
+        toolbarRef.current &&
+        !toolbarRef.current.contains(event.target) &&
+        isOpen
+      ) {
+        setIsOpen(false)
+        setIsShowModeMenu(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
+
   return (
     <ToolbarPrimitive.Root
+      ref={toolbarRef}
       className={clsx(styles.root, {
         [styles.closed]: !isOpen,
         [styles.open]: isOpen && !isShowModeMenu,
