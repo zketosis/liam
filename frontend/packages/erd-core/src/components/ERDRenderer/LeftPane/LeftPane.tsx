@@ -34,6 +34,7 @@ const menuItemLinks: MenuItemLinkProps[] = [
   {
     label: 'Documentation',
     href: 'https://liambx.com/docs',
+    isExternalLink: true,
     icon: <BookText className={styles.icon} />,
   },
   {
@@ -45,6 +46,7 @@ const menuItemLinks: MenuItemLinkProps[] = [
   {
     label: 'Go to Homepage',
     href: 'https://liambx.com/',
+    isExternalLink: true,
     icon: <LiamLogoMark className={styles.icon} />,
   },
   {
