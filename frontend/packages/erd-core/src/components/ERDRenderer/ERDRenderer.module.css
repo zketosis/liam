@@ -62,4 +62,8 @@
   .main {
     overflow: hidden;
   }
+
+  .triggerWrapper {
+    display: none;
+  }
 }
