@@ -3,13 +3,9 @@ name: Common Steps
 on:
   workflow_call:
     inputs:
-      erd-web-url:
+      url:
         required: true
         type: string
-      cli-url:
-        required: true
-        type: string
-
 jobs:
   common-steps:
     runs-on: ubuntu-latest
@@ -32,8 +28,7 @@ jobs:
       - name: Run e2e tests
         run: pnpm test
         env:
-          ERD_WEB_URL: ${{ inputs.erd-web-url }}
-          CLI_URL: ${{ inputs.cli-url }}
+          URL: ${{ inputs.url }}
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

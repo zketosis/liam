@@ -48,4 +48,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/pnpm-setup
-      - run: pnpm test:turbo --filter='!./frontend/packages/e2e'
+      - run: pnpm test:turbo --filter='!@liam-hq/e2e'
