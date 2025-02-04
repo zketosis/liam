@@ -88,14 +88,13 @@ export const ERDRenderer: FC<Props> = ({
                   </>
                 )}
               </TableDetailDrawerRoot>
+              {errorObjects.length === 0 && (
+                <div className={styles.toolbarWrapper}>
+                  <Toolbar />
+                </div>
+              )}
             </main>
           </div>
-
-          {errorObjects.length === 0 && (
-            <div className={styles.toolbarWrapper}>
-              <Toolbar />
-            </div>
-          )}
         </ReactFlowProvider>
       </ToastProvider>
     </SidebarProvider>

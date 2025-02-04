@@ -5,6 +5,8 @@
   border-radius: var(--border-radius-lg);
   background-color: var(--pane-background);
   box-shadow: 0px 4px 20px 0px var(--shadow-basic-shadow);
+  position: relative;
+  bottom: 2rem;
 }
 
 @media screen and (min-width: 768px) {
