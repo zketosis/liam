@@ -1172,7 +1172,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@opentelemetry/context-async-hooks"></a>
-### @opentelemetry/context-async-hooks v1.30.0
+### @opentelemetry/context-async-hooks v1.30.1
 #### 
 
 ##### Paths
@@ -1480,7 +1480,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@opentelemetry/resources"></a>
-### @opentelemetry/resources v1.30.0
+### @opentelemetry/resources v1.30.1
 #### 
 
 ##### Paths
@@ -1491,7 +1491,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@opentelemetry/sdk-trace-base"></a>
-### @opentelemetry/sdk-trace-base v1.30.0
+### @opentelemetry/sdk-trace-base v1.30.1
 #### 
 
 ##### Paths
@@ -2250,7 +2250,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/browser-utils"></a>
-### @sentry-internal/browser-utils v8.47.0
+### @sentry-internal/browser-utils v8.49.0
 #### 
 
 ##### Paths
@@ -2261,7 +2261,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/feedback"></a>
-### @sentry-internal/feedback v8.47.0
+### @sentry-internal/feedback v8.49.0
 #### 
 
 ##### Paths
@@ -2272,7 +2272,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/replay"></a>
-### @sentry-internal/replay v8.47.0
+### @sentry-internal/replay v8.49.0
 #### 
 
 ##### Paths
@@ -2283,7 +2283,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/replay-canvas"></a>
-### @sentry-internal/replay-canvas v8.47.0
+### @sentry-internal/replay-canvas v8.49.0
 #### 
 
 ##### Paths
@@ -2305,7 +2305,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/browser"></a>
-### @sentry/browser v8.47.0
+### @sentry/browser v8.49.0
 #### 
 
 ##### Paths
@@ -2349,7 +2349,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/core"></a>
-### @sentry/core v8.47.0
+### @sentry/core v8.49.0
 #### 
 
 ##### Paths
@@ -2360,7 +2360,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/nextjs"></a>
-### @sentry/nextjs v8.47.0
+### @sentry/nextjs v8.49.0
 #### 
 
 ##### Paths
@@ -2371,7 +2371,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/node"></a>
-### @sentry/node v8.47.0
+### @sentry/node v8.49.0
 #### 
 
 ##### Paths
@@ -2382,7 +2382,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/opentelemetry"></a>
-### @sentry/opentelemetry v8.47.0
+### @sentry/opentelemetry v8.49.0
 #### 
 
 ##### Paths
@@ -2393,7 +2393,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/react"></a>
-### @sentry/react v8.47.0
+### @sentry/react v8.49.0
 #### 
 
 ##### Paths
@@ -2404,7 +2404,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/vercel-edge"></a>
-### @sentry/vercel-edge v8.47.0
+### @sentry/vercel-edge v8.49.0
 #### 
 
 ##### Paths
@@ -4685,7 +4685,7 @@ CC-BY-4.0 permitted
 
 
 <a name="cjs-module-lexer"></a>
-### cjs-module-lexer v1.4.1
+### cjs-module-lexer v1.4.3
 #### 
 
 ##### Paths
@@ -6467,7 +6467,7 @@ CC-BY-4.0 permitted
 
 
 <a name="fdir"></a>
-### fdir v6.4.2
+### fdir v6.4.3
 #### 
 
 ##### Paths
@@ -11135,7 +11135,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="require-in-the-middle"></a>
-### require-in-the-middle v7.4.0
+### require-in-the-middle v7.5.0
 #### 
 
 ##### Paths
