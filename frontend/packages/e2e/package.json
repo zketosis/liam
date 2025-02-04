@@ -13,6 +13,6 @@
     "fmt:biome": "biome check --write --unsafe .",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
-    "test": "playwright test"
+    "test:e2e": "playwright test"
   }
 }
