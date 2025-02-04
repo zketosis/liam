@@ -35,7 +35,6 @@ export const MobileToolbar: FC = () => {
         event.stopPropagation()
 
         setIsOpen(false)
-        setIsShowModeMenu(false)
       }
     }
 
