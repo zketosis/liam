@@ -3,7 +3,10 @@ name: Common Steps
 on:
   workflow_call:
     inputs:
-      url:
+      erd-web-url:
+        required: true
+        type: string
+      cli-url:
         required: true
         type: string
       working-directory:
@@ -32,12 +35,13 @@ jobs:
       - name: Run e2e tests
         run: pnpm test
         env:
-          URL: ${{ inputs.url }}
+          ERD_WEB_URL: ${{ inputs.erd-web-url }}
+          CLI_URL: ${{ inputs.cli-url }}
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-results
-          path: ${{ github.event.inputs.WORKING_DIRECTORY }}/test-results/
+          path: ${{ inputs.working-directory }}/test-results/
           retention-days: 30

@@ -36,16 +36,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  test-cli:
+  e2e-tests:
     needs: fetch-deployment-outputs
     uses: ./.github/workflows/_run_e2e_test.yml
     with:
-      url: ${{ needs.fetch-deployment-outputs.outputs.cli-url }}
       working-directory: 'frontend/packages/e2e'
-
-  test-erd-web:
-    needs: fetch-deployment-outputs
-    uses: ./.github/workflows/_run_e2e_test.yml
-    with:
-      url: ${{ needs.fetch-deployment-outputs.outputs.erd-web-url }}
-      working-directory: 'frontend/packages/e2e'
+      erd-web-url: ${{ needs.fetch-deployment-outputs.outputs.erd-web-url }}
+      cli-url: ${{ needs.fetch-deployment-outputs.outputs.cli-url }}
