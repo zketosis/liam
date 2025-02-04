@@ -8,8 +8,8 @@ type Props = {
 
 export const Comment: FC<Props> = ({ comment }) => {
   return (
-    <DrawerDescription className={styles.wrapper}>
-      <span className={styles.text}>{comment}</span>
-    </DrawerDescription>
+    <div className={styles.wrapper}>
+      <DrawerDescription className={styles.text}>{comment}</DrawerDescription>
+    </div>
   )
 }
