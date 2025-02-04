@@ -3,7 +3,7 @@
 
 ## Summary
 * 1011 MIT
-* 77 Apache 2.0
+* 80 Apache 2.0
 * 64 ISC
 * 27 Simplified BSD
 * 17 New BSD
@@ -1553,6 +1553,17 @@ LGPL-3.0-or-later permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@playwright/test"></a>
+### @playwright/test v1.50.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
 
 
 
@@ -10317,6 +10328,28 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="playwright"></a>
+### playwright v1.50.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="playwright-core"></a>
+### playwright-core v1.50.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
 
 
 
