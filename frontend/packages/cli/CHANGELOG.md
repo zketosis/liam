@@ -1,5 +1,22 @@
 # @liam-hq/cli
 
+## 0.3.3
+
+### Patch Changes
+
+- c69f975: 🚸 New Mobile Toolbar's `ShowModeMenu`
+- 0675da3: 💄Improve version display styling with flexbox alignment
+- f607e58: 🐛 Fix AppBar scrolling issue on mobile safari view
+- da96e73: ✨ Add close functionality for mobile toolbar when clicking outside
+- 5a9ffd4: 🔧Add ExternalLink flag to some LeftPane menu items
+- 232382c: 🎨 Hide Sidebar trigger at canvas on mobile view
+- 8a19c1e: 💄 Adjust UI of LeftPane on mobile widths
+- ad6e8bb: 🐛 Refactor ERD renderer toolbar positioning and visibility
+- 2403f2c: Fix sticky header z-index for Related Tables
+- d8c46c3: 💄 Refactor Comment component markup and styling
+- ec8d044: 🎨 Make SidebarFooter appear after scrolling when table list overflows
+- ba092dc: ➕ Bump _path-to-regexp_ from 0.1.10 to 0.1.12 along with a few other packages
+
 ## 0.3.2
 
 ### Patch Changes

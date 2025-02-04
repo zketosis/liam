@@ -1,5 +1,12 @@
 # @liam-hq/ui
 
+## 0.0.11
+
+### Patch Changes
+
+- c69f975: 🚸 New Mobile Toolbar's `ShowModeMenu`
+- 8a19c1e: 💄 Adjust UI of LeftPane on mobile widths
+
 ## 0.0.10
 
 ### Patch Changes
