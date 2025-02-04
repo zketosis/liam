@@ -9,16 +9,13 @@ on:
       cli-url:
         required: true
         type: string
-      working-directory:
-        required: false
-        type: string
 
 jobs:
   common-steps:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ inputs.working-directory }}
+        working-directory: 'frontend/packages/e2e'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,5 +40,5 @@ jobs:
         if: failure()
         with:
           name: test-results
-          path: ${{ inputs.working-directory }}/test-results/
+          path: frontend/packages/e2e/test-results/
           retention-days: 30

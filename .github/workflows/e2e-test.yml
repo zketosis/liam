@@ -7,10 +7,6 @@ on:
     types:
       - completed
 
-env:
-  CI: true
-  WORKING_DIRECTORY: .
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -40,6 +36,5 @@ jobs:
     needs: fetch-deployment-outputs
     uses: ./.github/workflows/_run_e2e_test.yml
     with:
-      working-directory: 'frontend/packages/e2e'
       erd-web-url: ${{ needs.fetch-deployment-outputs.outputs.erd-web-url }}
       cli-url: ${{ needs.fetch-deployment-outputs.outputs.cli-url }}
