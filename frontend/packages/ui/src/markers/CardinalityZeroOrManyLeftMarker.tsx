@@ -15,10 +15,10 @@ export const CardinalityZeroOrManyLeftMarker: FC<MarkerProps> = ({
       <defs>
         <marker
           id={id}
-          viewBox="0 -10 22 30"
-          markerWidth="22"
+          viewBox="0 -10 23.5 30"
+          markerWidth="23.5"
           markerHeight="30"
-          refX="0"
+          refX="1.5"
           refY="8"
           orient="auto"
           {...props}
