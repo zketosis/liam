@@ -1,4 +1,4 @@
-name: Common Steps
+name: Run E2E Test Common Steps
 
 on:
   workflow_call:
