@@ -33,7 +33,7 @@
 .toolbarWrapper {
   position: absolute;
   left: 0;
-  bottom: 2rem;
+  bottom: 0;
   right: 0;
   display: grid;
   justify-content: center;
@@ -46,19 +46,8 @@
 .toolbarWrapper > * {
   pointer-events: auto;
 }
-@media screen and (max-width: 768px) {
-  .toolbarWrapper {
-    transition: opacity 0.6s;
-    opacity: 1;
-    visibility: visible;
-  }
 
-  :global([data-state='expanded']) + .main .toolbarWrapper {
-    opacity: 0;
-    visibility: hidden;
-    width: 0;
-    margin: 0;
-  }
+@media screen and (max-width: 768px) {
   .main {
     overflow: hidden;
   }
