@@ -39,7 +39,7 @@ export const CardinalityZeroOrOneLeftMarker: FC<MarkerProps> = ({
             d="M16 2.83008C16.2761 2.83008 16.5 3.05394 16.5 3.33008V12.6634C16.5 12.9396 16.2761 13.1634 16 13.1634C15.7239 13.1634 15.5 12.9396 15.5 12.6634V3.33008C15.5 3.05394 15.7239 2.83008 16 2.83008Z"
             fill="currentColor"
           />
-          <path d="M23.5 7.7002H11V8.7002H23.5V7.7002Z" fill="currentColor" />
+          <path d="M23.5 7.5H11V8.5H23.5V7.5Z" fill="currentColor" />
           {isHighlighted && (
             <text
               x="6"
