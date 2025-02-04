@@ -39,16 +39,16 @@
   }
 }
 
-.footerControls {
+.contentControls {
   padding: var(--spacing-2) 0;
-  border-bottom: solid 1px var(--global-border);
+  border-block: 1px solid var(--global-border);
 
   @media (min-width: 768px) {
     display: none;
   }
 }
 
-.footerLinks {
+.contentLinks {
   padding: var(--spacing-1) 0;
 
   @media (min-width: 768px) {

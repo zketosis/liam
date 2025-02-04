@@ -96,6 +96,23 @@ export const LeftPane = () => {
                 <TableNameMenuButton key={node.id} node={node} />
               ))}
             </SidebarMenu>
+
+            <SidebarMenu className={styles.contentControls}>
+              <CopyLinkButton />
+            </SidebarMenu>
+
+            <SidebarMenu className={styles.contentLinks}>
+              {menuItemLinks.map((item) => (
+                <MenuItemLink {...item} key={item.label} />
+              ))}
+              <SidebarMenuItem className={styles.versionWrapper}>
+                <div className={styles.version}>
+                  <span
+                    className={styles.versionText}
+                  >{`${version.version} + ${version.gitHash.slice(0, 7)} (${version.date})`}</span>
+                </div>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -104,21 +121,6 @@ export const LeftPane = () => {
         <div className={styles.tableCounterWrapper}>
           <TableCounter allCount={allCount} visibleCount={visibleCount} />
         </div>
-        <SidebarMenu className={styles.footerControls}>
-          <CopyLinkButton />
-        </SidebarMenu>
-        <SidebarMenu className={styles.footerLinks}>
-          {menuItemLinks.map((item) => (
-            <MenuItemLink {...item} key={item.label} />
-          ))}
-          <SidebarMenuItem className={styles.versionWrapper}>
-            <div className={styles.version}>
-              <span
-                className={styles.versionText}
-              >{`${version.version} + ${version.gitHash.slice(0, 7)} (${version.date})`}</span>
-            </div>
-          </SidebarMenuItem>
-        </SidebarMenu>
       </SidebarFooter>
 
       <SidebarRail />
