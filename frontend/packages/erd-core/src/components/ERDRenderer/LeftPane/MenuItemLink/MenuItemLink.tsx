@@ -5,14 +5,16 @@ import styles from './MenuItemLink.module.css'
 export type Props = {
   label: string
   href: string
-  isExternalLink?: boolean
+  target: '_self' | '_blank'
+  noreferrer: boolean
   icon: ReactNode
 }
 
 export const MenuItemLink: FC<Props> = ({
   label,
   href,
-  isExternalLink,
+  target,
+  noreferrer,
   icon,
 }) => {
   return (
@@ -21,8 +23,8 @@ export const MenuItemLink: FC<Props> = ({
         <a
           className={styles.link}
           href={href}
-          target={isExternalLink ? '_blank' : '_self'}
-          rel={'noreferrer'}
+          target={target}
+          rel={noreferrer ? 'noreferrer' : undefined}
         >
           {icon}
           <span className={styles.label}>{label}</span>
