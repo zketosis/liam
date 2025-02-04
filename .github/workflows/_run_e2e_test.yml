@@ -1,0 +1,43 @@
+name: Common Steps
+
+on:
+  workflow_call:
+    inputs:
+      url:
+        required: true
+        type: string
+      working-directory:
+        required: false
+        type: string
+
+jobs:
+  common-steps:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: ./.github/actions/pnpm-setup
+
+      - name: Configure Git safe directory
+        run: git config --global --add safe.directory /__w/liam/liam
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run e2e tests
+        run: pnpm test
+        env:
+          URL: ${{ inputs.url }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-results
+          path: ${{ github.event.inputs.WORKING_DIRECTORY }}/test-results/
+          retention-days: 30
