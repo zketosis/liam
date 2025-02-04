@@ -67,7 +67,8 @@
 }
 
 .version {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: var(--spacing-1) var(--spacing-2);
   border-radius: var(--border-radius-full);
   background: var(--pane-muted-background);
