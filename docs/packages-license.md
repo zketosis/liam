@@ -12998,7 +12998,7 @@ Unknown manually approved
 
 
 <a name="vite"></a>
-### vite v5.4.10
+### vite v5.4.12
 #### 
 
 ##### Paths
