@@ -24,41 +24,49 @@ import { MenuItemLink, type Props as MenuItemLinkProps } from './MenuItemLink'
 import { TableCounter } from './TableCounter'
 import { TableNameMenuButton } from './TableNameMenuButton'
 
-const menuItemLinks: MenuItemLinkProps[] = [
-  {
-    label: 'Release Notes',
-    href: 'https://github.com/liam-hq/liam/releases',
-    isExternalLink: true,
-    icon: <Megaphone className={styles.icon} />,
-  },
-  {
-    label: 'Documentation',
-    href: 'https://liambx.com/docs',
-    isExternalLink: true,
-    icon: <BookText className={styles.icon} />,
-  },
-  {
-    label: 'Community Forum',
-    href: 'https://github.com/liam-hq/liam/discussions',
-    isExternalLink: true,
-    icon: <MessagesSquare className={styles.icon} />,
-  },
-  {
-    label: 'Go to Homepage',
-    href: 'https://liambx.com/',
-    isExternalLink: true,
-    icon: <LiamLogoMark className={styles.icon} />,
-  },
-  {
-    label: 'Go to GitHub',
-    href: 'https://github.com/liam-hq/liam',
-    isExternalLink: true,
-    icon: <GithubLogo className={styles.icon} />,
-  },
-]
-
 export const LeftPane = () => {
   const { version } = useVersion()
+
+  const menuItemLinks = useMemo(
+    (): MenuItemLinkProps[] => [
+      {
+        label: 'Release Notes',
+        href: 'https://github.com/liam-hq/liam/releases',
+        noreferrer: true,
+        target: '_blank',
+        icon: <Megaphone className={styles.icon} />,
+      },
+      {
+        label: 'Documentation',
+        href: 'https://liambx.com/docs',
+        noreferrer: version.displayedOn === 'cli',
+        target: '_blank',
+        icon: <BookText className={styles.icon} />,
+      },
+      {
+        label: 'Community Forum',
+        href: 'https://github.com/liam-hq/liam/discussions',
+        noreferrer: true,
+        target: '_blank',
+        icon: <MessagesSquare className={styles.icon} />,
+      },
+      {
+        label: 'Go to Homepage',
+        href: 'https://liambx.com/',
+        noreferrer: version.displayedOn === 'cli',
+        target: '_blank',
+        icon: <LiamLogoMark className={styles.icon} />,
+      },
+      {
+        label: 'Go to GitHub',
+        href: 'https://github.com/liam-hq/liam',
+        noreferrer: true,
+        target: '_blank',
+        icon: <GithubLogo className={styles.icon} />,
+      },
+    ],
+    [version.displayedOn],
+  )
 
   const nodes = useNodes()
   const tableNodes = useMemo(() => {
