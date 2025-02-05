@@ -7,6 +7,7 @@ import { ParseErrorDisplay } from './ParseErrorDisplay'
 type ErrorObject = {
   name: string
   message: string
+  instruction?: string
 }
 
 type Props = {
@@ -18,15 +19,15 @@ export const ErrorDisplay: FC<Props> = ({ errors }) => {
   if (!error) return <></>
   return (
     <div className={styles.wrapper}>
-      <div className={styles.main}>
-        <div className={styles.iconWrapper}>
-          <InfoIcon color="var(--callout-warning-text)" />
+      {error.name !== 'NetworkError' && (
+        <div className={styles.main}>
+          <div className={styles.iconWrapper}>
+            <InfoIcon color="var(--callout-warning-text)" />
+          </div>
+          <ParseErrorDisplay errors={errors} />
         </div>
-        {error.name === 'NetworkError' && (
-          <NetworkErrorDisplay errors={errors} />
-        )}
-        {error.name !== 'NetworkError' && <ParseErrorDisplay errors={errors} />}
-      </div>
+      )}
+      {error.name === 'NetworkError' && <NetworkErrorDisplay errors={errors} />}
     </div>
   )
 }

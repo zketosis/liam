@@ -91,31 +91,40 @@ export default async function Page({
   const blankDbStructure = { tables: {}, relationships: {} }
 
   const contentUrl = resolveContentUrl(url)
+  const weCannotAccess = `Our signal's lost in the void! No access at this time..`
+  const pleaseCheck = `Double-check the transmission link ${url} and initiate contact again.`
   if (!contentUrl) {
     return (
       <ERDViewer
         dbStructure={blankDbStructure}
         defaultSidebarOpen={false}
-        errorObjects={[{ name: 'NetworkError', message: 'Invalid URL' }]}
+        errorObjects={[
+          {
+            name: 'NetworkError',
+            message: weCannotAccess,
+            instruction: pleaseCheck,
+          },
+        ]}
       />
     )
   }
-  console.warn(`Fetching content from ${contentUrl}`)
   const networkErrorObjects: {
     name: 'NetworkError'
     message: string
+    instruction?: string
   }[] = []
-  const pleaseCheck = `Please check the URL ${url} and try again`
   const res = await fetch(contentUrl, { cache: 'no-store' }).catch((e) => {
     if (e instanceof Error) {
       networkErrorObjects.push({
         name: 'NetworkError',
-        message: `${e.name}: ${e.message}. ${pleaseCheck}.`,
+        message: `${e.name}: ${e.message}. ${weCannotAccess}`,
+        instruction: pleaseCheck,
       })
     } else {
       networkErrorObjects.push({
         name: 'NetworkError',
-        message: `Unknown error. ${pleaseCheck}.`,
+        message: `Unknown NetworkError. ${weCannotAccess}`,
+        instruction: pleaseCheck,
       })
     }
   })
@@ -123,6 +132,7 @@ export default async function Page({
     networkErrorObjects.push({
       name: 'NetworkError',
       message: `Unknown error. ${pleaseCheck}.`,
+      instruction: pleaseCheck,
     })
   if (!res || networkErrorObjects.length > 0) {
     return (
@@ -141,7 +151,8 @@ export default async function Page({
         errorObjects={[
           {
             name: 'NetworkError',
-            message: `HTTP status is ${res.status}: ${res.statusText}. ${pleaseCheck}.`,
+            message: `HTTP status is ${res.status}: ${res.statusText}.`,
+            instruction: pleaseCheck,
           },
         ]}
       />
@@ -170,7 +181,9 @@ export default async function Page({
         errorObjects={[
           {
             name: 'NetworkError',
-            message: 'We could not detect the format of the file',
+            message: weCannotAccess,
+            instruction:
+              'Please specify the format in the URL query parameter `format`',
           },
         ]}
       />
