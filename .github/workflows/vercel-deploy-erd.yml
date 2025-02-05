@@ -89,7 +89,7 @@ jobs:
   run-e2e:
     needs: deploy
     if: needs.deploy.result == 'success'
-    uses: ./.github/workflows/e2e-test.yml
+    uses: ./.github/workflows/_run_e2e_test.yml
     with:
       url: ${{ needs.deploy.outputs.url }}
     concurrency:
