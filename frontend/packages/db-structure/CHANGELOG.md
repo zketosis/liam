@@ -1,11 +1,5 @@
 # @liam-hq/db-structure
 
-## 0.0.0-next-20250205094432
-
-### Patch Changes
-
-- - 🔧 Refactor package scripts to use pnpm gen commands
-
 ## 0.0.0-next-20250205093652
 
 ### Patch Changes
