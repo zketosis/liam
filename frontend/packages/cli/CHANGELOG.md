@@ -1,5 +1,12 @@
 # @liam-hq/cli
 
+## 0.0.0-next-20250205093225
+
+### Patch Changes
+
+- - 🔧 publish internal packages
+- - 🔧 publish internal packages
+
 ## 0.0.0-next-20250205091437
 
 ### Patch Changes
