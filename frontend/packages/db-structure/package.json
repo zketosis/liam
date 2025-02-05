@@ -1,8 +1,10 @@
 {
   "name": "@liam-hq/db-structure",
-  "private": true,
   "version": "0.0.12",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./parser": "./dist/parser.js"
