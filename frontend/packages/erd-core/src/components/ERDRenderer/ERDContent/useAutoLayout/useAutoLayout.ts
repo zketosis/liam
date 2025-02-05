@@ -1,6 +1,6 @@
 import { useReactFlow } from '@xyflow/react'
 import type { Edge, FitViewOptions, Node } from '@xyflow/react'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useERDContentContext } from '../ERDContentContext'
 import { getElkLayout } from './getElkLayout'
 
@@ -10,6 +10,10 @@ export const useAutoLayout = () => {
     actions: { setLoading, setInitializeComplete },
   } = useERDContentContext()
 
+  const [layoutComplete, setLayoutComplete] = useState(false)
+  const [pendingFitViewOptions, setPendingFitViewOptions] =
+    useState<FitViewOptions | null>(null)
+
   const handleLayout = useCallback(
     async (
       nodes: Node[],
@@ -17,6 +21,8 @@ export const useAutoLayout = () => {
       fitViewOptions: FitViewOptions = {},
     ) => {
       setLoading(true)
+      setPendingFitViewOptions(fitViewOptions)
+
       const hiddenNodes: Node[] = []
       const visibleNodes: Node[] = []
       for (const node of nodes) {
@@ -39,20 +45,29 @@ export const useAutoLayout = () => {
       })
 
       setNodes([...hiddenNodes, ...newNodes])
+      setLayoutComplete(true)
+    },
+    [setNodes, setLoading],
+  )
 
-      // TODO: Investigate which approach works best. It's possible that both are needed.
+  useEffect(() => {
+    if (layoutComplete) {
       // The use of `window.requestAnimationFrame` aligns with practices demonstrated in React Flow examples.
       // ref: https://reactflow.dev/learn/layouting/layouting
-      setTimeout(() => {
-        window.requestAnimationFrame(() => {
-          fitView(fitViewOptions)
-          setLoading(false)
-          setInitializeComplete(true)
-        })
-      }, 0)
-    },
-    [setNodes, fitView, setLoading, setInitializeComplete],
-  )
+      window.requestAnimationFrame(() => {
+        fitView(pendingFitViewOptions ?? {})
+        setLoading(false)
+        setInitializeComplete(true)
+        setLayoutComplete(false)
+      })
+    }
+  }, [
+    layoutComplete,
+    pendingFitViewOptions,
+    fitView,
+    setLoading,
+    setInitializeComplete,
+  ])
 
   return { handleLayout }
 }
