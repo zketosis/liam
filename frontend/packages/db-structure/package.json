@@ -35,9 +35,9 @@
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "postinstall": "npm run postinstall:cp-prism && npm run postinstall:gen-tbls-schema",
-    "postinstall:cp-prism": "cp node_modules/@ruby/prism/src/prism.wasm src/parser/schemarb/prism.wasm",
-    "postinstall:gen-tbls-schema": "node scripts/tblsJsonSchemaToZod.mjs",
+    "gen": "pnpm run '/^gen:.*/'",
+    "gen:cp-prism": "cp node_modules/@ruby/prism/src/prism.wasm src/parser/schemarb/prism.wasm",
+    "gen:gen-tbls-schema": "node scripts/tblsJsonSchemaToZod.mjs",
     "test": "vitest --watch=false"
   },
   "types": "dist/index.d.ts"
