@@ -35,7 +35,7 @@
     "gen:css": "tcm components",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
-    "postinstall": "cp ../../packages/db-structure/src/parser/schemarb/prism.wasm prism.wasm",
+    "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start"
   }
 }
