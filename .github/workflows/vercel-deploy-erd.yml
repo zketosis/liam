@@ -86,3 +86,12 @@ jobs:
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }} > deployment-url.txt
           echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
         id: deployment
+  run-e2e:
+    needs: deploy
+    if: needs.deploy.result == 'success'
+    uses: ./.github/workflows/e2e-test.yml
+    with:
+      url: ${{ needs.deploy.outputs.url }}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-e2e
+      cancel-in-progress: true
