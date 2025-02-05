@@ -3471,7 +3471,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/mocker"></a>
-### @vitest/mocker v2.1.4
+### @vitest/mocker v2.1.9
 #### 
 
 ##### Paths
@@ -3493,7 +3493,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/runner"></a>
-### @vitest/runner v2.1.4
+### @vitest/runner v2.1.9
 #### 
 
 ##### Paths
@@ -3504,7 +3504,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/snapshot"></a>
-### @vitest/snapshot v2.1.4
+### @vitest/snapshot v2.1.9
 #### 
 
 ##### Paths
@@ -8561,7 +8561,7 @@ Public Domain manually approved
 
 
 <a name="loupe"></a>
-### loupe v3.1.2
+### loupe v3.1.3
 #### 
 
 ##### Paths
@@ -11744,7 +11744,7 @@ Unknown manually approved
 
 
 <a name="std-env"></a>
-### std-env v3.7.0
+### std-env v3.8.0
 #### 
 
 ##### Paths
@@ -13042,7 +13042,7 @@ Unknown manually approved
 
 
 <a name="vite-node"></a>
-### vite-node v2.1.4
+### vite-node v2.1.9
 #### 
 
 ##### Paths
@@ -13064,7 +13064,7 @@ Unknown manually approved
 
 
 <a name="vitest"></a>
-### vitest v2.1.4
+### vitest v2.1.9
 #### 
 
 ##### Paths
