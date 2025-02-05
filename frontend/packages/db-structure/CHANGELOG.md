@@ -1,11 +1,5 @@
 # @liam-hq/db-structure
 
-## 0.0.0-next-20250205093225
-
-### Patch Changes
-
-- - 🔧 publish internal packages
-
 ## 0.0.12
 
 ### Patch Changes
