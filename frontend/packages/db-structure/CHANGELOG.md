@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.0-next-20250205093652
+
+### Patch Changes
+
+- - 🔧 Update postinstall script to use npm for specific tasks
+
 ## 0.0.0-next-20250205093225
 
 ### Patch Changes
