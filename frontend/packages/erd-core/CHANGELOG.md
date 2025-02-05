@@ -1,5 +1,12 @@
 # @liam-hq/erd-core
 
+## 0.0.0-next-20250205091437
+
+### Patch Changes
+
+- [#665](https://github.com/liam-hq/liam/pull/665) - 🐛 Adjust the item height calculation in the Columns component. / Thanks [@FunamaYukina](https://github.com/FunamaYukina)!
+- [#666](https://github.com/liam-hq/liam/pull/666) - 🐛 fix: ONE_TO_ONE cardinality inconsistency between left and right / Thanks [@kumanoayumi](https://github.com/kumanoayumi)!
+
 ## 0.0.24
 
 ### Patch Changes

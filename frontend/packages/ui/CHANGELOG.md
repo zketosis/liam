@@ -1,5 +1,11 @@
 # @liam-hq/ui
 
+## 0.0.0-next-20250205091437
+
+### Patch Changes
+
+- [#666](https://github.com/liam-hq/liam/pull/666) - 🐛 fix: ONE_TO_ONE cardinality inconsistency between left and right / Thanks [@kumanoayumi](https://github.com/kumanoayumi)!
+
 ## 0.0.11
 
 ### Patch Changes
