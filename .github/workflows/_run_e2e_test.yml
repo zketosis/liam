@@ -1,0 +1,40 @@
+name: Run E2E Tests
+
+on:
+  workflow_call:
+    inputs:
+      url:
+        required: true
+        type: string
+jobs:
+  common-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: 'frontend/packages/e2e'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: ./.github/actions/pnpm-setup
+
+      - name: Configure Git safe directory
+        run: git config --global --add safe.directory /__w/liam/liam
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run e2e tests
+        run: pnpm test:e2e
+        env:
+          URL: ${{ inputs.url }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-results
+          path: frontend/packages/e2e/test-results/
+          retention-days: 30

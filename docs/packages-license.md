@@ -2,8 +2,8 @@
 
 
 ## Summary
-* 1010 MIT
-* 77 Apache 2.0
+* 1011 MIT
+* 80 Apache 2.0
 * 64 ISC
 * 27 Simplified BSD
 * 17 New BSD
@@ -28,7 +28,7 @@
 
 
 <a name="@adobe/css-tools"></a>
-### @adobe/css-tools v4.4.0
+### @adobe/css-tools v4.4.1
 #### 
 
 ##### Paths
@@ -1172,7 +1172,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@opentelemetry/context-async-hooks"></a>
-### @opentelemetry/context-async-hooks v1.30.0
+### @opentelemetry/context-async-hooks v1.30.1
 #### 
 
 ##### Paths
@@ -1480,7 +1480,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@opentelemetry/resources"></a>
-### @opentelemetry/resources v1.30.0
+### @opentelemetry/resources v1.30.1
 #### 
 
 ##### Paths
@@ -1491,7 +1491,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@opentelemetry/sdk-trace-base"></a>
-### @opentelemetry/sdk-trace-base v1.30.0
+### @opentelemetry/sdk-trace-base v1.30.1
 #### 
 
 ##### Paths
@@ -1553,6 +1553,17 @@ LGPL-3.0-or-later permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@playwright/test"></a>
+### @playwright/test v1.50.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
 
 
 
@@ -1908,6 +1919,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@radix-ui/react-radio-group"></a>
+### @radix-ui/react-radio-group v1.2.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@radix-ui/react-roving-focus"></a>
 ### @radix-ui/react-roving-focus v1.1.0
 #### 
@@ -2239,7 +2261,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/browser-utils"></a>
-### @sentry-internal/browser-utils v8.47.0
+### @sentry-internal/browser-utils v8.49.0
 #### 
 
 ##### Paths
@@ -2250,7 +2272,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/feedback"></a>
-### @sentry-internal/feedback v8.47.0
+### @sentry-internal/feedback v8.49.0
 #### 
 
 ##### Paths
@@ -2261,7 +2283,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/replay"></a>
-### @sentry-internal/replay v8.47.0
+### @sentry-internal/replay v8.49.0
 #### 
 
 ##### Paths
@@ -2272,7 +2294,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/replay-canvas"></a>
-### @sentry-internal/replay-canvas v8.47.0
+### @sentry-internal/replay-canvas v8.49.0
 #### 
 
 ##### Paths
@@ -2294,7 +2316,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/browser"></a>
-### @sentry/browser v8.47.0
+### @sentry/browser v8.49.0
 #### 
 
 ##### Paths
@@ -2338,7 +2360,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/core"></a>
-### @sentry/core v8.47.0
+### @sentry/core v8.49.0
 #### 
 
 ##### Paths
@@ -2349,7 +2371,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/nextjs"></a>
-### @sentry/nextjs v8.47.0
+### @sentry/nextjs v8.49.0
 #### 
 
 ##### Paths
@@ -2360,7 +2382,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/node"></a>
-### @sentry/node v8.47.0
+### @sentry/node v8.49.0
 #### 
 
 ##### Paths
@@ -2371,7 +2393,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/opentelemetry"></a>
-### @sentry/opentelemetry v8.47.0
+### @sentry/opentelemetry v8.49.0
 #### 
 
 ##### Paths
@@ -2382,7 +2404,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/react"></a>
-### @sentry/react v8.47.0
+### @sentry/react v8.49.0
 #### 
 
 ##### Paths
@@ -2393,7 +2415,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/vercel-edge"></a>
-### @sentry/vercel-edge v8.47.0
+### @sentry/vercel-edge v8.49.0
 #### 
 
 ##### Paths
@@ -2514,7 +2536,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@storybook/csf"></a>
-### @storybook/csf v0.1.11
+### @storybook/csf v0.1.13
 #### 
 
 ##### Paths
@@ -3196,7 +3218,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@types/qs"></a>
-### @types/qs v6.9.16
+### @types/qs v6.9.18
 #### 
 
 ##### Paths
@@ -3449,7 +3471,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/mocker"></a>
-### @vitest/mocker v2.1.4
+### @vitest/mocker v2.1.9
 #### 
 
 ##### Paths
@@ -3471,7 +3493,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/runner"></a>
-### @vitest/runner v2.1.4
+### @vitest/runner v2.1.9
 #### 
 
 ##### Paths
@@ -3482,7 +3504,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/snapshot"></a>
-### @vitest/snapshot v2.1.4
+### @vitest/snapshot v2.1.9
 #### 
 
 ##### Paths
@@ -4674,7 +4696,7 @@ CC-BY-4.0 permitted
 
 
 <a name="cjs-module-lexer"></a>
-### cjs-module-lexer v1.4.1
+### cjs-module-lexer v1.4.3
 #### 
 
 ##### Paths
@@ -4982,7 +5004,7 @@ CC-BY-4.0 permitted
 
 
 <a name="cookie"></a>
-### cookie v0.6.0
+### cookie v0.7.1
 #### 
 
 ##### Paths
@@ -6313,7 +6335,7 @@ CC-BY-4.0 permitted
 
 
 <a name="express"></a>
-### express v4.21.0
+### express v4.21.2
 #### 
 
 ##### Paths
@@ -6434,7 +6456,7 @@ CC-BY-4.0 permitted
 
 
 <a name="fast-uri"></a>
-### fast-uri v3.0.3
+### fast-uri v3.0.6
 #### 
 
 ##### Paths
@@ -6456,7 +6478,7 @@ CC-BY-4.0 permitted
 
 
 <a name="fdir"></a>
-### fdir v6.4.2
+### fdir v6.4.3
 #### 
 
 ##### Paths
@@ -8539,7 +8561,7 @@ Public Domain manually approved
 
 
 <a name="loupe"></a>
-### loupe v3.1.2
+### loupe v3.1.3
 #### 
 
 ##### Paths
@@ -10167,7 +10189,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="path-to-regexp"></a>
-### path-to-regexp v0.1.10
+### path-to-regexp v0.1.12
 #### 
 
 ##### Paths
@@ -10306,6 +10328,28 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="playwright"></a>
+### playwright v1.50.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="playwright-core"></a>
+### playwright-core v1.50.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
 
 
 
@@ -11124,7 +11168,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="require-in-the-middle"></a>
-### require-in-the-middle v7.4.0
+### require-in-the-middle v7.5.0
 #### 
 
 ##### Paths
@@ -11700,7 +11744,7 @@ Unknown manually approved
 
 
 <a name="std-env"></a>
-### std-env v3.7.0
+### std-env v3.8.0
 #### 
 
 ##### Paths
@@ -12987,7 +13031,7 @@ Unknown manually approved
 
 
 <a name="vite"></a>
-### vite v5.4.10
+### vite v5.4.12
 #### 
 
 ##### Paths
@@ -12998,7 +13042,7 @@ Unknown manually approved
 
 
 <a name="vite-node"></a>
-### vite-node v2.1.4
+### vite-node v2.1.9
 #### 
 
 ##### Paths
@@ -13020,7 +13064,7 @@ Unknown manually approved
 
 
 <a name="vitest"></a>
-### vitest v2.1.4
+### vitest v2.1.9
 #### 
 
 ##### Paths

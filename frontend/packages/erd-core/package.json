@@ -1,7 +1,7 @@
 {
   "name": "@liam-hq/erd-core",
   "private": true,
-  "version": "0.0.22",
+  "version": "0.0.24",
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
@@ -22,7 +22,7 @@
     "@types/react": "18",
     "typed-css-modules": "0.9.1",
     "typescript": "5",
-    "vitest": "2.1.4"
+    "vitest": "2.1.9"
   },
   "scripts": {
     "dev": "pnpm run '/^dev:.*/'",

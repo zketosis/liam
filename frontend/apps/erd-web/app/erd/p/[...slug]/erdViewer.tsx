@@ -44,7 +44,7 @@ export default function ERDViewer({
   const version = v.parse(versionSchema, versionData)
 
   return (
-    <div style={{ height: '100vh' }}>
+    <div style={{ height: '100dvh' }}>
       <VersionProvider version={version}>
         <ERDRenderer
           defaultSidebarOpen={defaultSidebarOpen}

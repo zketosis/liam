@@ -1,6 +1,7 @@
 export * from './BookText'
 export * from './Check'
 export * from './ChevronDown'
+export * from './ChevronLeft'
 export * from './ChevronUp'
 export * from './CircleHelp'
 export * from './InfoIcon'
@@ -30,6 +31,7 @@ export * from './Eye'
 export * from './EyeClosed'
 
 export {
+  Copy,
   KeyRound,
   Hash,
   Link,
