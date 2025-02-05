@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "node"
+  },
+  "include": ["tests/**/*"],
+  "exclude": ["node_modules"]
+}
