@@ -175,6 +175,12 @@ importers:
 
   frontend/packages/cli:
     dependencies:
+      '@liam-hq/db-structure':
+        specifier: workspace:*
+        version: link:../db-structure
+      '@liam-hq/erd-core':
+        specifier: workspace:*
+        version: link:../erd-core
       '@prisma/internals':
         specifier: 6.2.1
         version: 6.2.1
@@ -203,12 +209,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@liam-hq/db-structure':
-        specifier: workspace:*
-        version: link:../db-structure
-      '@liam-hq/erd-core':
-        specifier: workspace:*
-        version: link:../erd-core
       '@rollup/plugin-node-resolve':
         specifier: 15.3.0
         version: 15.3.0(rollup@4.27.3)

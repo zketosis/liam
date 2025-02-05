@@ -24,6 +24,8 @@
     "liam": "./dist-cli/bin/cli.js"
   },
   "dependencies": {
+    "@liam-hq/db-structure": "workspace:*",
+    "@liam-hq/erd-core": "workspace:*",
     "@prisma/internals": "6.2.1",
     "commander": "12.1.0",
     "glob": "11.0.1",
@@ -35,8 +37,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam-hq/db-structure": "workspace:*",
-    "@liam-hq/erd-core": "workspace:*",
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-typescript": "12.1.1",
     "@types/glob": "8.1.0",
