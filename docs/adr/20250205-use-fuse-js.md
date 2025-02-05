@@ -35,7 +35,7 @@ In our PoC (Pull Request [#652](https://github.com/liam-hq/liam/pull/652)), we c
 
 > - **fuse.js** provides efficient fuzzy search capabilities out-of-the-box, without needing additional configuration for stemming or indexing.
 > - **Orama** excels in search speed due to pre-built inverted indexes and offers O(1) search performance, while fuse.js operates with O(n) complexity.
-> - Despite the theoretical performance differences, practical benchmarks on a project of Mastodon’s scale revealed that both libraries deliver comparable performance, with search times ranging from 0.1ms to 1.0ms.
+> - Despite the theoretical performance differences, practical benchmarks on a project of Mastodon’s scale (99 tables) revealed that both libraries deliver comparable performance, with search times ranging from 0.1ms to 1.0ms.
 > - Orama’s pre-indexing time was approximately 30ms-100ms, initiated upon loading the application. fuse.js does not require pre-indexing, leading to simpler integration and faster initial load times.
 > - Both libraries successfully handled partial matches during live typing. However, Orama struggled with exact matches for incorrectly typed queries (e.g., "expire_at" instead of "expires_at").
 
