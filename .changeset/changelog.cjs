@@ -9,6 +9,10 @@ const {
  * @returns {Promise<string>}
  */
 const getChangesetEntry = async (changeset, options) => {
+  if (!changeset || !changeset.summary) {
+    return ''
+  }
+
   let prFromSummary
   let commitFromSummary
   const usersFromSummary = []
@@ -33,12 +37,20 @@ const getChangesetEntry = async (changeset, options) => {
     .split('\n')
     .map((l) => l.trimRight())
 
-  const links = await (async () => {
+  let links = {
+    commit: null,
+    pull: null,
+    user: null,
+  }
+
+  try {
     if (prFromSummary !== undefined) {
-      let { links } = await getInfoFromPullRequest({
+      const info = await getInfoFromPullRequest({
         repo: options.repo,
         pull: prFromSummary,
-      })
+      }).catch(() => ({ links }))
+
+      links = info?.links || links
       if (commitFromSummary) {
         const shortCommitId = commitFromSummary.slice(0, 7)
         links = {
@@ -46,24 +58,25 @@ const getChangesetEntry = async (changeset, options) => {
           commit: `[\`${shortCommitId}\`](https://github.com/${options.repo}/commit/${commitFromSummary})`,
         }
       }
-      return links
-    }
-
-    const commitToFetchFrom = commitFromSummary || changeset.commit
-    if (commitToFetchFrom) {
-      const { links } = await getInfo({
+    } else if (changeset.commit) {
+      const info = await getInfo({
         repo: options.repo,
-        commit: commitToFetchFrom,
-      })
-      return links
-    }
+        commit: changeset.commit,
+      }).catch(() => ({ links: null }))
 
-    return {
-      commit: null,
-      pull: null,
-      user: null,
+      if (info?.links) {
+        links = {
+          commit: info.links.commit,
+          pull: info.links.pull,
+          user: info.links.user,
+        }
+      }
     }
-  })()
+  } catch (error) {
+    if (process.env.DEBUG) {
+      console.error('Error fetching GitHub info:', error)
+    }
+  }
 
   const users = usersFromSummary.length
     ? usersFromSummary
@@ -72,10 +85,12 @@ const getChangesetEntry = async (changeset, options) => {
             `[@${userFromSummary}](https://github.com/${userFromSummary})`,
         )
         .join(', ')
-    : links.user
+    : links?.user || null
 
-  const pullRequest = links.pull === null ? '' : ` ${links.pull}`
-  const userInfo = users === null ? '' : ` / Thanks ${users}!`
+  const pullRequest = !links?.pull ? '' : ` ${links.pull}`
+  const userInfo = !users ? '' : ` / Thanks ${users}!`
+
+  if (!firstLine) return ''
 
   return `- ${pullRequest} - ${firstLine}${userInfo}${
     futureLines.length > 0
@@ -109,7 +124,7 @@ const getDependencyReleaseLine = async (
     changesets.map((changeset) => getChangesetEntry(changeset, options)),
   )
 
-  return entries.join('\n')
+  return entries.filter(Boolean).join('\n')
 }
 
 /** @type {import('@changesets/types').ChangelogFunctions} */
