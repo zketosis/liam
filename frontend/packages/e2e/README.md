@@ -1,15 +1,22 @@
 # e2e
 
-This package is for running end-to-end (E2E) tests, using Playwright to automatically test different parts of our application.
+This package is for running end-to-end (E2E) tests using [Playwright](https://playwright.dev/).  
+It allows us to automatically test different parts of our application, including UI changes using **Visual Regression Testing (VRT)**.
 
-## Script
+## Running Tests Locally
+
+### Run E2E Tests &  Visual Regression Tests
+To execute E2E tests locally, use the following command:
 
 ```bash
 pnpm test:e2e
 ```
 
+This command runs all end-to-end tests and checks for unexpected UI changes using snapshot comparisons.
 
-When running VRT for the first time, first make a screenshot of the comparison source.
+### Updating Visual Regression Snapshots
+
+When running VRT for the first time, or when intentionally modifying the UI, you need to update the snapshot images.
 
 For example:
 
@@ -17,17 +24,42 @@ For example:
 URL=http://localhost:5173 pnpm playwright test tests/vrt --update-snapshots
 ```
 
-## operation process
+This will update the baseline images used for comparison.
 
-This E2E test is also run on GitHub Action.  
-If you intentionally changed the UI and the VRT test fails on GitHub Action, you can download the image from the “Upload test results” URL in Action's log.
+## GitHub Actions Workflow
+
+E2E tests, including VRT, are also executed automatically on GitHub Actions.
+If a VRT test fails, it means the UI has changed.
+
+### Handling VRT Failures
+
+### 1. Download the failed test results
+If the test fails in GitHub Actions, find the "Upload test results" link in the Action log.
 
 ![upload test results](https://github.com/user-attachments/assets/631dc80c-1a34-43a7-bca8-ef833edddd51)
 
-Then, if ``top-actual.png`` is as you intended, rename the file ``top-1-chromium-linux.png`` and place it in the following folder and push it again.
+### 2. Check the actual screenshot
+
+Compare ``top-actual.png`` with the expected UI.
+
+### 3. Update the baseline if the change is intentional
+
+- If top-actual.png matches the intended UI change, rename it to:
+
+```
+top-1-chromium-linux.png
+```
+
+- Place it in the following directory:
 
 ```
 frontend/packages/e2e/tests/vrt/vrt.test.ts-snapshots/
 ```
 
-And make sure the test passes.
+- Commit and push the updated snapshot.
+
+
+
+### 4. Re-run the tests
+
+Ensure the updated test now passes.
