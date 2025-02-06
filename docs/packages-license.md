@@ -2,11 +2,11 @@
 
 
 ## Summary
-* 1011 MIT
+* 1012 MIT
 * 80 Apache 2.0
 * 64 ISC
 * 27 Simplified BSD
-* 17 New BSD
+* 18 New BSD
 * 3 MIT OR Apache-2.0
 * 3 BlueOak-1.0.0
 * 2 LGPL-3.0-or-later
@@ -425,6 +425,17 @@ MIT OR Apache-2.0 permitted
 
 <a name="@changesets/get-dependents-graph"></a>
 ### @changesets/get-dependents-graph v2.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@changesets/get-github-info"></a>
+### @changesets/get-github-info v0.6.0
 #### 
 
 ##### Paths
@@ -5286,6 +5297,17 @@ CC-BY-4.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="dataloader"></a>
+### dataloader v1.4.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/BSD-3-Clause">New BSD</a> permitted
 
 
 

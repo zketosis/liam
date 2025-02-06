@@ -1,8 +1,11 @@
 {
   "name": "@liam-hq/erd-core",
-  "private": true,
+  "license": "Apache-2.0",
   "version": "0.0.24",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "src/index.ts",
   "dependencies": {
     "@liam-hq/ui": "workspace:*",
