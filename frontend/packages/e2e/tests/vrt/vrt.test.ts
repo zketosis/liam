@@ -1,9 +1,9 @@
 import type { Page } from '@playwright/test'
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 const screenshot = async (page: Page, targetPage: TargetPage) => {
   await page.goto(targetPage.path)
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  await expect(page).toHaveScreenshot({ fullPage: true, timeout: 10 * 1000 })
 }
 
 interface TargetPage {

@@ -15,6 +15,13 @@ jobs:
         working-directory: 'frontend/packages/e2e'
     env:
       CI: true
+    strategy:
+      matrix:
+        include:
+          - app-name: "erd-web"
+            URL: https://liambx.com/erd/p/github.com/mastodon/mastodon/blob/main/db/schema.rb
+          - app-name: "@liam-hq/erd-sample"
+            URL: https://liam-erd-sample.vercel.app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
