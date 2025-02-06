@@ -3,3 +3,5 @@
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+# Files created when tests are run locally
+/tests/vrt/vrt.test.ts-snapshots/top-1-chromium-darwin.png

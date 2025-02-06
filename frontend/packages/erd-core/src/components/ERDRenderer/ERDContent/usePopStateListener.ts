@@ -34,9 +34,6 @@ export const usePopStateListener = () => {
       updateIsPopstateInProgress(false)
     }
 
-    // test
-    setTimeout(() => {}, 10)
-
     window.addEventListener('popstate', handlePopState)
 
     return () => {
