@@ -2,17 +2,12 @@ import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
 const screenshot = async (page: Page, targetPage: TargetPage) => {
-  // To display Cookie Consent
-  await page.route('**/*', (route) => {
-    const headers = {
-      ...route.request().headers(),
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-      Expires: '0',
-    }
-    route.continue({ headers })
-  })
   await page.goto(targetPage.path)
+
+  const cookieAcceptButton = page.getByRole('button', { name: 'Accept' })
+  if ((await cookieAcceptButton.count()) > 0) {
+    await cookieAcceptButton.click()
+  }
   await expect(page).toHaveScreenshot({ fullPage: true })
 }
 
