@@ -21,15 +21,11 @@ interface TargetPage {
   path: string
 }
 
-const targetPages: TargetPage[] = [
-  {
-    name: 'top',
-    path: '/',
-  },
-]
-
-for (const targetPage of targetPages) {
-  test(targetPage.name, async ({ page }) => {
-    await screenshot(page, targetPage)
-  })
+const targetPage: TargetPage = {
+  name: 'top',
+  path: '/',
 }
+
+test(targetPage.name, async ({ page }) => {
+  await screenshot(page, targetPage)
+})
