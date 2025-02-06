@@ -35,10 +35,12 @@ jobs:
           filters: |
             src:
               - './.github/workflows/vercel-deploy-erd.yml'
+              - './.github/workflows/_run_e2e_test.yml'
               - './frontend/apps/erd-sample/**'
               - './frontend/apps/erd-web/**'
               - './frontend/packages/cli/**'
               - './frontend/packages/db-structure/**'
+              - './frontend/packages/e2e/**'
               - './frontend/packages/erd-core/**'
               - './frontend/packages/ui/**'
               - './pnpm-lock.yaml'
