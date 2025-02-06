@@ -14,6 +14,7 @@ import * as v from 'valibot'
 type ErrorObject = {
   name: string
   message: string
+  instruction?: string
 }
 
 type ERDViewerProps = {

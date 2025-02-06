@@ -1,5 +1,4 @@
 ---
-"@liam-hq/cli": patch
 "@liam-hq/ui": patch
 ---
 
