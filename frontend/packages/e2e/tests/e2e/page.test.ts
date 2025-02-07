@@ -25,11 +25,10 @@ test('Copy link button copies current URL to clipboard', async ({
 test('Table node should be highlighted when clicked', async ({ page }) => {
   await page.goto('/')
 
-  await page.waitForSelector('.react-flow__node[data-id="accounts"]')
-
-  const tableNode = page
-    .locator('.react-flow__node[data-id="accounts"]')
-    .first()
+  const tableNode = page.getByRole('button', {
+    name: 'accounts table',
+    exact: true,
+  })
 
   await tableNode.click()
 
