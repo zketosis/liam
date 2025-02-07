@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.13
+
+### Patch Changes
+
+- [#696](https://github.com/liam-hq/liam/pull/696) - 🐛 Version bump failed, re-run / Thanks [@MH4GF](https://github.com/MH4GF)!
+
 ## 0.0.12
 
 ### Patch Changes
