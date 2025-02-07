@@ -21,3 +21,21 @@ test('Copy link button copies current URL to clipboard', async ({
   )
   expect(clipboardContent).toBe(page.url())
 })
+
+test('Table node should be highlighted when clicked', async ({ page }) => {
+  await page.goto('/')
+
+  await page.waitForSelector('.react-flow__node[data-id="accounts"]')
+
+  const tableNode = page
+    .locator('.react-flow__node[data-id="accounts"]')
+    .first()
+
+  await tableNode.click()
+
+  const firstChild = await tableNode.evaluate((node: HTMLElement) => {
+    return node.firstElementChild?.getAttribute('data-erd')
+  })
+
+  expect(firstChild).toBe('table-node-highlighted')
+})
