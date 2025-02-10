@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
   const cookieButton = page.getByRole('button', {
     name: 'Accept All Cookies',
   })
-  await cookieButton.click({ timeout: 1000, force: true }).catch(() => {})
+  await cookieButton.click({ timeout: 3000, force: true }).catch(() => {})
 })
 
 test.describe('Desktop Toolbar', () => {
