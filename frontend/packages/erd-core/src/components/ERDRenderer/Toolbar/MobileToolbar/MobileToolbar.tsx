@@ -57,6 +57,7 @@ export const MobileToolbar: FC = () => {
           [styles.open]: isOpen && !isShowModeMenu,
           [styles.openShowModeMenu]: isOpen && isShowModeMenu,
         })}
+        aria-label="Toolbar"
       >
         <div className={styles.positionRelative}>
           {/* Default(closed) */}

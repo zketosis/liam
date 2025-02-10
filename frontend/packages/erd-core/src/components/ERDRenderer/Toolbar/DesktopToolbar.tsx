@@ -8,7 +8,7 @@ import { ZoomControls } from './ZoomControls'
 
 export const DesktopToolbar: FC = () => {
   return (
-    <ToolbarPrimitive.Root className={styles.root} aria-label="Desktop toolbar">
+    <ToolbarPrimitive.Root className={styles.root} aria-label="Toolbar">
       <ZoomControls />
       <ToolbarPrimitive.Separator className={styles.separator} />
       <div className={styles.buttons}>

@@ -9,12 +9,12 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Desktop toolbar should be visible', async ({ page }) => {
-  const toolbar = page.getByRole('toolbar', { name: 'Desktop toolbar' })
+  const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
   await expect(toolbar).toBeVisible()
 })
 
 test('Zoom in button should increase zoom level', async ({ page }) => {
-  const toolbar = page.getByRole('toolbar', { name: 'Desktop toolbar' })
+  const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
   const zoomLevelText = toolbar.locator('span[class*="zoomLevelText"]')
 
   const zoomLevelBefore = await zoomLevelText.textContent()
@@ -29,7 +29,7 @@ test('Zoom in button should increase zoom level', async ({ page }) => {
 })
 
 test('Zoom out button should decrease zoom level', async ({ page }) => {
-  const toolbar = page.getByRole('toolbar', { name: 'Desktop toolbar' })
+  const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
   const zoomLevelText = toolbar.locator('span[class*="zoomLevelText"]')
 
   const zoomLevelBefore = await zoomLevelText.textContent()
