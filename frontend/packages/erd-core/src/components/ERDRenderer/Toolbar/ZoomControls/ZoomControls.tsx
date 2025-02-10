@@ -42,13 +42,21 @@ export const ZoomControls: FC = () => {
   return (
     <div className={styles.wrapper}>
       <ToolbarButton asChild onClick={handleClickZoomOut}>
-        <IconButton icon={<Minus />} tooltipContent="Zoom Out" />
+        <IconButton
+          icon={<Minus />}
+          tooltipContent="Zoom Out"
+          aria-label="Zoom out"
+        />
       </ToolbarButton>
       <span className={styles.zoomLevelText}>
         {Math.floor(zoomLevel * 100)}%
       </span>
       <ToolbarButton asChild onClick={handleClickZoomIn}>
-        <IconButton icon={<Plus />} tooltipContent="Zoom In" />
+        <IconButton
+          icon={<Plus />}
+          tooltipContent="Zoom In"
+          aria-label="Zoom in"
+        />
       </ToolbarButton>
     </div>
   )
