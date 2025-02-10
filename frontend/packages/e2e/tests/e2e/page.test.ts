@@ -21,3 +21,20 @@ test('Copy link button copies current URL to clipboard', async ({
   )
   expect(clipboardContent).toBe(page.url())
 })
+
+test('Table node should be highlighted when clicked', async ({ page }) => {
+  await page.goto('/')
+
+  const tableNode = page.getByRole('button', {
+    name: 'accounts table',
+    exact: true,
+  })
+
+  await tableNode.click()
+
+  const firstChild = await tableNode.evaluate((node: HTMLElement) => {
+    return node.firstElementChild?.getAttribute('data-erd')
+  })
+
+  expect(firstChild).toBe('table-node-highlighted')
+})

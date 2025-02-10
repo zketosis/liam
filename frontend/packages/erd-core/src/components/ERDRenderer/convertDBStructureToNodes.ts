@@ -56,6 +56,7 @@ export const convertDBStructureToNodes = ({
         targetColumnCardinalities: tableColumnCardinalities.get(table.name),
       },
       position: { x: 0, y: 0 },
+      ariaLabel: `${table.name} table`,
       zIndex: zIndex.nodeDefault,
       ...(!tablesWithRelationships.has(table.name)
         ? { parentId: NON_RELATED_TABLE_GROUP_NODE_ID }
