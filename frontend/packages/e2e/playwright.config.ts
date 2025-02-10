@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
+  globalSetup: require.resolve('./global-setup'),
   testDir: 'tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -11,6 +12,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.URL || 'http://localhost:5173',
     trace: 'on-first-retry',
+    storageState: 'storageState.json',
   },
 
   projects: [

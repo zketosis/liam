@@ -2,10 +2,6 @@ import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
-  const cookieButton = page.getByRole('button', {
-    name: 'Accept All Cookies',
-  })
-  await cookieButton.click({ timeout: 3000, force: true }).catch(() => {})
 })
 
 test.describe('Desktop Toolbar', () => {
