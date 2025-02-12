@@ -195,6 +195,7 @@ const SidebarTrigger = forwardRef<
         <button
           ref={ref}
           data-sidebar="trigger"
+          aria-label="Toggle Sidebar Icon Button"
           className={clsx(styles.sidebarTrigger, className)}
           onClick={(event) => {
             onClick?.(event)

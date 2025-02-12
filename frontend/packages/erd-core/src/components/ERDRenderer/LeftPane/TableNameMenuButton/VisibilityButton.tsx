@@ -30,7 +30,11 @@ export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
   )
 
   return (
-    <SidebarMenuAction showOnHover onClick={handleClick}>
+    <SidebarMenuAction
+      showOnHover
+      onClick={handleClick}
+      aria-label={hidden ? 'Show Table' : 'Hide Table'}
+    >
       {hidden ? (
         <EyeClosed className={styles.icon} />
       ) : (
