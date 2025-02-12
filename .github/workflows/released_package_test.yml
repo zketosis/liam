@@ -1,0 +1,37 @@
+name: "released package test"
+
+on:
+  workflow_dispatch:
+    inputs:
+      delay_seconds:
+        description: "Delay in seconds before execution"
+        required: false
+        default: 0
+        type: number
+      version:
+        description: "Version to test"
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: sleep
+        run: |
+          echo "Starting after ${{ github.event.inputs.delay_seconds }} seconds"
+          sleep ${{ github.event.inputs.delay_seconds }}
+      - name: check @liam-hq/cli exit code
+        shell: bash
+        run: |
+          version="${{ github.event.inputs.version }}"
+          if [ -z "${version}" ]; then
+            echo "Error: Failed to extract version from package.json"
+            exit 1
+          fi
+          docker run --rm node:22-bullseye npx --yes @liam-hq/cli@${version} --version
