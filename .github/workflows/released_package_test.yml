@@ -38,4 +38,4 @@ jobs:
             echo "Error: Invalid version format"
             exit 1
           fi
-          docker run --rm node:22-bullseye npx --yes @liam-hq/cli@${version} --version
+          npx --yes @liam-hq/cli@${version} --version
