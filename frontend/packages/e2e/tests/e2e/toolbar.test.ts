@@ -40,7 +40,7 @@ test.describe('Desktop Toolbar', () => {
 
   test('zoom in button should increase zoom level', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
-    const zoomLevelText = toolbar.locator('span[class*="zoomLevelText"]')
+    const zoomLevelText = toolbar.getByLabel('Zoom level')
 
     const zoomLevelBefore = await zoomLevelText.textContent()
 
@@ -55,7 +55,7 @@ test.describe('Desktop Toolbar', () => {
 
   test('zoom out button should decrease zoom level', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
-    const zoomLevelText = toolbar.locator('span[class*="zoomLevelText"]')
+    const zoomLevelText = toolbar.getByLabel('Zoom level')
 
     const zoomLevelBefore = await zoomLevelText.textContent()
 
@@ -112,7 +112,7 @@ test.describe('Mobile Toolbar', () => {
 
   test('zoom in button should increase zoom level', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
-    const zoomLevelText = toolbar.locator('div[class*="zoomPercent"]')
+    const zoomLevelText = toolbar.getByLabel('Zoom level')
 
     const zoomLevelBefore = await zoomLevelText.textContent()
 
@@ -127,7 +127,7 @@ test.describe('Mobile Toolbar', () => {
 
   test('zoom out button should decrease zoom level', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
-    const zoomLevelText = toolbar.locator('div[class*="zoomPercent"]')
+    const zoomLevelText = toolbar.getByLabel('Zoom level')
 
     const zoomLevelBefore = await zoomLevelText.textContent()
 
