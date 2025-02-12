@@ -61,7 +61,9 @@ export const OpenedMobileToolbar: FC<Props> = ({
     <div className={styles.wrapper}>
       <div className={styles.zoomLevelText}>
         <div className={styles.zoom}>Zoom</div>
-        <div className={styles.zoomPercent}>{Math.floor(zoomLevel * 100)}%</div>
+        <div className={styles.zoomPercent} aria-label="Zoom level">
+          {Math.floor(zoomLevel * 100)}%
+        </div>
       </div>
       <hr className={styles.divider} />
       <div className={styles.buttonGroup}>
@@ -70,7 +72,12 @@ export const OpenedMobileToolbar: FC<Props> = ({
           onClick={handleClickZoomIn}
           className={styles.menuButton}
         >
-          <IconButton size="sm" icon={<Plus />} tooltipContent="Zoom In">
+          <IconButton
+            size="sm"
+            icon={<Plus />}
+            tooltipContent="Zoom In"
+            aria-label="Zoom in"
+          >
             Zoom in
           </IconButton>
         </ToolbarButton>
@@ -79,13 +86,22 @@ export const OpenedMobileToolbar: FC<Props> = ({
           onClick={handleClickZoomOut}
           className={styles.menuButton}
         >
-          <IconButton size="sm" icon={<Minus />} tooltipContent="Zoom Out">
+          <IconButton
+            size="sm"
+            icon={<Minus />}
+            tooltipContent="Zoom Out"
+            aria-label="Zoom out"
+          >
             Zoom out
           </IconButton>
         </ToolbarButton>
 
-        <FitviewButton size="sm">Zoom to Fit</FitviewButton>
-        <TidyUpButton size="sm">Tidy up</TidyUpButton>
+        <FitviewButton size="sm" aria-label="Zoom to fit">
+          Zoom to Fit
+        </FitviewButton>
+        <TidyUpButton size="sm" aria-label="Tidy up">
+          Tidy up
+        </TidyUpButton>
       </div>
       <hr className={styles.divider} />
 
@@ -95,6 +111,7 @@ export const OpenedMobileToolbar: FC<Props> = ({
           type="button"
           onClick={toggleShowModeMenu}
           className={styles.showModeMenuButton}
+          aria-label="Show mode"
         >
           {showModeLabel}
           <div className={styles.cheveron}>
