@@ -4,6 +4,34 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
 
+type ShowModeTest = {
+  mode: string
+  expectedColumns: string[]
+}
+
+const showModeTests: ShowModeTest[] = [
+  {
+    mode: 'Table Name',
+    expectedColumns: [],
+  },
+  {
+    mode: 'Key Only',
+    expectedColumns: ['idbigserial', 'account_idbigint'],
+  },
+  {
+    mode: 'All Fields',
+    expectedColumns: [
+      'idbigserial',
+      'account_idbigint',
+      'titlevarchar',
+      'created_attimestamp',
+      'updated_attimestamp',
+      'replies_policyinteger',
+      'exclusiveboolean',
+    ],
+  },
+]
+
 test.describe('Desktop Toolbar', () => {
   test('should be visible', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
@@ -41,34 +69,6 @@ test.describe('Desktop Toolbar', () => {
   })
 
   test.describe('Show Mode', () => {
-    type ShowModeTest = {
-      mode: string
-      expectedColumns: string[]
-    }
-
-    const showModeTests: ShowModeTest[] = [
-      {
-        mode: 'Table Name',
-        expectedColumns: [],
-      },
-      {
-        mode: 'Key Only',
-        expectedColumns: ['idbigserial', 'account_idbigint'],
-      },
-      {
-        mode: 'All Fields',
-        expectedColumns: [
-          'idbigserial',
-          'account_idbigint',
-          'titlevarchar',
-          'created_attimestamp',
-          'updated_attimestamp',
-          'replies_policyinteger',
-          'exclusiveboolean',
-        ],
-      },
-    ]
-
     test.beforeEach(async ({ page }) => {
       const showModeButton = page.getByRole('button', {
         name: 'Show mode',
@@ -141,34 +141,6 @@ test.describe('Mobile Toolbar', () => {
   })
 
   test.describe('Show Mode', () => {
-    type ShowModeTest = {
-      mode: string
-      expectedColumns: string[]
-    }
-
-    const showModeTests: ShowModeTest[] = [
-      {
-        mode: 'Table Name',
-        expectedColumns: [],
-      },
-      {
-        mode: 'Key Only',
-        expectedColumns: ['idbigserial', 'account_idbigint'],
-      },
-      {
-        mode: 'All Fields',
-        expectedColumns: [
-          'idbigserial',
-          'account_idbigint',
-          'titlevarchar',
-          'created_attimestamp',
-          'updated_attimestamp',
-          'replies_policyinteger',
-          'exclusiveboolean',
-        ],
-      },
-    ]
-
     test.beforeEach(async ({ page }) => {
       const showModeButton = page.getByRole('button', {
         name: 'Show mode',
