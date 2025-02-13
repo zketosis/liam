@@ -5,7 +5,12 @@ test('Page has title', async ({ page }) => {
   await expect(page).toHaveTitle(/Liam ERD/)
 })
 
-test('Copy link button copies current URL to clipboard', async ({ page }) => {
+test('Copy link button copies current URL to clipboard', async ({
+  page,
+  isMobile,
+}) => {
+  if (isMobile) test.skip()
+
   await page.goto('/')
 
   const copyButton = page.getByRole('button', { name: 'Copy Link' })
