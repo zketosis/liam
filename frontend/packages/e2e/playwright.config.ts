@@ -18,7 +18,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], isMobile: false },
+      use: {
+        ...devices['Desktop Chrome'],
+        isMobile: false,
+        permissions: ['clipboard-read', 'clipboard-write'],
+      },
     },
     {
       name: 'Mobile Safari',
