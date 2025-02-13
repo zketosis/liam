@@ -8,10 +8,16 @@ type Props = {
 
 export const Spinner: FC<Props> = ({ className }) => {
   return (
-    <span className={clsx(styles.spinnerBox, className)}>
+    <div
+      className={clsx(styles.spinnerBox, className)}
+      // biome-ignore lint/a11y/useSemanticElements: Because div and status role are common for loading spinners
+      role="status"
+      aria-label="Loading"
+      aria-live="polite"
+    >
       <span className={styles.circleBorder}>
         <span className={styles.circleCore} />
       </span>
-    </span>
+    </div>
   )
 }
