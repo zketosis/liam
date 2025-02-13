@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
+  await expect(page.getByRole('status', { name: 'Loading' })).toBeHidden()
 })
 
 type ShowModeTest = {
@@ -46,6 +47,7 @@ test.describe('Desktop Toolbar', () => {
 
     const zoomInButton = toolbar.getByRole('button', { name: 'Zoom in' })
     await zoomInButton.click()
+    await expect(zoomLevelText).not.toHaveText(zoomLevelBefore)
 
     const zoomLevelAfter = await zoomLevelText.textContent()
     expect(Number.parseInt(zoomLevelBefore)).toBeLessThan(
