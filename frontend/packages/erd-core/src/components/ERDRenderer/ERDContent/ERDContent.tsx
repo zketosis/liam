@@ -1,8 +1,9 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
+import { MAX_ZOOM, MIN_ZOOM } from '@/features/reactflow/constants'
 import { useIsTouchDevice } from '@/hooks'
 import { useVersion } from '@/providers'
-import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
+import { useUserEditingActiveStore } from '@/stores'
 import {
   Background,
   BackgroundVariant,
@@ -22,11 +23,9 @@ import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
-import { useFitViewWhenActiveTableChange } from './useFitViewWhenActiveTableChange'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 import { usePopStateListener } from './usePopStateListener'
-import { useSyncHiddenNodesChange } from './useSyncHiddenNodesChange'
-import { useSyncHighlightsActiveTableChange } from './useSyncHighlightsActiveTableChange'
+import { useTableSelection } from './useTableSelection'
 
 const nodeTypes = {
   table: TableNode,
@@ -59,23 +58,24 @@ export const ERDContentInner: FC<Props> = ({
     state: { loading },
   } = useERDContentContext()
   const { tableName: activeTableName } = useUserEditingActiveStore()
+  const { selectTable, deselectTable } = useTableSelection()
 
   useInitialAutoLayout(
     nodes,
     enabledFeatures?.initialFitViewToActiveTable ?? true,
   )
-  useFitViewWhenActiveTableChange(
-    enabledFeatures?.fitViewWhenActiveTableChange ?? true,
-  )
-  useSyncHighlightsActiveTableChange()
-  useSyncHiddenNodesChange()
   usePopStateListener()
 
   const { version } = useVersion()
   const isTouchDevice = useIsTouchDevice()
   const handleNodeClick = useCallback(
     (tableId: string) => {
-      updateActiveTableName(tableId)
+      selectTable({
+        tableId,
+        shouldFitViewToActiveTable:
+          enabledFeatures?.fitViewWhenActiveTableChange ?? true,
+      })
+
       selectTableLogEvent({
         ref: 'mainArea',
         tableId,
@@ -85,12 +85,12 @@ export const ERDContentInner: FC<Props> = ({
         appEnv: version.envName,
       })
     },
-    [version],
+    [version, enabledFeatures?.fitViewWhenActiveTableChange, selectTable],
   )
 
   const handlePaneClick = useCallback(() => {
-    updateActiveTableName(undefined)
-  }, [])
+    deselectTable()
+  }, [deselectTable])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
     (_, { id }) => {
@@ -150,8 +150,8 @@ export const ERDContentInner: FC<Props> = ({
         edgeTypes={edgeTypes}
         edgesFocusable={false}
         edgesReconnectable={false}
-        minZoom={0.1}
-        maxZoom={2}
+        minZoom={MIN_ZOOM}
+        maxZoom={MAX_ZOOM}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={(_, node) => handleNodeClick(node.id)}

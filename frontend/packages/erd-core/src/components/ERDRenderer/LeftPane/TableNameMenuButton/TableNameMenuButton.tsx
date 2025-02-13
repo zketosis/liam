@@ -1,10 +1,9 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { useVersion } from '@/providers'
-import { updateActiveTableName } from '@/stores'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import clsx from 'clsx'
 import type { FC } from 'react'
-import type { TableNodeType } from '../../ERDContent'
+import { type TableNodeType, useTableSelection } from '../../ERDContent'
 import styles from './TableNameMenuButton.module.css'
 import { VisibilityButton } from './VisibilityButton'
 
@@ -15,11 +14,17 @@ type Props = {
 export const TableNameMenuButton: FC<Props> = ({ node }) => {
   const name = node.data.table.name
 
+  const { selectTable } = useTableSelection()
+
   // TODO: Move handleClickMenuButton outside of TableNameMenuButton
   // after logging is complete
   const { version } = useVersion()
   const handleClickMenuButton = (tableId: string) => () => {
-    updateActiveTableName(tableId)
+    selectTable({
+      tableId,
+      shouldFitViewToActiveTable: true,
+    })
+
     selectTableLogEvent({
       ref: 'leftPane',
       tableId,
