@@ -1,8 +1,8 @@
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
+import { useIsTouchDevice } from '@/hooks'
 import { useVersion } from '@/providers'
 import { updateActiveTableName, useUserEditingActiveStore } from '@/stores'
-import { isTouchDevice } from '@/utils'
 import {
   Background,
   BackgroundVariant,
@@ -72,6 +72,7 @@ export const ERDContentInner: FC<Props> = ({
   usePopStateListener()
 
   const { version } = useVersion()
+  const isTouchDevice = useIsTouchDevice()
   const handleNodeClick = useCallback(
     (tableId: string) => {
       updateActiveTableName(tableId)
@@ -160,7 +161,7 @@ export const ERDContentInner: FC<Props> = ({
         onNodeDragStop={handleDragStopNode}
         panOnScroll
         panOnDrag={panOnDrag}
-        selectionOnDrag={!isTouchDevice()}
+        selectionOnDrag={!isTouchDevice}
         deleteKeyCode={null} // Turn off because it does not want to be deleted
         attributionPosition="bottom-left"
         nodesConnectable={false}
