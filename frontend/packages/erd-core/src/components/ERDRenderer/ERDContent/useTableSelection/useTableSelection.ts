@@ -1,6 +1,5 @@
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { updateActiveTableName } from '@/stores'
-import { useReactFlow } from '@xyflow/react'
 import { useCallback } from 'react'
 import { highlightNodesAndEdges } from '../highlightNodesAndEdges'
 
@@ -10,8 +9,7 @@ type SelectTableParams = {
 }
 
 export const useTableSelection = () => {
-  const { getNodes, getEdges, setNodes, setEdges } = useReactFlow()
-  const { fitView } = useCustomReactflow()
+  const { getNodes, getEdges, setNodes, setEdges, fitView } = useCustomReactflow()
 
   const selectTable = useCallback(
     ({ tableId, shouldFitViewToActiveTable }: SelectTableParams) => {

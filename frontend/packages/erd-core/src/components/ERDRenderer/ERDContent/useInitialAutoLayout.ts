@@ -1,4 +1,3 @@
-import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
   addHiddenNodeIds,
   updateActiveTableName,
@@ -9,8 +8,9 @@ import {
   getHiddenNodeIdsFromUrl,
   getShowModeFromUrl,
 } from '@/utils'
-import { type Node, useReactFlow } from '@xyflow/react'
+import { type Node } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useERDContentContext } from './ERDContentContext'
 import { computeAutoLayout } from './computeAutoLayout'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
@@ -28,8 +28,7 @@ export const useInitialAutoLayout = (
         .some((node) => node.measured),
     [nodes],
   )
-  const { getEdges, setNodes, setEdges } = useReactFlow()
-  const { fitView } = useCustomReactflow()
+  const { getEdges, setNodes, setEdges, fitView } = useCustomReactflow()
   const {
     actions: { setLoading },
   } = useERDContentContext()

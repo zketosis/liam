@@ -3,7 +3,6 @@ import {
   convertDBStructureToNodes,
 } from '@/components/ERDRenderer/convertDBStructureToNodes'
 import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
-import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
 import {
   replaceHiddenNodeIds,
@@ -18,8 +17,9 @@ import {
   Table2 as Table2Icon,
   XIcon,
 } from '@liam-hq/ui'
-import { type Node, useReactFlow } from '@xyflow/react'
+import { type Node } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { computeAutoLayout } from '../../computeAutoLayout'
 import { Columns } from './Columns'
 import { Comment } from './Comment'
@@ -45,8 +45,7 @@ export const TableDetail: FC<Props> = ({ table }) => {
     showMode: 'TABLE_NAME',
   })
 
-  const { getNodes, getEdges, setNodes, setEdges } = useReactFlow()
-  const { fitView } = useCustomReactflow()
+  const { getNodes, getEdges, setNodes, setEdges, fitView } = useCustomReactflow()
   const { version } = useVersion()
 
   const handleDrawerClose = () => {
