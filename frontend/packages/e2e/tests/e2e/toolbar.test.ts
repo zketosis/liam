@@ -76,6 +76,59 @@ test('zoom out button should decrease zoom level', async ({ page }) => {
   )
 })
 
+test('tidyup button should make the table nodes tidy', async ({
+  page,
+  isMobile,
+}) => {
+  // TODO: Activate the test for mobile
+  // skip because can't move the table node on mobile by mouse
+  if (isMobile) test.skip()
+
+  const toolbar = page.getByRole('toolbar', { name: 'Toolbar' })
+  const tidyUpButton = toolbar.getByRole('button', { name: 'Tidy Up' })
+
+  const tableNode = page.getByRole('button', {
+    name: 'accounts table',
+    exact: true,
+  })
+
+  const initialTableNodePosition = await tableNode.boundingBox()
+
+  await page.mouse.move(
+    initialTableNodePosition.x + initialTableNodePosition.width / 2,
+    initialTableNodePosition.y + initialTableNodePosition.height / 2,
+  )
+  await page.mouse.down()
+  await page.mouse.move(
+    initialTableNodePosition.x + 500,
+    initialTableNodePosition.y + 500,
+    { steps: 50 },
+  )
+  await page.mouse.up()
+  await page.waitForTimeout(500)
+
+  const movedTableNodePosition = await tableNode.boundingBox()
+
+  expect(
+    Math.abs(movedTableNodePosition.x - initialTableNodePosition.x),
+  ).toBeGreaterThan(100)
+  expect(
+    Math.abs(movedTableNodePosition.y - initialTableNodePosition.y),
+  ).toBeGreaterThan(100)
+
+  await tidyUpButton.click()
+  await page.waitForTimeout(500)
+
+  const finalTableNodePosition = await tableNode.boundingBox()
+
+  expect(Math.abs(finalTableNodePosition.x - initialTableNodePosition.x)).toBe(
+    0,
+  )
+  expect(Math.abs(finalTableNodePosition.y - initialTableNodePosition.y)).toBe(
+    0,
+  )
+})
+
 test('fitview button should make the table nodes fit the viewport', async ({
   page,
   isMobile,
