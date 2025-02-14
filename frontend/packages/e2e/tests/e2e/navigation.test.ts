@@ -41,8 +41,22 @@ test.describe('Navigation and URL Parameters', () => {
       await expectUserTableColumnInAccountsTableVisibility(page, 'visible')
     })
 
-    test.skip('selecting a table should update active parameter', async () => {})
-    test.skip('hiding a table should update hidden parameter', async () => {})
+    test('selecting a table should update active parameter', async ({ page }) => {
+      const accountsTable = page.getByRole('button', {
+        name: 'accounts table',
+        exact: true,
+      })
+      await accountsTable.click()
+
+      await expect(page).toHaveURL(/.*active=accounts/)
+    })
+    test('hiding a table should update hidden parameter', async ({ page }) => {
+      await page.getByRole('button', { name: 'Toggle Sidebar Icon Button' }).click();
+      await page.getByRole('button', { name: 'Menu button for accounts', exact: true }).getByLabel('Hide Table').click();
+
+      // NOTE: Compressed string of comma-separated table names
+      await expect(page).toHaveURL(/.*hidden=eJxLTE7OL80rKQYADrsDYQ/)
+    })
   })
 
   test.describe('Browser History', () => {
