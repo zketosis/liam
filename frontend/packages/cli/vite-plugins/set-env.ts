@@ -45,25 +45,35 @@ export function setEnvPlugin(): Plugin {
   const isReleasedGitHash = (gitHash: string, packageJsonVersion: string) => {
     const latestTagName = `${versionPrefix}${packageJsonVersion}`
     try {
-      execSync('(git ls-remote --tags https://github.com/liam-hq/liam.git || git remote add origin https://github.com/liam-hq/liam.git) && git fetch --all --tags --unshallow')
+      execSync('git fetch --tags')
 
-      const tags = execSync('git tag -l').toString().trim()
-      console.log('Fetched tags:', tags)
+      const tagList = execSync('git tag -l').toString()
+      // Get the tag from remote because it cannot be obtained by automatic deployment of Vercel.
+      if (!tagList.includes(latestTagName)) {
+        const lsRemoteOutput = execSync(
+          'git ls-remote --tags https://github.com/liam-hq/liam.git',
+        )
+          .toString()
+          .trim()
+        const tagCommit = lsRemoteOutput
+          .split('\n')
+          .find((line) => line.includes(latestTagName))
+          ?.split('\t')[0]
 
-      const lsRemote = execSync(`git ls-remote --tags https://github.com/liam-hq/liam.git`).toString().trim()
-      console.log('ls-remote:', lsRemote)
+        if (!tagCommit) {
+          console.error(`Tag ${latestTagName} not found in ls-remote output`)
+        }
+
+        return gitHash === tagCommit ? 1 : 0
+      }
 
       const tagCommit = execSync(`git rev-parse '${latestTagName}'`)
         .toString()
         .trim()
-      if (gitHash === tagCommit) {
-        return 1
-      }
-      return 0
+
+      return gitHash === tagCommit ? 1 : 0
     } catch (error) {
       console.error('Failed to get git tag:', error)
-      console.error('git tag -l')
-      console.error(execSync('git tag -l').toString())
       return 0
     }
   }
