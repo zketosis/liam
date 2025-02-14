@@ -62,7 +62,9 @@ test.describe('Navigation and URL Parameters', () => {
       await expectUserTableColumnInAccountsTableVisibility(page, 'hidden')
     })
 
-    test('should handle back/forward navigation with table selection', async ({ page }) => {
+    test('should handle back/forward navigation with table selection', async ({
+      page,
+    }) => {
       // Initial state - select accounts table
       const accountsTable = page.getByRole('button', {
         name: 'accounts table',
@@ -90,7 +92,9 @@ test.describe('Navigation and URL Parameters', () => {
     })
 
     // FIXME: Browser back on hidden table is not working properly
-    test.skip('should handle back/forward navigation with table hiding', async ({ page }) => {
+    test.skip('should handle back/forward navigation with table hiding', async ({
+      page,
+    }) => {
       // Initial state
       const accountsTable = page.getByRole('button', {
         name: 'accounts table',
@@ -99,8 +103,11 @@ test.describe('Navigation and URL Parameters', () => {
       await expect(accountsTable).toBeVisible()
 
       // Hide the accounts table
-      await page.getByRole('button', { name: 'Toggle Sidebar Icon Button' }).click()
-      await page.getByRole('button', { name: 'Menu button for accounts', exact: true })
+      await page
+        .getByRole('button', { name: 'Toggle Sidebar Icon Button' })
+        .click()
+      await page
+        .getByRole('button', { name: 'Menu button for accounts', exact: true })
         .getByLabel('Hide Table')
         .click()
       await expect(page).toHaveURL(/.*hidden=eJxLTE7OL80rKQYADrsDYQ/)
