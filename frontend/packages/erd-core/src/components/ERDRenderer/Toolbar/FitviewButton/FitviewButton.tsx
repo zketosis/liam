@@ -39,7 +39,12 @@ export const FitviewButton: FC<FitviewButtonProps> = ({
 
   return (
     <ToolbarButton asChild onClick={handleClick} className={styles.menuButton}>
-      <IconButton size={size} icon={<Scan />} tooltipContent="Zoom to Fit">
+      <IconButton
+        size={size}
+        icon={<Scan />}
+        tooltipContent="Zoom to Fit"
+        aria-label="Zoom to fit"
+      >
         {children}
       </IconButton>
     </ToolbarButton>
