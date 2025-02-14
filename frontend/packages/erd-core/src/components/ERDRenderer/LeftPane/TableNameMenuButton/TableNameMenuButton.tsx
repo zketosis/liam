@@ -45,6 +45,7 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
           tabIndex={0}
           onClick={handleClickMenuButton(name)}
           onKeyDown={handleClickMenuButton(name)}
+          aria-label={`Menu button for ${name}`}
         >
           <Table2 size="10px" />
           <span className={styles.tableName}>{name}</span>
