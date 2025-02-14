@@ -9,7 +9,8 @@ type SelectTableParams = {
 }
 
 export const useTableSelection = () => {
-  const { getNodes, getEdges, setNodes, setEdges, fitView } = useCustomReactflow()
+  const { getNodes, getEdges, setNodes, setEdges, fitView } =
+    useCustomReactflow()
 
   const selectTable = useCallback(
     ({ tableId, shouldFitViewToActiveTable }: SelectTableParams) => {

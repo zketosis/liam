@@ -1,3 +1,4 @@
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
   addHiddenNodeIds,
   updateActiveTableName,
@@ -8,9 +9,8 @@ import {
   getHiddenNodeIdsFromUrl,
   getShowModeFromUrl,
 } from '@/utils'
-import { type Node } from '@xyflow/react'
+import type { Node } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useERDContentContext } from './ERDContentContext'
 import { computeAutoLayout } from './computeAutoLayout'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
