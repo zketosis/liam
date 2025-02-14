@@ -3,11 +3,11 @@ import { useCallback } from 'react'
 import { MAX_ZOOM, MIN_ZOOM } from '../constants'
 
 export const useCustomReactflow = () => {
-  const { fitView: primitiveFitView } = useReactFlow()
+  const reactFlowInstance = useReactFlow()
+  const { fitView: primitiveFitView, ...restFunctions } = reactFlowInstance
 
   const fitView = useCallback(
     async (options?: FitViewOptions) => {
-      // NOTE: Added setTimeout() to reference the updated nodes after setNodes() updates the value.
       return new Promise<void>((resolve) => {
         setTimeout(() => {
           primitiveFitView({
@@ -23,6 +23,7 @@ export const useCustomReactflow = () => {
   )
 
   return {
+    ...restFunctions,
     fitView,
   }
 }
