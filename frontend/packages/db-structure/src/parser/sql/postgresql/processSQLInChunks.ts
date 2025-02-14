@@ -19,19 +19,21 @@ export const processSQLInChunks = async (
   let currentChunkSize = 0
   const processErrors: ProcessError[] = []
 
+  const retryDirectionValues = {
+    decrease: -1, // Shrinking mode
+    increase: 1, // Expanding mode
+  } as const
+  type RetryDirection = -1 | 1
+
   for (let i = 0; i < lines.length; ) {
     if (processErrors.length > 0) break
     currentChunkSize = chunkSize
-    enum RetryDirection {
-      Decrease = -1, // Shrinking mode
-      Increase = 1, // Expanding mode
-    }
-    let retryDirection: RetryDirection = RetryDirection.Decrease
+    let retryDirection: RetryDirection = retryDirectionValues.decrease
 
     while (true) {
       // NOTE: To minimize unnecessary retries, avoid increasing currentChunkSize excessively,
       //       especially when errorOffset is present.
-      if (retryDirection === RetryDirection.Decrease) {
+      if (retryDirection === retryDirectionValues.decrease) {
         if (i + currentChunkSize > lines.length) {
           currentChunkSize = lines.length - i
         }
@@ -41,13 +43,13 @@ export const processSQLInChunks = async (
       const [errorOffset, readOffset, errors] = await callback(chunk)
 
       if (errorOffset !== null) {
-        if (retryDirection === RetryDirection.Decrease) {
+        if (retryDirection === retryDirectionValues.decrease) {
           currentChunkSize--
           if (currentChunkSize === 0) {
-            retryDirection = RetryDirection.Increase
+            retryDirection = retryDirectionValues.increase
             currentChunkSize = chunkSize
           }
-        } else if (retryDirection === RetryDirection.Increase) {
+        } else if (retryDirection === retryDirectionValues.increase) {
           currentChunkSize++
           // NOTE: No further progress can be made in this case, so break.
           if (i + currentChunkSize > lines.length) {
