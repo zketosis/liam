@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        browser: [chromium, Mobile Safari]
+        browser: [chromium, 'Mobile Safari']
       fail-fast: false
     defaults:
       run:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Playwright browser
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+        run: pnpm exec playwright install --with-deps "${{ matrix.browser }}"
 
       - name: Run e2e tests
         run: pnpm exec playwright test --project="${{ matrix.browser }}"
