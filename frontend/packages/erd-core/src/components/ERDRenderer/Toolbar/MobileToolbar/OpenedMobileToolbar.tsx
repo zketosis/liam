@@ -1,11 +1,12 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
 import type { ShowMode } from '@/schemas/showMode'
 import { useUserEditingStore } from '@/stores'
 import { ChevronDown } from '@liam-hq/ui'
 import { IconButton, Minus, Plus } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
-import { useReactFlow, useStore } from '@xyflow/react'
+import { useStore } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
 import { FitviewButton } from '../FitviewButton'
 import { TidyUpButton } from '../TidyUpButton'
@@ -20,7 +21,7 @@ export const OpenedMobileToolbar: FC<Props> = ({
   toggleOpenClose,
   toggleShowModeMenu,
 }) => {
-  const { zoomIn, zoomOut } = useReactFlow()
+  const { zoomIn, zoomOut } = useCustomReactflow()
   const zoomLevel = useStore((store) => store.transform[2])
   const { showMode } = useUserEditingStore()
   const { version } = useVersion()

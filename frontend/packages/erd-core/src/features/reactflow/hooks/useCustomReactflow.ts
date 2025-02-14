@@ -3,7 +3,8 @@ import { useCallback } from 'react'
 import { MAX_ZOOM, MIN_ZOOM } from '../constants'
 
 export const useCustomReactflow = () => {
-  const { fitView: primitiveFitView } = useReactFlow()
+  const reactFlowInstance = useReactFlow()
+  const { fitView: primitiveFitView, ...restFunctions } = reactFlowInstance
 
   const fitView = useCallback(
     async (options?: FitViewOptions) => {
@@ -23,6 +24,7 @@ export const useCustomReactflow = () => {
   )
 
   return {
+    ...restFunctions,
     fitView,
   }
 }

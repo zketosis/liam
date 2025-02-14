@@ -18,7 +18,7 @@ import {
   Table2 as Table2Icon,
   XIcon,
 } from '@liam-hq/ui'
-import { type Node, useReactFlow } from '@xyflow/react'
+import type { Node } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
 import { computeAutoLayout } from '../../computeAutoLayout'
 import { Columns } from './Columns'
@@ -45,8 +45,8 @@ export const TableDetail: FC<Props> = ({ table }) => {
     showMode: 'TABLE_NAME',
   })
 
-  const { getNodes, getEdges, setNodes, setEdges } = useReactFlow()
-  const { fitView } = useCustomReactflow()
+  const { getNodes, getEdges, setNodes, setEdges, fitView } =
+    useCustomReactflow()
   const { version } = useVersion()
 
   const handleDrawerClose = () => {
