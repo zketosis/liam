@@ -39,3 +39,54 @@ jobs:
             exit 1
           fi
           npx --yes @liam-hq/cli@${version} --version
+
+      # derived from https://github.com/route06/actions/blob/8e3ac6855302a4fe3bd621ebd16c7a0da261948a/.github/workflows/notify_slack_on_ci_failed.yml
+      - name: Slack Notification on Success
+        if: success()
+        uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
+        env:
+          # https://api.slack.com/apps/A08CVT65VAT/general
+          INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}
+        with:
+          text: "Liam CLI released package test"
+          attachments: |
+            [
+              {
+                "color": "good",
+                "fields": [
+                  {
+                    "title": "Version",
+                    "value": "${{ github.event.inputs.version }}"
+                  },
+                  {
+                    "title": "Result",
+                    "value": "success"
+                  }
+                ]
+              }
+            ]
+
+      - name: Slack Notification on Failure
+        if: failure()
+        uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
+        env:
+          # https://api.slack.com/apps/A08CVT65VAT/general
+          INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}
+        with:
+          text: "Liam CLI released package test"
+          attachments: |
+            [
+              {
+                "color": "bad",
+                "fields": [
+                  {
+                    "title": "Version",
+                    "value": "${{ github.event.inputs.version }}"
+                  },
+                  {
+                    "title": "Result",
+                    "value": "failure"
+                  }
+                ]
+              }
+            ]
