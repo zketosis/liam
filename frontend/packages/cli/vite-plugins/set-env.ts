@@ -40,7 +40,7 @@ export function setEnvPlugin(): Plugin {
     }
   }
 
-  const versionPrefix = '@liam-hq/cli@'
+  const versionPrefix = 'refs/tags/@liam-hq/cli@'
 
   const isReleasedGitHash = (gitHash: string, packageJsonVersion: string) => {
     const latestTagName = `${versionPrefix}${packageJsonVersion}`
