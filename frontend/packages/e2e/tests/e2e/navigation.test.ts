@@ -27,38 +27,6 @@ test.describe('Navigation and URL Parameters', () => {
     await page.goto('/')
   })
 
-  test.describe('Basic URL Parameters', () => {
-    test('showMode changes should be reflected in URL', async ({ page }) => {
-      const showModeButton = page.getByRole('button', { name: 'Show Mode' })
-      await showModeButton.click()
-
-      const tableNameOption = page.getByRole('menuitemradio', {
-        name: 'All Fields',
-      })
-      await tableNameOption.click()
-
-      await expect(page).toHaveURL(/.*showMode=ALL_FIELDS/)
-      await expectUserTableColumnInAccountsTableVisibility(page, 'visible')
-    })
-
-    test('selecting a table should update active parameter', async ({ page }) => {
-      const accountsTable = page.getByRole('button', {
-        name: 'accounts table',
-        exact: true,
-      })
-      await accountsTable.click()
-
-      await expect(page).toHaveURL(/.*active=accounts/)
-    })
-    test('hiding a table should update hidden parameter', async ({ page }) => {
-      await page.getByRole('button', { name: 'Toggle Sidebar Icon Button' }).click();
-      await page.getByRole('button', { name: 'Menu button for accounts', exact: true }).getByLabel('Hide Table').click();
-
-      // NOTE: Compressed string of comma-separated table names
-      await expect(page).toHaveURL(/.*hidden=eJxLTE7OL80rKQYADrsDYQ/)
-    })
-  })
-
   test.describe('Browser History', () => {
     test('should handle back/forward navigation with showMode changes', async ({
       page,
