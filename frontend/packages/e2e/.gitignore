@@ -4,6 +4,8 @@
 /blob-report/
 /playwright/.cache/
 # Files created when tests are run locally
-/tests/vrt/vrt.test.ts-snapshots/top-1-chromium-darwin.png
+/tests/vrt/vrt.test.ts-snapshots/*.png
+!/tests/vrt/vrt.test.ts-snapshots/top-1-chromium-linux.png
+!/tests/vrt/vrt.test.ts-snapshots/top-1-Mobile-Safari-linux.png
 
 storageState.json

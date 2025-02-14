@@ -1,4 +1,5 @@
 import { toggleLogEvent } from '@/features/gtm/utils'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
 import { toggleHiddenNodeId } from '@/stores'
 import { Eye, EyeClosed, SidebarMenuAction } from '@liam-hq/ui'
@@ -11,11 +12,15 @@ type Props = {
 }
 
 export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
+  const { updateNode } = useCustomReactflow()
   const { version } = useVersion()
+
   const handleClick = useCallback(
     (event: MouseEvent) => {
       event.stopPropagation()
       toggleHiddenNodeId(tableName)
+      updateNode(tableName, { hidden: !hidden })
+
       toggleLogEvent({
         element: 'tableNameMenuButton',
         isShow: !!hidden,
@@ -26,7 +31,7 @@ export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
         appEnv: version.envName,
       })
     },
-    [tableName, hidden, version],
+    [tableName, hidden, updateNode, version],
   )
 
   return (

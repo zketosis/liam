@@ -8,12 +8,10 @@ import {
 
 type ERDContentContextState = {
   loading: boolean
-  initializeComplete: boolean
 }
 
 type ERDContentContextActions = {
   setLoading: (loading: boolean) => void
-  setInitializeComplete: (initializeComplete: boolean) => void
 }
 
 type ERDContentConextValue = {
@@ -24,11 +22,9 @@ type ERDContentConextValue = {
 const ERDContentContext = createContext<ERDContentConextValue>({
   state: {
     loading: true,
-    initializeComplete: false,
   },
   actions: {
     setLoading: () => {},
-    setInitializeComplete: () => {},
   },
 })
 
@@ -36,13 +32,12 @@ export const useERDContentContext = () => useContext(ERDContentContext)
 
 export const ERDContentProvider: FC<PropsWithChildren> = ({ children }) => {
   const [loading, setLoading] = useState(true)
-  const [initializeComplete, setInitializeComplete] = useState(false)
 
   return (
     <ERDContentContext.Provider
       value={{
-        state: { loading, initializeComplete },
-        actions: { setLoading, setInitializeComplete },
+        state: { loading },
+        actions: { setLoading },
       }}
     >
       {children}

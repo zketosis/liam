@@ -10,9 +10,13 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      matrix:
+        browser: [chromium, 'Mobile Safari']
+      fail-fast: false
     defaults:
       run:
-        working-directory: 'frontend/packages/e2e'
+        working-directory: "frontend/packages/e2e"
     env:
       CI: true
     steps:
@@ -22,14 +26,26 @@ jobs:
       - name: Setup pnpm
         uses: ./.github/actions/pnpm-setup
 
-      - name: Configure Git safe directory
-        run: git config --global --add safe.directory /__w/liam/liam
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml', '**/playwright.config.ts') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
 
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps
 
+      - name: Install system dependencies for WebKit
+        # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
+        if: ${{ steps.playwright-cache.outputs.cache-hit == 'true' }}
+        run: pnpm exec playwright install-deps webkit
+
       - name: Run e2e tests
-        run: pnpm test:e2e
+        run: pnpm exec playwright test --project="${{ matrix.browser }}"
         env:
           URL: ${{ inputs.url }}
 
