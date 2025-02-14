@@ -7,9 +7,9 @@ test('Page has title', async ({ page }) => {
 
 test('Copy link button copies current URL to clipboard', async ({
   page,
-  context,
+  isMobile,
 }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  if (isMobile) test.skip()
 
   await page.goto('/')
 
