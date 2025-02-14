@@ -5,6 +5,10 @@
       "dependsOn": ["^build", "gen"],
       "outputs": ["dist", "dist-cli"]
     },
+    "@liam-hq/docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
