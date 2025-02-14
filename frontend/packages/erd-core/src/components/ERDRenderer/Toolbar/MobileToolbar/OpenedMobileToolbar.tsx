@@ -97,12 +97,8 @@ export const OpenedMobileToolbar: FC<Props> = ({
           </IconButton>
         </ToolbarButton>
 
-        <FitviewButton size="sm" aria-label="Zoom to fit">
-          Zoom to Fit
-        </FitviewButton>
-        <TidyUpButton size="sm" aria-label="Tidy up">
-          Tidy up
-        </TidyUpButton>
+        <FitviewButton size="sm">Zoom to Fit</FitviewButton>
+        <TidyUpButton size="sm">Tidy up</TidyUpButton>
       </div>
       <hr className={styles.divider} />
 
