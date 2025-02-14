@@ -38,3 +38,63 @@ test('Table node should be highlighted when clicked', async ({ page }) => {
 
   expect(firstChild).toBe('table-node-highlighted')
 })
+
+test('Edge animation should be triggered when table node is clicked', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const tableNode = page.getByRole('button', {
+    name: 'account_aliases table',
+    exact: true,
+  })
+
+  const edge = page.getByRole('img', {
+    name: 'Edge from accounts to account_aliases',
+  })
+
+  const edgeEllipseBefore = edge.locator('ellipse').first()
+  await expect(edgeEllipseBefore).toBeHidden()
+
+  await tableNode.click()
+
+  const edgeEllipseAfter = edge.locator('ellipse').first()
+  await expect(edgeEllipseAfter).toBeVisible()
+})
+
+test('Cardinality should be highlighted when table node is clicked', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const tableNode = page.getByRole('button', {
+    name: 'account_aliases table',
+    exact: true,
+  })
+
+  const edge = page.getByRole('img', {
+    name: 'Edge from accounts to account_aliases',
+  })
+
+  const cardinalityBefore = edge.locator('path').first()
+  await expect(cardinalityBefore).toHaveAttribute(
+    'marker-start',
+    'url(#zeroOrOneRight)',
+  )
+  await expect(cardinalityBefore).toHaveAttribute(
+    'marker-end',
+    'url(#zeroOrManyLeft)',
+  )
+
+  await tableNode.click()
+
+  const cardinalityAfter = edge.locator('path').first()
+  await expect(cardinalityAfter).toHaveAttribute(
+    'marker-start',
+    'url(#zeroOrOneRightHighlight)',
+  )
+  await expect(cardinalityAfter).toHaveAttribute(
+    'marker-end',
+    'url(#zeroOrManyLeftHighlight)',
+  )
+})
