@@ -35,11 +35,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps
 
-      - name: Install WebKit dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y woff2
-
       - name: Run e2e tests
         run: pnpm test:e2e
         env:
