@@ -46,7 +46,7 @@ export function setEnvPlugin(): Plugin {
     const latestTagName = `${versionPrefix}${packageJsonVersion}`
     try {
       execSync('git fetch --tags')
-      const tagCommit = execSync(`git rev-parse ${latestTagName}`)
+      const tagCommit = execSync(`git rev-parse '${latestTagName}'`)
         .toString()
         .trim()
       if (gitHash === tagCommit) {
