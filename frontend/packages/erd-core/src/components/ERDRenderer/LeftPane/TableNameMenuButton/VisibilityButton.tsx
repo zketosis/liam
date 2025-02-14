@@ -2,8 +2,8 @@ import { toggleLogEvent } from '@/features/gtm/utils'
 import { useVersion } from '@/providers'
 import { toggleHiddenNodeId } from '@/stores'
 import { Eye, EyeClosed, SidebarMenuAction } from '@liam-hq/ui'
-import { useReactFlow } from '@xyflow/react'
 import { type FC, type MouseEvent, useCallback } from 'react'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import styles from './VisibilityButton.module.css'
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const VisibilityButton: FC<Props> = ({ tableName, hidden }) => {
-  const { updateNode } = useReactFlow()
+  const { updateNode } = useCustomReactflow()
   const { version } = useVersion()
 
   const handleClick = useCallback(
