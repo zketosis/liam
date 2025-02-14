@@ -1,3 +1,4 @@
 export * from './ERDContent'
 export * from './TableNode'
-export * from './useAutoLayout'
+export * from './useTableSelection'
+export * from './computeAutoLayout'

@@ -1,4 +1,5 @@
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
 import { useUserEditingStore } from '@/stores'
 import { IconButton, TidyUpIcon } from '@liam-hq/ui'
@@ -10,7 +11,7 @@ import {
   type ReactNode,
   useCallback,
 } from 'react'
-import { useAutoLayout } from '../../ERDContent'
+import { computeAutoLayout } from '../../ERDContent'
 import styles from './TidyUpButton.module.css'
 
 interface TidyUpButtonProps {
@@ -22,11 +23,12 @@ export const TidyUpButton: FC<TidyUpButtonProps> = ({
   children = '',
   size = 'md',
 }) => {
-  const { getNodes, getEdges } = useReactFlow()
-  const { handleLayout } = useAutoLayout()
+  const { getNodes, getEdges, setNodes } = useReactFlow()
+  const { fitView } = useCustomReactflow()
   const { showMode } = useUserEditingStore()
   const { version } = useVersion()
-  const handleClick = useCallback(() => {
+
+  const handleClick = useCallback(async () => {
     toolbarActionLogEvent({
       element: 'tidyUp',
       showMode,
@@ -35,8 +37,11 @@ export const TidyUpButton: FC<TidyUpButtonProps> = ({
       ver: version.version,
       appEnv: version.envName,
     })
-    handleLayout(getNodes(), getEdges())
-  }, [handleLayout, showMode, getNodes, getEdges, version])
+
+    const { nodes } = await computeAutoLayout(getNodes(), getEdges())
+    setNodes(nodes)
+    fitView()
+  }, [showMode, getNodes, getEdges, setNodes, fitView, version])
 
   return (
     <ToolbarButton asChild className={styles.menuButton}>
