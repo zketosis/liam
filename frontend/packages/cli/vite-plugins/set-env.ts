@@ -45,7 +45,14 @@ export function setEnvPlugin(): Plugin {
   const isReleasedGitHash = (gitHash: string, packageJsonVersion: string) => {
     const latestTagName = `${versionPrefix}${packageJsonVersion}`
     try {
-      execSync('git fetch --tags')
+      execSync('(git ls-remote --tags https://github.com/liam-hq/liam.git || git remote add origin https://github.com/liam-hq/liam.git) && git fetch --all --tags --unshallow')
+
+      const tags = execSync('git tag -l').toString().trim()
+      console.log('Fetched tags:', tags)
+
+      const lsRemote = execSync(`git ls-remote --tags https://github.com/liam-hq/liam.git`).toString().trim()
+      console.log('ls-remote:', lsRemote)
+
       const tagCommit = execSync(`git rev-parse '${latestTagName}'`)
         .toString()
         .trim()
@@ -55,6 +62,8 @@ export function setEnvPlugin(): Plugin {
       return 0
     } catch (error) {
       console.error('Failed to get git tag:', error)
+      console.error('git tag -l')
+      console.error(execSync('git tag -l').toString())
       return 0
     }
   }
