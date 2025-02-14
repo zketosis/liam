@@ -10,6 +10,10 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      matrix:
+        browser: [chromium, 'Mobile Safari']
+      fail-fast: false
     defaults:
       run:
         working-directory: "frontend/packages/e2e"
@@ -41,7 +45,7 @@ jobs:
         run: pnpm exec playwright install-deps webkit
 
       - name: Run e2e tests
-        run: pnpm test:e2e
+        run: pnpm exec playwright test --project="${{ matrix.browser }}"
         env:
           URL: ${{ inputs.url }}
 
