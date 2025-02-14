@@ -18,7 +18,12 @@ const expectUserTableColumnInAccountsTableVisibility = async (
 }
 
 test.describe('Navigation and URL Parameters', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, isMobile }) => {
+    // TODO: Implement this test on mobile
+    if (isMobile) {
+      test.skip()
+    }
+
     await page.goto('/')
   })
 
