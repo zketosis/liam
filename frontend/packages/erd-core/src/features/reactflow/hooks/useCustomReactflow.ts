@@ -10,13 +10,15 @@ export const useCustomReactflow = () => {
     async (options?: FitViewOptions) => {
       // NOTE: Added setTimeout() to reference the updated nodes after setNodes() updates the value.
       return new Promise<void>((resolve) => {
+        // First timeout ensures nodes are updated
         setTimeout(() => {
           primitiveFitView({
             minZoom: MIN_ZOOM,
             maxZoom: MAX_ZOOM,
             ...options,
           })
-          resolve()
+          // Second timeout ensures node state updates are completed
+          setTimeout(resolve, 50)
         }, 50)
       })
     },
