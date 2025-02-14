@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 
 const screenshot = async (page: Page, targetPage: TargetPage) => {
   await page.goto(targetPage.path)
+  await expect(page.getByRole('status', { name: 'Loading' })).toBeHidden()
 
   await expect(page).toHaveScreenshot({ fullPage: true })
 }
