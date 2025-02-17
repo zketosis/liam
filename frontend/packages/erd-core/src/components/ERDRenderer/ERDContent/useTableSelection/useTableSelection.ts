@@ -2,10 +2,11 @@ import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { updateActiveTableName } from '@/stores'
 import { useCallback } from 'react'
 import { highlightNodesAndEdges } from '../highlightNodesAndEdges'
+import type { DisplayArea } from '../types'
 
 type SelectTableParams = {
   tableId: string
-  shouldFitViewToActiveTable: boolean
+  displayArea: DisplayArea
 }
 
 export const useTableSelection = () => {
@@ -13,7 +14,7 @@ export const useTableSelection = () => {
     useCustomReactflow()
 
   const selectTable = useCallback(
-    ({ tableId, shouldFitViewToActiveTable }: SelectTableParams) => {
+    ({ tableId, displayArea }: SelectTableParams) => {
       updateActiveTableName(tableId)
 
       const { nodes, edges } = highlightNodesAndEdges(getNodes(), getEdges(), {
@@ -23,7 +24,7 @@ export const useTableSelection = () => {
       setNodes(nodes)
       setEdges(edges)
 
-      if (shouldFitViewToActiveTable) {
+      if (displayArea === 'main') {
         fitView({
           maxZoom: 1,
           duration: 300,
