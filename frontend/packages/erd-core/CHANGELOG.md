@@ -1,5 +1,20 @@
 # @liam-hq/erd-core
 
+## 0.1.0
+
+### Minor Changes
+
+- [#739](https://github.com/liam-hq/liam/pull/739) - ✨ Pre-calculate layout for Related Tables before displaying in Main Area / Thanks [@junkisai](https://github.com/junkisai)!
+
+### Patch Changes
+
+- [#726](https://github.com/liam-hq/liam/pull/726) - feat: expose all useReactflow functions in useCustomReactflow and replace direct useReactflow usages / Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)!
+- [#708](https://github.com/liam-hq/liam/pull/708) - ♻️ Swap useReactflow's fitView() with a custom fitView() function / Thanks [@junkisai](https://github.com/junkisai)!
+- [#708](https://github.com/liam-hq/liam/pull/708) - ♻️ Remove useSyncHiddenNodesChange hook and update VisibilityButton to manage node visibility directly / Thanks [@junkisai](https://github.com/junkisai)!
+- [#708](https://github.com/liam-hq/liam/pull/708) - ♻️ Consolidate table selection/deselection logic into useTableSelection hook / Thanks [@junkisai](https://github.com/junkisai)!
+- [#708](https://github.com/liam-hq/liam/pull/708) - 🐛 Fix RelatedTables additional buttons prop rendering / Thanks [@junkisai](https://github.com/junkisai)!
+- [#708](https://github.com/liam-hq/liam/pull/708) - ♻️ Limit useAutoLayout functionality to layout calculations only / Thanks [@junkisai](https://github.com/junkisai)!
+
 ## 0.0.26
 
 ### Patch Changes
