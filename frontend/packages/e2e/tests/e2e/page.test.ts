@@ -32,11 +32,9 @@ test('Table node should be highlighted when clicked', async ({ page }) => {
 
   await tableNode.click()
 
-  const firstChild = await tableNode.evaluate((node: HTMLElement) => {
-    return node.firstElementChild?.getAttribute('data-erd')
-  })
-
-  expect(firstChild).toBe('table-node-highlighted')
+  await expect(
+    tableNode.locator('div[class^="TableNode_wrapper"]'),
+  ).toHaveAttribute('data-erd', 'table-node-highlighted')
 })
 
 test('Edge animation should be triggered when table node is clicked', async ({
