@@ -1,5 +1,11 @@
 # @liam-hq/erd-core
 
+## 0.1.1
+
+### Patch Changes
+
+- [#746](https://github.com/liam-hq/liam/pull/746) - 🐛 Exclude hidden and showMode query parameters from ERDContent rendering in RelatedTables / Thanks [@junkisai](https://github.com/junkisai)!
+
 ## 0.1.0
 
 ### Minor Changes

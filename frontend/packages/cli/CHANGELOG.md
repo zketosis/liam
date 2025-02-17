@@ -1,5 +1,12 @@
 # @liam-hq/cli
 
+## 0.4.1
+
+### Patch Changes
+
+- [#746](https://github.com/liam-hq/liam/pull/746) - 🐛 Exclude hidden and showMode query parameters from ERDContent rendering in RelatedTables / Thanks [@junkisai](https://github.com/junkisai)!
+- [#746](https://github.com/liam-hq/liam/pull/746) - 🐛 Exclude hidden and showMode query parameters from ERDContent rendering in RelatedTables / Thanks [@junkisai](https://github.com/junkisai)!
+
 ## 0.4.0
 
 ### Minor Changes
