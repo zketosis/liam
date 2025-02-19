@@ -50,6 +50,7 @@ export const TidyUpButton: FC<TidyUpButtonProps> = ({
         tooltipContent="Tidy up"
         onClick={handleClick}
         size={size}
+        aria-label="Tidy up"
       >
         {children}
       </IconButton>

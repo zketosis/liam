@@ -22,7 +22,7 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
   const handleClickMenuButton = (tableId: string) => () => {
     selectTable({
       tableId,
-      shouldFitViewToActiveTable: true,
+      displayArea: 'main',
     })
 
     selectTableLogEvent({

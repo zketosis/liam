@@ -27,24 +27,6 @@ test.describe('Navigation and URL Parameters', () => {
     await page.goto('/')
   })
 
-  test.describe('Basic URL Parameters', () => {
-    test('showMode changes should be reflected in URL', async ({ page }) => {
-      const showModeButton = page.getByRole('button', { name: 'Show Mode' })
-      await showModeButton.click()
-
-      const tableNameOption = page.getByRole('menuitemradio', {
-        name: 'All Fields',
-      })
-      await tableNameOption.click()
-
-      await expect(page).toHaveURL(/.*showMode=ALL_FIELDS/)
-      await expectUserTableColumnInAccountsTableVisibility(page, 'visible')
-    })
-
-    test.skip('selecting a table should update active parameter', async () => {})
-    test.skip('hiding a table should update hidden parameter', async () => {})
-  })
-
   test.describe('Browser History', () => {
     test('should handle back/forward navigation with showMode changes', async ({
       page,
@@ -80,12 +62,66 @@ test.describe('Navigation and URL Parameters', () => {
       await expectUserTableColumnInAccountsTableVisibility(page, 'hidden')
     })
 
-    test.skip('should handle back/forward navigation with table selection and hiding', async () => {})
-  })
+    test('should handle back/forward navigation with table selection', async ({
+      page,
+    }) => {
+      // Initial state - select accounts table
+      const accountsTable = page.getByRole('button', {
+        name: 'accounts table',
+        exact: true,
+      })
+      await accountsTable.click()
+      await expect(page).toHaveURL(/.*active=accounts/)
+      await expect(accountsTable).toBeVisible()
 
-  test.describe('Parameter Combinations', () => {
-    test.skip('should handle showMode change while table is selected', async () => {})
+      // Select users table
+      const usersTable = page.getByRole('button', {
+        name: 'users table',
+        exact: true,
+      })
+      await usersTable.click()
+      await expect(page).toHaveURL(/.*active=users/)
 
-    test.skip('should handle hiding selected table', async () => {})
+      // Go back to accounts table selection
+      await page.goBack()
+      await expect(page).toHaveURL(/.*active=accounts/)
+
+      // Go forward to users table selection
+      await page.goForward()
+      await expect(page).toHaveURL(/.*active=users/)
+    })
+
+    // FIXME: Browser back on hidden table is not working properly
+    test.skip('should handle back/forward navigation with table hiding', async ({
+      page,
+    }) => {
+      // Initial state
+      const accountsTable = page.getByRole('button', {
+        name: 'accounts table',
+        exact: true,
+      })
+      await expect(accountsTable).toBeVisible()
+
+      // Hide the accounts table
+      await page
+        .getByRole('button', { name: 'Toggle Sidebar Icon Button' })
+        .click()
+      await page
+        .getByRole('button', { name: 'Menu button for accounts', exact: true })
+        .getByLabel('Hide Table')
+        .click()
+      await expect(page).toHaveURL(/.*hidden=eJxLTE7OL80rKQYADrsDYQ/)
+      await expect(accountsTable).not.toBeVisible()
+
+      // Go back to initial state
+      await page.goBack()
+      await expect(accountsTable).toBeVisible()
+      await expect(page).not.toHaveURL(/.*hidden=/)
+
+      // Go forward to hidden state
+      await page.goForward()
+      await expect(page).toHaveURL(/.*hidden=eJxLTE7OL80rKQYADrsDYQ/)
+      await expect(accountsTable).not.toBeVisible()
+    })
   })
 })

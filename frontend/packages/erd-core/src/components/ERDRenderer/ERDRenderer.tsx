@@ -83,6 +83,7 @@ export const ERDRenderer: FC<Props> = ({
                       key={`${nodes.length}-${showMode}`}
                       nodes={nodes}
                       edges={edges}
+                      displayArea="main"
                     />
                     <TableDetailDrawer />
                   </>
