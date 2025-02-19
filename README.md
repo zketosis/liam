@@ -39,6 +39,7 @@ Insert `liambx.com/erd/p/` into your schema file's URL:
 ```
 # Original: https://github.com/user/repo/blob/master/db/schema.rb
 # Modified: https://liambx.com/erd/p/github.com/user/repo/blob/master/db/schema.rb
+      👾^^^^^^^^^^^^^^^^^👾
 ```
 
 ### For Private Repositories
