@@ -24,13 +24,29 @@
 
 ## What's Liam ERD?
 
-Liam ERD generates beautiful, interactive ER diagrams from your database. Whether you’re working on public or private repositories, Liam ERD helps you visualize complex schemas with ease.
+Liam ERD generates beautiful, interactive ER diagrams from your database. Whether you're working on public or private repositories, Liam ERD helps you visualize complex schemas with ease.
 
 - **Beautiful UI & Interactive**: A clean design and intuitive features (like panning, zooming, and filtering) make it easy to understand even the most complex databases.
 - **Simple Reverse Engineering**: Seamlessly turn your existing database schemas into clear, readable diagrams.
-- **Effortless Setup**: Get started with zero configuration—just provide your schema, and you’re good to go.
+- **Effortless Setup**: Get started with zero configuration—just provide your schema, and you're good to go.
 - **High Performance**: Optimized for both small and large projects, easily handling 100+ tables.
 - **Fully Open-Source**: Contribute to the project and shape Liam ERD to fit your needs.
+
+## Quick Start
+
+### For Public Repositories
+Insert `liambx.com/erd/p/` into your schema file's URL:
+```
+# Original: https://github.com/user/repo/blob/master/db/schema.rb
+# Modified: https://liambx.com/erd/p/github.com/user/repo/blob/master/db/schema.rb
+                  👾^^^^^^^^^^^^^^^^👾
+```
+
+### For Private Repositories
+Run the interactive setup:
+```bash
+npx @liam-hq/cli init
+```
 
 <img src="./assets/jack.gif" alt="Jack" width="40"> **If you find this project helpful, please give it a star! ⭐**  
 Your support helps us reach a wider audience and continue development.
