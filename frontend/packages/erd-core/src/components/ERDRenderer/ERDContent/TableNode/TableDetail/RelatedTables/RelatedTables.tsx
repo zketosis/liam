@@ -44,10 +44,7 @@ export const RelatedTables: FC<Props> = ({ nodes, edges, onOpenMainPane }) => {
             <ERDContent
               nodes={nodes}
               edges={edges}
-              enabledFeatures={{
-                fitViewWhenActiveTableChange: false,
-                initialFitViewToActiveTable: false,
-              }}
+              displayArea="relatedTables"
             />
           </ReactFlowProvider>
         </div>

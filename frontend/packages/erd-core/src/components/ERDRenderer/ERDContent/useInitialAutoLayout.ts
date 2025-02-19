@@ -14,11 +14,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useERDContentContext } from './ERDContentContext'
 import { computeAutoLayout } from './computeAutoLayout'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
+import type { DisplayArea } from './types'
 
-export const useInitialAutoLayout = (
-  nodes: Node[],
-  shouldFitViewToActiveTable: boolean,
-) => {
+type Params = {
+  nodes: Node[]
+  displayArea: DisplayArea
+}
+
+export const useInitialAutoLayout = ({ nodes, displayArea }: Params) => {
   const [initializeComplete, setInitializeComplete] = useState(false)
 
   const tableNodesInitialized = useMemo(
@@ -41,11 +44,14 @@ export const useInitialAutoLayout = (
     const activeTableName = getActiveTableNameFromUrl()
     updateActiveTableName(activeTableName)
 
-    const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
-    addHiddenNodeIds(hiddenNodeIds)
+    const hiddenNodeIds: string[] = []
+    if (displayArea === 'main') {
+      hiddenNodeIds.push(...(await getHiddenNodeIdsFromUrl()))
+      addHiddenNodeIds(hiddenNodeIds)
 
-    const showMode = getShowModeFromUrl()
-    updateShowMode(showMode)
+      const showMode = getShowModeFromUrl()
+      updateShowMode(showMode)
+    }
 
     if (tableNodesInitialized) {
       setLoading(true)
@@ -64,7 +70,7 @@ export const useInitialAutoLayout = (
       setEdges(layoutedEdges)
 
       const fitViewOptions =
-        shouldFitViewToActiveTable && activeTableName
+        displayArea === 'main' && activeTableName
           ? { maxZoom: 1, duration: 300, nodes: [{ id: activeTableName }] }
           : { duration: 0 }
       await fitView(fitViewOptions)
@@ -74,6 +80,7 @@ export const useInitialAutoLayout = (
     }
   }, [
     nodes,
+    displayArea,
     getEdges,
     setNodes,
     setEdges,
@@ -81,7 +88,6 @@ export const useInitialAutoLayout = (
     fitView,
     initializeComplete,
     tableNodesInitialized,
-    shouldFitViewToActiveTable,
   ])
 
   useEffect(() => {

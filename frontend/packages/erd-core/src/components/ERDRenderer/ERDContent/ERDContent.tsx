@@ -23,6 +23,7 @@ import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
+import type { DisplayArea } from './types'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 import { usePopStateListener } from './usePopStateListener'
 import { useTableSelection } from './useTableSelection'
@@ -39,18 +40,13 @@ const edgeTypes = {
 type Props = {
   nodes: Node[]
   edges: Edge[]
-  enabledFeatures?:
-    | {
-        fitViewWhenActiveTableChange?: boolean | undefined
-        initialFitViewToActiveTable?: boolean | undefined
-      }
-    | undefined
+  displayArea: DisplayArea
 }
 
 export const ERDContentInner: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
-  enabledFeatures,
+  displayArea,
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(_nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(_edges)
@@ -60,10 +56,10 @@ export const ERDContentInner: FC<Props> = ({
   const { tableName: activeTableName } = useUserEditingActiveStore()
   const { selectTable, deselectTable } = useTableSelection()
 
-  useInitialAutoLayout(
+  useInitialAutoLayout({
     nodes,
-    enabledFeatures?.initialFitViewToActiveTable ?? true,
-  )
+    displayArea,
+  })
   usePopStateListener()
 
   const { version } = useVersion()
@@ -72,8 +68,7 @@ export const ERDContentInner: FC<Props> = ({
     (tableId: string) => {
       selectTable({
         tableId,
-        shouldFitViewToActiveTable:
-          enabledFeatures?.fitViewWhenActiveTableChange ?? true,
+        displayArea,
       })
 
       selectTableLogEvent({
@@ -85,7 +80,7 @@ export const ERDContentInner: FC<Props> = ({
         appEnv: version.envName,
       })
     },
-    [version, enabledFeatures?.fitViewWhenActiveTableChange, selectTable],
+    [version, displayArea, selectTable],
   )
 
   const handlePaneClick = useCallback(() => {

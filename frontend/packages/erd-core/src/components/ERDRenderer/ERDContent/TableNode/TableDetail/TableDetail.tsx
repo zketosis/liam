@@ -117,7 +117,6 @@ export const TableDetail: FC<Props> = ({ table }) => {
         <Unique columns={table.columns} />
         <div className={styles.relatedTables}>
           <RelatedTables
-            key={table.name}
             nodes={nodes}
             edges={edges}
             onOpenMainPane={handleOpenMainPane}
