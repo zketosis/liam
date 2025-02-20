@@ -1,8 +1,8 @@
 import type { ShowMode } from '@/schemas/showMode'
 import type { Cardinality, DBStructure } from '@liam-hq/db-structure'
 import type { Edge, Node } from '@xyflow/react'
+import { zIndex } from '../constants'
 import { columnHandleId } from './columnHandleId'
-import { zIndex } from './constants'
 
 export const NON_RELATED_TABLE_GROUP_NODE_ID = 'non-related-table-group'
 

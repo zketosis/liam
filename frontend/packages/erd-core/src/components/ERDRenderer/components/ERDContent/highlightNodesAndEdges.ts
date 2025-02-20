@@ -1,5 +1,5 @@
+import { zIndex } from '@/features/reactflow/constants'
 import type { Edge, Node } from '@xyflow/react'
-import { zIndex } from '../constants'
 import { type TableNodeType, isTableNode } from './TableNode'
 
 type TargetTableName = string

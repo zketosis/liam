@@ -1,6 +1,6 @@
+import { columnHandleId } from '@/features/reactflow/utils'
 import type { Column } from '@liam-hq/db-structure'
 import type { FC } from 'react'
-import { columnHandleId } from '../../../columnHandleId'
 import type { Data } from '../type'
 import { TableColumn } from './TableColumn'
 

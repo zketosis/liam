@@ -1,9 +1,9 @@
+import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
   NON_RELATED_TABLE_GROUP_NODE_ID,
   convertDBStructureToNodes,
-} from '@/components/ERDRenderer/convertDBStructureToNodes'
-import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
-import { useCustomReactflow } from '@/features/reactflow/hooks'
+} from '@/features/reactflow/utils/convertDBStructureToNodes'
 import { useVersion } from '@/providers'
 import {
   replaceHiddenNodeIds,

@@ -1,7 +1,7 @@
+import { zIndex } from '@/features/reactflow/constants'
 import { aTable } from '@liam-hq/db-structure'
 import type { Edge } from '@xyflow/react'
 import { describe, expect, it } from 'vitest'
-import { zIndex } from '../constants'
 import type { Data, TableNodeType } from './TableNode'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 
