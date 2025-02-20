@@ -2,19 +2,22 @@ import '@xyflow/react/dist/style.css'
 import { SidebarProvider, SidebarTrigger, ToastProvider } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
 import { type FC, useCallback, useState } from 'react'
-import { AppBar } from './AppBar'
-import { ERDContent } from './ERDContent'
 import styles from './ERDRenderer.module.css'
-import { LeftPane } from './LeftPane'
+import {
+  AppBar,
+  CardinalityMarkers,
+  ERDContent,
+  ErrorDisplay,
+  LeftPane,
+  RelationshipEdgeParticleMarker,
+  TableDetailDrawer,
+  TableDetailDrawerRoot,
+  Toolbar,
+} from './components'
 import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
 import { useVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
-import { CardinalityMarkers } from './CardinalityMarkers'
-import { ErrorDisplay } from './ErrorDisplay'
-import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker'
-import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
-import { Toolbar } from './Toolbar'
 import { convertDBStructureToNodes } from './convertDBStructureToNodes'
 
 type ErrorObject = {
