@@ -1,4 +1,4 @@
-import { zIndex } from '@/components/ERDRenderer/constants'
+import { zIndex } from '@/features/erd/constants'
 import type { Edge, Node } from '@xyflow/react'
 import type { TableNodeType } from '../types'
 import { isTableNode } from './isTableNode'

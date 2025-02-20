@@ -1,3 +1,5 @@
+import { useTableSelection } from '@/features/erd/hooks'
+import type { DisplayArea } from '@/features/erd/types'
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
 import { MAX_ZOOM, MIN_ZOOM } from '@/features/reactflow/constants'
@@ -16,8 +18,6 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
-import { useTableSelection } from '../../hooks'
-import type { DisplayArea } from '../../types'
 import { highlightNodesAndEdges } from '../../utils'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'

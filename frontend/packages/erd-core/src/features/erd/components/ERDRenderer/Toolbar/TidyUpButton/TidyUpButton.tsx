@@ -1,4 +1,4 @@
-import { computeAutoLayout } from '@/components/ERDRenderer/utils'
+import { computeAutoLayout } from '@/features/erd/utils'
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'

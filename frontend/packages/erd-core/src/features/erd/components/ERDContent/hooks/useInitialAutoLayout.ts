@@ -1,8 +1,5 @@
-import type { DisplayArea } from '@/components/ERDRenderer/types'
-import {
-  computeAutoLayout,
-  highlightNodesAndEdges,
-} from '@/components/ERDRenderer/utils'
+import type { DisplayArea } from '@/features/erd/types'
+import { computeAutoLayout, highlightNodesAndEdges } from '@/features/erd/utils'
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
   addHiddenNodeIds,

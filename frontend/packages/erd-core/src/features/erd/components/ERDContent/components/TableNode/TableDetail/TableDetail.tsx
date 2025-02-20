@@ -2,7 +2,7 @@ import {
   NON_RELATED_TABLE_GROUP_NODE_ID,
   computeAutoLayout,
   convertDBStructureToNodes,
-} from '@/components/ERDRenderer/utils'
+} from '@/features/erd/utils'
 import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'

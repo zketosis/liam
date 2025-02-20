@@ -1,5 +1,5 @@
-import { useTableSelection } from '@/components/ERDRenderer/hooks'
-import type { TableNodeType } from '@/components/ERDRenderer/types'
+import { useTableSelection } from '@/features/erd/hooks'
+import type { TableNodeType } from '@/features/erd/types'
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { useVersion } from '@/providers'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
