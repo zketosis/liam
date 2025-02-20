@@ -1,3 +1,8 @@
+import type { DisplayArea } from '@/components/ERDRenderer/types'
+import {
+  computeAutoLayout,
+  highlightNodesAndEdges,
+} from '@/components/ERDRenderer/utils'
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
   addHiddenNodeIds,
@@ -11,9 +16,7 @@ import {
 } from '@/utils'
 import type { Node } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { DisplayArea } from '../../types'
-import { computeAutoLayout, highlightNodesAndEdges } from '../../utils'
-import { useERDContentContext } from './ERDContentContext'
+import { useERDContentContext } from '../ERDContentContext'
 
 type Params = {
   nodes: Node[]

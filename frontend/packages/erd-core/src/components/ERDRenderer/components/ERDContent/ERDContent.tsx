@@ -21,12 +21,13 @@ import type { DisplayArea } from '../../types'
 import { highlightNodesAndEdges } from '../../utils'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
-import { NonRelatedTableGroupNode } from './NonRelatedTableGroupNode'
-import { RelationshipEdge } from './RelationshipEdge'
-import { Spinner } from './Spinner'
-import { TableNode } from './TableNode'
-import { useInitialAutoLayout } from './useInitialAutoLayout'
-import { usePopStateListener } from './usePopStateListener'
+import {
+  NonRelatedTableGroupNode,
+  RelationshipEdge,
+  Spinner,
+  TableNode,
+} from './components'
+import { useInitialAutoLayout, usePopStateListener } from './hooks'
 
 const nodeTypes = {
   table: TableNode,
