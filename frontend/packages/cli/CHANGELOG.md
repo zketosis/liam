@@ -1,5 +1,11 @@
 # @liam-hq/cli
 
+## 0.4.2
+
+### Patch Changes
+
+- [#754](https://github.com/liam-hq/liam/pull/754) - 🐛 Fix file operations to support Windows compatibility. ref. https://github.com/liam-hq/liam/issues/751 / Thanks [@hoshinotsuyoshi](https://github.com/hoshinotsuyoshi)!
+
 ## 0.4.1
 
 ### Patch Changes
