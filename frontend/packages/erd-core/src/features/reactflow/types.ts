@@ -1,7 +1,7 @@
 import type { Cardinality, Table } from '@liam-hq/db-structure'
 import type { Node } from '@xyflow/react'
 
-export type Data = {
+export type TableNodeData = {
   table: Table
   isActiveHighlighted: boolean
   isHighlighted: boolean
@@ -11,4 +11,4 @@ export type Data = {
     | undefined
 }
 
-export type TableNodeType = Node<Data, 'table'>
+export type TableNodeType = Node<TableNodeData, 'table'>

@@ -1,3 +1,4 @@
+import type { TableNodeData } from '@/features/reactflow/types'
 import { useUserEditingStore } from '@/stores'
 import {
   Table2,
@@ -10,11 +11,10 @@ import {
 import { Handle, Position } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
-import type { Data } from '../type'
 import styles from './TableHeader.module.css'
 
 type Props = {
-  data: Data
+  data: TableNodeData
 }
 
 export const TableHeader: FC<Props> = ({ data }) => {

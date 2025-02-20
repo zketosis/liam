@@ -1,18 +1,18 @@
+import type { TableNodeData } from '@/features/reactflow/types'
 import { columnHandleId } from '@/features/reactflow/utils'
 import type { Column } from '@liam-hq/db-structure'
 import type { FC } from 'react'
-import type { Data } from '../type'
 import { TableColumn } from './TableColumn'
 
 type TableColumnListProps = {
-  data: Data
+  data: TableNodeData
   filter?: 'KEY_ONLY'
 }
 
 const shouldDisplayColumn = (
   column: Column,
   filter: 'KEY_ONLY' | undefined,
-  targetColumnCardinalities: Data['targetColumnCardinalities'],
+  targetColumnCardinalities: TableNodeData['targetColumnCardinalities'],
 ): boolean => {
   if (filter === 'KEY_ONLY') {
     return (

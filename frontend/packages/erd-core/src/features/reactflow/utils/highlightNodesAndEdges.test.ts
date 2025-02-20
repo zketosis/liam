@@ -1,11 +1,14 @@
-import { zIndex } from '@/features/reactflow/constants'
 import { aTable } from '@liam-hq/db-structure'
 import type { Edge } from '@xyflow/react'
 import { describe, expect, it } from 'vitest'
-import type { Data, TableNodeType } from './TableNode'
+import { zIndex } from '../constants'
+import type { TableNodeData, TableNodeType } from '../types'
 import { highlightNodesAndEdges } from './highlightNodesAndEdges'
 
-const aTableData = (name: string, override?: Partial<Data>): Data => ({
+const aTableData = (
+  name: string,
+  override?: Partial<TableNodeData>,
+): TableNodeData => ({
   table: aTable({ name }),
   isActiveHighlighted: false,
   isHighlighted: false,

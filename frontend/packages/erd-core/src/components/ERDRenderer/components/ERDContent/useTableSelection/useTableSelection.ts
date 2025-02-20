@@ -1,7 +1,7 @@
 import { useCustomReactflow } from '@/features/reactflow/hooks'
+import { highlightNodesAndEdges } from '@/features/reactflow/utils'
 import { updateActiveTableName } from '@/stores'
 import { useCallback } from 'react'
-import { highlightNodesAndEdges } from '../highlightNodesAndEdges'
 import type { DisplayArea } from '../types'
 
 type SelectTableParams = {
