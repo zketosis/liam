@@ -17,16 +17,16 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
+import { useTableSelection } from '../../hooks'
+import type { DisplayArea } from '../../types'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import { NonRelatedTableGroupNode } from './NonRelatedTableGroupNode'
 import { RelationshipEdge } from './RelationshipEdge'
 import { Spinner } from './Spinner'
 import { TableNode } from './TableNode'
-import type { DisplayArea } from './types'
 import { useInitialAutoLayout } from './useInitialAutoLayout'
 import { usePopStateListener } from './usePopStateListener'
-import { useTableSelection } from './useTableSelection'
 
 const nodeTypes = {
   table: TableNode,

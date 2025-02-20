@@ -1,3 +1,4 @@
+import { computeAutoLayout } from '@/components/ERDRenderer/utils'
 import { toolbarActionLogEvent } from '@/features/gtm/utils'
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
@@ -11,7 +12,6 @@ import {
   type ReactNode,
   useCallback,
 } from 'react'
-import { computeAutoLayout } from '../../ERDContent'
 import styles from './TidyUpButton.module.css'
 
 interface TidyUpButtonProps {

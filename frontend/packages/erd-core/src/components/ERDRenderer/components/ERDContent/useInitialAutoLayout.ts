@@ -12,9 +12,9 @@ import {
 } from '@/utils'
 import type { Node } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { DisplayArea } from '../../types'
+import { computeAutoLayout } from '../../utils'
 import { useERDContentContext } from './ERDContentContext'
-import { computeAutoLayout } from './computeAutoLayout'
-import type { DisplayArea } from './types'
 
 type Params = {
   nodes: Node[]

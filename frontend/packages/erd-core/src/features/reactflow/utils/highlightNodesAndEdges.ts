@@ -1,7 +1,7 @@
-import { isTableNode } from '@/components/ERDRenderer/components'
 import { zIndex } from '@/features/reactflow/constants'
 import type { Edge, Node } from '@xyflow/react'
 import type { TableNodeType } from '../types'
+import { isTableNode } from './isTableNode'
 
 type TargetTableName = string
 type RelatedTableName = string

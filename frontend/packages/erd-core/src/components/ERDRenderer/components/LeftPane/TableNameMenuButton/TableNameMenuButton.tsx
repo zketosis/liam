@@ -1,10 +1,10 @@
+import { useTableSelection } from '@/components/ERDRenderer/hooks'
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import type { TableNodeType } from '@/features/reactflow/types'
 import { useVersion } from '@/providers'
 import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
 import clsx from 'clsx'
 import type { FC } from 'react'
-import { useTableSelection } from '../../ERDContent'
 import styles from './TableNameMenuButton.module.css'
 import { VisibilityButton } from './VisibilityButton'
 

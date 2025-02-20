@@ -1,14 +1,11 @@
 import type { TableNodeType } from '@/features/reactflow/types'
 import { useUserEditingStore } from '@/stores'
-import type { Node, NodeProps } from '@xyflow/react'
+import type { NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
-
-export const isTableNode = (node: Node): node is TableNodeType =>
-  node.type === 'table'
 
 type Props = NodeProps<TableNodeType>
 

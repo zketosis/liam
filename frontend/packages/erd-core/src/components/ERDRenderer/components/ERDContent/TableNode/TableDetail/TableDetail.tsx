@@ -1,3 +1,4 @@
+import { computeAutoLayout } from '@/components/ERDRenderer/utils'
 import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
 import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
@@ -20,7 +21,6 @@ import {
 } from '@liam-hq/ui'
 import type { Node } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
-import { computeAutoLayout } from '../../computeAutoLayout'
 import { Columns } from './Columns'
 import { Comment } from './Comment'
 import { Indices } from './Indices'
