@@ -16,9 +16,9 @@ import {
 } from './components'
 import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
-import { convertDBStructureToNodes } from '@/features/reactflow/utils'
 import { useVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
+import { convertDBStructureToNodes } from './utils'
 
 type ErrorObject = {
   name: string

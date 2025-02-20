@@ -1,5 +1,5 @@
-import type { TableNodeData } from '@/features/reactflow/types'
-import { columnHandleId } from '@/features/reactflow/utils'
+import type { TableNodeData } from '@/components/ERDRenderer/types'
+import { columnHandleId } from '@/components/ERDRenderer/utils'
 import type { Column } from '@liam-hq/db-structure'
 import type { FC } from 'react'
 import { TableColumn } from './TableColumn'

@@ -1,10 +1,10 @@
-import { computeAutoLayout } from '@/components/ERDRenderer/utils'
-import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
-import { useCustomReactflow } from '@/features/reactflow/hooks'
 import {
   NON_RELATED_TABLE_GROUP_NODE_ID,
+  computeAutoLayout,
   convertDBStructureToNodes,
-} from '@/features/reactflow/utils/convertDBStructureToNodes'
+} from '@/components/ERDRenderer/utils'
+import { clickLogEvent, openRelatedTablesLogEvent } from '@/features/gtm/utils'
+import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
 import {
   replaceHiddenNodeIds,

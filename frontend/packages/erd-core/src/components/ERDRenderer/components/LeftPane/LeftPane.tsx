@@ -1,4 +1,3 @@
-import { isTableNode } from '@/features/reactflow/utils'
 import { useVersion } from '@/providers'
 import {
   BookText,
@@ -18,6 +17,7 @@ import {
 } from '@liam-hq/ui'
 import { useNodes } from '@xyflow/react'
 import { useMemo } from 'react'
+import { isTableNode } from '../../utils'
 import { CopyLinkButton } from './CopyLinkButton'
 import styles from './LeftPane.module.css'
 import { MenuItemLink, type Props as MenuItemLinkProps } from './MenuItemLink'

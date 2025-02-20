@@ -1,4 +1,4 @@
-import type { TableNodeType } from '@/features/reactflow/types'
+import type { TableNodeType } from '@/components/ERDRenderer/types'
 import { useUserEditingStore } from '@/stores'
 import type { NodeProps } from '@xyflow/react'
 import clsx from 'clsx'

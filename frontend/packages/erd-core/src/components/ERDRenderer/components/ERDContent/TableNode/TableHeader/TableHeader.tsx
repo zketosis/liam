@@ -1,4 +1,4 @@
-import type { TableNodeData } from '@/features/reactflow/types'
+import type { TableNodeData } from '@/components/ERDRenderer/types'
 import { useUserEditingStore } from '@/stores'
 import {
   Table2,

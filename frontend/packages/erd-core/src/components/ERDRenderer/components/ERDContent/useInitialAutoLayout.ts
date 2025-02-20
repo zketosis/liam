@@ -1,5 +1,4 @@
 import { useCustomReactflow } from '@/features/reactflow/hooks'
-import { highlightNodesAndEdges } from '@/features/reactflow/utils'
 import {
   addHiddenNodeIds,
   updateActiveTableName,
@@ -13,7 +12,7 @@ import {
 import type { Node } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { DisplayArea } from '../../types'
-import { computeAutoLayout } from '../../utils'
+import { computeAutoLayout, highlightNodesAndEdges } from '../../utils'
 import { useERDContentContext } from './ERDContentContext'
 
 type Params = {
