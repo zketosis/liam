@@ -45,20 +45,12 @@ Now, when viewing a schema file (like `schema.rb`) on GitHub, simply click the b
 
 ## Appendix: Schema Format Options
 
-### Auto-Detecting Schema Format
+### Schema Format
 
-When Liam ERD fetches your schema file, it automatically attempts to determine the schema format. The detection process works as follows:
-
-- **File Name Check**: Filenames such as `schema.rb` or `Schemafile` are assumed to be in **`schemarb`** format.
-- **File Extension Check**: Files ending in **`.rb`** are treated as **`schemarb`**, while files ending in **`.sql`** are treated as **`postgresql`**.
-- For more details, refer to the [`detectFormat.ts`](https://github.com/liam-hq/liam/blob/main/frontend/packages/db-structure/src/parser/supportedFormat/detectFormat.ts) file in our GitHub repository.
-
-### Overriding the Detected Format
-
-If the automatic detection does not match your desired format, you can specify it manually using query parameters. For example:
+Liam ERD automatically detects the schema format. If needed, you can override the detected format using the `format` query parameter:
 
 ```
 https://liambx.com/erd/p/public.example.net/path/to/file?format=schemarb
 ```
 
-For a full list of valid format identifiers, check [**/docs/parser/supported-formats**](/docs/parser/supported-formats).
+For more details about format detection and supported formats, check [**/docs/parser/supported-formats**](/docs/parser/supported-formats).
