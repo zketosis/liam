@@ -65,12 +65,7 @@ See what we're working on and what's coming next on [our roadmap](https://github
 
 ## Contributing
 
-Please see our [contribution guidelines](/frontend/apps/docs/content/docs/contributing/index.mdx) for information about:
-- Development setup
-- Changeset requirements
-- Code style
-
-See also our [Code of Conduct for contributors](./CODE_OF_CONDUCT.md).
+Refer to our [contribution guidelines](./CONTRIBUTING.md) and [Code of Conduct for contributors](./CODE_OF_CONDUCT.md).
 
 ## Contributors
 
