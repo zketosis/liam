@@ -26,24 +26,24 @@ export async function runPreprocess(
   format: SupportedFormat,
 ): Promise<Output> {
   const input = await getInputContent(inputPath)
-let detectedFormat: SupportedFormat | undefined
+  let detectedFormat: SupportedFormat | undefined
 
-if(format === undefined) {
-  detectedFormat = detectFormat(inputPath)
-}else{
-  detectedFormat = format
-}
-
-if(detectedFormat === undefined){
-  return {
-    outputFilePath: null,
-    errors: [
-      new ArgumentError(
-        `--format is missing, invalid, or specifies an unsupported format. Please provide a valid format.`,
-      ),
-    ],
+  if (format === undefined) {
+    detectedFormat = detectFormat(inputPath)
+  } else {
+    detectedFormat = format
   }
-}
+
+  if (detectedFormat === undefined) {
+    return {
+      outputFilePath: null,
+      errors: [
+        new ArgumentError(
+          '--format is missing, invalid, or specifies an unsupported format. Please provide a valid format.',
+        ),
+      ],
+    }
+  }
 
   const result = v.safeParse(supportedFormatSchema, detectedFormat)
   if (!result.success) {
