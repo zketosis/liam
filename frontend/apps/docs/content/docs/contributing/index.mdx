@@ -6,4 +6,16 @@ description: Learn how to contribute to Liam ERD
 import { source } from "@/lib/source"
 import { DocsCategory } from "fumadocs-ui/page"
 
+# Contributing
+
+## Changeset Requirements
+
+When contributing to this repository, you may see comments from the changeset-bot about version bumps. Here's what you need to know:
+
+### Documentation Changes
+Changes to the `@liam-hq/docs` package do not require changesets. If you're only modifying files in the `frontend/apps/docs` directory, you can safely ignore the changeset-bot's comment. The bot will confirm that "Merging this PR will not cause a version bump for any packages", which is the expected behavior for documentation changes.
+
+### Other Package Changes
+For changes to other packages, you will need to add a changeset if your changes should result in a version bump. Follow the instructions in the changeset-bot's comment to add one.
+
 <DocsCategory page={source.getPage(["contributing"])} from={source} />
