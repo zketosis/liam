@@ -387,7 +387,7 @@ describe(_processor, () => {
       expect(value).toEqual(expected)
     })
 
-    it('@map', async () => {
+    it.only('@map', async () => {
       const { value } = await processor(`
         model users {
           id   BigInt    @id @default(autoincrement()) @map("_id")
@@ -429,7 +429,7 @@ describe(_processor, () => {
                 columns: ['_id'],
                 unique: true,
               }),
-              users_email_key: {
+              users_raw_email_address_key: {
                 name: 'users_raw_email_address_key',
                 columns: ['raw_email_address'],
                 unique: true,

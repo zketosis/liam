@@ -27,12 +27,6 @@ const applyTablesFieldsRenaming = (
       table.columns[mappedFieldName] = { ...column, name: mappedFieldName }
       delete table.columns[columnName]
     }
-
-    for (const index of Object.values(table.indices)) {
-      index.columns = index.columns.map(
-        (columnName) => fieldConversions[columnName] ?? columnName,
-      )
-    }
   }
 }
 
@@ -57,6 +51,19 @@ const applyRelationshipsFieldsRenaming = (
       relationship.foreignColumnName = mappedForeignColumnName
     }
   }
+}
+
+const getFieldRenamedIndex = (
+  index: DMMF.Index,
+  tableFieldsRenaming: Record<string, Record<string, string>>,
+): DMMF.Index => {
+  const fieldsRenaming = tableFieldsRenaming[index.model]
+  if (!fieldsRenaming) return index
+  const newFields = index.fields.map((field) => ({
+    ...field,
+    name: fieldsRenaming[field.name] ?? field.name,
+  }))
+  return { ...index, fields: newFields }
 }
 
 async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
@@ -146,8 +153,9 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     const table = tables[index.model]
     if (!table) continue
 
-    console.log(index)
-    const indexInfo = extractIndex(index)
+    const indexInfo = extractIndex(
+      getFieldRenamedIndex(index, tableFieldRenaming),
+    )
     if (!indexInfo) continue
     table.indices[indexInfo.name] = indexInfo
   }
