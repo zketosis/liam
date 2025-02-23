@@ -14,43 +14,27 @@ import { convertToPostgresColumnType } from './convertToPostgresColumnType.js'
 // CommonJS module can not support all module.exports as named exports
 const { getDMMF } = pkg
 
-const applyTablesFieldsRenaming = (
-  tables: Record<string, Table>,
+const getFieldRenamedRelationship = (
+  relationship: Relationship,
   tableFieldsRenaming: Record<string, Record<string, string>>,
 ) => {
-  for (const [tableName, table] of Object.entries(tables)) {
-    const fieldConversions = tableFieldsRenaming[tableName]
-    if (!fieldConversions) continue
-    for (const [columnName, column] of Object.entries(table.columns)) {
-      const mappedFieldName = fieldConversions[columnName]
-      if (!mappedFieldName) continue
-      table.columns[mappedFieldName] = { ...column, name: mappedFieldName }
-      delete table.columns[columnName]
-    }
+  const mappedPrimaryColumnName =
+    tableFieldsRenaming[relationship.primaryTableName]?.[
+      relationship.primaryColumnName
+    ]
+  if (mappedPrimaryColumnName) {
+    relationship.primaryColumnName = mappedPrimaryColumnName
   }
-}
 
-const applyRelationshipsFieldsRenaming = (
-  relationships: Record<string, Relationship>,
-  tableFieldsRenaming: Record<string, Record<string, string>>,
-) => {
-  for (const relationship of Object.values(relationships)) {
-    const mappedPrimaryColumnName =
-      tableFieldsRenaming[relationship.primaryTableName]?.[
-        relationship.primaryColumnName
-      ]
-    if (mappedPrimaryColumnName) {
-      relationship.primaryColumnName = mappedPrimaryColumnName
-    }
-
-    const mappedForeignColumnName =
-      tableFieldsRenaming[relationship.foreignTableName]?.[
-        relationship.foreignColumnName
-      ]
-    if (mappedForeignColumnName) {
-      relationship.foreignColumnName = mappedForeignColumnName
-    }
+  const mappedForeignColumnName =
+    tableFieldsRenaming[relationship.foreignTableName]?.[
+      relationship.foreignColumnName
+    ]
+  if (mappedForeignColumnName) {
+    relationship.foreignColumnName = mappedForeignColumnName
   }
+
+  return relationship
 }
 
 const getFieldRenamedIndex = (
@@ -88,8 +72,9 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     for (const field of model.fields) {
       if (field.relationName) continue
       const defaultValue = extractDefaultValue(field)
-      columns[field.name] = {
-        name: field.name,
+      const fieldName = field.dbName ?? field.name
+      columns[fieldName] = {
+        name: fieldName,
         type: convertToPostgresColumnType(
           field.type,
           field.nativeType,
@@ -146,7 +131,10 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             deleteConstraint: 'NO_ACTION',
           } as const)
 
-      relationships[relationship.name] = relationship
+      relationships[relationship.name] = getFieldRenamedRelationship(
+        relationship,
+        tableFieldRenaming,
+      )
     }
   }
   for (const index of dmmf.datamodel.indexes) {
@@ -159,9 +147,6 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     if (!indexInfo) continue
     table.indices[indexInfo.name] = indexInfo
   }
-
-  applyTablesFieldsRenaming(tables, tableFieldRenaming)
-  applyRelationshipsFieldsRenaming(relationships, tableFieldRenaming)
 
   return {
     value: {
