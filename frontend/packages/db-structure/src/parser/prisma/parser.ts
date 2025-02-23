@@ -19,6 +19,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
   const errors: Error[] = []
+  const tableFieldRenaming: Record<string, Record<string, string>> = {}
 
   for (const model of dmmf.datamodel.models) {
     const columns: Columns = {}
@@ -38,6 +39,12 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         primary: field.isId,
         comment: field.documentation ?? null,
         check: null,
+      }
+
+      if (field.dbName) {
+        const fieldConversions = tableFieldRenaming[model.name] ?? {}
+        fieldConversions[field.name] = field.dbName
+        tableFieldRenaming[model.name] = fieldConversions
       }
     }
 
