@@ -72,7 +72,8 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     for (const field of model.fields) {
       if (field.relationName) continue
       const defaultValue = extractDefaultValue(field)
-      const fieldName = field.dbName ?? field.name
+      const fieldName =
+        tableFieldRenaming[model.name]?.[field.name] ?? field.name
       columns[fieldName] = {
         name: fieldName,
         type: convertToPostgresColumnType(
