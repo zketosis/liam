@@ -387,7 +387,7 @@ describe(_processor, () => {
       expect(value).toEqual(expected)
     })
 
-    it.only('@map', async () => {
+    it('@map', async () => {
       const { value } = await processor(`
         model users {
           id   BigInt    @id @default(autoincrement()) @map("_id")
