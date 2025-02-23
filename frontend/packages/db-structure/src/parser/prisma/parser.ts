@@ -14,6 +14,51 @@ import { convertToPostgresColumnType } from './convertToPostgresColumnType.js'
 // CommonJS module can not support all module.exports as named exports
 const { getDMMF } = pkg
 
+const applyTablesFieldsRenaming = (
+  tables: Record<string, Table>,
+  tableFieldsRenaming: Record<string, Record<string, string>>,
+) => {
+  for (const [tableName, table] of Object.entries(tables)) {
+    const fieldConversions = tableFieldsRenaming[tableName]
+    if (!fieldConversions) continue
+    for (const [columnName, column] of Object.entries(table.columns)) {
+      const mappedFieldName = fieldConversions[columnName]
+      if (!mappedFieldName) continue
+      table.columns[mappedFieldName] = { ...column, name: mappedFieldName }
+      delete table.columns[columnName]
+    }
+
+    for (const index of Object.values(table.indices)) {
+      index.columns = index.columns.map(
+        (columnName) => fieldConversions[columnName] ?? columnName,
+      )
+    }
+  }
+}
+
+const applyRelationshipsFieldsRenaming = (
+  relationships: Record<string, Relationship>,
+  tableFieldsRenaming: Record<string, Record<string, string>>,
+) => {
+  for (const relationship of Object.values(relationships)) {
+    const mappedPrimaryColumnName =
+      tableFieldsRenaming[relationship.primaryTableName]?.[
+        relationship.primaryColumnName
+      ]
+    if (mappedPrimaryColumnName) {
+      relationship.primaryColumnName = mappedPrimaryColumnName
+    }
+
+    const mappedForeignColumnName =
+      tableFieldsRenaming[relationship.foreignTableName]?.[
+        relationship.foreignColumnName
+      ]
+    if (mappedForeignColumnName) {
+      relationship.foreignColumnName = mappedForeignColumnName
+    }
+  }
+}
+
 async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   const dmmf = await getDMMF({ datamodel: schemaString })
   const tables: Record<string, Table> = {}
@@ -101,10 +146,14 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     const table = tables[index.model]
     if (!table) continue
 
+    console.log(index)
     const indexInfo = extractIndex(index)
     if (!indexInfo) continue
     table.indices[indexInfo.name] = indexInfo
   }
+
+  applyTablesFieldsRenaming(tables, tableFieldRenaming)
+  applyRelationshipsFieldsRenaming(relationships, tableFieldRenaming)
 
   return {
     value: {
