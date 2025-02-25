@@ -2,4 +2,54 @@
 title: Troubleshooting Web
 ---
 
-TBD
+## Loading Schema Files Hosted Outside GitHub
+
+Liam ERD Web supports loading schema files hosted on GitHub by default. When you specify a GitHub URL (e.g., `github.com/username/repo/blob/branch/path/to/schema.rb`), Liam ERD automatically converts it to a raw content URL (`raw.githubusercontent.com/username/repo/branch/path/to/schema.rb`).
+
+However, when loading schema files hosted on platforms other than GitHub, please note the following:
+
+### Important Notes for Files Hosted Outside GitHub
+
+- Liam ERD Web does not perform URL conversion for non-GitHub sources
+- You must provide a direct link to the raw content file, not an HTML page
+- The URL should point to a page that returns only the schema file content without HTML markup
+
+### Examples
+
+✅ **Correct URL Format (Raw Content)**
+```
+https://gist.githubusercontent.com/username/gistid/raw/commitsha/filename.yml
+https://gitlab.com/username/repo/-/raw/main/db/schema.rb
+https://bitbucket.org/username/repo/raw/main/prisma.schema
+```
+
+❌ **Incorrect URL Format (HTML Pages)**
+```
+https://gist.github.com/username/gistid
+https://gitlab.com/username/repo/-/blob/main/db/schema.rb
+https://bitbucket.org/username/repo/src/main/prisma.schema
+```
+
+### Common Hosting Platforms
+
+Here's how to get raw content URLs for common hosting platforms:
+
+#### GitHub Gist
+For Gists, you need to convert from the HTML page URL to the raw content URL:
+- HTML page: `https://gist.github.com/username/gistid`
+- Raw content: `https://gist.githubusercontent.com/username/gistid/raw/commitsha/filename.yml`
+
+To get the raw content URL for a Gist, click the "Raw" button on the Gist page and copy the URL.
+
+#### GitLab
+Change `/blob/` to `/raw/` in the URL:
+- HTML page: `https://gitlab.com/username/repo/-/blob/main/schema.rb`
+- Raw content: `https://gitlab.com/username/repo/-/raw/main/schema.rb`
+
+#### Bitbucket
+Change `/src/` to `/raw/` in the URL:
+- HTML page: `https://bitbucket.org/username/repo/src/main/schema.rb`
+- Raw content: `https://bitbucket.org/username/repo/raw/main/schema.rb`
+
+#### Self-hosted Git Services
+Most self-hosted Git services (Gitea, Gogs, etc.) follow similar patterns. Look for a "Raw" button when viewing a file and use that URL.
