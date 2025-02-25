@@ -59,15 +59,20 @@ export function setEnvPlugin(): Plugin {
     try {
       remoteAddOrigin()
       execSync('git fetch --tags')
-      const tagCommit = execSync(`git rev-parse ${latestTagName}`)
-        .toString()
-        .trim()
-      if (gitHash === tagCommit) {
-        return 1
+      try {
+        const tagCommit = execSync(`git rev-parse ${latestTagName}`)
+          .toString()
+          .trim()
+        if (gitHash === tagCommit) {
+          return 1
+        }
+        return 0
+      } catch (_error) {
+        // Tag doesn't exist, which is expected for new versions
+        return 0
       }
-      return 0
     } catch (error) {
-      console.error('Failed to get git tag:', error)
+      console.error('Failed during git operations:', error)
       return 0
     }
   }
