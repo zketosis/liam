@@ -57,17 +57,25 @@ export function setEnvPlugin(): Plugin {
   const isReleasedGitHash = (gitHash: string, packageJsonVersion: string) => {
     const latestTagName = `${versionPrefix}${packageJsonVersion}`
     try {
+      // Setup and fetch tags
       remoteAddOrigin()
       execSync('git fetch --tags')
+
+      // First check if the tag exists before trying to resolve it
+      const tagOutput = execSync(`git ls-remote --tags origin ${latestTagName}`)
+        .toString()
+        .trim()
+      if (tagOutput === '') {
+        return 0 // Tag doesn't exist
+      }
+
+      // If tag exists, check if current hash matches the tag
       const tagCommit = execSync(`git rev-parse ${latestTagName}`)
         .toString()
         .trim()
-      if (gitHash === tagCommit) {
-        return 1
-      }
-      return 0
+      return gitHash === tagCommit ? 1 : 0
     } catch (error) {
-      console.error('Failed to get git tag:', error)
+      console.error('Failed during git operations:', error)
       return 0
     }
   }
