@@ -29,27 +29,3 @@ https://gist.github.com/username/gistid
 https://gitlab.com/username/repo/-/blob/main/db/schema.rb
 https://bitbucket.org/username/repo/src/main/prisma.schema
 ```
-
-### Common Hosting Platforms
-
-Here's how to get raw content URLs for common hosting platforms:
-
-#### GitHub Gist
-For Gists, you need to convert from the HTML page URL to the raw content URL:
-- HTML page: `https://gist.github.com/username/gistid`
-- Raw content: `https://gist.githubusercontent.com/username/gistid/raw/commitsha/filename.yml`
-
-To get the raw content URL for a Gist, click the "Raw" button on the Gist page and copy the URL.
-
-#### GitLab
-Change `/blob/` to `/raw/` in the URL:
-- HTML page: `https://gitlab.com/username/repo/-/blob/main/schema.rb`
-- Raw content: `https://gitlab.com/username/repo/-/raw/main/schema.rb`
-
-#### Bitbucket
-Change `/src/` to `/raw/` in the URL:
-- HTML page: `https://bitbucket.org/username/repo/src/main/schema.rb`
-- Raw content: `https://bitbucket.org/username/repo/raw/main/schema.rb`
-
-#### Self-hosted Git Services
-Most self-hosted Git services (Gitea, Gogs, etc.) follow similar patterns. Look for a "Raw" button when viewing a file and use that URL.
