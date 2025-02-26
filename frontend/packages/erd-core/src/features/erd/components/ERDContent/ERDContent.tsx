@@ -140,6 +140,7 @@ export const ERDContentInner: FC<Props> = ({
     <div className={styles.wrapper} data-loading={loading}>
       {loading && <Spinner className={styles.loading} />}
       <ReactFlow
+        colorMode="dark"
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
