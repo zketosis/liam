@@ -1,6 +1,6 @@
 <h1 align="center">
-  <img src="./assets/logo-light.png#gh-light-mode-only" alt="Liam" width="445">
-  <img src="./assets/logo-dark.png#gh-dark-mode-only" alt="Liam" width="445">
+  <img src="./assets/logo-light.png#gh-light-mode-only" alt="Liam ERD" width="445">
+  <img src="./assets/logo-dark.png#gh-dark-mode-only" alt="Liam ERD" width="445">
 </h1>
 
 <h2 align="center">
@@ -75,6 +75,6 @@ Refer to our [contribution guidelines](./CONTRIBUTING.md) and [Code of Conduct f
 
 ## License
 
-Liam is licensed under the [Apache License Version 2.0](LICENSE).
+Liam ERD is licensed under the [Apache License Version 2.0](LICENSE).
 
 Licenses for third-party packages can be found in [docs/packages-license.md](docs/packages-license.md).
