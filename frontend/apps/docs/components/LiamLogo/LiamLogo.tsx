@@ -6,7 +6,7 @@ export const LiamLogo: FC<Props> = (props) => {
   return (
     <svg
       role="img"
-      aria-label="Liam Logo"
+      aria-label="Liam ERD Logo"
       width={157}
       height={32}
       viewBox="0 0 157 32"
