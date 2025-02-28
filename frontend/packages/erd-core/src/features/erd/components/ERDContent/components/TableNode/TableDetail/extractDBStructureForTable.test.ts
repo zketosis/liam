@@ -70,7 +70,7 @@ describe(extractDBStructureForTable, () => {
     }
     const result = extractDBStructureForTable(users, emptyDBStructure)
     expect(result).toEqual({
-      tables: {},
+      tables: { users },
       relationships: {},
     })
   })
