@@ -1,5 +1,4 @@
 import {
-  NON_RELATED_TABLE_GROUP_NODE_ID,
   computeAutoLayout,
   convertDBStructureToNodes,
 } from '@/features/erd/utils'
@@ -19,8 +18,8 @@ import {
   Table2 as Table2Icon,
   XIcon,
 } from '@liam-hq/ui'
-import type { Node } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
+import { hasNonRelatedChildNodes, updateNodesHiddenState } from '../../../utils'
 import { Columns } from './Columns'
 import { Comment } from './Comment'
 import { Indices } from './Indices'
@@ -28,10 +27,6 @@ import { RelatedTables } from './RelatedTables'
 import styles from './TableDetail.module.css'
 import { Unique } from './Unique'
 import { extractDBStructureForTable } from './extractDBStructureForTable'
-
-const hasNonRelatedChildNodes = (nodes: Node[]): boolean => {
-  return nodes.some((node) => node.parentId === NON_RELATED_TABLE_GROUP_NODE_ID)
-}
 
 type Props = {
   table: Table
@@ -62,18 +57,14 @@ export const TableDetail: FC<Props> = ({ table }) => {
   const handleOpenMainPane = useCallback(async () => {
     const visibleNodeIds: string[] = nodes.map((node) => node.id)
     const mainPaneNodes = getNodes()
-    const shouldRemoveNonRelatedNodes = hasNonRelatedChildNodes(mainPaneNodes)
     const hiddenNodeIds = mainPaneNodes
       .filter((node) => !visibleNodeIds.includes(node.id))
       .map((node) => node.id)
-    const updatedNodes = mainPaneNodes.map((node) => ({
-      ...node,
-      hidden:
-        hiddenNodeIds.includes(node.id) ||
-        (shouldRemoveNonRelatedNodes
-          ? node.id === NON_RELATED_TABLE_GROUP_NODE_ID
-          : false),
-    }))
+    const updatedNodes = updateNodesHiddenState({
+      nodes: mainPaneNodes,
+      hiddenNodeIds,
+      shouldHideGroupNodeId: !hasNonRelatedChildNodes(nodes),
+    })
 
     replaceHiddenNodeIds(hiddenNodeIds)
     updateActiveTableName(undefined)
