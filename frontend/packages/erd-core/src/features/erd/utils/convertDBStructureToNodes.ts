@@ -1,10 +1,11 @@
-import { zIndex } from '@/features/erd/constants'
+import {
+  NON_RELATED_TABLE_GROUP_NODE_ID,
+  zIndex,
+} from '@/features/erd/constants'
 import { columnHandleId } from '@/features/erd/utils'
 import type { ShowMode } from '@/schemas/showMode'
 import type { Cardinality, DBStructure } from '@liam-hq/db-structure'
 import type { Edge, Node } from '@xyflow/react'
-
-export const NON_RELATED_TABLE_GROUP_NODE_ID = 'non-related-table-group'
 
 type Params = {
   dbStructure: DBStructure

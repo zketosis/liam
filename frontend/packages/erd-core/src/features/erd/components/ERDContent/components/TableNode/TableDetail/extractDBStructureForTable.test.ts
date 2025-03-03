@@ -63,14 +63,14 @@ describe(extractDBStructureForTable, () => {
     })
   })
 
-  it('should return empty tables and relationships if no relationships are found', () => {
+  it('should return its own table and empty relationships if no relationships are found', () => {
     const emptyDBStructure: DBStructure = {
       tables: { users },
       relationships: {},
     }
     const result = extractDBStructureForTable(users, emptyDBStructure)
     expect(result).toEqual({
-      tables: {},
+      tables: { users },
       relationships: {},
     })
   })
