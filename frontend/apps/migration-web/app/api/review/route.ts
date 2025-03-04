@@ -2,6 +2,7 @@ import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { HttpResponseOutputParser } from 'langchain/output_parsers'
 import type { NextRequest } from 'next/server'
+import { langfuseLangchainHandler } from '../../../lib'
 
 export const runtime = 'edge'
 
@@ -46,9 +47,14 @@ export async function POST(req: NextRequest) {
 
     const chain = prompt.pipe(model).pipe(outputParser)
 
-    const stream = await chain.stream({
-      schema: schema,
-    })
+    const stream = await chain.stream(
+      {
+        schema: schema,
+      },
+      {
+        callbacks: [langfuseLangchainHandler],
+      },
+    )
 
     return new Response(stream)
   } catch (error) {

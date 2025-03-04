@@ -42,3 +42,5 @@ next-env.d.ts
 
 # typed-css-modules
 *.css.d.ts
+
+.env

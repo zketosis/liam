@@ -187,6 +187,9 @@ importers:
       langchain:
         specifier: 0.3.19
         version: 0.3.19(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.0)(zod@3.24.1)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.86.1(ws@8.18.0)(zod@3.24.1))(ws@8.18.0)
+      langfuse-langchain:
+        specifier: 3.36.0
+        version: 3.36.0(langchain@0.3.19(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.0)(zod@3.24.1)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.86.1(ws@8.18.0)(zod@3.24.1))(ws@8.18.0))
       next:
         specifier: 15.1.2
         version: 15.1.2(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5298,6 +5301,20 @@ packages:
         optional: true
       typeorm:
         optional: true
+
+  langfuse-core@3.36.0:
+    resolution: {integrity: sha512-qxaWxy5E4oIyCYPwiRKXNfMP9vwRZnHiHLPDqAssVzcRp8bTG6NGR+9yfP7Yc8bjNxB364FRtm3MtdMhn6I3iQ==}
+    engines: {node: '>=18'}
+
+  langfuse-langchain@3.36.0:
+    resolution: {integrity: sha512-0qK/BVOPjNTSZB0H9Yz5lXztiAbRrGM9YG2H7z/tnjEi3aXHJrbOEXQoi7a7qBoWKjy+Un/4qfUk5s8D2nIK2Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      langchain: '>=0.0.157 <0.4.0'
+
+  langfuse@3.36.0:
+    resolution: {integrity: sha512-rHOh1xXlt/iCaw3ZULJZ5OH3jSfxb68ZzCnf6EoZVfT/vv7fIQ75L7sTfH2LdDSBwTVKvZWZYX9vJWAaX9AyHQ==}
+    engines: {node: '>=18'}
 
   langsmith@0.3.11:
     resolution: {integrity: sha512-pzA7wemfMjqCiaNY3AtUkQJ7jubIBmKRTl0dMNEUz8A4ewIqCEpB2caiTeeAwVkugEylny80cDk3u16WqL25Sw==}
@@ -13251,6 +13268,20 @@ snapshots:
       - encoding
       - openai
       - ws
+
+  langfuse-core@3.36.0:
+    dependencies:
+      mustache: 4.2.0
+
+  langfuse-langchain@3.36.0(langchain@0.3.19(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.0)(zod@3.24.1)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.86.1(ws@8.18.0)(zod@3.24.1))(ws@8.18.0)):
+    dependencies:
+      langchain: 0.3.19(@langchain/core@0.3.42(openai@4.86.1(ws@8.18.0)(zod@3.24.1)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.86.1(ws@8.18.0)(zod@3.24.1))(ws@8.18.0)
+      langfuse: 3.36.0
+      langfuse-core: 3.36.0
+
+  langfuse@3.36.0:
+    dependencies:
+      langfuse-core: 3.36.0
 
   langsmith@0.3.11(openai@4.86.1(ws@8.18.0)(zod@3.24.1)):
     dependencies:
