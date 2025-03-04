@@ -9,7 +9,7 @@ import { runPreprocess } from '../runPreprocess.js'
 export const buildCommand = async (
   inputPath: string,
   outDir: string,
-  format: SupportedFormat,
+  format?: SupportedFormat,
 ): Promise<CliError[]> => {
   // generate schema.json
   const { errors: preprocessErrors } = await runPreprocess(

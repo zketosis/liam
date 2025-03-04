@@ -1,5 +1,25 @@
 # @liam-hq/cli
 
+## 0.4.4
+
+### Patch Changes
+
+- [#792](https://github.com/liam-hq/liam/pull/792) - ♻️ Added a tooltip for truncated table names to improve usability. / Thanks [@prakha](https://github.com/prakha)!
+- [#759](https://github.com/liam-hq/liam/pull/759) - ♻️ Reorganize erd-core Structure: Parallelize ERDContent & Consolidate Shared Utilities in features/erd-core / Thanks [@junkisai](https://github.com/junkisai)!
+- [#798](https://github.com/liam-hq/liam/pull/798) - 🐛 integrate user editing state into related tables component / Thanks [@junkisai](https://github.com/junkisai)!
+- [#797](https://github.com/liam-hq/liam/pull/797) - 🐛 When nodes without relationships are present, display only that node in RelatedTables. / Thanks [@junkisai](https://github.com/junkisai)!
+
+## 0.4.3
+
+### Patch Changes
+
+- [#760](https://github.com/liam-hq/liam/pull/760) - ✨ Made `--format` optional in CLI command / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+- [#699](https://github.com/liam-hq/liam/pull/699) - ♻️ Refactor SQL chunk processing to reduce memory errors. / Thanks [@hoshinotsuyoshi](https://github.com/hoshinotsuyoshi)!
+
+Increases the likelihood of processing larger `.sql` files without encountering memory errors.
+
+- [#767](https://github.com/liam-hq/liam/pull/767) - ✨ Support field name mapping with @map in Prisma / Thanks [@tnyo43](https://github.com/tnyo43)!
+
 ## 0.4.2
 
 ### Patch Changes
