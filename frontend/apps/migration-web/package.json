@@ -32,7 +32,7 @@
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "start": "next start",
-    "supabase:pull": "pnpm supabase pull",
+    "supabase:pull": "pnpm supabase db pull",
     "supabase:reset": "pnpm supabase db reset",
     "supabase:start": "pnpm supabase start",
     "supabase:stop": "pnpm supabase stop"
