@@ -1,7 +1,16 @@
 import '@xyflow/react/dist/style.css'
-import { SidebarProvider, SidebarTrigger, ToastProvider } from '@liam-hq/ui'
+import {
+  type ImperativePanelHandle,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+  SidebarProvider,
+  type SidebarState,
+  SidebarTrigger,
+  ToastProvider,
+} from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
-import { type FC, useCallback, useState } from 'react'
+import { type FC, createRef, useCallback, useState } from 'react'
 import { AppBar } from './AppBar'
 import { ERDContent } from './ERDContent'
 import styles from './ERDRenderer.module.css'
@@ -40,6 +49,8 @@ export const ERDRenderer: FC<Props> = ({
     showMode,
   })
 
+  const leftPanelRef = createRef<ImperativePanelHandle>()
+
   const { version } = useVersion()
   const handleChangeOpen = useCallback(
     (open: boolean) => {
@@ -56,46 +67,70 @@ export const ERDRenderer: FC<Props> = ({
     [version],
   )
 
+  const handleTriggerClick = useCallback(
+    (state: SidebarState) => {
+      state === 'expanded'
+        ? leftPanelRef.current?.collapse()
+        : leftPanelRef.current?.expand()
+    },
+    [leftPanelRef],
+  )
+
   return (
     <SidebarProvider
       className={styles.wrapper}
       open={open}
       onOpenChange={handleChangeOpen}
+      onClick={handleTriggerClick}
     >
       <CardinalityMarkers />
       <RelationshipEdgeParticleMarker />
       <ToastProvider>
         <AppBar />
         <ReactFlowProvider>
-          <div className={styles.mainWrapper}>
-            <LeftPane />
-            <main className={styles.main}>
-              <div className={styles.triggerWrapper}>
-                <SidebarTrigger />
-              </div>
-              <TableDetailDrawerRoot>
-                {errorObjects.length > 0 && (
-                  <ErrorDisplay errors={errorObjects} />
-                )}
-                {errorObjects.length > 0 || (
-                  <>
-                    <ERDContent
-                      key={`${nodes.length}-${showMode}`}
-                      nodes={nodes}
-                      edges={edges}
-                      displayArea="main"
-                    />
-                    <TableDetailDrawer />
-                  </>
-                )}
-              </TableDetailDrawerRoot>
-              {errorObjects.length === 0 && (
-                <div className={styles.toolbarWrapper}>
-                  <Toolbar />
+          <ResizablePanelGroup
+            direction="horizontal"
+            className={styles.mainWrapper}
+          >
+            <ResizablePanel
+              collapsible
+              defaultSize={30}
+              minSize={20}
+              maxSize={50}
+              ref={leftPanelRef}
+            >
+              <LeftPane />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel collapsible defaultSize={70} minSize={50}>
+              <main className={styles.main}>
+                <div className={styles.triggerWrapper}>
+                  <SidebarTrigger onClick={handleTriggerClick} />
                 </div>
-              )}
-            </main>
-          </div>
+                <TableDetailDrawerRoot>
+                  {errorObjects.length > 0 && (
+                    <ErrorDisplay errors={errorObjects} />
+                  )}
+                  {errorObjects.length > 0 || (
+                    <>
+                      <ERDContent
+                        key={`${nodes.length}-${showMode}`}
+                        nodes={nodes}
+                        edges={edges}
+                        displayArea="main"
+                      />
+                      <TableDetailDrawer />
+                    </>
+                  )}
+                </TableDetailDrawerRoot>
+                {errorObjects.length === 0 && (
+                  <div className={styles.toolbarWrapper}>
+                    <Toolbar />
+                  </div>
+                )}
+              </main>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </ReactFlowProvider>
       </ToastProvider>
     </SidebarProvider>

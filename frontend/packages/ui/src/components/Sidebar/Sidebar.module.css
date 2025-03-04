@@ -16,7 +16,7 @@
 }
 
 .sidebarGap {
-  width: var(--sidebar-width);
+  width: 100%;
   height: 100%;
   transition-duration: 200ms;
   animation-timing-function: linear;
@@ -28,10 +28,8 @@
 }
 
 .sidebarWrapper {
-  width: var(--sidebar-width);
-  height: 100%;
-  position: absolute;
-  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100vh;
   z-index: var(--z-index-sidebar);
   transition-duration: 200ms;
   animation-timing-function: linear;

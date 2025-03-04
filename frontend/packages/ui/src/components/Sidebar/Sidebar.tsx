@@ -29,8 +29,9 @@ const SIDEBAR_WIDTH = '16rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 
+export type SidebarState = 'expanded' | 'collapsed'
 type SidebarContext = {
-  state: 'expanded' | 'collapsed'
+  state: SidebarState
   open: boolean
   setOpen: (open: boolean) => void
   toggleSidebar: () => void
@@ -49,10 +50,11 @@ function useSidebar() {
 
 const SidebarProvider = forwardRef<
   HTMLDivElement,
-  ComponentProps<'div'> & {
+  Omit<ComponentProps<'div'>, 'onClick'> & {
     defaultOpen?: boolean
     open?: boolean
     onOpenChange?: (open: boolean) => void
+    onClick?: (state: SidebarState) => void
   }
 >(
   (
@@ -63,6 +65,7 @@ const SidebarProvider = forwardRef<
       className,
       style,
       children,
+      onClick,
       ...props
     },
     ref,
@@ -101,13 +104,14 @@ const SidebarProvider = forwardRef<
           (event.metaKey || event.ctrlKey)
         ) {
           event.preventDefault()
+          onClick?.(state)
           toggleSidebar()
         }
       }
 
       window.addEventListener('keydown', handleKeyDown)
       return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [toggleSidebar])
+    }, [toggleSidebar, onClick])
 
     // We add a state so that we can do data-state="expanded" or "collapsed".
     // This makes it easier to style the sidebar with Tailwind classes.
@@ -183,35 +187,40 @@ const Sidebar = forwardRef<
 })
 Sidebar.displayName = 'Sidebar'
 
-const SidebarTrigger = forwardRef<
-  ElementRef<'button'>,
-  ComponentProps<'button'>
->(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar, state } = useSidebar()
+type SidebarTriggerProps = Omit<ComponentProps<'button'>, 'onClick'> & {
+  onClick?: (state: SidebarState) => void
+}
 
-  return (
-    <TooltipRoot>
-      <TooltipTrigger asChild>
-        <button
-          ref={ref}
-          data-sidebar="trigger"
-          aria-label="Toggle Sidebar Icon Button"
-          className={clsx(styles.sidebarTrigger, className)}
-          onClick={(event) => {
-            onClick?.(event)
-            toggleSidebar()
-          }}
-          {...props}
-        >
-          <PanelLeft width={16} height={16} />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent side="right" align="center" sideOffset={8}>
-        {state === 'collapsed' ? 'Expand' : 'Collapse'}
-      </TooltipContent>
-    </TooltipRoot>
-  )
-})
+const SidebarTrigger = forwardRef<ElementRef<'button'>, SidebarTriggerProps>(
+  ({ className, onClick, ...props }, ref) => {
+    const { toggleSidebar, state } = useSidebar()
+
+    const handleClick = useCallback(() => {
+      onClick?.(state)
+      toggleSidebar()
+    }, [onClick, toggleSidebar, state])
+
+    return (
+      <TooltipRoot>
+        <TooltipTrigger asChild>
+          <button
+            ref={ref}
+            data-sidebar="trigger"
+            aria-label="Toggle Sidebar Icon Button"
+            className={clsx(styles.sidebarTrigger, className)}
+            onClick={handleClick}
+            {...props}
+          >
+            <PanelLeft width={16} height={16} />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="right" align="center" sideOffset={8}>
+          {state === 'collapsed' ? 'Expand' : 'Collapse'}
+        </TooltipContent>
+      </TooltipRoot>
+    )
+  },
+)
 SidebarTrigger.displayName = 'SidebarTrigger'
 
 const SidebarRail = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
