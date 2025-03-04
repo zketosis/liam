@@ -34,11 +34,16 @@ type ErrorObject = {
 type Props = {
   defaultSidebarOpen?: boolean | undefined
   errorObjects?: ErrorObject[] | undefined
+  defaultSidebarWidth?: number
 }
+
+const SIDEBAR_WIDTH_COOKIE_NAME = 'sidebar:width'
+const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 
 export const ERDRenderer: FC<Props> = ({
   defaultSidebarOpen = false,
   errorObjects = [],
+  defaultSidebarWidth = 20,
 }) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
 
@@ -71,6 +76,11 @@ export const ERDRenderer: FC<Props> = ({
     [version, leftPanelRef],
   )
 
+  // This sets the cookie to keep the sidebar state.
+  const setWidth = useCallback(() => {
+    document.cookie = `${SIDEBAR_WIDTH_COOKIE_NAME}=${leftPanelRef.current?.getSize()}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+  }, [leftPanelRef])
+
   return (
     <SidebarProvider
       className={styles.wrapper}
@@ -85,18 +95,19 @@ export const ERDRenderer: FC<Props> = ({
           <ResizablePanelGroup
             direction="horizontal"
             className={styles.mainWrapper}
+            onLayout={setWidth}
           >
             <ResizablePanel
               collapsible
-              defaultSize={open ? 30 : 0}
-              minSize={20}
-              maxSize={50}
+              defaultSize={open ? defaultSidebarWidth : 0}
+              minSize={10}
+              maxSize={30}
               ref={leftPanelRef}
             >
               <LeftPane />
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel collapsible defaultSize={70} minSize={50}>
+            <ResizablePanel collapsible>
               <main className={styles.main}>
                 <div className={styles.triggerWrapper}>
                   <SidebarTrigger />
