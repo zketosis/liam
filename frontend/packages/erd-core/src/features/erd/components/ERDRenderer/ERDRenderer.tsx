@@ -5,14 +5,12 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   SidebarProvider,
-  type SidebarState,
   SidebarTrigger,
   ToastProvider,
 } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
 import { type FC, createRef, useCallback, useState } from 'react'
 import { AppBar } from './AppBar'
-import { ERDContent } from './ERDContent'
 import styles from './ERDRenderer.module.css'
 import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
@@ -20,7 +18,6 @@ import { useVersion } from '@/providers'
 import { useDBStructureStore, useUserEditingStore } from '@/stores'
 import { convertDBStructureToNodes } from '../../utils'
 import { ERDContent } from '../ERDContent'
-import { AppBar } from './AppBar'
 import { CardinalityMarkers } from './CardinalityMarkers'
 import { ErrorDisplay } from './ErrorDisplay'
 import { LeftPane } from './LeftPane'
