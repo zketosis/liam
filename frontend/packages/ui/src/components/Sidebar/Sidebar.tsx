@@ -223,26 +223,6 @@ const SidebarTrigger = forwardRef<ElementRef<'button'>, SidebarTriggerProps>(
 )
 SidebarTrigger.displayName = 'SidebarTrigger'
 
-const SidebarRail = forwardRef<HTMLButtonElement, ComponentProps<'button'>>(
-  ({ className, ...props }, ref) => {
-    const { toggleSidebar } = useSidebar()
-
-    return (
-      <button
-        ref={ref}
-        data-sidebar="rail"
-        aria-label="Toggle Sidebar"
-        tabIndex={-1}
-        onClick={toggleSidebar}
-        title="Toggle Sidebar"
-        className={clsx(styles.sidebarRail, className)}
-        {...props}
-      />
-    )
-  },
-)
-SidebarRail.displayName = 'SidebarRail'
-
 const SidebarHeader = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
   ({ className, ...props }, ref) => {
     return <div ref={ref} data-sidebar="header" {...props} />
@@ -483,7 +463,6 @@ export {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarProvider,
-  SidebarRail,
   SidebarTrigger,
   useSidebar,
 }

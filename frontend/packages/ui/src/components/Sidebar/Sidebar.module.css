@@ -119,34 +119,6 @@
   line-height: normal;
 }
 
-.sidebarRail {
-  cursor: w-resize;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1rem;
-  right: -1rem;
-}
-
-[data-collapsible='offcanvas'] .sidebarRail {
-  cursor: e-resize;
-}
-
-.sidebarRail::after {
-  content: '';
-  width: 2px;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  position: absolute;
-  transition: background-color var(--default-hover-animation-duration)
-    var(--default-timing-function);
-}
-
-.sidebarRail:hover::after {
-  background: var(--pane-border-hover);
-}
-
 .sidebarFooter {
   color: var(--overlay-70);
   padding: var(--spacing-2);
