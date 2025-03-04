@@ -63,17 +63,12 @@ export const ERDRenderer: FC<Props> = ({
         ver: version.version,
         appEnv: version.envName,
       })
-    },
-    [version],
-  )
 
-  const handleTriggerClick = useCallback(
-    (state: SidebarState) => {
-      state === 'expanded'
+      open === true
         ? leftPanelRef.current?.collapse()
         : leftPanelRef.current?.expand()
     },
-    [leftPanelRef],
+    [version, leftPanelRef],
   )
 
   return (
@@ -81,7 +76,6 @@ export const ERDRenderer: FC<Props> = ({
       className={styles.wrapper}
       open={open}
       onOpenChange={handleChangeOpen}
-      onClick={handleTriggerClick}
     >
       <CardinalityMarkers />
       <RelationshipEdgeParticleMarker />
@@ -105,7 +99,7 @@ export const ERDRenderer: FC<Props> = ({
             <ResizablePanel collapsible defaultSize={70} minSize={50}>
               <main className={styles.main}>
                 <div className={styles.triggerWrapper}>
-                  <SidebarTrigger onClick={handleTriggerClick} />
+                  <SidebarTrigger />
                 </div>
                 <TableDetailDrawerRoot>
                   {errorObjects.length > 0 && (

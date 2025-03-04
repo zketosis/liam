@@ -50,11 +50,10 @@ function useSidebar() {
 
 const SidebarProvider = forwardRef<
   HTMLDivElement,
-  Omit<ComponentProps<'div'>, 'onClick'> & {
+  ComponentProps<'div'> & {
     defaultOpen?: boolean
     open?: boolean
     onOpenChange?: (open: boolean) => void
-    onClick?: (state: SidebarState) => void
   }
 >(
   (
@@ -65,7 +64,6 @@ const SidebarProvider = forwardRef<
       className,
       style,
       children,
-      onClick,
       ...props
     },
     ref,
@@ -93,7 +91,7 @@ const SidebarProvider = forwardRef<
 
     // Helper to toggle the sidebar.
     const toggleSidebar = useCallback(() => {
-      return setOpen((open) => !open)
+      setOpen((open) => !open)
     }, [setOpen])
 
     // Adds a keyboard shortcut to toggle the sidebar.
@@ -104,14 +102,12 @@ const SidebarProvider = forwardRef<
           (event.metaKey || event.ctrlKey)
         ) {
           event.preventDefault()
-          onClick?.(state)
           toggleSidebar()
         }
       }
-
       window.addEventListener('keydown', handleKeyDown)
       return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [toggleSidebar, onClick])
+    }, [toggleSidebar])
 
     // We add a state so that we can do data-state="expanded" or "collapsed".
     // This makes it easier to style the sidebar with Tailwind classes.
@@ -195,11 +191,6 @@ const SidebarTrigger = forwardRef<ElementRef<'button'>, SidebarTriggerProps>(
   ({ className, onClick, ...props }, ref) => {
     const { toggleSidebar, state } = useSidebar()
 
-    const handleClick = useCallback(() => {
-      onClick?.(state)
-      toggleSidebar()
-    }, [onClick, toggleSidebar, state])
-
     return (
       <TooltipRoot>
         <TooltipTrigger asChild>
@@ -208,7 +199,7 @@ const SidebarTrigger = forwardRef<ElementRef<'button'>, SidebarTriggerProps>(
             data-sidebar="trigger"
             aria-label="Toggle Sidebar Icon Button"
             className={clsx(styles.sidebarTrigger, className)}
-            onClick={handleClick}
+            onClick={toggleSidebar}
             {...props}
           >
             <PanelLeft width={16} height={16} />
