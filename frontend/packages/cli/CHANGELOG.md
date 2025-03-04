@@ -1,5 +1,14 @@
 # @liam-hq/cli
 
+## 0.4.4
+
+### Patch Changes
+
+- [#792](https://github.com/liam-hq/liam/pull/792) - ♻️ Added a tooltip for truncated table names to improve usability. / Thanks [@prakha](https://github.com/prakha)!
+- [#759](https://github.com/liam-hq/liam/pull/759) - ♻️ Reorganize erd-core Structure: Parallelize ERDContent & Consolidate Shared Utilities in features/erd-core / Thanks [@junkisai](https://github.com/junkisai)!
+- [#798](https://github.com/liam-hq/liam/pull/798) - 🐛 integrate user editing state into related tables component / Thanks [@junkisai](https://github.com/junkisai)!
+- [#797](https://github.com/liam-hq/liam/pull/797) - 🐛 When nodes without relationships are present, display only that node in RelatedTables. / Thanks [@junkisai](https://github.com/junkisai)!
+
 ## 0.4.3
 
 ### Patch Changes
