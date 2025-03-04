@@ -53,18 +53,18 @@ export const ERDRenderer: FC<Props> = ({
 
   const { version } = useVersion()
   const handleChangeOpen = useCallback(
-    (open: boolean) => {
-      setOpen(open)
+    (nextPanelState: boolean) => {
+      setOpen(nextPanelState)
       toggleLogEvent({
         element: 'leftPane',
-        isShow: open,
+        isShow: nextPanelState,
         platform: version.displayedOn,
         gitHash: version.gitHash,
         ver: version.version,
         appEnv: version.envName,
       })
 
-      open === true
+      nextPanelState === false
         ? leftPanelRef.current?.collapse()
         : leftPanelRef.current?.expand()
     },
@@ -88,7 +88,7 @@ export const ERDRenderer: FC<Props> = ({
           >
             <ResizablePanel
               collapsible
-              defaultSize={30}
+              defaultSize={open ? 30 : 0}
               minSize={20}
               maxSize={50}
               ref={leftPanelRef}

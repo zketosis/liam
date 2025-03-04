@@ -53,7 +53,7 @@ const SidebarProvider = forwardRef<
   ComponentProps<'div'> & {
     defaultOpen?: boolean
     open?: boolean
-    onOpenChange?: (open: boolean) => void
+    onOpenChange?: (nextPanelState: boolean) => void
   }
 >(
   (
