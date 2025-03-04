@@ -6,17 +6,18 @@ import type { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
-const RETRIEVAL_TEMPLATE = `You are a database design expert. A user is planning to make changes to their database schema and needs advice.
+const RETRIEVAL_TEMPLATE = `You are a knowledgeable assistant that helps users with their questions by providing accurate and helpful information.
 
 I'll provide you with:
-1. The user's query about a database schema change they're planning
-2. Relevant context from previous database schema discussions and documentation
+1. The user's query
+2. Relevant context retrieved from our knowledge base
 
 Based on this information, please provide a detailed response that:
-- Analyzes the proposed schema change
-- Offers best practices and recommendations
-- Highlights potential issues or considerations
-- References specific examples from the context where relevant
+- Directly addresses the user's question
+- Incorporates relevant information from the provided context
+- Provides clear explanations and examples where appropriate
+- Highlights important considerations or best practices
+- Cites specific information from the context when relevant
 
 User Query:
 """
@@ -28,7 +29,15 @@ Relevant Context:
 {context}
 """
 
-Please format your response in Markdown and ensure it's practical, specific, and actionable.`
+Instructions for your response:
+1. If the context contains relevant information, use it to enhance your answer
+2. If the context doesn't contain enough information, acknowledge this and provide the best general guidance you can
+3. If you're unsure about something, be transparent about the limitations of your knowledge
+4. Format your response in Markdown to improve readability
+5. Keep your response practical, specific, and actionable
+6. Do not mention that you are using context or reference the retrieval process in your answer
+
+Please provide a comprehensive and helpful response.`
 
 export async function POST(req: NextRequest) {
   try {
