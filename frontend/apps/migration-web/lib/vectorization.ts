@@ -1,19 +1,7 @@
 import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/cheerio'
 import { HtmlToTextTransformer } from '@langchain/community/document_transformers/html_to_text'
-import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase'
-import { OpenAIEmbeddings } from '@langchain/openai'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
-import { supabaseClient } from '.'
-
-const embeddings = new OpenAIEmbeddings({
-  modelName: 'text-embedding-3-small',
-})
-
-const vectorStore = new SupabaseVectorStore(embeddings, {
-  client: supabaseClient,
-  tableName: 'documents',
-  queryName: 'match_documents',
-})
+import { vectorStore } from '.'
 
 export type VectorizationResult = {
   documentId?: string
