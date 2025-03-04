@@ -1,36 +1,48 @@
-import { vectorizeUrl } from '@/lib/vectorization'
+import { vectorizeText, vectorizeUrl } from '@/lib/vectorization'
 import type { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
   try {
-    const { url } = await req.json()
+    const { url, text } = await req.json()
 
-    if (!url || typeof url !== 'string') {
+    if (url && typeof url === 'string') {
+      const result = await vectorizeUrl(url)
       return new Response(
         JSON.stringify({
-          error: 'URL is not provided or is in an invalid format',
+          success: true,
+          message: 'URL content vectorized and stored successfully',
+          id: result.documentId,
+          chunkCount: result.chunkCount,
         }),
-        { status: 400 },
+        { status: 200 },
       )
     }
-
-    const result = await vectorizeUrl(url)
-
+    if (text && typeof text === 'string') {
+      const result = await vectorizeText(text)
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: 'Text content vectorized and stored successfully',
+          id: result.documentId,
+          chunkCount: result.chunkCount,
+        }),
+        { status: 200 },
+      )
+    }
     return new Response(
       JSON.stringify({
-        success: true,
-        message: 'Content vectorized and stored successfully',
-        id: result.documentId,
-        chunkCount: result.chunkCount,
+        error: 'Neither URL nor text is provided or is in an invalid format',
       }),
-      { status: 200 },
+      { status: 400 },
     )
   } catch (error) {
     console.error('Error in vectorize API:', error)
     return new Response(
-      JSON.stringify({ error: 'An error occurred while processing the URL' }),
+      JSON.stringify({
+        error: 'An error occurred while processing the request',
+      }),
       { status: 500 },
     )
   }
