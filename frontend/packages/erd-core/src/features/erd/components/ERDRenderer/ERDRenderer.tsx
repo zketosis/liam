@@ -37,6 +37,7 @@ type Props = {
   defaultRightPanelWidth?: number
 }
 
+const SIDEBAR_COOKIE_NAME = 'sidebar:state'
 const LEFT_PANEL_WIDTH_COOKIE_NAME = 'left-panel:width'
 const RIGHT_PANEL_WIDTH_COOKIE_NAME = 'right-panel:width'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -76,6 +77,9 @@ export const ERDRenderer: FC<Props> = ({
       nextPanelState === false
         ? leftPanelRef.current?.collapse()
         : leftPanelRef.current?.expand()
+
+      // This sets the cookie to keep the sidebar state.
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${nextPanelState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
     [version, leftPanelRef],
   )

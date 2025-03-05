@@ -23,8 +23,6 @@ import {
 } from '../Tooltip'
 import styles from './Sidebar.module.css'
 
-const SIDEBAR_COOKIE_NAME = 'sidebar:state'
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = '16rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
@@ -32,8 +30,6 @@ const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 export type SidebarState = 'expanded' | 'collapsed'
 type SidebarContext = {
   state: SidebarState
-  open: boolean
-  setOpen: (open: boolean) => void
   toggleSidebar: () => void
 }
 
@@ -51,102 +47,67 @@ function useSidebar() {
 const SidebarProvider = forwardRef<
   HTMLDivElement,
   ComponentProps<'div'> & {
-    defaultOpen?: boolean
     open?: boolean
     onOpenChange?: (nextPanelState: boolean) => void
   }
->(
-  (
-    {
-      defaultOpen = true,
-      open: openProp,
-      onOpenChange: setOpenProp,
-      className,
-      style,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
-    const [openMobile, setOpenMobile] = useState(false)
+>(({ open, onOpenChange, className, style, children, ...props }, ref) => {
+  const [openMobile, setOpenMobile] = useState(false)
 
-    // This is the internal state of the sidebar.
-    // We use openProp and setOpenProp for control from outside the component.
-    const [_open, _setOpen] = useState(defaultOpen)
-    const open = openProp ?? _open
-    const setOpen = useCallback(
-      (value: boolean | ((value: boolean) => boolean)) => {
-        const openState = typeof value === 'function' ? value(open) : value
-        if (setOpenProp) {
-          setOpenProp(openState)
-        } else {
-          _setOpen(openState)
-        }
+  // Helper to toggle the sidebar.
+  const toggleSidebar = useCallback(() => {
+    onOpenChange?.(!open)
+  }, [onOpenChange, open])
 
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
-      },
-      [setOpenProp, open],
-    )
-
-    // Helper to toggle the sidebar.
-    const toggleSidebar = useCallback(() => {
-      setOpen((open) => !open)
-    }, [setOpen])
-
-    // Adds a keyboard shortcut to toggle the sidebar.
-    useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (
-          event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-          (event.metaKey || event.ctrlKey)
-        ) {
-          event.preventDefault()
-          toggleSidebar()
-        }
+  // Adds a keyboard shortcut to toggle the sidebar.
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
+        (event.metaKey || event.ctrlKey)
+      ) {
+        event.preventDefault()
+        toggleSidebar()
       }
-      window.addEventListener('keydown', handleKeyDown)
-      return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [toggleSidebar])
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [toggleSidebar])
 
-    // We add a state so that we can do data-state="expanded" or "collapsed".
-    // This makes it easier to style the sidebar with Tailwind classes.
-    const state = open ? 'expanded' : 'collapsed'
+  // We add a state so that we can do data-state="expanded" or "collapsed".
+  // This makes it easier to style the sidebar with Tailwind classes.
+  const state = open ? 'expanded' : 'collapsed'
 
-    const contextValue = useMemo<SidebarContext>(
-      () => ({
-        state,
-        open,
-        setOpen,
-        openMobile,
-        setOpenMobile,
-        toggleSidebar,
-      }),
-      [state, open, setOpen, openMobile, toggleSidebar],
-    )
+  const contextValue = useMemo<SidebarContext>(
+    () => ({
+      state,
+      openMobile,
+      setOpenMobile,
+      toggleSidebar,
+    }),
+    [state, openMobile, toggleSidebar],
+  )
 
-    return (
-      <SidebarContext.Provider value={contextValue}>
-        <TooltipProvider delayDuration={0}>
-          <div
-            style={
-              {
-                '--sidebar-width': SIDEBAR_WIDTH,
-                '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-                ...style,
-              } as CSSProperties
-            }
-            className={clsx(styles.sidebarProvider, className)}
-            ref={ref}
-            {...props}
-          >
-            {children}
-          </div>
-        </TooltipProvider>
-      </SidebarContext.Provider>
-    )
-  },
-)
+  return (
+    <SidebarContext.Provider value={contextValue}>
+      <TooltipProvider delayDuration={0}>
+        <div
+          style={
+            {
+              '--sidebar-width': SIDEBAR_WIDTH,
+              '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+              ...style,
+            } as CSSProperties
+          }
+          className={clsx(styles.sidebarProvider, className)}
+          ref={ref}
+          {...props}
+        >
+          {children}
+        </div>
+      </TooltipProvider>
+    </SidebarContext.Provider>
+  )
+})
 SidebarProvider.displayName = 'SidebarProvider'
 
 const Sidebar = forwardRef<
