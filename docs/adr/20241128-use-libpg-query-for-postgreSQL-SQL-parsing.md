@@ -16,7 +16,7 @@ We needed a robust and efficient SQL parser for PostgreSQL to integrate into our
 
 ## Decision
 
-We chose to use ``@codyjasonbennett/pg-query-emscripten``, which is a WebAssembly-compiled version of ``libpg-query``. This decision was based on the following factors:
+We chose to use ``pg-query-emscripten``, which is a WebAssembly-compiled version of ``libpg-query``. This decision was based on the following factors:
 
 **Parsing Speed**: Benchmarks showed that ``libpg-query`` (including its WebAssembly variant) outperformed alternatives like ANTLR in terms of parsing speed.
 
