@@ -30,6 +30,7 @@ const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 export type SidebarState = 'expanded' | 'collapsed'
 type SidebarContext = {
   state: SidebarState
+  open: boolean
   toggleSidebar: () => void
 }
 
@@ -47,7 +48,7 @@ function useSidebar() {
 const SidebarProvider = forwardRef<
   HTMLDivElement,
   ComponentProps<'div'> & {
-    open?: boolean
+    open: boolean
     onOpenChange?: (nextPanelState: boolean) => void
   }
 >(({ open, onOpenChange, className, style, children, ...props }, ref) => {
@@ -83,8 +84,9 @@ const SidebarProvider = forwardRef<
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      open,
     }),
-    [state, openMobile, toggleSidebar],
+    [state, openMobile, toggleSidebar, open],
   )
 
   return (
