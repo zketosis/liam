@@ -33,16 +33,19 @@ type ErrorObject = {
 type Props = {
   defaultSidebarOpen?: boolean | undefined
   errorObjects?: ErrorObject[] | undefined
-  defaultSidebarWidth?: number
+  defaultLeftPanelWidth?: number
+  defaultRightPanelWidth?: number
 }
 
-const SIDEBAR_WIDTH_COOKIE_NAME = 'sidebar:width'
+const LEFT_PANEL_WIDTH_COOKIE_NAME = 'left-panel:width'
+const RIGHT_PANEL_WIDTH_COOKIE_NAME = 'right-panel:width'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 
 export const ERDRenderer: FC<Props> = ({
   defaultSidebarOpen = false,
   errorObjects = [],
-  defaultSidebarWidth = 20,
+  defaultLeftPanelWidth = 20,
+  defaultRightPanelWidth = 80,
 }) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
 
@@ -54,6 +57,7 @@ export const ERDRenderer: FC<Props> = ({
   })
 
   const leftPanelRef = createRef<ImperativePanelHandle>()
+  const rightPanelRef = createRef<ImperativePanelHandle>()
 
   const { version } = useVersion()
   const handleChangeOpen = useCallback(
@@ -75,10 +79,20 @@ export const ERDRenderer: FC<Props> = ({
     [version, leftPanelRef],
   )
 
-  // This sets the cookie to keep the sidebar state.
+  // This sets the cookie to keep the panel widths
   const setWidth = useCallback(() => {
-    document.cookie = `${SIDEBAR_WIDTH_COOKIE_NAME}=${leftPanelRef.current?.getSize()}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
-  }, [leftPanelRef])
+    const leftWidth = leftPanelRef.current?.getSize() ?? defaultLeftPanelWidth
+    const rightWidth =
+      rightPanelRef.current?.getSize() ?? defaultRightPanelWidth
+
+    document.cookie = `${LEFT_PANEL_WIDTH_COOKIE_NAME}=${leftWidth}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    document.cookie = `${RIGHT_PANEL_WIDTH_COOKIE_NAME}=${rightWidth}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+  }, [
+    leftPanelRef,
+    rightPanelRef,
+    defaultLeftPanelWidth,
+    defaultRightPanelWidth,
+  ])
 
   return (
     <SidebarProvider
@@ -98,7 +112,7 @@ export const ERDRenderer: FC<Props> = ({
           >
             <ResizablePanel
               collapsible
-              defaultSize={open ? defaultSidebarWidth : 0}
+              defaultSize={open ? defaultLeftPanelWidth : 0}
               minSize={10}
               maxSize={30}
               ref={leftPanelRef}
@@ -106,7 +120,11 @@ export const ERDRenderer: FC<Props> = ({
               <LeftPane />
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel collapsible>
+            <ResizablePanel
+              collapsible
+              defaultSize={defaultRightPanelWidth}
+              ref={rightPanelRef}
+            >
               <main className={styles.main}>
                 <div className={styles.triggerWrapper}>
                   <SidebarTrigger />

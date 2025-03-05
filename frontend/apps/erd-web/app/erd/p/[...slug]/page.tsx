@@ -98,6 +98,7 @@ export default async function Page({
       <ERDViewer
         dbStructure={blankDbStructure}
         defaultSidebarOpen={false}
+        defaultLeftPanelWidth={20}
         errorObjects={[
           {
             name: 'NetworkError',
@@ -139,7 +140,6 @@ export default async function Page({
       <ERDViewer
         dbStructure={blankDbStructure}
         defaultSidebarOpen={false}
-        defaultSidebarWidth={20}
         errorObjects={networkErrorObjects}
       />
     )
@@ -149,7 +149,7 @@ export default async function Page({
       <ERDViewer
         dbStructure={blankDbStructure}
         defaultSidebarOpen={false}
-        defaultSidebarWidth={20}
+        defaultLeftPanelWidth={20}
         errorObjects={[
           {
             name: 'NetworkError',
@@ -180,7 +180,6 @@ export default async function Page({
       <ERDViewer
         dbStructure={blankDbStructure}
         defaultSidebarOpen={false}
-        defaultSidebarWidth={20}
         errorObjects={[
           {
             name: 'NetworkError',
@@ -204,18 +203,26 @@ export default async function Page({
   const cookieStore = await cookies()
   const defaultSidebarOpen = cookieStore.get('sidebar:state')?.value === 'true'
 
-  const sidebarWidthValue = cookieStore.get('sidebar:width')?.value
+  const sidebarWidthValue = cookieStore.get('left-panel:width')?.value
   const parsedWidth = sidebarWidthValue
     ? Number.parseInt(sidebarWidthValue, 10)
     : Number.NaN
+  const defaultLeftPanelWidth = Number.isNaN(parsedWidth) ? 20 : parsedWidth
 
-  const defaultSidebarWidth = Number.isNaN(parsedWidth) ? 20 : parsedWidth
+  const rightPanelWidthValue = cookieStore.get('right-panel:width')?.value
+  const parsedRightWidth = rightPanelWidthValue
+    ? Number.parseInt(rightPanelWidthValue, 10)
+    : Number.NaN
+  const defaultRightPanelWidth = Number.isNaN(parsedRightWidth)
+    ? 80
+    : parsedRightWidth
 
   return (
     <ERDViewer
       dbStructure={dbStructure}
       defaultSidebarOpen={defaultSidebarOpen}
-      defaultSidebarWidth={defaultSidebarWidth}
+      defaultLeftPanelWidth={defaultLeftPanelWidth}
+      defaultRightPanelWidth={defaultRightPanelWidth}
       errorObjects={errorObjects}
     />
   )

@@ -36,27 +36,41 @@ const versionData = {
 }
 const version = v.parse(versionSchema, versionData)
 
-function getSidebarSettingsFromCookie(): { isOpen: boolean; width: number } {
+function getSidebarSettingsFromCookie(): {
+  isOpen: boolean
+  leftWidth: number
+  rightWidth: number
+} {
   const cookies = document.cookie.split('; ').map((cookie) => cookie.split('='))
 
   const stateCookie = cookies.find(([key]) => key === 'sidebar:state')
-  const widthCookie = cookies.find(([key]) => key === 'sidebar:width')
+  const leftWidthCookie = cookies.find(([key]) => key === 'left-panel:width')
+  const rightWidthCookie = cookies.find(([key]) => key === 'right-panel:width')
 
   return {
     isOpen: stateCookie ? stateCookie[1] === 'true' : false,
-    width: widthCookie ? Number.parseInt(widthCookie[1], 10) || 20 : 20,
+    leftWidth: leftWidthCookie
+      ? Number.parseInt(leftWidthCookie[1], 10) || 20
+      : 20,
+    rightWidth: rightWidthCookie
+      ? Number.parseInt(rightWidthCookie[1], 10) || 80
+      : 80,
   }
 }
 
 function App() {
-  const { isOpen: defaultSidebarOpen, width: defaultSidebarWidth } =
-    getSidebarSettingsFromCookie()
+  const {
+    isOpen: defaultSidebarOpen,
+    leftWidth: defaultLeftPanelWidth,
+    rightWidth: defaultRightPanelWidth,
+  } = getSidebarSettingsFromCookie()
 
   return (
     <VersionProvider version={version}>
       <ERDRenderer
         defaultSidebarOpen={defaultSidebarOpen}
-        defaultSidebarWidth={defaultSidebarWidth}
+        defaultLeftPanelWidth={defaultLeftPanelWidth}
+        defaultRightPanelWidth={defaultRightPanelWidth}
       />
     </VersionProvider>
   )
