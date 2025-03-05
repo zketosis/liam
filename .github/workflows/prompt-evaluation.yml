@@ -1,0 +1,36 @@
+name: 'Prompt Evaluation'
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/prompt-evaluation.yml'
+      - 'frontend/packages/prompts/**'
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            frontend/packages/prompts
+
+      - name: Set up promptfoo cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/promptfoo
+          key: ${{ runner.os }}-promptfoo-v1
+          restore-keys: |
+            ${{ runner.os }}-promptfoo-
+
+      - name: Run promptfoo evaluation
+        uses: promptfoo/promptfoo-action@v1
+        with:
+          openai-api-key: ${{ secrets.PROMPTFOO_OPENAI_API_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          config: 'frontend/packages/prompts/promptfooconfig.yaml'
+          prompts: 'frontend/packages/prompts/prompt.yaml'
+          cache-path: ~/.cache/promptfoo
+          # no-share: true
