@@ -48,6 +48,7 @@ export const ERDRenderer: FC<Props> = ({
   defaultRightPanelWidth = 80,
 }) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
+  const [isResizing, setIsResizing] = useState(false)
 
   const { showMode } = useUserEditingStore()
   const dbStructure = useDBStructureStore()
@@ -116,14 +117,16 @@ export const ERDRenderer: FC<Props> = ({
               minSize={10}
               maxSize={30}
               ref={leftPanelRef}
+              isResizing={isResizing}
             >
               <LeftPane />
             </ResizablePanel>
-            <ResizableHandle />
+            <ResizableHandle onDragging={(e) => setIsResizing(e)} />
             <ResizablePanel
               collapsible
               defaultSize={defaultRightPanelWidth}
               ref={rightPanelRef}
+              isResizing={isResizing}
             >
               <main className={styles.main}>
                 <div className={styles.triggerWrapper}>

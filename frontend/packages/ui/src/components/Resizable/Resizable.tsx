@@ -16,7 +16,18 @@ const ResizablePanelGroup = ({
   />
 )
 
-const ResizablePanel = ResizablePrimitive.Panel
+const ResizablePanel = ({
+  className,
+  isResizing,
+  ...props
+}: ComponentProps<typeof ResizablePrimitive.Panel> & {
+  isResizing: boolean
+}) => (
+  <ResizablePrimitive.Panel
+    className={clsx(!isResizing && styles.panelAnimating, className)}
+    {...props}
+  />
+)
 
 export type ImperativePanelHandle = ResizablePrimitive.ImperativePanelHandle
 

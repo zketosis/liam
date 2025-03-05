@@ -68,3 +68,7 @@
   border: 1px solid var(--border-color);
   background-color: var(--border-color);
 }
+
+.panelAnimating {
+  transition: all 200ms linear;
+}
