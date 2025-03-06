@@ -1,5 +1,11 @@
 # @liam-hq/ui
 
+## 0.0.13
+
+### Patch Changes
+
+- [#806](https://github.com/liam-hq/liam/pull/806) - ✨ Allow sidebar width adjustment / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+
 ## 0.0.12
 
 ### Patch Changes
