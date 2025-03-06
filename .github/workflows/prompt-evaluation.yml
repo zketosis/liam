@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/prompt-evaluation.yml'
-      - 'frontend/packages/prompts/**'
+      - 'frontend/packages/migration/prompts/**'
 
 jobs:
   evaluate:
@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            frontend/packages/prompts
+            frontend/packages/migration/prompts
 
       - name: Set up promptfoo cache
         uses: actions/cache@v4
@@ -30,7 +30,7 @@ jobs:
         with:
           openai-api-key: ${{ secrets.PROMPTFOO_OPENAI_API_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          config: 'frontend/packages/prompts/promptfooconfig.yaml'
-          prompts: 'frontend/packages/prompts/prompt.yaml'
+          config: 'frontend/packages/migration/prompts/promptfooconfig.yaml'
+          prompts: 'frontend/packages/migration/prompts/prompt.yaml'
           cache-path: ~/.cache/promptfoo
           # no-share: true
