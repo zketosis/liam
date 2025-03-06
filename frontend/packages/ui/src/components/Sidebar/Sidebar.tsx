@@ -298,7 +298,7 @@ const SidebarMenuButton = forwardRef<
     ref,
   ) => {
     const Comp = asChild ? Slot : 'button'
-    const { state } = useSidebar()
+    
 
     const button = (
       <Comp
