@@ -1,5 +1,12 @@
 # @liam-hq/erd-core
 
+## 0.1.3
+
+### Patch Changes
+
+- [#806](https://github.com/liam-hq/liam/pull/806) - ✨ Allow sidebar width adjustment / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+- [#806](https://github.com/liam-hq/liam/pull/806) - ✨ Allow sidebar width adjustment / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+
 ## 0.1.2
 
 ### Patch Changes

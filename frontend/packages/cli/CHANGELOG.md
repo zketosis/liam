@@ -1,5 +1,13 @@
 # @liam-hq/cli
 
+## 0.4.5
+
+### Patch Changes
+
+- [#806](https://github.com/liam-hq/liam/pull/806) - ✨ Allow sidebar width adjustment / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+- [#813](https://github.com/liam-hq/liam/pull/813) - 🔧 fix runPreprocess to support undefined format / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+- [#806](https://github.com/liam-hq/liam/pull/806) - ✨ Allow sidebar width adjustment / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+
 ## 0.4.4
 
 ### Patch Changes
