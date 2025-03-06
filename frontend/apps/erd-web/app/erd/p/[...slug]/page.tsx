@@ -201,10 +201,27 @@ export default async function Page({
   const cookieStore = await cookies()
   const defaultSidebarOpen = cookieStore.get('sidebar:state')?.value === 'true'
 
+  const layoutCookie = cookieStore.get('panels:layout')
+  const defaultPanelSizes = (() => {
+    if (!layoutCookie) return [20, 80]
+
+    try {
+      const sizes = JSON.parse(layoutCookie.value)
+      if (Array.isArray(sizes) && sizes.length >= 2) {
+        return sizes
+      }
+    } catch {
+      // Use default values if JSON.parse fails
+    }
+
+    return [20, 80]
+  })()
+
   return (
     <ERDViewer
       dbStructure={dbStructure}
       defaultSidebarOpen={defaultSidebarOpen}
+      defaultPanelSizes={defaultPanelSizes}
       errorObjects={errorObjects}
     />
   )

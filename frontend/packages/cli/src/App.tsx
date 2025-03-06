@@ -36,18 +36,48 @@ const versionData = {
 }
 const version = v.parse(versionSchema, versionData)
 
-function getSidebarStateFromCookie(): boolean {
-  const cookies = document.cookie.split('; ').map((cookie) => cookie.split('='))
-  const cookie = cookies.find(([key]) => key === 'sidebar:state')
-  return cookie ? cookie[1] === 'true' : false
+function getSidebarSettingsFromCookie(): {
+  isOpen: boolean
+  panelSizes: number[]
+} {
+  const cookies = document.cookie.split('; ')
+  const sidebarCookie = cookies.find((cookie) =>
+    cookie.startsWith('sidebar:state='),
+  )
+  const layoutCookie = cookies.find((cookie) =>
+    cookie.startsWith('panels:layout='),
+  )
+
+  const isOpen = sidebarCookie ? sidebarCookie.split('=')[1] === 'true' : false
+  let panelSizes = [20, 80]
+
+  if (layoutCookie) {
+    try {
+      const sizes = JSON.parse(layoutCookie.split('=')[1])
+      if (Array.isArray(sizes) && sizes.length >= 2) {
+        panelSizes = sizes
+      }
+    } catch {
+      // Use default values if parsing fails
+    }
+  }
+
+  return {
+    isOpen,
+    panelSizes,
+  }
 }
 
 function App() {
-  const defaultSidebarOpen = getSidebarStateFromCookie()
+  const { isOpen: defaultSidebarOpen, panelSizes } =
+    getSidebarSettingsFromCookie()
 
   return (
     <VersionProvider version={version}>
-      <ERDRenderer defaultSidebarOpen={defaultSidebarOpen} />
+      <ERDRenderer
+        defaultSidebarOpen={defaultSidebarOpen}
+        defaultPanelSizes={panelSizes}
+      />
     </VersionProvider>
   )
 }

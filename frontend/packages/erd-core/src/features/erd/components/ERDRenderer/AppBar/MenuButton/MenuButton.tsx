@@ -3,11 +3,11 @@ import { forwardRef, useCallback } from 'react'
 import styles from './MenuButton.module.css'
 
 export const MenuButton = forwardRef<HTMLButtonElement>((_, ref) => {
-  const { open, setOpen } = useSidebar()
+  const { open, toggleSidebar } = useSidebar()
 
   const handleClick = useCallback(() => {
-    setOpen(!open)
-  }, [open, setOpen])
+    toggleSidebar()
+  }, [toggleSidebar])
 
   return (
     <button

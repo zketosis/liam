@@ -21,12 +21,14 @@ type ERDViewerProps = {
   dbStructure: DBStructure
   errorObjects: ErrorObject[]
   defaultSidebarOpen: boolean
+  defaultPanelSizes?: number[]
 }
 
 export default function ERDViewer({
   dbStructure,
   errorObjects,
   defaultSidebarOpen,
+  defaultPanelSizes = [20, 80],
 }: ERDViewerProps) {
   const [isShowCookieConsent, setShowCookieConsent] = useState(false)
 
@@ -49,6 +51,7 @@ export default function ERDViewer({
       <VersionProvider version={version}>
         <ERDRenderer
           defaultSidebarOpen={defaultSidebarOpen}
+          defaultPanelSizes={defaultPanelSizes}
           errorObjects={errorObjects}
         />
       </VersionProvider>
