@@ -45,7 +45,7 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
       window.removeEventListener('resize', checkTruncation)
       observer.disconnect()
     }
-  }, [name])
+  }, [])
 
   // TODO: Move handleClickMenuButton outside of TableNameMenuButton
   // after logging is complete
