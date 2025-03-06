@@ -23,7 +23,7 @@ type Output = {
 export async function runPreprocess(
   inputPath: string,
   outputDir: string,
-  format: SupportedFormat,
+  format: SupportedFormat | undefined,
 ): Promise<Output> {
   const input = await getInputContent(inputPath)
   let detectedFormat: SupportedFormat | undefined
