@@ -45,7 +45,7 @@ const ResizableHandle = ({
   >
     {withHandle && (
       <div className={styles.handleIcon}>
-        <GripVertical className="h-2.5 w-2.5" />
+        <GripVertical className={styles.gripIcon} />
       </div>
     )}
   </ResizablePrimitive.PanelResizeHandle>

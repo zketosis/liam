@@ -72,3 +72,8 @@
 .panelAnimating {
   transition: all 200ms linear;
 }
+
+.gripIcon {
+  height: 10px;
+  width: 10px;
+}
