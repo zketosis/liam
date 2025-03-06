@@ -1,22 +1,22 @@
-import { useTableSelection } from "@/features/erd/hooks";
-import type { TableNodeType } from "@/features/erd/types";
-import { selectTableLogEvent } from "@/features/gtm/utils";
-import { useVersion } from "@/providers";
-import { SidebarMenuButton, SidebarMenuItem, Table2 } from "@liam-hq/ui";
-import clsx from "clsx";
-import { type FC, useEffect, useRef, useState } from "react";
-import styles from "./TableNameMenuButton.module.css";
-import { VisibilityButton } from "./VisibilityButton";
+import { useTableSelection } from '@/features/erd/hooks'
+import type { TableNodeType } from '@/features/erd/types'
+import { selectTableLogEvent } from '@/features/gtm/utils'
+import { useVersion } from '@/providers'
+import { SidebarMenuButton, SidebarMenuItem, Table2 } from '@liam-hq/ui'
+import clsx from 'clsx'
+import { type FC, useEffect, useRef, useState } from 'react'
+import styles from './TableNameMenuButton.module.css'
+import { VisibilityButton } from './VisibilityButton'
 
 type Props = {
-  node: TableNodeType;
-};
+  node: TableNodeType
+}
 
 export const TableNameMenuButton: FC<Props> = ({ node }) => {
-  const name = node.data.table.name;
+  const name = node.data.table.name
 
-  const { selectTable } = useTableSelection();
-  const textRef = useRef<HTMLSpanElement>(null);
+  const { selectTable } = useTableSelection()
+  const textRef = useRef<HTMLSpanElement>(null)
   const [isTruncated, setIsTruncated] = useState<boolean>(false)
 
   useEffect(() => {
@@ -49,29 +49,29 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
 
   // TODO: Move handleClickMenuButton outside of TableNameMenuButton
   // after logging is complete
-  const { version } = useVersion();
+  const { version } = useVersion()
   const handleClickMenuButton = (tableId: string) => () => {
     selectTable({
       tableId,
-      displayArea: "main",
-    });
+      displayArea: 'main',
+    })
 
     selectTableLogEvent({
-      ref: "leftPane",
+      ref: 'leftPane',
       tableId,
       platform: version.displayedOn,
       gitHash: version.gitHash,
       ver: version.version,
       appEnv: version.envName,
-    });
-  };
+    })
+  }
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
         className={clsx(
           styles.button,
-          node.data.isActiveHighlighted && styles.active
+          node.data.isActiveHighlighted && styles.active,
         )}
         asChild
         tooltip={name}
@@ -95,5 +95,5 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
         </div>
       </SidebarMenuButton>
     </SidebarMenuItem>
-  );
-};
+  )
+}

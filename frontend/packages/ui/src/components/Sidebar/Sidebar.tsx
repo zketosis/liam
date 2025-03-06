@@ -294,11 +294,17 @@ const SidebarMenuButton = forwardRef<
   }
 >(
   (
-    { asChild = false, isActive = false, tooltip, className, showtooltip, ...props },
+    {
+      asChild = false,
+      isActive = false,
+      tooltip,
+      className,
+      showtooltip,
+      ...props
+    },
     ref,
   ) => {
     const Comp = asChild ? Slot : 'button'
-    
 
     const button = (
       <Comp
