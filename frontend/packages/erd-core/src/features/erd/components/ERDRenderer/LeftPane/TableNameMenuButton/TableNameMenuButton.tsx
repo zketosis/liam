@@ -74,6 +74,8 @@ export const TableNameMenuButton: FC<Props> = ({ node }) => {
           node.data.isActiveHighlighted && styles.active
         )}
         asChild
+        tooltip={name}
+        showtooltip={isTruncated}
       >
         <div
           // biome-ignore lint/a11y/useSemanticElements: Implemented with div button to be button in button
