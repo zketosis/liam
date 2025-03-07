@@ -2,11 +2,12 @@
 
 
 ## Summary
-* 947 MIT
+* 953 MIT
 * 84 Apache 2.0
 * 63 ISC
 * 24 Simplified BSD
 * 17 New BSD
+* 4 Mozilla Public License 2.0
 * 3 MIT OR Apache-2.0
 * 3 BlueOak-1.0.0
 * 2 LGPL-3.0-or-later
@@ -19,12 +20,22 @@
 * 1 Public Domain
 * 1 Eclipse 2.0
 * 1 CC-BY-4.0
-* 1 Mozilla Public License 2.0
 * 1 Python-2.0
 
 
 
 ## Items
+
+
+<a name="@alloc/quick-lru"></a>
+### @alloc/quick-lru v5.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
 
 
 <a name="@ampproject/remapping"></a>
@@ -1601,7 +1612,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@playwright/test"></a>
-### @playwright/test v1.50.1
+### @playwright/test v1.51.0
 #### 
 
 ##### Paths
@@ -2316,7 +2327,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/browser-utils"></a>
-### @sentry-internal/browser-utils v9.4.0
+### @sentry-internal/browser-utils v9.5.0
 #### 
 
 ##### Paths
@@ -2327,7 +2338,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/feedback"></a>
-### @sentry-internal/feedback v9.4.0
+### @sentry-internal/feedback v9.5.0
 #### 
 
 ##### Paths
@@ -2338,7 +2349,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/replay"></a>
-### @sentry-internal/replay v9.4.0
+### @sentry-internal/replay v9.5.0
 #### 
 
 ##### Paths
@@ -2349,7 +2360,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry-internal/replay-canvas"></a>
-### @sentry-internal/replay-canvas v9.4.0
+### @sentry-internal/replay-canvas v9.5.0
 #### 
 
 ##### Paths
@@ -2371,7 +2382,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/browser"></a>
-### @sentry/browser v9.4.0
+### @sentry/browser v9.5.0
 #### 
 
 ##### Paths
@@ -2415,7 +2426,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/core"></a>
-### @sentry/core v9.4.0
+### @sentry/core v9.5.0
 #### 
 
 ##### Paths
@@ -2426,7 +2437,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/nextjs"></a>
-### @sentry/nextjs v9.4.0
+### @sentry/nextjs v9.5.0
 #### 
 
 ##### Paths
@@ -2437,7 +2448,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/node"></a>
-### @sentry/node v9.4.0
+### @sentry/node v9.5.0
 #### 
 
 ##### Paths
@@ -2448,7 +2459,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/opentelemetry"></a>
-### @sentry/opentelemetry v9.4.0
+### @sentry/opentelemetry v9.5.0
 #### 
 
 ##### Paths
@@ -2459,7 +2470,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/react"></a>
-### @sentry/react v9.4.0
+### @sentry/react v9.5.0
 #### 
 
 ##### Paths
@@ -2470,7 +2481,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/vercel-edge"></a>
-### @sentry/vercel-edge v9.4.0
+### @sentry/vercel-edge v9.5.0
 #### 
 
 ##### Paths
@@ -2719,6 +2730,61 @@ LGPL-3.0-or-later permitted
 * /home/runner/work/liam/liam
 
 <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@tailwindcss/node"></a>
+### @tailwindcss/node v4.0.11
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@tailwindcss/oxide"></a>
+### @tailwindcss/oxide v4.0.11
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@tailwindcss/oxide-linux-x64-gnu"></a>
+### @tailwindcss/oxide-linux-x64-gnu v4.0.11
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@tailwindcss/oxide-linux-x64-musl"></a>
+### @tailwindcss/oxide-linux-x64-musl v4.0.11
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@tailwindcss/postcss"></a>
+### @tailwindcss/postcss v4.0.11
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -3350,7 +3416,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/expect"></a>
-### @vitest/expect v3.0.7
+### @vitest/expect v3.0.8
 #### 
 
 ##### Paths
@@ -3361,7 +3427,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/mocker"></a>
-### @vitest/mocker v3.0.7
+### @vitest/mocker v3.0.8
 #### 
 
 ##### Paths
@@ -3372,7 +3438,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/pretty-format"></a>
-### @vitest/pretty-format v3.0.7
+### @vitest/pretty-format v3.0.8
 #### 
 
 ##### Paths
@@ -3383,7 +3449,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/runner"></a>
-### @vitest/runner v3.0.7
+### @vitest/runner v3.0.8
 #### 
 
 ##### Paths
@@ -3394,7 +3460,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/snapshot"></a>
-### @vitest/snapshot v3.0.7
+### @vitest/snapshot v3.0.8
 #### 
 
 ##### Paths
@@ -3405,7 +3471,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/spy"></a>
-### @vitest/spy v3.0.7
+### @vitest/spy v3.0.8
 #### 
 
 ##### Paths
@@ -3416,7 +3482,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vitest/utils"></a>
-### @vitest/utils v3.0.7
+### @vitest/utils v3.0.8
 #### 
 
 ##### Paths
@@ -8043,6 +8109,39 @@ Public Domain manually approved
 
 
 
+<a name="lightningcss"></a>
+### lightningcss v1.29.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="https://www.mozilla.org/media/MPL/2.0/index.815ca599c9df.txt">Mozilla Public License 2.0</a> permitted
+
+
+
+<a name="lightningcss-linux-x64-gnu"></a>
+### lightningcss-linux-x64-gnu v1.29.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="https://www.mozilla.org/media/MPL/2.0/index.815ca599c9df.txt">Mozilla Public License 2.0</a> permitted
+
+
+
+<a name="lightningcss-linux-x64-musl"></a>
+### lightningcss-linux-x64-musl v1.29.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="https://www.mozilla.org/media/MPL/2.0/index.815ca599c9df.txt">Mozilla Public License 2.0</a> permitted
+
+
+
 <a name="lines-and-columns"></a>
 ### lines-and-columns v1.2.4
 #### 
@@ -9848,7 +9947,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="playwright"></a>
-### playwright v1.50.1
+### playwright v1.51.0
 #### 
 
 ##### Paths
@@ -9859,7 +9958,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="playwright-core"></a>
-### playwright-core v1.50.1
+### playwright-core v1.51.0
 #### 
 
 ##### Paths
@@ -10651,7 +10750,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="rollup"></a>
-### rollup v3.29.5
+### rollup v4.34.9
 #### 
 
 ##### Paths
@@ -11502,7 +11601,7 @@ Unknown manually approved
 
 
 <a name="tailwindcss"></a>
-### tailwindcss v4.0.10
+### tailwindcss v4.0.11
 #### 
 
 ##### Paths
@@ -11546,7 +11645,7 @@ Unknown manually approved
 
 
 <a name="terser-webpack-plugin"></a>
-### terser-webpack-plugin v5.3.13
+### terser-webpack-plugin v5.3.14
 #### 
 
 ##### Paths
@@ -12327,7 +12426,7 @@ Unknown manually approved
 
 
 <a name="vite"></a>
-### vite v6.2.0
+### vite v6.2.1
 #### 
 
 ##### Paths
@@ -12338,7 +12437,7 @@ Unknown manually approved
 
 
 <a name="vite-node"></a>
-### vite-node v3.0.7
+### vite-node v3.0.8
 #### 
 
 ##### Paths
@@ -12360,7 +12459,7 @@ Unknown manually approved
 
 
 <a name="vitest"></a>
-### vitest v3.0.7
+### vitest v3.0.8
 #### 
 
 ##### Paths
