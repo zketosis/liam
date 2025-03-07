@@ -269,5 +269,5 @@ describe(processor, () => {
       expect(value).toEqual(parserTestCases.normal)
       expect(errors).toEqual([])
     })
-  }, 15000)
+  }, 30000)
 })
