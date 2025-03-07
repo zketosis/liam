@@ -3,6 +3,38 @@ title: Repository Architecture
 description: This document provides a detailed overview of our repository structure, architecture, and development workflow.
 ---
 
+# Tech Stack
+
+Liam is built using a modern JavaScript/TypeScript stack with a focus on React and Next.js. Here's an overview of our technology stack:
+
+## Core Technologies
+- **TypeScript**: Strongly-typed programming language that builds on JavaScript
+- **React 18**: UI library for building component-based interfaces
+- **Next.js 15**: React framework for server-rendered applications
+
+## Frontend
+- **UI Components**: Custom component library with Radix UI primitives
+- **Styling**: CSS Modules with typed definitions
+- **Icons**: Lucide React for consistent iconography
+- **State Management**: Valtio for state management
+- **Visualization**: @xyflow/react (React Flow) for diagram visualization
+- **Documentation**: Fumadocs for documentation site
+
+## Database Schema Parsing
+- **Parsers**: Support for multiple database schema formats
+- **Validation**: Valibot for schema validation
+
+## Development Tools
+- **Package Management**: pnpm for efficient dependency management
+- **Monorepo Management**: pnpm workspaces
+- **Build System**: Turborepo for optimized builds
+- **Linting & Formatting**: Biome for code quality
+- **Testing**: Vitest for unit testing
+
+## Deployment
+- **Web Applications**: Deployed with Vercel
+- **CI/CD**: GitHub Actions for continuous integration
+
 ## Overview
 
 Our project uses a monorepo structure managed with pnpm workspaces, allowing us to maintain multiple packages and applications in a single repository while sharing dependencies and code.
