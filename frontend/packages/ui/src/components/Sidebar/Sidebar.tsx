@@ -331,7 +331,7 @@ const SidebarMenuButton = forwardRef<
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent
           side="top"
-          align="end"
+          align="center"
           hidden={!showtooltip}
           {...tooltip}
         />
