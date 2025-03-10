@@ -58,6 +58,7 @@ function extractTableName(
       ),
     )
   }
+
   // @ts-expect-error: unescaped is defined as string but it is actually object
   const value = nameNode.unescaped.value
 
@@ -246,7 +247,7 @@ function extractDefaultValue(
   if (value instanceof FalseNode) return false
   // @ts-expect-error: unescaped is defined as string but it is actually object
   if (value instanceof StringNode) return value.unescaped.value
-  // @ts-expect-error: unescaped is defined as string but it is actually object
+  // @ts-expect-error: IntegerNode actually has value property
   if (value instanceof IntegerNode) return value.value
   return null
 }
