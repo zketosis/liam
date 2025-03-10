@@ -21,6 +21,8 @@
     "build": "tsc",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
+    "gen": "pnpm run '/^gen:.*/'",
+    "gen:prisma": "prisma generate",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
