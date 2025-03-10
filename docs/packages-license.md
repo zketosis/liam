@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1003 MIT
+* 1006 MIT
 * 82 Apache 2.0
 * 73 ISC
 * 25 Simplified BSD
@@ -546,6 +546,17 @@ MIT OR Apache-2.0 permitted
 
 <a name="@cspotcode/source-map-support"></a>
 ### @cspotcode/source-map-support v0.8.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@edge-runtime/cookies"></a>
+### @edge-runtime/cookies v5.0.2
 #### 
 
 ##### Paths
@@ -6730,6 +6741,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="flags"></a>
+### flags v3.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="flat-cache"></a>
 ### flat-cache v3.2.0
 #### 
@@ -8272,6 +8294,17 @@ BlueOak-1.0.0 permitted
 
 <a name="jiti"></a>
 ### jiti v2.4.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="jose"></a>
+### jose v5.10.0
 #### 
 
 ##### Paths
