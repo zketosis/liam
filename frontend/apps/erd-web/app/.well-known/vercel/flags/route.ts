@@ -1,8 +1,8 @@
+// biome-ignore lint/nursery/useImportRestrictions: <explanation>
+import * as flags from '@/libs/flags'
 import { type ApiData, verifyAccess } from 'flags'
 import { getProviderData } from 'flags/next'
 import { type NextRequest, NextResponse } from 'next/server'
-// biome-ignore lint/nursery/useImportRestrictions: <explanation>
-import * as flags from '../../../../libs/flags'
 
 // @see: https://vercel.com/docs/feature-flags/implement-flags-in-toolbar
 export async function GET(request: NextRequest) {
