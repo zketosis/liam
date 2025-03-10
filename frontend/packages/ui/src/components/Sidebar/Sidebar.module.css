@@ -86,7 +86,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  right: var(--spacing-5);
+  right: var(--spacing-3);
   border-radius: var(--border-radius-base);
   padding: 0 var(--spacing-1, 4px);
 }

@@ -290,14 +290,21 @@ const SidebarMenuButton = forwardRef<
     asChild?: boolean
     isActive?: boolean
     tooltip?: string | ComponentProps<typeof TooltipContent>
+    showtooltip?: boolean
   }
 >(
   (
-    { asChild = false, isActive = false, tooltip, className, ...props },
+    {
+      asChild = false,
+      isActive = false,
+      tooltip,
+      className,
+      showtooltip,
+      ...props
+    },
     ref,
   ) => {
     const Comp = asChild ? Slot : 'button'
-    const { state } = useSidebar()
 
     const button = (
       <Comp
@@ -323,9 +330,9 @@ const SidebarMenuButton = forwardRef<
       <TooltipRoot>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent
-          side="right"
+          side="top"
           align="center"
-          hidden={state !== 'collapsed'}
+          hidden={!showtooltip}
           {...tooltip}
         />
       </TooltipRoot>
