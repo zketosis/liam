@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 969 MIT
+* 978 MIT
 * 80 Apache 2.0
 * 63 ISC
 * 25 Simplified BSD
@@ -2634,6 +2634,83 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@supabase/auth-js"></a>
+### @supabase/auth-js v2.68.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@supabase/functions-js"></a>
+### @supabase/functions-js v2.4.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@supabase/node-fetch"></a>
+### @supabase/node-fetch v2.6.15
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@supabase/postgrest-js"></a>
+### @supabase/postgrest-js v1.19.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@supabase/realtime-js"></a>
+### @supabase/realtime-js v2.11.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@supabase/storage-js"></a>
+### @supabase/storage-js v2.7.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@supabase/supabase-js"></a>
+### @supabase/supabase-js v2.49.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@swc/counter"></a>
 ### @swc/counter v0.1.3
 #### 
@@ -3107,6 +3184,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@types/phoenix"></a>
+### @types/phoenix v1.6.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@types/prop-types"></a>
 ### @types/prop-types v15.7.14
 #### 
@@ -3197,6 +3285,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@types/unist"></a>
 ### @types/unist v2.0.11
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@types/ws"></a>
+### @types/ws v8.18.0
 #### 
 
 ##### Paths

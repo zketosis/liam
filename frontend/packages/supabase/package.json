@@ -1,0 +1,28 @@
+{
+  "name": "@liam-hq/supabase",
+  "private": true,
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "main": "dist/index.js",
+  "dependencies": {
+    "@supabase/supabase-js": "2.49.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@liam-hq/configs": "workspace:*",
+    "typescript": "5"
+  },
+  "scripts": {
+    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt:biome": "biome check --write --unsafe .",
+    "lint": "pnpm run '/^lint:.*/'",
+    "lint:biome": "biome check .",
+    "lint:tsc": "tsc --noEmit"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts"
+}
