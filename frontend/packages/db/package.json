@@ -25,7 +25,7 @@
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "migrate:dev": "prisma migrate dev",
-    "supabase:start": "pnpm supabase start"
+    "migrate:dev": "node --env-file=.env scripts/run-with-env.mjs prisma migrate dev",
+    "supabase:start": "node --env-file=.env scripts/run-with-env.mjs pnpm supabase start"
   }
 }
