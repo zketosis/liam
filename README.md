@@ -14,10 +14,11 @@
   <a href="https://x.com/liam_app"><img src="https://img.shields.io/twitter/follow/liam_app?style=social" alt="Follow us on X, formerly Twitter" /></a>
 </p>
 
-![demo](./assets/demo.gif)
 <p align="center">
   <a href="https://trendshift.io/repositories/12939" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12939" alt="liam-hq%2Fliam | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 </p>
+
+![demo](./assets/demo.gif)
 
 <p align="center">
   <a href="https://liambx.com">Website</a> •
