@@ -4,6 +4,11 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@liam-hq/db'
 
 export async function updateSession(request: NextRequest) {
+  // Skip middleware if path doesn't start with /app
+  if (!request.nextUrl.pathname.startsWith('/app')) {
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -43,12 +48,12 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
+    !request.nextUrl.pathname.startsWith('/app/login') &&
+    !request.nextUrl.pathname.startsWith('/app/auth')
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/app/login'
     return NextResponse.redirect(url)
   }
 

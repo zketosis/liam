@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "dependencies": {
+    "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/erd-core": "workspace:*",
-    "@liam-hq/db": "workspace:*",
     "@liam-hq/ui": "workspace:*",
     "@next/third-parties": "15.1.5",
     "@sentry/nextjs": "8",
