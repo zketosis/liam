@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1017 MIT
+* 1016 MIT
 * 84 Apache 2.0
 * 73 ISC
 * 25 Simplified BSD
@@ -3395,17 +3395,6 @@ LGPL-3.0-or-later permitted
 
 <a name="@types/node"></a>
 ### @types/node v12.20.55
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@types/node-fetch"></a>
-### @types/node-fetch v2.6.12
 #### 
 
 ##### Paths
