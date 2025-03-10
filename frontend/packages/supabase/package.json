@@ -11,7 +11,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@liam-hq/configs": "workspace:*"
+    "@liam-hq/configs": "workspace:*",
+    "typescript": "5"
   },
   "scripts": {
     "fmt": "pnpm run '/^fmt:.*/'",

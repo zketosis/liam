@@ -405,6 +405,9 @@ importers:
       '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
+      typescript:
+        specifier: '5'
+        version: 5.7.3
 
   frontend/packages/ui:
     dependencies:
