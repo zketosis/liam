@@ -7,11 +7,14 @@
   },
   "main": "dist/index.js",
   "dependencies": {
+    "@prisma/client": "6.4.1",
     "@supabase/supabase-js": "2.49.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@liam-hq/configs": "workspace:*",
+    "prisma": "6.4.1",
+    "supabase": "2.15.8",
     "typescript": "5"
   },
   "scripts": {
@@ -19,7 +22,9 @@
     "fmt:biome": "biome check --write --unsafe .",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
-    "lint:tsc": "tsc --noEmit"
+    "lint:tsc": "tsc --noEmit",
+    "migrate:dev": "prisma migrate dev",
+    "supabase:start": "pnpm supabase start"
   },
   "files": [
     "dist"
