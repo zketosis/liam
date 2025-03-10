@@ -1,4 +1,4 @@
-@import url('@liam-hq/ui/src/styles/globals.css') layer(base);
+@import '@liam-hq/ui/src/styles/globals.css' layer(base);
 
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
