@@ -1,10 +1,12 @@
 import {
   createPullRequestComment,
   getPullRequestFiles,
+  updatePullRequestComment,
   verifyWebhookSignature,
 } from '@/libs/github/api'
 import { supportedEvents, validateConfig } from '@/libs/github/config'
 import type { GitHubWebhookPayload } from '@/types/github'
+import { prisma } from '@liam-hq/db'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
@@ -60,16 +62,56 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
       pullNumber,
     )
 
-    // TODO: Move createPullRequestComment to a separate async job
-    const comment = `your pull request is detected by Liam Migration. ${files.length} files are changed`
+    const prRecord = await prisma.pullRequest.findUnique({
+      where: {
+        repositoryOwner_repositoryName_pullNumber: {
+          repositoryOwner: owner,
+          repositoryName: repo,
+          pullNumber: pullNumber,
+        },
+      },
+    })
 
-    await createPullRequestComment(
-      installationId,
-      owner,
-      repo,
-      pullNumber,
-      comment,
-    )
+    const comment = `Your pull request is detected by Liam Migration. ${files.length} files are changed.`
+
+    if (prRecord?.commentId) {
+      await updatePullRequestComment(
+        installationId,
+        owner,
+        repo,
+        Number(prRecord.commentId),
+        comment,
+      )
+    } else {
+      const commentResponse = await createPullRequestComment(
+        installationId,
+        owner,
+        repo,
+        pullNumber,
+        comment,
+      )
+
+      await prisma.pullRequest.upsert({
+        where: {
+          repositoryOwner_repositoryName_pullNumber: {
+            repositoryOwner: owner,
+            repositoryName: repo,
+            pullNumber: pullNumber,
+          },
+        },
+        update: {
+          commentId: commentResponse.id,
+          installationId: installationId,
+        },
+        create: {
+          repositoryOwner: owner,
+          repositoryName: repo,
+          pullNumber: pullNumber,
+          commentId: commentResponse.id,
+          installationId: installationId,
+        },
+      })
+    }
 
     return NextResponse.json(
       { message: 'Analysis completed and comment posted' },

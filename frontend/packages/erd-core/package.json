@@ -25,7 +25,7 @@
     "@types/react": "18",
     "typed-css-modules": "0.9.1",
     "typescript": "5",
-    "vitest": "2.1.9"
+    "vitest": "3.0.8"
   },
   "scripts": {
     "dev": "pnpm run '/^dev:.*/'",

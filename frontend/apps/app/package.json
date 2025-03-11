@@ -1,8 +1,9 @@
 {
-  "name": "@liam-hq/erd-web",
+  "name": "@liam-hq/app",
   "private": true,
   "version": "0.1.0",
   "dependencies": {
+    "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/erd-core": "workspace:*",
     "@liam-hq/ui": "workspace:*",
@@ -12,6 +13,7 @@
     "@sentry/nextjs": "8",
     "cheerio": "1.0.0",
     "date-fns": "4.1.0",
+    "flags": "3.1.1",
     "next": "15.1.2",
     "react": "18.3.1",
     "react-dom": "18",
@@ -38,6 +40,7 @@
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
-    "start": "next start"
+    "start": "next start",
+    "update_dist_content": "node scripts/update_dist_content.js"
   }
 }
