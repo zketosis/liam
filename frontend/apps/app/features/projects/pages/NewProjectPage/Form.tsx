@@ -13,9 +13,10 @@ export const Form: FC = () => {
 
   return (
     <form
-      action={async (formData) => {
-        const project = await addProject(formData)
-        router.push(`/app/projects/${project.id}`)
+      action={(formData) => {
+        addProject(formData).then((project) => {
+          router.push(`/app/projects/${project.id}`)
+        })
       }}
       className={styles.form}
     >
