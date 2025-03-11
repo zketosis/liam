@@ -27,6 +27,7 @@
     "@types/node": "22.9.0",
     "@types/react": "18",
     "@types/react-dom": "18",
+    "trigger.dev": "3.3.17",
     "typed-css-modules": "0.9.1",
     "typescript": "5"
   },
@@ -35,6 +36,7 @@
     "dev": "pnpm run '/^dev:.*/'",
     "dev:css": "tcm components --watch",
     "dev:next": "next dev --port 3001",
+    "dev:trigger": "trigger dev",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
     "gen": "pnpm run '/^gen:.*/'",
@@ -43,7 +45,6 @@
     "lint:biome": "biome check .",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start",
-    "trigger:dev": "pnpm dlx trigger.dev@latest dev",
     "update_dist_content": "node scripts/update_dist_content.js"
   }
 }
