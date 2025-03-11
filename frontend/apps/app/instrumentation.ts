@@ -10,13 +10,11 @@ export async function register() {
     await import('./sentry.edge.config')
   }
 
-  if (process.env.NEXT_PUBLIC_ENV_NAME === 'production') {
-    const { valid, missing } = validateConfig()
-    if (!valid) {
-      throw new Error(
-        `Missing required environment variables: ${missing.join(', ')}`,
-      )
-    }
+  const { valid, missing } = validateConfig()
+  if (!valid) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}`,
+    )
   }
 }
 
