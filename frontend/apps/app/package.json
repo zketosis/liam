@@ -1,5 +1,5 @@
 {
-  "name": "@liam-hq/erd-web",
+  "name": "@liam-hq/app",
   "private": true,
   "version": "0.1.0",
   "dependencies": {
@@ -43,6 +43,7 @@
     "lint:biome": "biome check .",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start",
-    "trigger:dev": "pnpm dlx trigger.dev@latest dev"
+    "trigger:dev": "pnpm dlx trigger.dev@latest dev",
+    "update_dist_content": "node scripts/update_dist_content.js"
   }
 }
