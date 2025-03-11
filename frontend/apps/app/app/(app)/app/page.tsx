@@ -1,6 +1,6 @@
 import { createClient } from '@/libs/db/server'
 import { notFound, redirect } from 'next/navigation'
-import { migrationFlag } from '../../libs'
+import { migrationFlag } from '../../../libs'
 
 export default async function Page() {
   const migrationEnabled = await migrationFlag()
