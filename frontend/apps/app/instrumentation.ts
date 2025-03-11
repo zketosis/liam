@@ -1,3 +1,4 @@
+import { validateConfig } from '@/libs/github/config'
 import * as Sentry from '@sentry/nextjs'
 
 export async function register() {
@@ -7,6 +8,15 @@ export async function register() {
 
   if (process.env.NEXT_RUNTIME === 'edge') {
     await import('./sentry.edge.config')
+  }
+
+  if (process.env.NEXT_PUBLIC_ENV_NAME === 'production') {
+    const { valid, missing } = validateConfig()
+    if (!valid) {
+      throw new Error(
+        `Missing required environment variables: ${missing.join(', ')}`,
+      )
+    }
   }
 }
 
