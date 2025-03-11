@@ -44,3 +44,5 @@ prism.wasm
 
 # typed-css-modules
 *.css.d.ts
+
+.trigger
