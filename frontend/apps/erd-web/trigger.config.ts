@@ -1,7 +1,11 @@
 import { defineConfig } from '@trigger.dev/sdk/v3'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+const triggerProjectId = process.env.TRIGGER_PROJECT_ID || 'project-id'
 
 export default defineConfig({
-  project: process.env.TRIGGER_PROJECT_ID || 'project-id',
+  project: triggerProjectId,
   runtime: 'node',
   logLevel: 'log',
   // The max compute seconds a task is allowed to run. If the task run exceeds this duration, it will be stopped.
