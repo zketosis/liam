@@ -1,3 +1,4 @@
+import { migrationFlag } from '@/libs'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -7,6 +8,14 @@ export async function updateSession(request: NextRequest) {
   // Skip middleware if path doesn't start with /app
   if (!request.nextUrl.pathname.startsWith('/app')) {
     return NextResponse.next()
+  }
+
+  const migrationEnabled = await migrationFlag()
+
+  if (!migrationEnabled) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
   }
 
   let supabaseResponse = NextResponse.next({
