@@ -2,8 +2,8 @@
 
 
 ## Summary
-* 1019 MIT
-* 84 Apache 2.0
+* 1009 MIT
+* 82 Apache 2.0
 * 73 ISC
 * 25 Simplified BSD
 * 19 New BSD
@@ -13588,3 +13588,5 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
