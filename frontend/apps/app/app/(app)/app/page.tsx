@@ -1,14 +1,7 @@
 import { createClient } from '@/libs/db/server'
-import { notFound, redirect } from 'next/navigation'
-import { migrationFlag } from '../../../libs'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
-  const migrationEnabled = await migrationFlag()
-
-  if (!migrationEnabled) {
-    notFound()
-  }
-
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.getUser()
