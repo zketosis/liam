@@ -5,6 +5,9 @@ const screenshot = async (page: Page, targetPage: TargetPage) => {
   await page.goto(targetPage.path)
   await expect(page.getByRole('status', { name: 'Loading' })).toBeHidden()
 
+  // Turn off the Vercel Toolbar in the Preview environment.
+  await page.keyboard.press('ControlOrMeta+.')
+
   await expect(page).toHaveScreenshot({ fullPage: true })
 }
 
