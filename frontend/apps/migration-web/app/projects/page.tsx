@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import styles from './page.module.css'
 
