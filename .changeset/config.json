@@ -13,7 +13,7 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@liam-hq/erd-web",
+    "@liam-hq/app",
     "@liam-hq/docs",
     "@liam-hq/figma-to-css-variables"
   ]
