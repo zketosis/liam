@@ -81,7 +81,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
         installationId,
         owner,
         repo,
-        prRecord.commentId,
+        Number(prRecord.commentId),
         comment,
       )
     } else {

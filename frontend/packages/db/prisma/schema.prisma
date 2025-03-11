@@ -19,9 +19,9 @@ model PullRequest {
   id             Int      @id @default(autoincrement())
   repositoryName String
   repositoryOwner String
-  pullNumber     Int
-  commentId      Int?
-  installationId Int
+  pullNumber     BigInt
+  commentId      BigInt?
+  installationId BigInt
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
