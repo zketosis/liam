@@ -14,4 +14,4 @@ export {
   aRelationship,
 } from './schema/index.js'
 
-export { type ProcessError } from './parser.js'
+export type { ProcessError } from './parser.js'

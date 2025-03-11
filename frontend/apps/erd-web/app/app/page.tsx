@@ -1,8 +1,14 @@
-import { redirect } from 'next/navigation'
-
 import { createClient } from '@/libs/db/server'
+import { notFound, redirect } from 'next/navigation'
+import { migrationFlag } from '../../libs'
 
-export default async function PrivatePage() {
+export default async function Page() {
+  const migrationEnabled = await migrationFlag()
+
+  if (!migrationEnabled) {
+    notFound()
+  }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.getUser()
@@ -10,5 +16,10 @@ export default async function PrivatePage() {
     redirect('/app/login')
   }
 
-  return <p>Hello {data.user.email}</p>
+  return (
+    <main>
+      <p>Migration feature enabled</p>
+      <p>Hello {data.user.email}</p>
+    </main>
+  )
 }
