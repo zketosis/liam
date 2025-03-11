@@ -1,6 +1,6 @@
 import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
-import styles from './page.module.css'
+import styles from './ProjectsPage.module.css'
 
 async function getProjects() {
   const projects = await prisma.project.findMany({
