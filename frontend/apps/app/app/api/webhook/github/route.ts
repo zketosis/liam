@@ -11,17 +11,6 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
   try {
-    const { valid, missing } = validateConfig()
-    if (!valid) {
-      console.error(
-        `Missing required environment variables: ${missing.join(', ')}`,
-      )
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 },
-      )
-    }
-
     const payload = await request.text()
 
     const signature = request.headers.get('x-hub-signature-256') || ''
