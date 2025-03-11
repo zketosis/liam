@@ -18,7 +18,7 @@
       "cache": false,
       "persistent": true
     },
-    "@liam-hq/erd-web#dev": {
+    "@liam-hq/app#dev": {
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
