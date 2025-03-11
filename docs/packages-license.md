@@ -2,9 +2,9 @@
 
 
 ## Summary
-* 1038 MIT
-* 100 Apache 2.0
-* 73 ISC
+* 1079 MIT
+* 102 Apache 2.0
+* 76 ISC
 * 30 New BSD
 * 25 Simplified BSD
 * 5 BlueOak-1.0.0
@@ -545,8 +545,63 @@ MIT OR Apache-2.0 permitted
 
 
 
+<a name="@clack/core"></a>
+### @clack/core v0.4.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@clack/prompts"></a>
+### @clack/prompts v0.10.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@colors/colors"></a>
+### @colors/colors v1.5.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@cspotcode/source-map-support"></a>
 ### @cspotcode/source-map-support v0.8.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@depot/cli"></a>
+### @depot/cli v0.0.1-cli.2.80.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@depot/cli-linux-x64"></a>
+### @depot/cli-linux-x64 v0.0.1-cli.2.80.0
 #### 
 
 ##### Paths
@@ -594,7 +649,7 @@ Apache-2 manually approved
 
 
 <a name="@esbuild/linux-x64"></a>
-### @esbuild/linux-x64 v0.25.0
+### @esbuild/linux-x64 v0.23.1
 #### 
 
 ##### Paths
@@ -1605,6 +1660,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@opentelemetry/instrumentation-fetch"></a>
+### @opentelemetry/instrumentation-fetch v0.52.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
 <a name="@opentelemetry/instrumentation-fs"></a>
 ### @opentelemetry/instrumentation-fs v0.19.0
 #### 
@@ -1937,6 +2003,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@opentelemetry/sdk-trace-node"></a>
 ### @opentelemetry/sdk-trace-node v1.25.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@opentelemetry/sdk-trace-web"></a>
+### @opentelemetry/sdk-trace-web v1.25.1
 #### 
 
 ##### Paths
@@ -3431,6 +3508,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@trigger.dev/build"></a>
+### @trigger.dev/build v3.3.17
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@trigger.dev/core"></a>
 ### @trigger.dev/core v3.3.17
 #### 
@@ -3961,6 +4049,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@types/resolve"></a>
 ### @types/resolve v1.20.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@types/retry"></a>
+### @types/retry v0.12.2
 #### 
 
 ##### Paths
@@ -5118,8 +5217,30 @@ Python-2.0 manually approved
 
 
 
+<a name="bundle-name"></a>
+### bundle-name v4.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="busboy"></a>
 ### busboy v1.6.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="c12"></a>
+### c12 v1.11.2
 #### 
 
 ##### Paths
@@ -5372,6 +5493,17 @@ CC-BY-4.0 permitted
 
 
 <a name="chownr"></a>
+### chownr v2.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
+<a name="chownr"></a>
 ### chownr v3.0.0
 #### 
 
@@ -5395,6 +5527,17 @@ BlueOak-1.0.0 permitted
 
 <a name="ci-info"></a>
 ### ci-info v3.9.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="citty"></a>
+### citty v0.1.6
 #### 
 
 ##### Paths
@@ -5461,6 +5604,17 @@ BlueOak-1.0.0 permitted
 
 <a name="cli-spinners"></a>
 ### cli-spinners v2.9.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="cli-table3"></a>
+### cli-table3 v0.6.5
 #### 
 
 ##### Paths
@@ -5659,6 +5813,28 @@ BlueOak-1.0.0 permitted
 
 <a name="concat-map"></a>
 ### concat-map v0.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="confbox"></a>
+### confbox v0.1.8
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="consola"></a>
+### consola v3.4.0
 #### 
 
 ##### Paths
@@ -6064,6 +6240,28 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="default-browser"></a>
+### default-browser v5.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="default-browser-id"></a>
+### default-browser-id v5.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="defaults"></a>
 ### defaults v1.0.4
 #### 
@@ -6099,6 +6297,17 @@ BlueOak-1.0.0 permitted
 
 <a name="define-properties"></a>
 ### define-properties v1.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="defu"></a>
+### defu v6.1.4
 #### 
 
 ##### Paths
@@ -6154,6 +6363,17 @@ BlueOak-1.0.0 permitted
 
 <a name="dequal"></a>
 ### dequal v2.0.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="destr"></a>
+### destr v2.0.3
 #### 
 
 ##### Paths
@@ -6416,6 +6636,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="encoding"></a>
+### encoding v0.1.13
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="encoding-sniffer"></a>
 ### encoding-sniffer v0.2.0
 #### 
@@ -6626,7 +6857,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="esbuild"></a>
-### esbuild v0.25.0
+### esbuild v0.23.1
 #### 
 
 ##### Paths
@@ -6955,6 +7186,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="event-target-shim"></a>
+### event-target-shim v6.0.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="events"></a>
 ### events v3.3.0
 #### 
@@ -7111,6 +7353,17 @@ BlueOak-1.0.0 permitted
 
 <a name="fast-levenshtein"></a>
 ### fast-levenshtein v2.0.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="fast-npm-meta"></a>
+### fast-npm-meta v0.2.2
 #### 
 
 ##### Paths
@@ -7340,6 +7593,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="fs-minipass"></a>
+### fs-minipass v2.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
 <a name="fs.realpath"></a>
 ### fs.realpath v1.0.0
 #### 
@@ -7529,6 +7793,17 @@ BlueOak-1.0.0 permitted
 
 <a name="get-uri"></a>
 ### get-uri v6.0.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="giget"></a>
+### giget v1.2.5
 #### 
 
 ##### Paths
@@ -8056,13 +8331,24 @@ BlueOak-1.0.0 permitted
 
 
 <a name="import-in-the-middle"></a>
-### import-in-the-middle v1.13.0
+### import-in-the-middle v1.11.0
 #### 
 
 ##### Paths
 * /home/runner/work/liam/liam
 
 <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="import-meta-resolve"></a>
+### import-meta-resolve v4.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -8418,6 +8704,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="is-inside-container"></a>
+### is-inside-container v1.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="is-interactive"></a>
 ### is-interactive v1.0.0
 #### 
@@ -8464,6 +8761,17 @@ BlueOak-1.0.0 permitted
 
 <a name="is-nan"></a>
 ### is-nan v1.3.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="is-network-error"></a>
+### is-network-error v1.1.0
 #### 
 
 ##### Paths
@@ -8804,7 +9112,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="jiti"></a>
-### jiti v2.4.2
+### jiti v1.21.7
 #### 
 
 ##### Paths
@@ -8969,7 +9277,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="jsonc-parser"></a>
-### jsonc-parser v3.3.1
+### jsonc-parser v3.2.1
 #### 
 
 ##### Paths
@@ -9425,6 +9733,17 @@ Public Domain manually approved
 
 <a name="magic-string"></a>
 ### magic-string v0.30.8
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="magicast"></a>
+### magicast v0.3.5
 #### 
 
 ##### Paths
@@ -10172,7 +10491,7 @@ Public Domain manually approved
 
 
 <a name="minipass"></a>
-### minipass v4.2.8
+### minipass v3.3.6
 #### 
 
 ##### Paths
@@ -10183,7 +10502,7 @@ Public Domain manually approved
 
 
 <a name="minizlib"></a>
-### minizlib v3.0.1
+### minizlib v2.1.2
 #### 
 
 ##### Paths
@@ -10195,6 +10514,17 @@ Public Domain manually approved
 
 <a name="mkdirp"></a>
 ### mkdirp v0.5.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="mlly"></a>
+### mlly v1.7.4
 #### 
 
 ##### Paths
@@ -10380,6 +10710,17 @@ Public Domain manually approved
 
 
 
+<a name="node-fetch-native"></a>
+### node-fetch-native v1.6.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="node-plop"></a>
 ### node-plop v0.26.3
 #### 
@@ -10468,8 +10809,30 @@ Public Domain manually approved
 
 
 
+<a name="nypm"></a>
+### nypm v0.3.12
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="object-assign"></a>
 ### object-assign v4.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="object-hash"></a>
+### object-hash v3.0.0
 #### 
 
 ##### Paths
@@ -10567,6 +10930,17 @@ Public Domain manually approved
 
 
 
+<a name="ohash"></a>
+### ohash v1.1.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="once"></a>
 ### once v1.4.0
 #### 
@@ -10635,6 +11009,17 @@ Public Domain manually approved
 
 <a name="ora"></a>
 ### ora v4.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="os-paths"></a>
+### os-paths v7.4.0
 #### 
 
 ##### Paths
@@ -10723,6 +11108,17 @@ Public Domain manually approved
 
 <a name="p-map"></a>
 ### p-map v2.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="p-retry"></a>
+### p-retry v6.2.1
 #### 
 
 ##### Paths
@@ -10864,6 +11260,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="partysocket"></a>
+### partysocket v1.0.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
 <a name="pascal-case"></a>
 ### pascal-case v2.0.1
 #### 
@@ -10997,7 +11404,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="pathe"></a>
-### pathe v2.0.3
+### pathe v1.1.2
 #### 
 
 ##### Paths
@@ -11009,6 +11416,17 @@ BlueOak-1.0.0 permitted
 
 <a name="pathval"></a>
 ### pathval v2.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="perfect-debounce"></a>
+### perfect-debounce v1.0.0
 #### 
 
 ##### Paths
@@ -11086,6 +11504,17 @@ BlueOak-1.0.0 permitted
 
 <a name="pify"></a>
 ### pify v4.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="pkg-types"></a>
+### pkg-types v1.3.1
 #### 
 
 ##### Paths
@@ -11455,6 +11884,17 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 (BSD-2-Clause OR MIT OR Apache-2.0) permitted
+
+
+
+<a name="rc9"></a>
+### rc9 v2.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -11909,6 +12349,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="retry"></a>
+### retry v0.13.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="reusify"></a>
 ### reusify v1.0.4
 #### 
@@ -11944,6 +12395,17 @@ BlueOak-1.0.0 permitted
 
 <a name="rollup-plugin-execute"></a>
 ### rollup-plugin-execute v1.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="run-applescript"></a>
+### run-applescript v7.0.0
 #### 
 
 ##### Paths
@@ -12882,7 +13344,7 @@ Unknown manually approved
 
 
 <a name="tar"></a>
-### tar v7.4.3
+### tar v6.2.1
 #### 
 
 ##### Paths
@@ -13145,6 +13607,17 @@ Unknown manually approved
 
 
 
+<a name="trigger.dev"></a>
+### trigger.dev v3.3.17
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="trim-lines"></a>
 ### trim-lines v3.0.1
 #### 
@@ -13234,7 +13707,7 @@ Unknown manually approved
 
 
 <a name="tsconfck"></a>
-### tsconfck v3.1.5
+### tsconfck v3.1.3
 #### 
 
 ##### Paths
@@ -13373,6 +13846,17 @@ Unknown manually approved
 * /home/runner/work/liam/liam
 
 <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="ufo"></a>
+### ufo v1.5.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -14060,6 +14544,28 @@ Unknown manually approved
 
 <a name="ws"></a>
 ### ws v8.17.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="xdg-app-paths"></a>
+### xdg-app-paths v8.3.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="xdg-portable"></a>
+### xdg-portable v10.6.0
 #### 
 
 ##### Paths
