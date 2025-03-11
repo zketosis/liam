@@ -9,21 +9,35 @@ generator client {
 }
 
 model Project {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int         @id @default(autoincrement())
+  name       String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  migrations Migration[]
 }
 
 model PullRequest {
-  id             Int      @id @default(autoincrement())
-  repositoryName String
+  id              Int       @id @default(autoincrement())
+  repositoryName  String
   repositoryOwner String
-  pullNumber     BigInt
-  commentId      BigInt?
-  installationId BigInt
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  pullNumber      BigInt
+  commentId       BigInt?
+  installationId  BigInt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  migration       Migration?
 
   @@unique([repositoryOwner, repositoryName, pullNumber])
+}
+
+model Migration {
+  id             Int         @id @default(autoincrement())
+  title          String
+  description    String
+  projectId      Int
+  project        Project     @relation(fields: [projectId], references: [id])
+  pullRequestId  Int         @unique
+  pullRequest    PullRequest @relation(fields: [pullRequestId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
