@@ -6,8 +6,8 @@ async function getProjects() {
   const projects = await prisma.project.findMany({
     select: {
       id: true,
-      watchFilePath: true,
-      description: true,
+      name: true,
+      createdAt: true,
     },
     orderBy: {
       id: 'desc',
@@ -28,18 +28,27 @@ export default async function ProjectsPage() {
         </Link>
       </div>
 
-      <div className={styles.projectGrid}>
-        {projects.map((project) => (
-          <Link
-            key={project.id}
-            href={`/projects/${project.id}`}
-            className={styles.projectCard}
-          >
-            <h2>{project.watchFilePath || '名称未設定プロジェクト'}</h2>
-            <p>{project.description || '説明なし'}</p>
-          </Link>
-        ))}
-      </div>
+      {projects.length === 0 ? (
+        <div className={styles.emptyState}>
+          <p>まだプロジェクトが登録されていません。</p>
+          <p>新規作成からプロジェクトを作成してください。</p>
+        </div>
+      ) : (
+        <div className={styles.projectGrid}>
+          {projects.map((project) => (
+            <Link
+              key={project.id}
+              href={`/projects/${project.id}`}
+              className={styles.projectCard}
+            >
+              <h2>{project.name || '名称未設定プロジェクト'}</h2>
+              <p className={styles.createdAt}>
+                作成日: {project.createdAt.toLocaleDateString('ja-JP')}
+              </p>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
