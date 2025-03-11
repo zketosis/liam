@@ -22,16 +22,16 @@ export default async function ProjectsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>プロジェクト一覧</h1>
+        <h1 className={styles.title}>Projects</h1>
         <Link href="/projects/new" className={styles.createButton}>
-          新規プロジェクト作成
+          Create New Project
         </Link>
       </div>
 
       {projects.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>まだプロジェクトが登録されていません。</p>
-          <p>新規作成からプロジェクトを作成してください。</p>
+          <p>No projects found.</p>
+          <p>Create a new project to get started.</p>
         </div>
       ) : (
         <div className={styles.projectGrid}>
@@ -41,9 +41,9 @@ export default async function ProjectsPage() {
               href={`/projects/${project.id}`}
               className={styles.projectCard}
             >
-              <h2>{project.name || '名称未設定プロジェクト'}</h2>
+              <h2>{project.name || 'Untitled Project'}</h2>
               <p className={styles.createdAt}>
-                作成日: {project.createdAt.toLocaleDateString('ja-JP')}
+                Created: {project.createdAt.toLocaleDateString('en-US')}
               </p>
             </Link>
           ))}
