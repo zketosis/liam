@@ -1,5 +1,13 @@
 # @liam-hq/erd-core
 
+## 0.1.4
+
+### Patch Changes
+
+- [#819](https://github.com/liam-hq/liam/pull/819) - 🔧 fix: update vite and fumadocs-mdx to latest versions / Thanks [@NoritakaIkeda](https://github.com/NoritakaIkeda)!
+- [#825](https://github.com/liam-hq/liam/pull/825) - 💄Fixed an issue where the length of the Sidebar button text would change when hovering. / Thanks [@MH4GF](https://github.com/MH4GF)!
+- [#842](https://github.com/liam-hq/liam/pull/842) - ✨ Improve DropdownMenu keyboard accessibility / Thanks [@tnyo43](https://github.com/tnyo43)!
+
 ## 0.1.3
 
 ### Patch Changes
