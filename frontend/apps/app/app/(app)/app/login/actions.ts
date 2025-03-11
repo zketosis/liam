@@ -1,47 +1,36 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/libs/db/server'
 
-export async function login(formData: FormData) {
-  const supabase = await createClient()
+type OAuthProvider = 'github'
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  // TODO(MH4GF): Change to GitHub OAuth
-  const { error } = await supabase.auth.signInWithPassword(data)
-
-  if (error) {
-    redirect('/error')
-  }
-
-  revalidatePath('/app', 'layout')
-  redirect('/app')
+function getAuthCallbackUrl({
+  next = '/',
+  provider,
+}: { next?: string; provider: OAuthProvider }): string {
+  let url = process.env.VERCEL_URL ?? 'http://localhost:3001/'
+  url = url.endsWith('/') ? url : `${url}/`
+  return `${url}app/auth/callback/${provider}?next=${encodeURIComponent(next)}`
 }
 
-export async function signup(formData: FormData) {
+export async function login() {
   const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
+  const redirectTo = getAuthCallbackUrl({ provider: 'github' })
 
-  const { error } = await supabase.auth.signUp(data)
+  const provider = 'github'
+  const { error, data } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo },
+  })
 
   if (error) {
     redirect('/error')
   }
 
-  revalidatePath('/app', 'layout')
-  redirect('/app')
+  if (data.url) {
+    redirect(data.url)
+  }
 }
