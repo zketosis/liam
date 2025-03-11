@@ -6,10 +6,8 @@ import {
 } from '@/libs/github/api'
 import { supportedEvents, validateConfig } from '@/libs/github/config'
 import type { GitHubWebhookPayload } from '@/types/github'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@liam-hq/db'
 import { type NextRequest, NextResponse } from 'next/server'
-
-const prisma = new PrismaClient()
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
   try {
