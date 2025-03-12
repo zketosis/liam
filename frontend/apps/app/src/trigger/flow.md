@@ -23,14 +23,7 @@ This document describes the automated review process workflow, from Pull Request
 - On failure: Logs error and terminates process
 
 #### Key Actions:
-```typescript
-// Stores PR data
-await supabase.from('pull_requests').insert({
-  pr_number: payload.prNumber,
-  repository_id: payload.repositoryId,
-  // ... other PR metadata
-})
-```
+TBD
 
 ### 3. Generate Review (generateReview)
 **Purpose: Analyze PR and create review content**
@@ -55,14 +48,7 @@ await supabase.from('pull_requests').insert({
 - On failure: Logs error and terminates process
 
 #### Key Actions:
-```typescript
-// Stores review data
-await supabase.from('reviews').insert({
-  pr_number: payload.prNumber,
-  review_data: payload.review,
-  // ... other review metadata
-})
-```
+TBD
 
 ### 5. Post Comment (postComment)
 **Purpose: Publish review results to GitHub**
