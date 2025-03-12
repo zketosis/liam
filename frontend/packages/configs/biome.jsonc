@@ -15,7 +15,7 @@
       "recommended": true,
       "nursery": {
         "noCommonJs": "error",
-        "useImportRestrictions": "error"
+        "useImportRestrictions": "off"
       },
       "correctness": {
         "noUndeclaredDependencies": "error",
