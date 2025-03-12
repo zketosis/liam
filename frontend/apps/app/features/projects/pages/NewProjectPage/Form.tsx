@@ -1,25 +1,14 @@
 'use client'
 
 import { Button } from '@liam-hq/ui'
-
 import type { FC } from 'react'
-
-import { useRouter } from 'next/navigation'
-import { addProject } from '../../actions'
 import styles from './NewProjectPage.module.css'
 
-export const Form: FC = () => {
-  const router = useRouter()
+import { addProject } from '../../actions'
 
+export const Form: FC = () => {
   return (
-    <form
-      action={(formData) => {
-        addProject(formData).then((project) => {
-          router.push(`/app/projects/${project.id}`)
-        })
-      }}
-      className={styles.form}
-    >
+    <form action={addProject} className={styles.form}>
       <label htmlFor="projectName" className={styles.label}>
         Project Name
       </label>
