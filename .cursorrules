@@ -50,7 +50,6 @@ Follow these rules when you write code:
 #### Component Implementation Guidelines
 
 - Avoid using `default export`; always use `named export`.
-- Group all files that are exclusive to a component in a single folder and re-export them from an `index.ts` file.
 - When styling, prioritize using CSS Variables from the `@liam-hq/ui` package whenever possible.
 - Prefer using UI components provided by `@liam-hq/ui` over custom implementations.
 - When using icons, always import them from `@liam-hq/ui`.
