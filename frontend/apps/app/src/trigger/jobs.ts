@@ -1,4 +1,6 @@
+import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
+import type { GenerateReviewPayload, Review } from '../types'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
@@ -19,23 +21,9 @@ export const savePullRequestTask = task({
 
 export const generateReviewTask = task({
   id: 'generate-review',
-  run: async (payload: {
-    prNumber: number
-    repositoryId: string
-    schemaChanges: string
-  }) => {
-    logger.log('Executing review generation task:', { payload })
-    const review = {
-      summary: 'Test Review',
-      suggestions: [
-        {
-          title: 'Test Suggestion',
-          description: 'This is a test suggestion',
-          severity: 'low',
-        },
-      ],
-      bestPractices: ['Test Best Practice'],
-    }
+  run: async (payload: GenerateReviewPayload) => {
+    const review = await processGenerateReview(payload)
+    logger.log('Generated review:', { review })
     await saveReviewTask.trigger({
       prNumber: payload.prNumber,
       repositoryId: payload.repositoryId,
@@ -50,7 +38,7 @@ export const saveReviewTask = task({
   run: async (payload: {
     prNumber: number
     repositoryId: string
-    review: Record<string, unknown>
+    review: Review
   }) => {
     logger.log('Executing review save task:', { payload })
     await postCommentTask.trigger({
@@ -67,7 +55,7 @@ export const postCommentTask = task({
   run: async (payload: {
     prNumber: number
     repositoryId: string
-    review: Record<string, unknown>
+    review: Review
   }) => {
     logger.log('Executing comment post task:', { payload })
     return { success: true }
