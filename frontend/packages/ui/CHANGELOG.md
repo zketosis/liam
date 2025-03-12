@@ -1,5 +1,12 @@
 # @liam-hq/ui
 
+## 0.0.14
+
+### Patch Changes
+
+- [#825](https://github.com/liam-hq/liam/pull/825) - 💄Fixed an issue where the length of the Sidebar button text would change when hovering. / Thanks [@MH4GF](https://github.com/MH4GF)!
+- [#842](https://github.com/liam-hq/liam/pull/842) - ✨ Improve DropdownMenu keyboard accessibility / Thanks [@tnyo43](https://github.com/tnyo43)!
+
 ## 0.0.13
 
 ### Patch Changes

@@ -1,7 +1,10 @@
+'use client'
+
 import { Button } from '@liam-hq/ui'
 import type { FC } from 'react'
-import { addProject } from '../../actions'
 import styles from './NewProjectPage.module.css'
+
+import { addProject } from '../../actions'
 
 export const Form: FC = () => {
   return (

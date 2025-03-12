@@ -6,6 +6,7 @@ export type GitHubWebhookPayload = {
   installation: {
     id: number
   }
+  repositories?: Repository[]
 }
 
 export type PullRequest = {
