@@ -2,7 +2,7 @@
 
 import { Button } from '@liam-hq/ui'
 import type { FC } from 'react'
-import styles from './NewProjectPage.module.css'
+import styles from './ProjectNewPage.module.css'
 
 import { addProject } from '../../actions'
 
