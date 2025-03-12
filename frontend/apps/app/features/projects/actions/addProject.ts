@@ -2,11 +2,15 @@
 
 import { prisma } from '@liam-hq/db'
 
+import { redirect } from 'next/navigation'
+
 export const addProject = async (formData: FormData) => {
   const projectName = formData.get('projectName') as string
-  await prisma.project.create({
+  const project = await prisma.project.create({
     data: {
       name: projectName,
     },
   })
+
+  redirect(`/app/projects/${project.id}`)
 }
