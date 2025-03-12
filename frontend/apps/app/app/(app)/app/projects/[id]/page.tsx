@@ -1,15 +1,15 @@
+import type { PageProps } from '@/app/types'
 import { ProjectDetailPage } from '@/features/projects/pages'
+import { notFound } from 'next/navigation'
+import * as v from 'valibot'
 
-import React from 'react'
-
-type PageProps = {
-  params: Promise<{
-    id: string
-  }>
-}
+const paramsSchema = v.object({
+  id: v.string(),
+})
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params
+  const parsedParams = v.safeParse(paramsSchema, await params)
+  if (!parsedParams.success) return notFound()
 
-  return <ProjectDetailPage projectId={id} />
+  return <ProjectDetailPage projectId={parsedParams.output.id} />
 }
