@@ -1,51 +1,102 @@
 <!-- Please update as needed. -->
 
-### Process Flow
+# Review Process Workflow
 
-#### (Starting Point) Webhook Reception
+## Overview
+This document describes the automated review process workflow, from Pull Request creation to review comment posting. The process is divided into several asynchronous jobs, each handling a specific part of the workflow.
 
-1. User creates a PR
+## Detailed Workflow
+
+### 1. Initial Webhook Processing
+**Trigger: Pull Request Creation**
+1. A user creates a Pull Request
 2. GitHub App sends a webhook to the Liam server
-3. In `github/route.ts` on the Liam server, a "save PR information to Supabase" job is queued
+3. The `github/route.ts` endpoint receives the webhook and queues the initial job
 
---Webhook processing ends here--
+### 2. Save Pull Request (savePullRequest)
+**Purpose: Persist PR information and initiate review process**
 
-#### (Job) Save PR Information to Supabase
+#### Process:
+- Receives PR metadata from webhook
+- Stores PR information in Supabase
+- On success: Triggers review generation
+- On failure: Logs error and terminates process
 
-savePullRequest
+#### Key Actions:
+```typescript
+// Stores PR data
+await supabase.from('pull_requests').insert({
+  pr_number: payload.prNumber,
+  repository_id: payload.repositoryId,
+  // ... other PR metadata
+})
+```
 
-4. The "save PR information to Supabase" job starts
-5. Sends API request to save data to Supabase
-6. If save is successful, queues the "generate review" job
-7. If save fails, logs the error or takes other appropriate actions
+### 3. Generate Review (generateReview)
+**Purpose: Analyze PR and create review content**
 
---"Save PR information to Supabase" job processing ends here--
+#### Process:
+- Analyzes PR content and changes
+- Generates comprehensive review
+- On completion: Queues review storage job
 
-#### (Job) Generate Review
+#### Key Deliverables:
+- Code review comments
+- Best practices suggestions
+- Overall review summary
 
-generateReview
+### 4. Store Review (saveReview)
+**Purpose: Persist review results**
 
-8. The "generate review" job starts
-9. Calls the review generation function to perform the review
-10. After review completion, queues the "save review information to Supabase" job
+#### Process:
+- Receives generated review content
+- Stores review data in Supabase
+- On success: Triggers comment posting
+- On failure: Logs error and terminates process
 
---"Generate review" job processing ends here--
+#### Key Actions:
+```typescript
+// Stores review data
+await supabase.from('reviews').insert({
+  pr_number: payload.prNumber,
+  review_data: payload.review,
+  // ... other review metadata
+})
+```
 
-#### (Job) Save Review Information to Supabase
+### 5. Post Comment (postComment)
+**Purpose: Publish review results to GitHub**
 
-saveReview
+#### Process:
+- Formats review content for GitHub
+- Posts review as PR comment
+- On success: Workflow complete
+- On failure: Logs error for manual intervention
 
-11. The "save review information to Supabase" job starts
-12. Calls the function to save review information and sends API request to save data to Supabase
-13. If save is successful, queues the "post review comment to Pull Request" job
-14. If save fails, logs the error or takes other appropriate actions
+## Error Handling
+Each job includes:
+- Error logging
+- Failure state management
+- Appropriate error responses
 
---"Save review information to Supabase" job processing ends here--
+## Data Flow
+```mermaid
+graph TD
+    A[PR Created] --> B[Save PR Info]
+    B --> C[Generate Review]
+    C --> D[Store Review]
+    D --> E[Post Comment]
+    E --> F[Complete]
+```
 
-#### (Job) Post Review Comment to Pull Request
+## Technical Notes
+- All jobs are asynchronous and queued
+- Each job is idempotent
+- Supabase is used as the persistent storage
+- Environment variables required for configuration
+- Logging implemented at each step for monitoring
 
-postComment
-
-15. The "post review comment to Pull Request" job starts
-16. Calls the function to post comments and posts the comment to the Pull Request
-17. If posting is successful, the process is complete 
+## Job Dependencies
+- `savePullRequest` → `generateReview`
+- `generateReview` → `saveReview`
+- `saveReview` → `postComment`
