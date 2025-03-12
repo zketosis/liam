@@ -92,6 +92,7 @@ jobs:
     uses: ./.github/workflows/_run_e2e_test.yml
     with:
       url: ${{ needs.deploy.outputs.url }}
+      environment: ${{ needs.setup-deployment.outputs.environment }}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-e2e
       cancel-in-progress: true

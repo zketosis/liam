@@ -6,6 +6,10 @@ on:
       url:
         required: true
         type: string
+      environment:
+        required: false
+        type: string
+        default: 'preview'
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
           retention-days: 30
           
       - name: Slack Notification on Failure
-        if: failure()
+        if: ${{ inputs.environment == 'production' && failure() }}
         uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}
