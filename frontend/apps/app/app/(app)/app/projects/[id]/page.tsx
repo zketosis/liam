@@ -11,11 +11,6 @@ type PageProps = {
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params
-  const migrationEnabled = await migrationFlag()
-
-  if (!migrationEnabled) {
-    notFound()
-  }
 
   return <ProjectDetailPage projectId={id} />
 }
