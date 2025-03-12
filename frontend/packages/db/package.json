@@ -29,6 +29,7 @@
     "lint:tsc": "tsc --noEmit",
     "migrate:dev": "prisma migrate dev",
     "migrate:status": "prisma migrate status",
-    "supabase:start": "pnpm supabase start"
+    "supabase:start": "pnpm supabase start",
+    "supabase:stop": "pnpm supabase stop"
   }
 }
