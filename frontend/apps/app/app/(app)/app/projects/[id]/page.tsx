@@ -1,6 +1,5 @@
 import { ProjectDetailPage } from '@/features/projects/pages'
-import { migrationFlag } from '@/libs'
-import { notFound } from 'next/navigation'
+
 import React from 'react'
 
 type PageProps = {
