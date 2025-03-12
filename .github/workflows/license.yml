@@ -6,12 +6,9 @@ name: License Compliance
 # It also updates $LICENSE_REPORT and git commit.
 #
 # When triggered by a PR from a forked repository, $LICENSE_REPORT is not updated.
-# When triggered by a push to the default branch, $LICENSE_REPORT is not updated either.
+# When triggered by a merge_group event, $LICENSE_REPORT is not updated either.
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
   merge_group:
 
