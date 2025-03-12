@@ -1,12 +1,8 @@
-import {
-  createPullRequestComment,
-  getPullRequestFiles,
-  updatePullRequestComment,
-  verifyWebhookSignature,
-} from '@/libs/github/api'
+import { verifyWebhookSignature } from '@/libs/github/api'
 import { supportedEvents, validateConfig } from '@/libs/github/config'
+import { handleInstallation } from '@/libs/github/webhooks/installation'
+import { handlePullRequest } from '@/libs/github/webhooks/pull-request'
 import type { GitHubWebhookPayload } from '@/types/github'
-import { prisma } from '@liam-hq/db'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
@@ -24,88 +20,35 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
     const action = data.action
     const eventType = `${event}.${action}`
 
-    if (event !== 'pull_request' || !supportedEvents.includes(eventType)) {
+    if (!supportedEvents.includes(eventType)) {
       return NextResponse.json(
         { message: `Event ${eventType} is not supported` },
         { status: 200 },
       )
     }
 
-    const pullRequest = data.pull_request
-    if (!pullRequest) {
+    try {
+      if (event === 'pull_request') {
+        const result = await handlePullRequest(data)
+        return NextResponse.json(result, { status: 200 })
+      }
+
+      if (event === 'installation') {
+        const result = await handleInstallation(data)
+        return NextResponse.json(result, { status: 200 })
+      }
+
       return NextResponse.json(
-        { error: 'Pull request data is missing' },
-        { status: 400 },
+        { message: `Event ${eventType} is supported but no handler found` },
+        { status: 200 },
+      )
+    } catch (error) {
+      console.error(`Error handling ${eventType} event:`, error)
+      return NextResponse.json(
+        { error: `Failed to process ${eventType} event` },
+        { status: 500 },
       )
     }
-
-    const installationId = data.installation.id
-    const owner = data.repository.owner.login
-    const repo = data.repository.name
-    const pullNumber = pullRequest.number
-
-    const files = await getPullRequestFiles(
-      installationId,
-      owner,
-      repo,
-      pullNumber,
-    )
-
-    const prRecord = await prisma.pullRequest.findUnique({
-      where: {
-        repositoryOwner_repositoryName_pullNumber: {
-          repositoryOwner: owner,
-          repositoryName: repo,
-          pullNumber: pullNumber,
-        },
-      },
-    })
-
-    const comment = `Your pull request is detected by Liam Migration. ${files.length} files are changed.`
-
-    if (prRecord?.commentId) {
-      await updatePullRequestComment(
-        installationId,
-        owner,
-        repo,
-        Number(prRecord.commentId),
-        comment,
-      )
-    } else {
-      const commentResponse = await createPullRequestComment(
-        installationId,
-        owner,
-        repo,
-        pullNumber,
-        comment,
-      )
-
-      await prisma.pullRequest.upsert({
-        where: {
-          repositoryOwner_repositoryName_pullNumber: {
-            repositoryOwner: owner,
-            repositoryName: repo,
-            pullNumber: pullNumber,
-          },
-        },
-        update: {
-          commentId: commentResponse.id,
-          installationId: installationId,
-        },
-        create: {
-          repositoryOwner: owner,
-          repositoryName: repo,
-          pullNumber: pullNumber,
-          commentId: commentResponse.id,
-          installationId: installationId,
-        },
-      })
-    }
-
-    return NextResponse.json(
-      { message: 'Analysis completed and comment posted' },
-      { status: 200 },
-    )
   } catch (error) {
     console.error('Error processing webhook:', error)
     return NextResponse.json(
