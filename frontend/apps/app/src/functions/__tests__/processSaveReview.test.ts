@@ -1,4 +1,5 @@
 import { prisma } from '@liam-hq/db'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { processSaveReview } from '../processSaveReview'
 
 describe('processSaveReview', () => {
@@ -64,5 +65,18 @@ describe('processSaveReview', () => {
 
     expect(savedReview).toBeTruthy()
     expect(savedReview?.reviewComment).toBe('Test review comment')
+  })
+
+  it('should throw error when pull request not found', async () => {
+    const testPayload = {
+      pullRequestId: 999,
+      repositoryId: 999,
+      projectId: 1,
+      reviewComment: 'Test review comment',
+    }
+
+    await expect(processSaveReview(testPayload)).rejects.toThrow(
+      'PullRequest not found',
+    )
   })
 })
