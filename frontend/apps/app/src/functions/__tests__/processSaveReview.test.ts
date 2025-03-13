@@ -43,7 +43,7 @@ describe('processSaveReview', () => {
 
   it('should successfully save a review', async () => {
     const testPayload = {
-      pullRequestId: testPullRequest.id,
+      pullRequestNumber: testPullRequest.pullNumber,
       repositoryId: testRepo.id,
       projectId: testProject.id,
       reviewComment: 'Test review comment',
@@ -59,7 +59,7 @@ describe('processSaveReview', () => {
     const savedReview = await prisma.overallReview.findFirst({
       where: {
         projectId: testPayload.projectId,
-        pullRequestId: testPayload.pullRequestId,
+        pullRequestId: testPullRequest.id,
       },
     })
 
@@ -69,7 +69,7 @@ describe('processSaveReview', () => {
 
   it('should throw error when pull request not found', async () => {
     const testPayload = {
-      pullRequestId: 999,
+      pullRequestNumber: BigInt(999),
       repositoryId: 999,
       projectId: 1,
       reviewComment: 'Test review comment',

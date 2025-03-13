@@ -75,10 +75,6 @@ jobs:
         run: pnpm exec vercel pull --yes --environment=${{ needs.setup-deployment.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Pull Vercel Enviroment Variables
         run: pnpm vercel:env-pull --yes --environment=${{ needs.setup-deployment.outputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Run prepare command
-        run: pnpm build
-      - name: Update index.html content
-        run: pnpm --filter ${{ matrix.apps.name }} update_dist_content
       - name: Build Project Artifacts
         run: pnpm exec vercel build ${{ needs.setup-deployment.outputs.environment == 'production' && '--prod' || '' }}
       - name: Deploy Project Artifacts to Vercel
