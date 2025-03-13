@@ -29,13 +29,17 @@ export async function postComment(
       },
     })
 
+    if (!prRecord) {
+      throw new Error(`Pull request with ID ${pullRequestId} not found`)
+    }
+
     // Get installation ID from repository
     const installationId = repository.installationId
     const owner = repository.owner
     const repo = repository.name
 
     // If PR already has a comment, update it; otherwise create a new one
-    if (prRecord?.commentId) {
+    if (prRecord.commentId) {
       await updatePullRequestComment(
         Number(installationId),
         owner,
@@ -48,24 +52,16 @@ export async function postComment(
         Number(installationId),
         owner,
         repo,
-        Number(pullRequestId),
+        Number(prRecord.pullNumber),
         reviewComment,
       )
 
-      // Update or create PR record with the comment ID
-      await prisma.pullRequest.upsert({
+      // Update PR record with the comment ID
+      await prisma.pullRequest.update({
         where: {
-          repositoryId_pullNumber: {
-            repositoryId,
-            pullNumber: BigInt(pullRequestId),
-          },
+          id: pullRequestId,
         },
-        update: {
-          commentId: BigInt(commentResponse.id),
-        },
-        create: {
-          repositoryId,
-          pullNumber: BigInt(pullRequestId),
+        data: {
           commentId: BigInt(commentResponse.id),
         },
       })
