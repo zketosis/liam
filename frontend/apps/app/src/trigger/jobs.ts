@@ -1,6 +1,7 @@
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import {
   type SavePullRequestPayload,
+  getPullRequest,
   processSavePullRequest,
 } from '@/src/functions/processSavePullRequest'
 import { processSaveReview } from '@/src/functions/processSaveReview'
@@ -27,9 +28,14 @@ export const savePullRequestTask = task({
       } as SavePullRequestPayload)
       logger.info('Successfully saved PR to database:', { prId: result.prId })
 
+      const pullRequest = await getPullRequest(
+        payload.repositoryId,
+        BigInt(payload.pullRequestNumber),
+      )
+
       // Trigger the next task in the chain - generate review
       await generateReviewTask.trigger({
-        ...payload,
+        pullRequestId: pullRequest.id,
         projectId: undefined,
         schemaChanges: result.schemaChanges,
       } as GenerateReviewPayload)
@@ -64,7 +70,7 @@ export const saveReviewTask = task({
       await postCommentTask.trigger({
         reviewComment: payload.reviewComment,
         projectId: payload.projectId,
-        pullRequestNumber: payload.pullRequestNumber,
+        pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
       })
       return { success: true }
@@ -97,7 +103,7 @@ export const postCommentTask = task({
   run: async (payload: {
     reviewComment: string
     projectId: number | undefined
-    pullRequestNumber: number
+    pullRequestId: number
     repositoryId: number
   }) => {
     logger.log('Executing comment post task:', { payload })
