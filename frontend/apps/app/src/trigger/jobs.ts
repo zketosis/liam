@@ -1,3 +1,4 @@
+import { postComment } from '@/src/functions/postComment'
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import type { GenerateReviewPayload, ReviewResponse } from '../types'
@@ -47,13 +48,9 @@ export const saveReviewTask = task({
 
 export const postCommentTask = task({
   id: 'post-comment',
-  run: async (payload: {
-    reviewComment: string
-    projectId: number
-    pullRequestId: number
-    repositoryId: number
-  }) => {
+  run: async (payload: ReviewResponse) => {
     logger.log('Executing comment post task:', { payload })
-    return { success: true }
+    const result = await postComment(payload)
+    return result
   },
 })
