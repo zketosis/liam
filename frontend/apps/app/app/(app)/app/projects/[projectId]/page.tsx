@@ -4,12 +4,12 @@ import { notFound } from 'next/navigation'
 import * as v from 'valibot'
 
 const paramsSchema = v.object({
-  id: v.string(),
+  projectId: v.string(),
 })
 
 export default async function Page({ params }: PageProps) {
   const parsedParams = v.safeParse(paramsSchema, await params)
   if (!parsedParams.success) return notFound()
 
-  return <ProjectDetailPage projectId={parsedParams.output.id} />
+  return <ProjectDetailPage projectId={parsedParams.output.projectId} />
 }
