@@ -1,11 +1,17 @@
-import type React from 'react'
-import { Form } from './Form'
+import type { Installation } from '@/libs/github/types'
+import type { FC } from 'react'
+import { InstallationSelector } from './InstallationSelector/InstallationSelector'
 import styles from './ProjectNewPage.module.css'
 
-export const ProjectNewPage: React.FC = () => {
+type Props = {
+  installations: Installation[]
+}
+
+export const ProjectNewPage: FC<Props> = ({ installations }) => {
   return (
     <div className={styles.container}>
-      <Form />
+      <h1 className={styles.title}>Add a Project</h1>
+      <InstallationSelector installations={installations} />
     </div>
   )
 }

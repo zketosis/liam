@@ -1,14 +1,19 @@
-import { NewProjectPage } from '@/features/projects/pages'
-import { migrationFlag } from '@/libs'
+import { ProjectNewPage } from '@/features/projects/pages'
+import { createClient } from '@/libs/db/server'
+import { getInstallations } from '@/libs/github/api.browser'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
 export default async function Page() {
-  const migrationEnabled = await migrationFlag()
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getSession()
 
-  if (!migrationEnabled) {
-    notFound()
+  if (data.session === null) {
+    // TODO: Review the behavior when the session cannot be obtained.
+    return notFound()
   }
 
-  return <NewProjectPage />
+  const { installations } = await getInstallations(data.session)
+
+  return <ProjectNewPage installations={installations} />
 }
