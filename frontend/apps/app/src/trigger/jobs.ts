@@ -1,11 +1,12 @@
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
+import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import type { GenerateReviewPayload, ReviewResponse } from '../types'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
   run: async (payload: {
-    pullRequestNumber: number
+    pullRequestId: number
     projectId: number
     repositoryId: number
     schemaChanges: Array<{
@@ -29,7 +30,7 @@ export const generateReviewTask = task({
     await saveReviewTask.trigger({
       reviewComment,
       projectId: payload.projectId,
-      pullRequestId: payload.pullRequestNumber,
+      pullRequestId: payload.pullRequestId,
       repositoryId: payload.repositoryId,
     })
     return { reviewComment }
@@ -40,8 +41,31 @@ export const saveReviewTask = task({
   id: 'save-review',
   run: async (payload: ReviewResponse) => {
     logger.log('Executing review save task:', { payload })
-    await postCommentTask.trigger(payload)
-    return { success: true }
+    try {
+      await processSaveReview(payload)
+      await postCommentTask.trigger(payload)
+      return { success: true }
+    } catch (error) {
+      console.error('Error in review process:', error)
+
+      if (error instanceof Error) {
+        return {
+          success: false,
+          error: {
+            message: error.message,
+            type: error.constructor.name,
+          },
+        }
+      }
+
+      return {
+        success: false,
+        error: {
+          message: 'An unexpected error occurred',
+          type: 'UnknownError',
+        },
+      }
+    }
   },
 })
 

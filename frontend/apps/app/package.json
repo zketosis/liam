@@ -26,11 +26,14 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@types/gtag.js": "0.0.20",
+    "@types/jest": "29.5.12",
     "@types/node": "22.9.0",
     "@types/react": "18",
     "@types/react-dom": "18",
     "esbuild": "0.25.1",
+    "jest": "29.7.0",
     "trigger.dev": "3.3.17",
+    "ts-jest": "29.2.6",
     "typed-css-modules": "0.9.1",
     "typescript": "5"
   },
@@ -48,6 +51,7 @@
     "lint:biome": "biome check .",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start",
+    "test": "jest",
     "update_dist_content": "node scripts/update_dist_content.js"
   }
 }
