@@ -1,20 +1,22 @@
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
-import type { GenerateReviewPayload, Review } from '../types'
+import type { GenerateReviewPayload, ReviewResponse } from '../types'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
   run: async (payload: {
-    prNumber: number
-    repositoryId: string
-    title: string
+    pullRequestNumber: number
+    projectId: number
+    repositoryId: number
+    schemaChanges: Array<{
+      filename: string
+      status: 'added' | 'modified' | 'deleted'
+      changes: number
+      patch: string
+    }>
   }) => {
     logger.log('Executing PR save task:', { payload })
-    await generateReviewTask.trigger({
-      prNumber: payload.prNumber,
-      repositoryId: payload.repositoryId,
-      schemaChanges: 'schemaChanges',
-    })
+    await generateReviewTask.trigger(payload)
     return { success: true }
   },
 })
@@ -22,30 +24,23 @@ export const savePullRequestTask = task({
 export const generateReviewTask = task({
   id: 'generate-review',
   run: async (payload: GenerateReviewPayload) => {
-    const review = await processGenerateReview(payload)
-    logger.log('Generated review:', { review })
+    const reviewComment = await processGenerateReview(payload)
+    logger.log('Generated review:', { reviewComment })
     await saveReviewTask.trigger({
-      prNumber: payload.prNumber,
+      reviewComment,
+      projectId: payload.projectId,
+      pullRequestId: payload.pullRequestNumber,
       repositoryId: payload.repositoryId,
-      review,
     })
-    return review
+    return { reviewComment }
   },
 })
 
 export const saveReviewTask = task({
   id: 'save-review',
-  run: async (payload: {
-    prNumber: number
-    repositoryId: string
-    review: Review
-  }) => {
+  run: async (payload: ReviewResponse) => {
     logger.log('Executing review save task:', { payload })
-    await postCommentTask.trigger({
-      prNumber: payload.prNumber,
-      repositoryId: payload.repositoryId,
-      review: payload.review,
-    })
+    await postCommentTask.trigger(payload)
     return { success: true }
   },
 })
@@ -53,9 +48,10 @@ export const saveReviewTask = task({
 export const postCommentTask = task({
   id: 'post-comment',
   run: async (payload: {
-    prNumber: number
-    repositoryId: string
-    review: Review
+    reviewComment: string
+    projectId: number
+    pullRequestId: number
+    repositoryId: number
   }) => {
     logger.log('Executing comment post task:', { payload })
     return { success: true }
