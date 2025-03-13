@@ -1,4 +1,4 @@
-import { verifyWebhookSignature } from '@/libs/github/api'
+import { verifyWebhookSignature } from '@/libs/github/api.server'
 import { supportedEvents, validateConfig } from '@/libs/github/config'
 import { handleInstallation } from '@/libs/github/webhooks/installation'
 import { savePullRequestTask } from '@/src/trigger/jobs'

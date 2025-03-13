@@ -21,10 +21,12 @@
     "next": "15.1.2",
     "react": "18.3.1",
     "react-dom": "18",
+    "ts-pattern": "5.4.0",
     "valibot": "^1.0.0-beta.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
+    "@octokit/openapi-types": "24.0.0",
     "@types/gtag.js": "0.0.20",
     "@types/node": "22.9.0",
     "@types/react": "18",

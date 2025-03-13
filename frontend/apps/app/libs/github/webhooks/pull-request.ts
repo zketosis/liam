@@ -2,7 +2,7 @@ import {
   createPullRequestComment,
   getPullRequestFiles,
   updatePullRequestComment,
-} from '@/libs/github/api'
+} from '@/libs/github/api.server'
 import type { GitHubWebhookPayload } from '@/types/github'
 import { prisma } from '@liam-hq/db'
 
