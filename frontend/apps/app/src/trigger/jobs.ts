@@ -26,7 +26,7 @@ export const savePullRequestTask = task({
         owner: payload.owner,
         name: payload.name,
         repositoryId: payload.repositoryId,
-      } as SavePullRequestPayload)
+      })
       logger.info('Successfully saved PR to database:', { prId: result.prId })
 
       const pullRequest = await getPullRequest(
@@ -36,10 +36,12 @@ export const savePullRequestTask = task({
 
       // Trigger the next task in the chain - generate review
       await generateReviewTask.trigger({
+        ...payload,
         pullRequestId: pullRequest.id,
         projectId: undefined,
+        repositoryId: payload.repositoryId,
         schemaChanges: result.schemaChanges,
-      } as GenerateReviewPayload)
+      })
 
       return result
     } catch (error) {

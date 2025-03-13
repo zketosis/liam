@@ -4,7 +4,15 @@ export type GenerateReviewPayload = {
   repositoryId: number
   schemaChanges: Array<{
     filename: string
-    status: 'added' | 'modified' | 'deleted'
+    status:
+      | 'added'
+      | 'modified'
+      | 'deleted'
+      | 'removed'
+      | 'renamed'
+      | 'copied'
+      | 'changed'
+      | 'unchanged'
     changes: number
     patch: string
   }>
