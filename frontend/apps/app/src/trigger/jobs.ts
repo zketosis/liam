@@ -1,5 +1,9 @@
 import { postComment } from '@/src/functions/postComment'
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
+import {
+  type SavePullRequestPayload,
+  processSavePullRequest,
+} from '@/src/functions/processSavePullRequest'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import type { GenerateReviewPayload, ReviewResponse } from '../types'
 
@@ -7,18 +11,34 @@ export const savePullRequestTask = task({
   id: 'save-pull-request',
   run: async (payload: {
     pullRequestNumber: number
-    projectId: number
+    projectId: number | undefined
+    owner: string
+    name: string
     repositoryId: number
-    schemaChanges: Array<{
-      filename: string
-      status: 'added' | 'modified' | 'deleted'
-      changes: number
-      patch: string
-    }>
   }) => {
     logger.log('Executing PR save task:', { payload })
-    await generateReviewTask.trigger(payload)
-    return { success: true }
+
+    try {
+      const result = await processSavePullRequest({
+        prNumber: payload.pullRequestNumber,
+        owner: payload.owner,
+        name: payload.name,
+        repositoryId: payload.repositoryId,
+      } as SavePullRequestPayload)
+      logger.info('Successfully saved PR to database:', { prId: result.prId })
+
+      // Trigger the next task in the chain - generate review
+      await generateReviewTask.trigger({
+        ...payload,
+        projectId: undefined,
+        schemaChanges: result.schemaChanges,
+      } as GenerateReviewPayload)
+
+      return result
+    } catch (error) {
+      logger.error('Error in savePullRequest task:', { error })
+      throw error
+    }
   },
 })
 
