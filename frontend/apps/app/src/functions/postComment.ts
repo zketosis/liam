@@ -25,10 +25,7 @@ export async function postComment(
     // Check if there's an existing PR record with a comment
     const prRecord = await prisma.pullRequest.findUnique({
       where: {
-        repositoryId_pullNumber: {
-          repositoryId,
-          pullNumber: BigInt(pullRequestId),
-        },
+        id: pullRequestId,
       },
     })
 
