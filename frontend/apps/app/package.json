@@ -51,7 +51,7 @@
     "lint:biome": "biome check .",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start",
-    "test": "jest",
+    "test:jest": "jest",
     "update_dist_content": "node scripts/update_dist_content.js"
   }
 }
