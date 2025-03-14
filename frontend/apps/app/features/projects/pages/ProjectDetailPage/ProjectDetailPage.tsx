@@ -17,6 +17,31 @@ async function getProject(projectId: string) {
       id: true,
       name: true,
       createdAt: true,
+      repositoryMappings: {
+        select: {
+          repository: {
+            select: {
+              pullRequests: {
+                select: {
+                  id: true,
+                  pullNumber: true,
+                  migration: {
+                    select: {
+                      id: true,
+                      title: true,
+                    },
+                  },
+                },
+                where: {
+                  migration: {
+                    isNot: null,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   })
 
@@ -24,7 +49,23 @@ async function getProject(projectId: string) {
     notFound()
   }
 
-  return project
+  const migrations = project.repositoryMappings.flatMap((mapping) =>
+    mapping.repository.pullRequests
+      .filter((pr) => pr.migration !== null)
+      .map((pr) => {
+        const { id, title } = pr.migration as { id: number; title: string }
+        return {
+          id,
+          title,
+          pullNumber: pr.pullNumber,
+        }
+      }),
+  )
+
+  return {
+    ...project,
+    migrations,
+  }
 }
 
 export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
@@ -59,16 +100,16 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
       <section style={{ margin: '24px 0' }}>
         <h2 style={{ fontSize: '24px' }}>Migrations</h2>
         <ul style={{ display: 'grid', gap: '12px', margin: '16px 0' }}>
-          {/* {project.migrations.map((migration) => (
+          {project.migrations.map((migration) => (
             <li key={migration.id}>
               <Link
                 href={`/app/projects/${project.id}/migrations/${migration.id}`}
                 style={{
                   textDecoration: 'underline',
                 }}
-              >{`${migration.title} #${migration.pullRequest.pullNumber}`}</Link>
+              >{`${migration.title} #${migration.pullNumber}`}</Link>
             </li>
-          ))} */}
+          ))}
         </ul>
       </section>
     </div>
