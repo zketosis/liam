@@ -1,4 +1,4 @@
-import { getPullRequestFiles } from '@/libs/github/api'
+import { getPullRequestFiles } from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
 
 export type SavePullRequestPayload = {

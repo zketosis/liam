@@ -1,0 +1,20 @@
+.installationSelector {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 400px;
+}
+
+.repositoriesList {
+  display: grid;
+  gap: var(--spacing-3);
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.repositoryItem {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}

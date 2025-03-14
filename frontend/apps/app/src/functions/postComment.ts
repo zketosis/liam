@@ -1,7 +1,7 @@
 import {
   createPullRequestComment,
   updatePullRequestComment,
-} from '@/libs/github/api'
+} from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
 import type { ReviewResponse } from '../types'
 
