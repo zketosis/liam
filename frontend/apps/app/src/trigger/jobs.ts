@@ -2,8 +2,10 @@ import { postComment } from '@/src/functions/postComment'
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import {
   type SavePullRequestPayload,
+  getPullRequest,
   processSavePullRequest,
 } from '@/src/functions/processSavePullRequest'
+import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import type { GenerateReviewPayload, ReviewResponse } from '../types'
 
@@ -27,9 +29,14 @@ export const savePullRequestTask = task({
       } as SavePullRequestPayload)
       logger.info('Successfully saved PR to database:', { prId: result.prId })
 
+      const pullRequest = await getPullRequest(
+        payload.repositoryId,
+        BigInt(payload.pullRequestNumber),
+      )
+
       // Trigger the next task in the chain - generate review
       await generateReviewTask.trigger({
-        ...payload,
+        pullRequestId: pullRequest.id,
         projectId: undefined,
         schemaChanges: result.schemaChanges,
       } as GenerateReviewPayload)
@@ -49,9 +56,7 @@ export const generateReviewTask = task({
     logger.log('Generated review:', { reviewComment })
     await saveReviewTask.trigger({
       reviewComment,
-      projectId: payload.projectId,
-      pullRequestId: payload.pullRequestNumber,
-      repositoryId: payload.repositoryId,
+      ...payload,
     })
     return { reviewComment }
   },
@@ -61,8 +66,36 @@ export const saveReviewTask = task({
   id: 'save-review',
   run: async (payload: ReviewResponse) => {
     logger.log('Executing review save task:', { payload })
-    await postCommentTask.trigger(payload)
-    return { success: true }
+    try {
+      await processSaveReview(payload)
+      await postCommentTask.trigger({
+        reviewComment: payload.reviewComment,
+        projectId: payload.projectId,
+        pullRequestId: payload.pullRequestId,
+        repositoryId: payload.repositoryId,
+      })
+      return { success: true }
+    } catch (error) {
+      console.error('Error in review process:', error)
+
+      if (error instanceof Error) {
+        return {
+          success: false,
+          error: {
+            message: error.message,
+            type: error.constructor.name,
+          },
+        }
+      }
+
+      return {
+        success: false,
+        error: {
+          message: 'An unexpected error occurred',
+          type: 'UnknownError',
+        },
+      }
+    }
   },
 })
 
