@@ -5,14 +5,12 @@ import type { FC } from 'react'
 import styles from './MigrationDetailPage.module.css'
 
 type Params = {
-  projectId: string
   migrationId: string
 }
-async function getMigration({ projectId, migrationId }: Params) {
+async function getMigration({ migrationId }: Params) {
   const migration = await prisma.migration.findUnique({
     where: {
       id: Number(migrationId),
-      projectId: Number(projectId),
     },
     select: {
       id: true,
@@ -42,7 +40,7 @@ export const MigrationDetailPage: FC<Props> = async ({
   projectId,
   migrationId,
 }) => {
-  const migration = await getMigration({ projectId, migrationId })
+  const migration = await getMigration({ migrationId })
   return (
     <div className={styles.wrapper}>
       <Link
