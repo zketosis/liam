@@ -40,10 +40,20 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             installationId: data.installation.id,
           },
         })
-
         if (!repository) {
           throw new Error('Repository not found')
         }
+
+        const projectRepositoryMapping =
+          await prisma.projectRepositoryMapping.findFirst({
+            where: {
+              repositoryId: repository.id,
+            },
+          })
+        if (!projectRepositoryMapping) {
+          throw new Error('Mapping not found')
+        }
+        const projectId = projectRepositoryMapping.projectId
 
         switch (action) {
           case 'opened':
@@ -53,7 +63,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             await savePullRequestTask.trigger({
               pullRequestNumber: pullRequest.number,
               pullRequestTitle: pullRequest.title,
-              projectId: undefined,
+              projectId,
               owner: data.repository.owner.login,
               name: data.repository.name,
               repositoryId: repository.id,

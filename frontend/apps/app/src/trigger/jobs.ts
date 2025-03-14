@@ -1,9 +1,6 @@
 import { postComment } from '@/src/functions/postComment'
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
-import {
-  type SavePullRequestPayload,
-  processSavePullRequest,
-} from '@/src/functions/processSavePullRequest'
+import { processSavePullRequest } from '@/src/functions/processSavePullRequest'
 import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import type { GenerateReviewPayload, ReviewResponse } from '../types'
@@ -13,7 +10,7 @@ export const savePullRequestTask = task({
   run: async (payload: {
     pullRequestNumber: number
     pullRequestTitle: string
-    projectId: number | undefined
+    projectId: number
     owner: string
     name: string
     repositoryId: number
@@ -34,7 +31,7 @@ export const savePullRequestTask = task({
       await generateReviewTask.trigger({
         ...payload,
         pullRequestId: result.prId,
-        projectId: undefined,
+        projectId: payload.projectId,
         repositoryId: payload.repositoryId,
         schemaChanges: result.schemaChanges,
       })
@@ -68,7 +65,7 @@ export const saveReviewTask = task({
       await processSaveReview(payload)
       await postCommentTask.trigger({
         reviewComment: payload.reviewComment,
-        projectId: undefined,
+        projectId: payload.projectId,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
       })
