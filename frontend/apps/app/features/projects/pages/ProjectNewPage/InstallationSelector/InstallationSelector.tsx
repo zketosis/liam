@@ -68,7 +68,7 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
       formData.set('projectName', repository.name)
 
       await addProject(formData)
-      // 成功時はリダイレクトされるため、ここには到達しない
+      // This point is not reached because a redirect occurs on success
     } catch (error) {
       console.error('Error adding project:', error)
       setIsAddingProject(false)
