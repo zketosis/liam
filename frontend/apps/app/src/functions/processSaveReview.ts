@@ -1,4 +1,5 @@
 import { prisma } from '@liam-hq/db'
+import type { Prisma } from '@prisma/client'
 import type { ReviewResponse } from '../types'
 
 export async function processSaveReview(
@@ -15,25 +16,25 @@ export async function processSaveReview(
       throw new Error('PullRequest not found')
     }
 
-    if (payload.projectId === undefined) {
-      throw new Error('ProjectId is required')
-    }
-
     // create overall review
     await prisma.overallReview.create({
       data: {
-        project: {
-          connect: {
-            id: payload.projectId,
-          },
-        },
+        ...(payload.projectId
+          ? {
+              project: {
+                connect: {
+                  id: payload.projectId,
+                },
+              },
+            }
+          : {}),
         pullRequest: {
           connect: {
             id: pullRequest.id,
           },
         },
         reviewComment: payload.reviewComment,
-      },
+      } as Prisma.OverallReviewCreateInput,
     })
 
     return {

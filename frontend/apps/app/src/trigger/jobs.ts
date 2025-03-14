@@ -66,7 +66,7 @@ export const saveReviewTask = task({
       await processSaveReview(payload)
       await postCommentTask.trigger({
         reviewComment: payload.reviewComment,
-        projectId: payload.projectId,
+        projectId: undefined,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
       })
