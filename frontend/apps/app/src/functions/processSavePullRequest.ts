@@ -3,6 +3,7 @@ import { prisma } from '@liam-hq/db'
 
 export type SavePullRequestPayload = {
   prNumber: number
+  pullRequestTitle: string
   owner: string
   name: string
   repositoryId: number
@@ -78,10 +79,12 @@ export async function processSavePullRequest(
     where: {
       pullRequestId: prRecord.id,
     },
-    update: {},
+    update: {
+      title: payload.pullRequestTitle,
+    },
     create: {
       pullRequestId: prRecord.id,
-      title: '',
+      title: payload.pullRequestTitle,
     },
   })
 
