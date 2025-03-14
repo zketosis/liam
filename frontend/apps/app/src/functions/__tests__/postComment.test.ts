@@ -94,7 +94,7 @@ describe('postComment', () => {
 
     const testPayload = {
       reviewComment: 'Test review comment',
-      projectId: testProject.id,
+      projectId: testProject.id ?? null,
       pullRequestId: testPullRequest.id,
       repositoryId: testRepo.id,
     }
@@ -133,7 +133,7 @@ describe('postComment', () => {
 
     const testPayload = {
       reviewComment: 'Updated review comment',
-      projectId: testProject.id,
+      projectId: testProject.id ?? null,
       pullRequestId: testPullRequest.id,
       repositoryId: testRepo.id,
     }
@@ -154,7 +154,7 @@ describe('postComment', () => {
   it('should throw error when repository not found', async () => {
     const testPayload = {
       reviewComment: 'Test review comment',
-      projectId: testProject.id,
+      projectId: testProject.id ?? null,
       pullRequestId: testPullRequest.id,
       repositoryId: 999, // Non-existent repository ID
     }
@@ -167,7 +167,7 @@ describe('postComment', () => {
   it('should throw error when pull request not found', async () => {
     const testPayload = {
       reviewComment: 'Test review comment',
-      projectId: testProject.id,
+      projectId: testProject.id ?? null,
       pullRequestId: 999, // Non-existent pull request ID
       repositoryId: testRepo.id,
     }
@@ -188,7 +188,7 @@ describe('postComment', () => {
 
     const testPayload = {
       reviewComment: 'Test review comment',
-      projectId: testProject.id,
+      projectId: testProject.id ?? null,
       pullRequestId: prWithoutMigration.id,
       repositoryId: testRepo.id,
     }

@@ -57,8 +57,8 @@ model Migration {
 
 model OverallReview {
   id            Int     @id @default(autoincrement())
-  projectId     Int
-  project       Project    @relation(fields: [projectId], references: [id])
+  projectId     Int?
+  project       Project?    @relation(fields: [projectId], references: [id])
   pullRequestId Int
   pullRequest   PullRequest @relation(fields: [pullRequestId], references: [id])
   reviewComment String?
