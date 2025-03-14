@@ -1,3 +1,4 @@
+import { prismaExtension } from '@trigger.dev/build/extensions/prisma'
 import { defineConfig } from '@trigger.dev/sdk/v3'
 import * as dotenv from 'dotenv'
 
@@ -26,6 +27,13 @@ export default defineConfig({
       factor: 2,
       randomize: true,
     },
+  },
+  build: {
+    extensions: [
+      prismaExtension({
+        schema: '../../packages/db/prisma/schema.prisma',
+      }),
+    ],
   },
   dirs: ['./src/trigger'],
 })
