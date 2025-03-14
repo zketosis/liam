@@ -27,7 +27,7 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
   const [loading, setLoading] = useState(false)
   const [isAddingProject, setIsAddingProject] = useState(false)
 
-  const githubAppUrl = process.env.GITHUB_APP_URL
+  const githubAppUrl = process.env.NEXT_PUBLIC_GITHUB_APP_URL
 
   useEffect(() => {
     if (selectedInstallation) {
