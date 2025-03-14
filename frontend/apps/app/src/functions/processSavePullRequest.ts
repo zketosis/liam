@@ -74,6 +74,16 @@ export async function processSavePullRequest(
       pullNumber: BigInt(payload.prNumber),
     },
   })
+  await prisma.migration.upsert({
+    where: {
+      pullRequestId: prRecord.id,
+    },
+    update: {},
+    create: {
+      pullRequestId: prRecord.id,
+      title: '',
+    },
+  })
 
   return {
     success: true,
