@@ -9,10 +9,10 @@ export async function postComment(
   payload: ReviewResponse,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const { reviewComment, pullRequestId, repositoryId } = payload
+    const { reviewComment, projectId, pullRequestId, repositoryId } = payload
 
     // Get repository information
-    const repository = await prisma.repository.findUnique({
+    const repository = await prisma.repository.findFirst({
       where: {
         id: repositoryId,
       },
@@ -23,15 +23,31 @@ export async function postComment(
     }
 
     // Check if there's an existing PR record with a comment
-    const prRecord = await prisma.pullRequest.findUnique({
+    const prRecord = await prisma.pullRequest.findFirst({
       where: {
         id: pullRequestId,
+      },
+      include: {
+        migration: true,
       },
     })
 
     if (!prRecord) {
       throw new Error(`Pull request with ID ${pullRequestId} not found`)
     }
+
+    if (!prRecord.migration) {
+      throw new Error(
+        `Migration for Pull request with ID ${pullRequestId} not found`,
+      )
+    }
+
+    const migration = prRecord.migration
+
+    const migrationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/app/projects/${projectId}/migrations/${migration.id}`
+
+    // Append migration URL to the review comment
+    const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}`
 
     // Get installation ID from repository
     const installationId = repository.installationId
@@ -45,7 +61,7 @@ export async function postComment(
         owner,
         repo,
         Number(prRecord.commentId),
-        reviewComment,
+        fullComment,
       )
     } else {
       const commentResponse = await createPullRequestComment(
@@ -53,7 +69,7 @@ export async function postComment(
         owner,
         repo,
         Number(prRecord.pullNumber),
-        reviewComment,
+        fullComment,
       )
 
       // Update PR record with the comment ID

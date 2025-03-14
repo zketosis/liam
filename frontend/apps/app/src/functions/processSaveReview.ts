@@ -5,7 +5,7 @@ export async function processSaveReview(
   payload: ReviewResponse,
 ): Promise<{ success: boolean }> {
   try {
-    const pullRequest = await prisma.pullRequest.findUnique({
+    const pullRequest = await prisma.pullRequest.findFirst({
       where: {
         id: payload.pullRequestId,
       },
@@ -22,8 +22,16 @@ export async function processSaveReview(
     // create overall review
     await prisma.overallReview.create({
       data: {
-        projectId: payload.projectId,
-        pullRequestId: payload.pullRequestId,
+        project: {
+          connect: {
+            id: payload.projectId,
+          },
+        },
+        pullRequest: {
+          connect: {
+            id: pullRequest.id,
+          },
+        },
         reviewComment: payload.reviewComment,
       },
     })

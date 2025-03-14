@@ -14,6 +14,7 @@ describe('processSaveReview', () => {
   beforeEach(async () => {
     // Clean up the test database
     await prisma.overallReview.deleteMany()
+    await prisma.migration.deleteMany()
     await prisma.pullRequest.deleteMany()
     await prisma.repository.deleteMany()
     await prisma.project.deleteMany()
@@ -43,6 +44,7 @@ describe('processSaveReview', () => {
 
   it('should successfully save a review', async () => {
     const testPayload = {
+      pullRequestId: testPullRequest.id,
       pullRequestNumber: testPullRequest.pullNumber,
       repositoryId: testRepo.id,
       projectId: testProject.id,
@@ -69,9 +71,10 @@ describe('processSaveReview', () => {
 
   it('should throw error when pull request not found', async () => {
     const testPayload = {
+      pullRequestId: 999,
       pullRequestNumber: BigInt(999),
       repositoryId: 999,
-      projectId: 1,
+      projectId: testProject.id,
       reviewComment: 'Test review comment',
     }
 
