@@ -69,7 +69,6 @@ describe('postComment', () => {
     testMigration = await prisma.migration.create({
       data: {
         title: 'Test Migration',
-        projectId: testProject.id,
         pullRequestId: testPullRequest.id,
       },
     })
