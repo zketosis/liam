@@ -12,6 +12,7 @@ export const savePullRequestTask = task({
   id: 'save-pull-request',
   run: async (payload: {
     pullRequestNumber: number
+    pullRequestTitle: string
     projectId: number | undefined
     owner: string
     name: string
@@ -22,6 +23,7 @@ export const savePullRequestTask = task({
     try {
       const result = await processSavePullRequest({
         prNumber: payload.pullRequestNumber,
+        pullRequestTitle: payload.pullRequestTitle,
         owner: payload.owner,
         name: payload.name,
         repositoryId: payload.repositoryId,

@@ -52,6 +52,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             // Queue the savePullRequest task
             await savePullRequestTask.trigger({
               pullRequestNumber: pullRequest.number,
+              pullRequestTitle: pullRequest.title,
               projectId: undefined,
               owner: data.repository.owner.login,
               name: data.repository.name,

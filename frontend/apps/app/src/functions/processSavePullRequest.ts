@@ -3,6 +3,7 @@ import { prisma } from '@liam-hq/db'
 
 export type SavePullRequestPayload = {
   prNumber: number
+  pullRequestTitle: string
   owner: string
   name: string
   repositoryId: number
@@ -72,6 +73,18 @@ export async function processSavePullRequest(
     create: {
       repositoryId: repository.id,
       pullNumber: BigInt(payload.prNumber),
+    },
+  })
+  await prisma.migration.upsert({
+    where: {
+      pullRequestId: prRecord.id,
+    },
+    update: {
+      title: payload.pullRequestTitle,
+    },
+    create: {
+      pullRequestId: prRecord.id,
+      title: payload.pullRequestTitle,
     },
   })
 
