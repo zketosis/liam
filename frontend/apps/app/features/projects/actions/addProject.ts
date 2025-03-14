@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation'
 
 export const addProject = async (formData: FormData) => {
   const projectName = formData.get('projectName') as string
-  const repositoryId = formData.get('repositoryId') as string
   const repositoryName = formData.get('repositoryName') as string
   const repositoryOwner = formData.get('repositoryOwner') as string
   const installationId = formData.get('installationId') as string
@@ -19,7 +18,10 @@ export const addProject = async (formData: FormData) => {
 
     let repository = await tx.repository.findUnique({
       where: {
-        id: Number(repositoryId),
+        owner_name: {
+          name: repositoryName,
+          owner: repositoryOwner,
+        },
       },
     })
 

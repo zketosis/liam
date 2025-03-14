@@ -1,6 +1,6 @@
 export type GenerateReviewPayload = {
   pullRequestId: number
-  projectId: number | undefined
+  projectId: number
   repositoryId: number
   schemaChanges: Array<{
     filename: string
@@ -20,7 +20,7 @@ export type GenerateReviewPayload = {
 
 export type ReviewResponse = {
   reviewComment: string
-  projectId: number | undefined
+  projectId: number
   pullRequestId: number
   repositoryId: number
 }
