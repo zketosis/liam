@@ -1,4 +1,5 @@
 import { createClient } from '@/libs/db/server'
+import { prisma } from '@liam-hq/db'
 import { redirect } from 'next/navigation'
 
 export default async function Page() {
@@ -9,10 +10,16 @@ export default async function Page() {
     redirect('/app/login')
   }
 
-  return (
-    <main>
-      <p>Migration feature enabled</p>
-      <p>Hello {data.user.email}</p>
-    </main>
-  )
+  const projects = await prisma.project.findMany({
+    select: {
+      id: true,
+    },
+    take: 1,
+  })
+
+  if (projects.length > 0) {
+    redirect('/app/projects')
+  }
+
+  redirect('/app/projects/new')
 }
