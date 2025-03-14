@@ -77,8 +77,8 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
     }
   }, [])
 
-  if (!installations?.length) {
-    return (
+  return (
+    <>
       <div className={styles.installationSelector}>
         <Button size="lg" variant="ghost-secondary">
           <a
@@ -91,11 +91,6 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
           </a>
         </Button>
       </div>
-    )
-  }
-
-  return (
-    <>
       <div className={styles.installationSelector}>
         <DropdownMenuRoot>
           <DropdownMenuTrigger asChild>
