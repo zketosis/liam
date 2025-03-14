@@ -27,6 +27,10 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
   const [loading, setLoading] = useState(false)
   const [isAddingProject, setIsAddingProject] = useState(false)
 
+  const githubAppUrl = process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_GITHUB_APP_URL
+    : process.env.NEXT_PUBLIC_GITHUB_APP_PREVIEW_URL
+
   useEffect(() => {
     if (selectedInstallation) {
       fetchRepositories(selectedInstallation.id)
@@ -74,6 +78,26 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
       setIsAddingProject(false)
     }
   }, [])
+
+  if (!installations?.length) {
+    return (
+      <div className={styles.installationSelector}>
+        <Button
+          size="lg"
+          variant="ghost-secondary"
+        >
+          <a
+            href={githubAppUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.installLink}
+          >
+            Install GitHub App
+          </a>
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <>
