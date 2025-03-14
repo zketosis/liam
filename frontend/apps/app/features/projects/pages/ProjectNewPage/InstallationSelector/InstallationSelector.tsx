@@ -62,20 +62,30 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
     setSelectedInstallation(installation)
   }
 
-  const handleClick = useCallback(async (repository: Repository) => {
-    try {
-      setIsAddingProject(true)
+  const handleClick = useCallback(
+    async (repository: Repository) => {
+      try {
+        setIsAddingProject(true)
 
-      const formData = new FormData()
-      formData.set('projectName', repository.name)
+        const formData = new FormData()
+        formData.set('projectName', repository.name)
+        formData.set('repositoryName', repository.name)
+        formData.set('repositoryOwner', repository.owner.login)
+        formData.set('repositoryId', repository.id.toString())
+        formData.set(
+          'installationId',
+          selectedInstallation?.id.toString() || '',
+        )
 
-      await addProject(formData)
-      // This point is not reached because a redirect occurs on success
-    } catch (error) {
-      console.error('Error adding project:', error)
-      setIsAddingProject(false)
-    }
-  }, [])
+        await addProject(formData)
+        // This point is not reached because a redirect occurs on success
+      } catch (error) {
+        console.error('Error adding project:', error)
+        setIsAddingProject(false)
+      }
+    },
+    [selectedInstallation],
+  )
 
   return (
     <>
