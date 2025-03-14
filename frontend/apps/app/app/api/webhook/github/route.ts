@@ -12,7 +12,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
 
     const isValid = verifyWebhookSignature(payload, signature)
     if (!isValid) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 404 })
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
     const data = JSON.parse(payload) as GitHubWebhookPayload
