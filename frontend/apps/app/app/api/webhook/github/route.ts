@@ -3,6 +3,7 @@ import { supportedEvents, validateConfig } from '@/libs/github/config'
 import { handleInstallation } from '@/libs/github/webhooks/installation'
 import { savePullRequestTask } from '@/src/trigger/jobs'
 import type { GitHubWebhookPayload } from '@/types/github'
+import { prisma } from '@liam-hq/db'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
@@ -34,6 +35,16 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
           throw new Error('Pull request data is missing')
         }
 
+        const repository = await prisma.repository.findFirst({
+          where: {
+            installationId: data.installation.id,
+          },
+        })
+
+        if (!repository) {
+          throw new Error('Repository not found')
+        }
+
         switch (action) {
           case 'opened':
           case 'synchronize':
@@ -44,7 +55,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
               projectId: undefined,
               owner: data.repository.owner.login,
               name: data.repository.name,
-              repositoryId: data.repository.id,
+              repositoryId: repository.id,
             })
 
             return NextResponse.json(
