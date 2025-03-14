@@ -3,7 +3,7 @@
 
 ## Summary
 * 1144 MIT
-* 119 Apache 2.0
+* 120 Apache 2.0
 * 80 ISC
 * 31 New BSD
 * 25 Simplified BSD
@@ -2311,6 +2311,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@prisma/internals"></a>
 ### @prisma/internals v6.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@prisma/nextjs-monorepo-workaround-plugin"></a>
+### @prisma/nextjs-monorepo-workaround-plugin v6.5.0
 #### 
 
 ##### Paths
