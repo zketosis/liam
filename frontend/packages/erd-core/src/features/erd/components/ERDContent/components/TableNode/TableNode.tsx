@@ -10,7 +10,8 @@ import styles from './TableNode.module.css'
 type Props = NodeProps<TableNodeType>
 
 export const TableNode: FC<Props> = ({ data }) => {
-  const { showMode } = useUserEditingStore()
+  const { showMode: _showMode } = useUserEditingStore()
+  const showMode = data.showMode ?? _showMode
 
   return (
     <div
