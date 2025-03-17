@@ -8,7 +8,17 @@ jobs:
     if: |
       github.event_name == 'deployment_status' &&
       github.event.deployment_status.state == 'success' &&
-      contains(github.event.deployment_status.target_url, 'liam-erd')
+      (
+        (
+          contains(github.event.deployment.environment, 'Production') &&
+          contains(github.event.deployment_status.target_url, 'liam-erd-web')
+        ) ||
+        (
+          contains(github.event.deployment.environment, 'Preview') &&
+          !contains(github.event.deployment_status.target_url, 'liam-erd-sample') &&
+          !contains(github.event.deployment_status.target_url, 'liam-docs')
+        )
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
@@ -24,6 +34,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
 
       - name: Setup pnpm
         uses: ./.github/actions/pnpm-setup
