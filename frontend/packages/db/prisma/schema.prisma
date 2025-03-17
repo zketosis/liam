@@ -15,6 +15,7 @@ model Project {
   updatedAt DateTime @updatedAt
   reviews   OverallReview[]
   repositoryMappings ProjectRepositoryMapping[]
+  watchSchemaFilePatterns WatchSchemaFilePattern[]
 }
 
 model Repository {
@@ -77,4 +78,13 @@ model ProjectRepositoryMapping {
   updatedAt    DateTime   @updatedAt
 
   @@unique([projectId, repositoryId])
+}
+
+model WatchSchemaFilePattern {
+  id        Int      @id @default(autoincrement())
+  pattern   String
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -23,6 +23,7 @@
     "@liam-hq/configs": "workspace:*",
     "@pgsql/types": "15.0.2",
     "@prisma/generator-helper": "6.2.1",
+    "@types/node": "22.9.0",
     "json-refs": "3.0.15",
     "json-schema-to-zod": "2.6.0",
     "typescript": "5",
