@@ -39,7 +39,16 @@ describe('program', () => {
       const customOutputDir = 'custom-output'
 
       program.parse(
-        ['erd', 'build', '--input', inputFile, '--format', format, '--output-dir', customOutputDir],
+        [
+          'erd',
+          'build',
+          '--input',
+          inputFile,
+          '--format',
+          format,
+          '--output-dir',
+          customOutputDir,
+        ],
         {
           from: 'user',
         },
