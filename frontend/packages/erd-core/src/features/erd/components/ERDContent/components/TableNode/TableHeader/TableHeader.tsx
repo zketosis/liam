@@ -1,5 +1,4 @@
 import type { TableNodeData } from '@/features/erd/types'
-import type { ShowMode } from '@/schemas'
 import { useUserEditingStore } from '@/stores'
 import {
   Table2,
