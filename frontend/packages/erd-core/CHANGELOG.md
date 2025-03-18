@@ -1,5 +1,11 @@
 # @liam-hq/erd-core
 
+## 0.1.5
+
+### Patch Changes
+
+- [#909](https://github.com/liam-hq/liam/pull/909) - ✨ Set table show mode in related tables to TABLE_NAME / Thanks [@tnyo43](https://github.com/tnyo43)!
+
 ## 0.1.4
 
 ### Patch Changes
