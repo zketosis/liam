@@ -10,11 +10,13 @@ export async function register() {
     await import('./sentry.edge.config')
   }
 
-  const { valid, missing } = validateConfig()
-  if (!valid) {
-    throw new Error(
-      `Missing required environment variables: ${missing.join(', ')}`,
-    )
+  if (process.env.VERCEL === '1') {
+    const { valid, missing } = validateConfig()
+    if (!valid) {
+      throw new Error(
+        `Missing required environment variables: ${missing.join(', ')}`,
+      )
+    }
   }
 }
 
