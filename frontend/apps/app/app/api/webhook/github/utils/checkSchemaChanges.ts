@@ -4,6 +4,7 @@ import { prisma } from '@liam-hq/db'
 import { minimatch } from 'minimatch'
 
 type CheckSchemaChangesParams = {
+  installationId: number
   pullRequestNumber: number
   pullRequestTitle: string
   projectId: number
@@ -15,11 +16,18 @@ type CheckSchemaChangesParams = {
 export const checkSchemaChanges = async (
   params: CheckSchemaChangesParams,
 ): Promise<{ shouldContinue: boolean }> => {
-  const { pullRequestNumber, projectId, owner, name, repositoryId } = params
+  const {
+    pullRequestNumber,
+    projectId,
+    owner,
+    name,
+    repositoryId,
+    installationId,
+  } = params
 
   // Get changed files from pull request
   const files = await getPullRequestFiles(
-    repositoryId,
+    installationId,
     owner,
     name,
     pullRequestNumber,
