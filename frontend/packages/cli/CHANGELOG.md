@@ -1,5 +1,15 @@
 # @liam-hq/cli
 
+## 0.5.0
+
+### Minor Changes
+
+- [#908](https://github.com/liam-hq/liam/pull/908) - ✨ Add --output-dir option to specify output directory / Thanks [@tnagatomi](https://github.com/tnagatomi)!
+
+### Patch Changes
+
+- [#909](https://github.com/liam-hq/liam/pull/909) - ✨ Set table show mode in related tables to TABLE_NAME / Thanks [@tnyo43](https://github.com/tnyo43)!
+
 ## 0.4.6
 
 ### Patch Changes
