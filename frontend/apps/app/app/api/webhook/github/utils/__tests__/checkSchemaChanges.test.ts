@@ -25,8 +25,8 @@ vi.mock('@/src/trigger/jobs', () => ({
 
 vi.mock('@liam-hq/db', () => ({
   prisma: {
-    project: {
-      findUnique: vi.fn().mockImplementation(() => null),
+    watchSchemaFilePattern: {
+      findMany: vi.fn().mockImplementation(() => Promise.resolve([])),
     },
   },
 }))
@@ -43,78 +43,78 @@ describe('checkSchemaChanges', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    prisma.project.findUnique = vi.fn().mockImplementation(() => null)
-  })
-
-  it('should return false if project does not exist', async () => {
-    const result = await checkSchemaChanges(mockParams)
-    expect(result).toEqual({ shouldContinue: false })
   })
 
   it('should return false if project has no watchSchemaFilePatterns', async () => {
-    prisma.project.findUnique = vi.fn().mockImplementation(async () => ({
-      watchSchemaFilePatterns: [],
-    }))
+    vi.mocked(prisma.watchSchemaFilePattern.findMany).mockResolvedValue([])
 
     const result = await checkSchemaChanges(mockParams)
     expect(result).toEqual({ shouldContinue: false })
   })
 
   it('should return false if no files match the watch patterns', async () => {
-    prisma.project.findUnique = vi.fn().mockImplementation(async () => ({
-      watchSchemaFilePatterns: [{ pattern: '**/*.sql' }],
-    }))
+    vi.mocked(prisma.watchSchemaFilePattern.findMany).mockResolvedValue([
+      {
+        id: 1,
+        pattern: '**/*.sql',
+        projectId: 100,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
 
-    vi.mocked(getPullRequestFiles).mockImplementation(() =>
-      Promise.resolve([
-        {
-          filename: 'src/index.js',
-          status: 'modified',
-          additions: 10,
-          deletions: 2,
-          changes: 12,
-          fileType: 'text',
-        },
-        {
-          filename: 'README.md',
-          status: 'modified',
-          additions: 5,
-          deletions: 1,
-          changes: 6,
-          fileType: 'text',
-        },
-      ]),
-    )
+    vi.mocked(getPullRequestFiles).mockResolvedValue([
+      {
+        filename: 'src/index.js',
+        status: 'modified',
+        additions: 10,
+        deletions: 2,
+        changes: 12,
+        fileType: 'text',
+      },
+      {
+        filename: 'README.md',
+        status: 'modified',
+        additions: 5,
+        deletions: 1,
+        changes: 6,
+        fileType: 'text',
+      },
+    ])
 
     const result = await checkSchemaChanges(mockParams)
     expect(result).toEqual({ shouldContinue: false })
   })
 
   it('should return true and trigger the task if schema file changes are detected', async () => {
-    prisma.project.findUnique = vi.fn().mockImplementation(async () => ({
-      watchSchemaFilePatterns: [{ pattern: '**/*.sql' }],
-    }))
+    vi.mocked(prisma.watchSchemaFilePattern.findMany).mockResolvedValue([
+      {
+        id: 1,
+        pattern: '**/*.sql',
+        projectId: 100,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
 
-    vi.mocked(getPullRequestFiles).mockImplementation(() =>
-      Promise.resolve([
-        {
-          filename: 'migrations/2024_update.sql',
-          status: 'added',
-          additions: 20,
-          deletions: 0,
-          changes: 20,
-          fileType: 'text',
-        },
-        {
-          filename: 'src/index.js',
-          status: 'modified',
-          additions: 10,
-          deletions: 2,
-          changes: 12,
-          fileType: 'text',
-        },
-      ]),
-    )
+    vi.mocked(getPullRequestFiles).mockResolvedValue([
+      {
+        filename: 'migrations/2024_update.sql',
+        status: 'added',
+        additions: 20,
+        deletions: 0,
+        changes: 20,
+        fileType: 'text',
+      },
+      {
+        filename: 'src/index.js',
+        status: 'modified',
+        additions: 10,
+        deletions: 2,
+        changes: 12,
+        fileType: 'text',
+      },
+    ])
 
     const result = await checkSchemaChanges(mockParams)
     expect(result).toEqual({ shouldContinue: true })

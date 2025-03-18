@@ -26,21 +26,17 @@ export const checkSchemaChanges = async (
   )
   const filenames = files.map((file) => file.filename)
 
-  // Get project information
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    include: { watchSchemaFilePatterns: true },
+  // Get patterns for the project
+  const patterns = await prisma.watchSchemaFilePattern.findMany({
+    where: { projectId },
+    select: { pattern: true },
   })
-
-  if (!project || project.watchSchemaFilePatterns.length === 0) {
+  if (patterns.length === 0) {
     return { shouldContinue: false }
   }
-
   // Check if filenames match the patterns
   const matchedFiles = filenames.filter((filename) =>
-    project.watchSchemaFilePatterns.some((pattern) =>
-      minimatch(filename, pattern.pattern),
-    ),
+    patterns.some((pattern) => minimatch(filename, pattern.pattern)),
   )
 
   if (matchedFiles.length === 0) {
