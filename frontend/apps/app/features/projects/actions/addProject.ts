@@ -16,24 +16,13 @@ export const addProject = async (formData: FormData) => {
       },
     })
 
-    let repository = await tx.repository.findUnique({
-      where: {
-        owner_name: {
-          name: repositoryName,
-          owner: repositoryOwner,
-        },
+    const repository = await tx.repository.create({
+      data: {
+        name: repositoryName,
+        owner: repositoryOwner,
+        installationId: BigInt(installationId),
       },
     })
-
-    if (!repository) {
-      repository = await tx.repository.create({
-        data: {
-          name: repositoryName,
-          owner: repositoryOwner,
-          installationId: BigInt(installationId),
-        },
-      })
-    }
 
     await tx.projectRepositoryMapping.create({
       data: {

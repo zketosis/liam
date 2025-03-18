@@ -25,6 +25,4 @@ export const supportedEvents = [
   'pull_request.opened',
   'pull_request.synchronize',
   'pull_request.reopened',
-  'installation.created',
-  'installation.deleted',
 ]
