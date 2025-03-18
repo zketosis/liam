@@ -32,15 +32,6 @@ vi.mock('@liam-hq/db', () => ({
 }))
 
 describe('checkSchemaChanges', () => {
-  const _mockParams = {
-    pullRequestNumber: 1,
-    pullRequestTitle: 'Update schema',
-    projectId: 100,
-    owner: 'user',
-    name: 'repo',
-    repositoryId: 200,
-  }
-
   const mockSchemaParams = {
     pullRequestNumber: 1,
     pullRequestTitle: 'Update schema',
