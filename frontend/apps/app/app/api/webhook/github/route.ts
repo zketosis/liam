@@ -68,7 +68,6 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
               projectId,
               owner: data.repository.owner.login,
               name: data.repository.name,
-              repositoryId: repository.id,
             })
 
             // Determine whether to continue processing based on the check results

@@ -32,7 +32,7 @@ vi.mock('@liam-hq/db', () => ({
 }))
 
 describe('checkSchemaChanges', () => {
-  const mockParams = {
+  const _mockParams = {
     pullRequestNumber: 1,
     pullRequestTitle: 'Update schema',
     projectId: 100,
@@ -42,7 +42,11 @@ describe('checkSchemaChanges', () => {
   }
 
   const mockSchemaParams = {
-    ...mockParams,
+    pullRequestNumber: 1,
+    pullRequestTitle: 'Update schema',
+    projectId: 100,
+    owner: 'user',
+    name: 'repo',
     installationId: 1,
   }
 
@@ -123,6 +127,5 @@ describe('checkSchemaChanges', () => {
 
     const result = await checkSchemaChanges(mockSchemaParams)
     expect(result).toEqual({ shouldContinue: true })
-    expect(savePullRequestTask.trigger).toHaveBeenCalledWith(mockParams)
   })
 })

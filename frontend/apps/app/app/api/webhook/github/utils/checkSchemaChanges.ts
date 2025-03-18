@@ -10,20 +10,12 @@ type CheckSchemaChangesParams = {
   projectId: number
   owner: string
   name: string
-  repositoryId: number
 }
 
 export const checkSchemaChanges = async (
   params: CheckSchemaChangesParams,
 ): Promise<{ shouldContinue: boolean }> => {
-  const {
-    pullRequestNumber,
-    projectId,
-    owner,
-    name,
-    repositoryId,
-    installationId,
-  } = params
+  const { pullRequestNumber, projectId, owner, name, installationId } = params
 
   // Get changed files from pull request
   const files = await getPullRequestFiles(
@@ -50,16 +42,6 @@ export const checkSchemaChanges = async (
   if (matchedFiles.length === 0) {
     return { shouldContinue: false }
   }
-
-  // If schema changes are detected, trigger the task
-  await savePullRequestTask.trigger({
-    pullRequestNumber,
-    pullRequestTitle: params.pullRequestTitle,
-    projectId,
-    owner,
-    name,
-    repositoryId,
-  })
 
   return { shouldContinue: true }
 }
