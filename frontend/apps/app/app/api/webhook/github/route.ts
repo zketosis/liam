@@ -1,6 +1,5 @@
 import { verifyWebhookSignature } from '@/libs/github/api.server'
 import { supportedEvents, validateConfig } from '@/libs/github/config'
-import { handleInstallation } from '@/libs/github/webhooks/installation'
 import { savePullRequestTask } from '@/src/trigger/jobs'
 import type { GitHubWebhookPayload } from '@/types/github'
 import { prisma } from '@liam-hq/db'
@@ -95,11 +94,6 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
           default:
             throw new Error(`Unsupported pull request action: ${action}`)
         }
-      }
-
-      if (event === 'installation') {
-        const result = await handleInstallation(data)
-        return NextResponse.json(result, { status: 200 })
       }
 
       return NextResponse.json(
