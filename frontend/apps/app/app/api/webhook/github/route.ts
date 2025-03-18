@@ -5,6 +5,7 @@ import { savePullRequestTask } from '@/src/trigger/jobs'
 import type { GitHubWebhookPayload } from '@/types/github'
 import { prisma } from '@liam-hq/db'
 import { type NextRequest, NextResponse } from 'next/server'
+import { checkSchemaChanges } from './utils/checkSchemaChanges'
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
   try {
@@ -59,6 +60,23 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
           case 'opened':
           case 'synchronize':
           case 'reopened': {
+            // Perform pre-check
+            const checkResult = await checkSchemaChanges({
+              pullRequestNumber: pullRequest.number,
+              pullRequestTitle: pullRequest.title,
+              projectId,
+              owner: data.repository.owner.login,
+              name: data.repository.name,
+              repositoryId: repository.id,
+            })
+
+            // Determine whether to continue processing based on the check results
+            if (!checkResult.shouldContinue) {
+              return NextResponse.json(
+                { message: 'No schema changes to review' },
+                { status: 200 },
+              )
+            }
             // Queue the savePullRequest task
             await savePullRequestTask.trigger({
               pullRequestNumber: pullRequest.number,
