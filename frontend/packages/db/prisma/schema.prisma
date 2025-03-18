@@ -1,6 +1,7 @@
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL")
+  // NOTE: Use the non-pooling URL to avoid PrismaClientUnknownRequestError for now
+  url      = env("POSTGRES_URL_NON_POOLING")
 }
 
 generator client {
