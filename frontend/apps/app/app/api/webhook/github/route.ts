@@ -62,12 +62,12 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
           case 'reopened': {
             // Perform pre-check
             const checkResult = await checkSchemaChanges({
+              installationId: data.installation.id,
               pullRequestNumber: pullRequest.number,
               pullRequestTitle: pullRequest.title,
               projectId,
               owner: data.repository.owner.login,
               name: data.repository.name,
-              repositoryId: repository.id,
             })
 
             // Determine whether to continue processing based on the check results

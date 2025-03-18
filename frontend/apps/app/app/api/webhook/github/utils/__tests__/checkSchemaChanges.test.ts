@@ -32,13 +32,13 @@ vi.mock('@liam-hq/db', () => ({
 }))
 
 describe('checkSchemaChanges', () => {
-  const mockParams = {
+  const mockSchemaParams = {
     pullRequestNumber: 1,
     pullRequestTitle: 'Update schema',
     projectId: 100,
     owner: 'user',
     name: 'repo',
-    repositoryId: 200,
+    installationId: 1,
   }
 
   beforeEach(() => {
@@ -48,7 +48,7 @@ describe('checkSchemaChanges', () => {
   it('should return false if project has no watchSchemaFilePatterns', async () => {
     vi.mocked(prisma.watchSchemaFilePattern.findMany).mockResolvedValue([])
 
-    const result = await checkSchemaChanges(mockParams)
+    const result = await checkSchemaChanges(mockSchemaParams)
     expect(result).toEqual({ shouldContinue: false })
   })
 
@@ -82,7 +82,7 @@ describe('checkSchemaChanges', () => {
       },
     ])
 
-    const result = await checkSchemaChanges(mockParams)
+    const result = await checkSchemaChanges(mockSchemaParams)
     expect(result).toEqual({ shouldContinue: false })
   })
 
@@ -116,8 +116,7 @@ describe('checkSchemaChanges', () => {
       },
     ])
 
-    const result = await checkSchemaChanges(mockParams)
+    const result = await checkSchemaChanges(mockSchemaParams)
     expect(result).toEqual({ shouldContinue: true })
-    expect(savePullRequestTask.trigger).toHaveBeenCalledWith(mockParams)
   })
 })

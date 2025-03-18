@@ -4,22 +4,22 @@ import { prisma } from '@liam-hq/db'
 import { minimatch } from 'minimatch'
 
 type CheckSchemaChangesParams = {
+  installationId: number
   pullRequestNumber: number
   pullRequestTitle: string
   projectId: number
   owner: string
   name: string
-  repositoryId: number
 }
 
 export const checkSchemaChanges = async (
   params: CheckSchemaChangesParams,
 ): Promise<{ shouldContinue: boolean }> => {
-  const { pullRequestNumber, projectId, owner, name, repositoryId } = params
+  const { pullRequestNumber, projectId, owner, name, installationId } = params
 
   // Get changed files from pull request
   const files = await getPullRequestFiles(
-    repositoryId,
+    installationId,
     owner,
     name,
     pullRequestNumber,
@@ -42,16 +42,6 @@ export const checkSchemaChanges = async (
   if (matchedFiles.length === 0) {
     return { shouldContinue: false }
   }
-
-  // If schema changes are detected, trigger the task
-  await savePullRequestTask.trigger({
-    pullRequestNumber,
-    pullRequestTitle: params.pullRequestTitle,
-    projectId,
-    owner,
-    name,
-    repositoryId,
-  })
 
   return { shouldContinue: true }
 }
