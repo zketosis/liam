@@ -30,7 +30,7 @@ jobs:
         working-directory: "frontend/packages/e2e"
     env:
       CI: true
-      URL: ${{ github.event.deployment.environment == 'Production' && 'https://liam-erd-web.vercel.app' || github.event.deployment_status.target_url }}
+      URL: ${{ github.event.deployment.environment == 'Production – liam-app' && 'https://liam-erd-web.vercel.app' || github.event.deployment_status.target_url }}
       ENVIRONMENT: ${{ github.event.deployment.environment }}
     steps:
       - name: Checkout repository
@@ -73,7 +73,7 @@ jobs:
           retention-days: 30
 
       - name: Slack Notification on Failure
-        if: ${{ env.ENVIRONMENT == 'production' && failure() }}
+        if: ${{ env.ENVIRONMENT == 'Production – liam-app' && failure() }}
         uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}
