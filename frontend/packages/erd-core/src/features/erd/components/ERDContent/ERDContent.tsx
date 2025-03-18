@@ -18,7 +18,7 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import { type FC, useCallback } from 'react'
-import { highlightNodesAndEdges } from '../../utils'
+import { highlightNodesAndEdges, isTableNode } from '../../utils'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
 import {
@@ -49,7 +49,16 @@ export const ERDContentInner: FC<Props> = ({
   edges: _edges,
   displayArea,
 }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(_nodes)
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(
+    displayArea === 'relatedTables'
+      ? _nodes.map((node) =>
+          isTableNode(node)
+            ? { ...node, data: { ...node.data, showMode: 'TABLE_NAME' } }
+            : node,
+        )
+      : _nodes,
+  )
+
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(_edges)
   const {
     state: { loading },

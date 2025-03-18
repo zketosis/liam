@@ -1,3 +1,4 @@
+import type { ShowMode } from '@/schemas/showMode/types'
 import type { Cardinality, Table } from '@liam-hq/db-structure'
 import type { Node } from '@xyflow/react'
 
@@ -9,6 +10,7 @@ export type TableNodeData = {
   targetColumnCardinalities?:
     | Record<string, Cardinality | undefined>
     | undefined
+  showMode?: ShowMode | undefined
 }
 
 export type TableNodeType = Node<TableNodeData, 'table'>
