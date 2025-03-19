@@ -30,7 +30,7 @@ jobs:
         working-directory: "frontend/packages/e2e"
     env:
       CI: true
-      URL: ${{ github.event.deployment.environment == 'Production – liam-app' && 'https://liam-erd-web.vercel.app' || github.event.deployment_status.target_url }}
+      URL: ${{ github.event.deployment_status.target_url }}
       ENVIRONMENT: ${{ github.event.deployment.environment }}
     steps:
       - name: Checkout repository
