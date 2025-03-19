@@ -3,7 +3,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build", "gen"],
-      "outputs": ["dist", "dist-cli"]
+      "outputs": ["dist", "dist-cli"],
+      "env": ["SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]
     },
     "@liam-hq/docs#build": {
       "dependsOn": ["^build"],
