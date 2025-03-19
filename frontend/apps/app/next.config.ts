@@ -95,8 +95,11 @@ export default withSentryConfig(nextConfig, {
 
   // Hides source maps from generated client bundles
   sourcemaps: {
-    disable: true,
+    disable: false,
+    assets: '.next',
   },
+
+  hideSourceMaps: true,
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,
