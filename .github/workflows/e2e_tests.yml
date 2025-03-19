@@ -11,7 +11,7 @@ jobs:
       (
         (
           contains(github.event.deployment.environment, 'Production') &&
-          contains(github.event.deployment_status.target_url, 'liam-erd-web')
+          contains(github.event.deployment_status.target_url, 'liam-app-git-main')
         ) ||
         (
           contains(github.event.deployment.environment, 'Preview') &&
@@ -73,7 +73,7 @@ jobs:
           retention-days: 30
 
       - name: Slack Notification on Failure
-        if: ${{ env.ENVIRONMENT == 'production' && failure() }}
+        if: ${{ env.ENVIRONMENT == 'Production – liam-app' && failure() }}
         uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}
