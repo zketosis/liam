@@ -9,11 +9,17 @@ import { checkSchemaChanges } from './utils/checkSchemaChanges'
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
   try {
     const payload = await request.text()
-    const signature = request.headers.get('x-hub-signature-256') ?? ''
 
-    const isValid = verifyWebhookSignature(payload, signature)
-    if (!isValid) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+    // NOTE: Don't verify signature in local development
+    if (process.env.VERCEL === '1') {
+      const signature = request.headers.get('x-hub-signature-256') ?? ''
+      const isValid = verifyWebhookSignature(payload, signature)
+      if (!isValid) {
+        return NextResponse.json(
+          { error: 'Invalid signature' },
+          { status: 401 },
+        )
+      }
     }
 
     const data = JSON.parse(payload) as GitHubWebhookPayload
