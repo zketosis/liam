@@ -34,11 +34,16 @@ async function getMigration({ migrationId }: Params) {
 type Props = {
   projectId: string
   migrationId: string
+  erdLinks: Array<{
+    path: string
+    filename: string
+  }>
 }
 
 export const MigrationDetailPage: FC<Props> = async ({
   projectId,
   migrationId,
+  erdLinks,
 }) => {
   const migration = await getMigration({ migrationId })
   return (
@@ -57,6 +62,18 @@ export const MigrationDetailPage: FC<Props> = async ({
       <div className={styles.twoColumns}>
         <div className={styles.box}>
           <h2 className={styles.h2}>Migration Health</h2>
+          <div className={styles.erdLinks}>
+            {erdLinks.map(({ path, filename }) => (
+              <Link
+                key={path}
+                href={path}
+                className={styles.erdLink}
+                aria-label={`View ERD diagram for ${filename}`}
+              >
+                View ERD Diagram: {filename} →
+              </Link>
+            ))}
+          </div>
         </div>
         <div className={styles.box}>
           <h2 className={styles.h2}>Summary</h2>
