@@ -132,45 +132,49 @@ export const verifyWebhookSignature = (
   return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature))
 }
 
-export const getRepository = cache(async (projectId: string, installationId: number) => {
-  const [owner, repo] = projectId.split('/')
-  if (!owner || !repo) throw new Error('Invalid project ID format')
+export const getRepository = cache(
+  async (projectId: string, installationId: number) => {
+    const [owner, repo] = projectId.split('/')
+    if (!owner || !repo) throw new Error('Invalid project ID format')
 
-  const octokit = await createOctokit(installationId)
-  const { data } = await octokit.repos.get({
-    owner,
-    repo,
-  })
-
-  return data
-})
-
-export const getFileContent = cache(async (
-  projectId: string,
-  filePath: string,
-  ref: string,
-  installationId: number
-) => {
-  const [owner, repo] = projectId.split('/')
-  if (!owner || !repo) throw new Error('Invalid project ID format')
-
-  const octokit = await createOctokit(installationId)
-  
-  try {
-    const { data } = await octokit.repos.getContent({
+    const octokit = await createOctokit(installationId)
+    const { data } = await octokit.repos.get({
       owner,
       repo,
-      path: filePath,
-      ref,
     })
 
-    if ('type' in data && data.type === 'file' && 'content' in data) {
-      return Buffer.from(data.content, 'base64').toString('utf-8')
+    return data
+  },
+)
+
+export const getFileContent = cache(
+  async (
+    projectId: string,
+    filePath: string,
+    ref: string,
+    installationId: number,
+  ) => {
+    const [owner, repo] = projectId.split('/')
+    if (!owner || !repo) throw new Error('Invalid project ID format')
+
+    const octokit = await createOctokit(installationId)
+
+    try {
+      const { data } = await octokit.repos.getContent({
+        owner,
+        repo,
+        path: filePath,
+        ref,
+      })
+
+      if ('type' in data && data.type === 'file' && 'content' in data) {
+        return Buffer.from(data.content, 'base64').toString('utf-8')
+      }
+
+      return null
+    } catch (error) {
+      console.error('Error fetching file content:', error)
+      return null
     }
-    
-    return null
-  } catch (error) {
-    console.error('Error fetching file content:', error)
-    return null
-  }
-})
+  },
+)

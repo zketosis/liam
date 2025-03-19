@@ -1,10 +1,13 @@
-import { minimatch } from 'minimatch'
 import type { PageProps } from '@/app/types'
 import { MigrationDetailPage } from '@/features/migrations/pages/MigrationDetailPage'
+import {
+  getPullRequestDetails,
+  getPullRequestFiles,
+} from '@/libs/github/api.server'
+import { prisma } from '@liam-hq/db'
+import { minimatch } from 'minimatch'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
-import { prisma } from '@liam-hq/db'
-import { getPullRequestDetails, getPullRequestFiles } from '@/libs/github/api.server'
 
 const paramsSchema = v.object({
   projectId: v.string(),
@@ -30,11 +33,11 @@ export default async function Page({ params }: PageProps) {
               name: true,
               owner: true,
               installationId: true,
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   })
 
   if (!migration?.pullRequest?.repository) {
@@ -48,14 +51,14 @@ export default async function Page({ params }: PageProps) {
     Number(installationId),
     owner,
     repo,
-    Number(pullNumber)
+    Number(pullNumber),
   )
 
   const files = await getPullRequestFiles(
     Number(installationId),
     owner,
     repo,
-    Number(pullNumber)
+    Number(pullNumber),
   )
 
   const patterns = await prisma.watchSchemaFilePattern.findMany({
@@ -64,19 +67,21 @@ export default async function Page({ params }: PageProps) {
   })
 
   const matchedFiles = files
-    .map(file => file.filename)
+    .map((file) => file.filename)
     .filter((filename) =>
-      patterns.some((pattern) => minimatch(filename, pattern.pattern))
+      patterns.some((pattern) => minimatch(filename, pattern.pattern)),
     )
 
-  const erdLinks = matchedFiles.map(filename => ({
+  const erdLinks = matchedFiles.map((filename) => ({
     path: `/app/projects/${projectId}/erd/${prDetails.head.ref}/${filename}`,
     filename,
   }))
 
-  return <MigrationDetailPage 
-    projectId={projectId} 
-    migrationId={migrationId} 
-    erdLinks={erdLinks}
-  />
+  return (
+    <MigrationDetailPage
+      projectId={projectId}
+      migrationId={migrationId}
+      erdLinks={erdLinks}
+    />
+  )
 }

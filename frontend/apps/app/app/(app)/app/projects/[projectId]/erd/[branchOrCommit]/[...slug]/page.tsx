@@ -1,5 +1,7 @@
 import path from 'node:path'
 import type { PageProps } from '@/app/types'
+import { getFileContent, getRepository } from '@/libs/github/api.server'
+import { prisma } from '@liam-hq/db'
 import {
   type SupportedFormat,
   detectFormat,
@@ -12,9 +14,7 @@ import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
-import { getFileContent, getRepository } from '@/libs/github/api.server'
 import ERDViewer from './erdViewer'
-import { prisma } from '@liam-hq/db'
 
 const paramsSchema = v.object({
   projectId: v.string(),
@@ -43,21 +43,25 @@ export async function generateMetadata({
           include: {
             repository: {
               select: {
-                installationId: true
-              }
-            }
-          }
-        }
-      }
+                installationId: true,
+              },
+            },
+          },
+        },
+      },
     })
 
     if (!project?.repositoryMappings[0]?.repository?.installationId) {
       throw new Error('Installation ID not found')
     }
 
-    const repo = await getRepository(projectId, Number(project.repositoryMappings[0].repository.installationId))
+    const repo = await getRepository(
+      projectId,
+      Number(project.repositoryMappings[0].repository.installationId),
+    )
     const metaTitle = `${repo.name}/${filePath} - Liam ERD`
-    const metaDescription = 'Database structure visualization for your GitHub repository.'
+    const metaDescription =
+      'Database structure visualization for your GitHub repository.'
 
     return {
       title: metaTitle,
@@ -67,7 +71,7 @@ export async function generateMetadata({
         images: '/assets/liam_erd.png',
       },
     }
-  } catch (error) {
+  } catch (_) {
     return notFound()
   }
 }
@@ -92,20 +96,23 @@ export default async function Page({
           include: {
             repository: {
               select: {
-                installationId: true
-              }
-            }
-          }
-        }
-      }
+                installationId: true,
+              },
+            },
+          },
+        },
+      },
     })
 
     if (!project?.repositoryMappings[0]?.repository?.installationId) {
       throw new Error('Installation ID not found')
     }
 
-    const content = await getFileContent(projectId, filePath, branchOrCommit, 
-      Number(project.repositoryMappings[0].repository.installationId)
+    const content = await getFileContent(
+      projectId,
+      filePath,
+      branchOrCommit,
+      Number(project.repositoryMappings[0].repository.installationId),
     )
     if (!content) {
       return (
@@ -115,8 +122,10 @@ export default async function Page({
           errorObjects={[
             {
               name: 'FileNotFound',
-              message: 'The specified file could not be found in the repository.',
-              instruction: 'Please check the file path and branch/commit reference.',
+              message:
+                'The specified file could not be found in the repository.',
+              instruction:
+                'Please check the file path and branch/commit reference.',
             },
           ]}
         />
@@ -142,7 +151,8 @@ export default async function Page({
             {
               name: 'FormatError',
               message: 'Could not detect the file format.',
-              instruction: 'Please specify the format in the URL query parameter `format`',
+              instruction:
+                'Please specify the format in the URL query parameter `format`',
             },
           ]}
         />
@@ -159,7 +169,8 @@ export default async function Page({
     }))
 
     const cookieStore = await cookies()
-    const defaultSidebarOpen = cookieStore.get('sidebar:state')?.value === 'true'
+    const defaultSidebarOpen =
+      cookieStore.get('sidebar:state')?.value === 'true'
     const layoutCookie = cookieStore.get('panels:layout')
     const defaultPanelSizes = (() => {
       if (!layoutCookie) return [20, 80]
@@ -182,7 +193,7 @@ export default async function Page({
         errorObjects={errorObjects}
       />
     )
-  } catch (error) {
+  } catch (_) {
     return (
       <ERDViewer
         dbStructure={blankDbStructure}
@@ -191,7 +202,8 @@ export default async function Page({
           {
             name: 'GitHubError',
             message: 'Failed to fetch file content from GitHub',
-            instruction: 'Please check your repository permissions and try again.',
+            instruction:
+              'Please check your repository permissions and try again.',
           },
         ]}
       />
