@@ -14,29 +14,6 @@ export default async function Page({ params }: PageProps) {
 
   const { migrationId } = parsedParams.output
 
-  const migration = await prisma.migration.findUnique({
-    where: {
-      id: Number(migrationId),
-    },
-    select: {
-      pullRequest: {
-        select: {
-          pullNumber: true,
-          repository: {
-            select: {
-              name: true,
-              owner: true,
-              installationId: true,
-            },
-          },
-        },
-      },
-    },
-  })
-
-  if (!migration?.pullRequest?.repository) {
-    return notFound()
-  }
 
   return <MigrationDetailPage migrationId={migrationId} />
 }
