@@ -45,7 +45,8 @@ export const processor: Processor = async (sql: string) => {
       if (lastStmt?.stmt_len === undefined) {
         isLastStatementComplete = false
         if (lastStmt?.stmt_location === undefined) {
-          throw new Error('UnexpectedCondition')
+          errorOffset = 0 // no error, but the statement is not complete
+          return [errorOffset, readOffset, errors]
         }
         readOffset = lastStmt?.stmt_location - 1
       }
