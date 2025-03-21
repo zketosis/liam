@@ -104,11 +104,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
   return (
     <main className={styles.wrapper}>
-      <Link
-        href={`/app/projects/${projectId}`}
-        className={styles.backLink}
-        aria-label="Back to project detail"
-      >
+      <Link href={`/app/projects/${projectId}`} className={styles.backLink}>
         ← Back to Project Detail
       </Link>
 
@@ -121,12 +117,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           <h2 className={styles.h2}>Migration Health</h2>
           <div className={styles.erdLinks}>
             {erdLinks.map(({ path, filename }) => (
-              <Link
-                key={path}
-                href={path}
-                className={styles.erdLink}
-                aria-label={`View ERD diagram for ${filename}`}
-              >
+              <Link key={path} href={path} className={styles.erdLink}>
                 View ERD Diagram: {filename} →
               </Link>
             ))}

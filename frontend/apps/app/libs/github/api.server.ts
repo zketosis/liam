@@ -2,7 +2,6 @@ import crypto from 'node:crypto'
 import type { FileChange } from '@/types/github'
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
-import { cache } from 'react'
 
 const createOctokit = async (installationId: number) => {
   const octokit = new Octokit({
@@ -131,54 +130,53 @@ export const verifyWebhookSignature = (
   return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature))
 }
 
-export const getRepository = cache(
-  async (projectId: string, installationId: number) => {
-    const [owner, repo] = projectId.split('/')
-    if (!owner || !repo) throw new Error('Invalid project ID format')
+export const getRepository = async (
+  projectId: string,
+  installationId: number,
+) => {
+  const [owner, repo] = projectId.split('/')
+  if (!owner || !repo) throw new Error('Invalid project ID format')
 
-    const octokit = await createOctokit(installationId)
-    const { data } = await octokit.repos.get({
+  const octokit = await createOctokit(installationId)
+  const { data } = await octokit.repos.get({
+    owner,
+    repo,
+  })
+
+  return data
+}
+
+export const getFileContent = async (
+  repositoryFullName: string,
+  filePath: string,
+  ref: string,
+  installationId: number,
+): Promise<string | null> => {
+  const [owner, repo] = repositoryFullName.split('/')
+
+  if (!owner || !repo) {
+    console.error('Invalid repository format:', repositoryFullName)
+    return null
+  }
+
+  const octokit = await createOctokit(installationId)
+
+  try {
+    const { data } = await octokit.repos.getContent({
       owner,
       repo,
+      path: filePath,
+      ref,
     })
 
-    return data
-  },
-)
-
-export const getFileContent = cache(
-  async (
-    repositoryFullName: string,
-    filePath: string,
-    ref: string,
-    installationId: number,
-  ): Promise<string | null> => {
-    const [owner, repo] = repositoryFullName.split('/')
-
-    if (!owner || !repo) {
-      console.error('Invalid repository format:', repositoryFullName)
-      return null
+    if ('type' in data && data.type === 'file' && 'content' in data) {
+      return Buffer.from(data.content, 'base64').toString('utf-8')
     }
 
-    const octokit = await createOctokit(installationId)
-
-    try {
-      const { data } = await octokit.repos.getContent({
-        owner,
-        repo,
-        path: filePath,
-        ref,
-      })
-
-      if ('type' in data && data.type === 'file' && 'content' in data) {
-        return Buffer.from(data.content, 'base64').toString('utf-8')
-      }
-
-      console.warn('Not a file:', filePath)
-      return null
-    } catch (error) {
-      console.error(`Error fetching file content for ${filePath}:`, error)
-      return null
-    }
-  },
-)
+    console.warn('Not a file:', filePath)
+    return null
+  } catch (error) {
+    console.error(`Error fetching file content for ${filePath}:`, error)
+    return null
+  }
+}

@@ -26,61 +26,6 @@ const searchParamsSchema = v.object({
   format: v.optional(supportedFormatSchema),
 })
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) {
-    return {
-      title: 'Not Found - Liam ERD',
-      description: 'This page could not be found.',
-    }
-  }
-
-  const { projectId, slug } = parsedParams.output
-  const filePath = slug.join('/')
-
-  try {
-    const project = await prisma.project.findUnique({
-      where: { id: Number(projectId) },
-      include: {
-        repositoryMappings: {
-          include: {
-            repository: {
-              select: { installationId: true },
-            },
-          },
-        },
-      },
-    })
-
-    if (!project?.repositoryMappings[0]?.repository?.installationId) {
-      throw new Error('Installation ID not found')
-    }
-
-    const repo = await getRepository(
-      projectId,
-      Number(project.repositoryMappings[0].repository.installationId),
-    )
-    return {
-      title: `${repo.name}/${filePath} - Liam ERD`,
-      description:
-        'Database structure visualization for your GitHub repository.',
-      openGraph: {
-        url: `https://liambx.com/app/projects/${projectId}/erd/${filePath}`,
-        images: '/assets/liam_erd.png',
-      },
-    }
-  } catch (err) {
-    console.warn('generateMetadata error:', err)
-    return {
-      title: 'Liam ERD',
-      description:
-        'Automatically generates beautiful and easy-to-read ER diagrams from your database.',
-    }
-  }
-}
-
 export default async function Page({
   params,
   searchParams: _searchParams,
