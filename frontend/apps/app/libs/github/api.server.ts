@@ -2,7 +2,6 @@ import crypto from 'node:crypto'
 import type { FileChange } from '@/types/github'
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
-import { cookies } from 'next/headers'
 import { cache } from 'react'
 
 const createOctokit = async (installationId: number) => {
@@ -149,13 +148,16 @@ export const getRepository = cache(
 
 export const getFileContent = cache(
   async (
-    projectId: string,
+    repositoryFullName: string,
     filePath: string,
     ref: string,
     installationId: number,
   ) => {
-    const [owner, repo] = projectId.split('/')
-    if (!owner || !repo) throw new Error('Invalid project ID format')
+    const [owner, repo] = repositoryFullName.split('/')
+
+    if (!owner || !repo) {
+      throw new Error('Invalid repository format')
+    }
 
     const octokit = await createOctokit(installationId)
 
@@ -168,7 +170,8 @@ export const getFileContent = cache(
       })
 
       if ('type' in data && data.type === 'file' && 'content' in data) {
-        return Buffer.from(data.content, 'base64').toString('utf-8')
+        const content = Buffer.from(data.content, 'base64').toString('utf-8')
+        return content
       }
 
       return null
