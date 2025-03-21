@@ -1,16 +1,16 @@
+import {
+  getPullRequestDetails,
+  getPullRequestFiles,
+} from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
+import { minimatch } from 'minimatch'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
-  projectId: string
   migrationId: string
-  erdLinks: Array<{
-    path: string
-    filename: string
-  }>
 }
 
 async function getMigrationContents(migrationId: string) {
@@ -26,6 +26,13 @@ async function getMigrationContents(migrationId: string) {
         select: {
           id: true,
           pullNumber: true,
+          repository: {
+            select: {
+              installationId: true,
+              name: true,
+              owner: true,
+            },
+          },
         },
       },
     },
@@ -36,6 +43,7 @@ async function getMigrationContents(migrationId: string) {
   }
 
   const pullRequest = migration.pullRequest
+  const { repository } = pullRequest
 
   const overallReview = await prisma.overallReview.findFirst({
     where: {
@@ -47,16 +55,46 @@ async function getMigrationContents(migrationId: string) {
     return notFound()
   }
 
+  const prDetails = await getPullRequestDetails(
+    Number(repository.installationId),
+    repository.owner,
+    repository.name,
+    Number(pullRequest.pullNumber),
+  )
+
+  const files = await getPullRequestFiles(
+    Number(repository.installationId),
+    repository.owner,
+    repository.name,
+    Number(pullRequest.pullNumber),
+  )
+
+  const patterns = await prisma.watchSchemaFilePattern.findMany({
+    where: { projectId: Number(overallReview.projectId) },
+    select: { pattern: true },
+  })
+
+  const matchedFiles = files
+    .map((file) => file.filename)
+    .filter((filename) =>
+      patterns.some((pattern) => minimatch(filename, pattern.pattern)),
+    )
+
+  const erdLinks = matchedFiles.map((filename) => ({
+    path: `/app/projects/${overallReview.projectId}/erd/${prDetails.head.ref}/${filename}`,
+    filename,
+  }))
+
   return {
     migration,
     overallReview,
+    erdLinks,
   }
 }
 
-export const MigrationDetailPage: FC<Props> = async ({ 
-  migrationId,
-  erdLinks, }) => {
-  const { migration, overallReview } = await getMigrationContents(migrationId)
+export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
+  const { migration, overallReview, erdLinks } =
+    await getMigrationContents(migrationId)
 
   const projectId = overallReview.projectId
 

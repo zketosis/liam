@@ -118,38 +118,6 @@ export const updatePullRequestComment = async (
   return response.data
 }
 
-export const getFileContent = async (
-  installationId: number,
-  owner: string,
-  repo: string,
-  path: string,
-  ref?: string,
-): Promise<string> => {
-  const octokit = await createOctokit(installationId)
-
-  try {
-    const response = await octokit.repos.getContent({
-      owner,
-      repo,
-      path,
-      ref,
-    })
-
-    // The GitHub API returns the file content encoded in Base64
-    if ('content' in response.data && !Array.isArray(response.data)) {
-      const content = Buffer.from(response.data.content, 'base64').toString(
-        'utf-8',
-      )
-      return content
-    }
-
-    throw new Error('Not a file or file content not available')
-  } catch (error) {
-    console.error(`Error fetching file content for ${path}:`, error)
-    throw error
-  }
-}
-
 export const verifyWebhookSignature = (
   payload: string,
   signature: string,
@@ -184,11 +152,12 @@ export const getFileContent = cache(
     filePath: string,
     ref: string,
     installationId: number,
-  ) => {
+  ): Promise<string | null> => {
     const [owner, repo] = repositoryFullName.split('/')
 
     if (!owner || !repo) {
-      throw new Error('Invalid repository format')
+      console.error('Invalid repository format:', repositoryFullName)
+      return null
     }
 
     const octokit = await createOctokit(installationId)
@@ -202,13 +171,13 @@ export const getFileContent = cache(
       })
 
       if ('type' in data && data.type === 'file' && 'content' in data) {
-        const content = Buffer.from(data.content, 'base64').toString('utf-8')
-        return content
+        return Buffer.from(data.content, 'base64').toString('utf-8')
       }
 
+      console.warn('Not a file:', filePath)
       return null
     } catch (error) {
-      console.error('Error fetching file content:', error)
+      console.error(`Error fetching file content for ${filePath}:`, error)
       return null
     }
   },

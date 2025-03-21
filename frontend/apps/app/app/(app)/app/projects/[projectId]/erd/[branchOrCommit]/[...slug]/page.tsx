@@ -26,7 +26,9 @@ const searchParamsSchema = v.object({
   format: v.optional(supportedFormatSchema),
 })
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const parsedParams = v.safeParse(paramsSchema, await params)
   if (!parsedParams.success) {
     return {
@@ -62,7 +64,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     )
     return {
       title: `${repo.name}/${filePath} - Liam ERD`,
-      description: 'Database structure visualization for your GitHub repository.',
+      description:
+        'Database structure visualization for your GitHub repository.',
       openGraph: {
         url: `https://liambx.com/app/projects/${projectId}/erd/${filePath}`,
         images: '/assets/liam_erd.png',
@@ -72,12 +75,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     console.warn('generateMetadata error:', err)
     return {
       title: 'Liam ERD',
-      description: 'Automatically generates beautiful and easy-to-read ER diagrams from your database.',
+      description:
+        'Automatically generates beautiful and easy-to-read ER diagrams from your database.',
     }
   }
 }
 
-export default async function Page({ params, searchParams: _searchParams }: PageProps) {
+export default async function Page({
+  params,
+  searchParams: _searchParams,
+}: PageProps) {
   const parsedParams = v.safeParse(paramsSchema, await params)
   if (!parsedParams.success) throw notFound()
 
@@ -119,11 +126,15 @@ export default async function Page({ params, searchParams: _searchParams }: Page
         <ERDViewer
           dbStructure={blankDbStructure}
           defaultSidebarOpen={false}
-          errorObjects={[{
-            name: 'FileNotFound',
-            message: 'The specified file could not be found in the repository.',
-            instruction: 'Please check the file path and branch/commit reference.',
-          }]}
+          errorObjects={[
+            {
+              name: 'FileNotFound',
+              message:
+                'The specified file could not be found in the repository.',
+              instruction:
+                'Please check the file path and branch/commit reference.',
+            },
+          ]}
         />
       )
     }
@@ -145,11 +156,14 @@ export default async function Page({ params, searchParams: _searchParams }: Page
         <ERDViewer
           dbStructure={blankDbStructure}
           defaultSidebarOpen={false}
-          errorObjects={[{
-            name: 'FormatError',
-            message: 'Could not detect the file format.',
-            instruction: 'Please specify the format in the URL query parameter `format`',
-          }]}
+          errorObjects={[
+            {
+              name: 'FormatError',
+              message: 'Could not detect the file format.',
+              instruction:
+                'Please specify the format in the URL query parameter `format`',
+            },
+          ]}
         />
       )
     }
@@ -160,7 +174,8 @@ export default async function Page({ params, searchParams: _searchParams }: Page
     }
 
     const cookieStore = await cookies()
-    const defaultSidebarOpen = cookieStore.get('sidebar:state')?.value === 'true'
+    const defaultSidebarOpen =
+      cookieStore.get('sidebar:state')?.value === 'true'
     const layoutCookie = cookieStore.get('panels:layout')
     const defaultPanelSizes = (() => {
       if (!layoutCookie) return [20, 80]
@@ -172,26 +187,29 @@ export default async function Page({ params, searchParams: _searchParams }: Page
     })()
 
     return (
-        <ERDViewer
-          dbStructure={dbStructure}
-          defaultSidebarOpen={defaultSidebarOpen}
-          defaultPanelSizes={defaultPanelSizes}
-          errorObjects={errors.map((error) => ({
-            name: error.name,
-            message: error.message,
-          }))}
-        />
+      <ERDViewer
+        dbStructure={dbStructure}
+        defaultSidebarOpen={defaultSidebarOpen}
+        defaultPanelSizes={defaultPanelSizes}
+        errorObjects={errors.map((error) => ({
+          name: error.name,
+          message: error.message,
+        }))}
+      />
     )
-  } catch (error) {
+  } catch (_error) {
     return (
       <ERDViewer
         dbStructure={blankDbStructure}
         defaultSidebarOpen={false}
-        errorObjects={[{
-          name: 'GitHubError',
-          message: 'Failed to fetch file content from GitHub',
-          instruction: 'Please check your repository permissions and try again.',
-        }]}
+        errorObjects={[
+          {
+            name: 'GitHubError',
+            message: 'Failed to fetch file content from GitHub',
+            instruction:
+              'Please check your repository permissions and try again.',
+          },
+        ]}
       />
     )
   }
