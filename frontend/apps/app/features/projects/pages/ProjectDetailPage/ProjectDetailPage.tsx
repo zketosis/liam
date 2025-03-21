@@ -103,7 +103,7 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
           {project.migrations.map((migration) => (
             <li key={migration.id}>
               <Link
-                href={`/app/projects/${project.id}/migrations/${migration.id}`}
+                href={`/app/migrations/${migration.id}`}
                 style={{
                   textDecoration: 'underline',
                 }}
