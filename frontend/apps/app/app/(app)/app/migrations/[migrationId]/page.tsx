@@ -1,6 +1,5 @@
 import type { PageProps } from '@/app/types'
 import { MigrationDetailPage } from '@/features/migrations/pages/MigrationDetailPage'
-import { prisma } from '@liam-hq/db'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
 
@@ -13,7 +12,6 @@ export default async function Page({ params }: PageProps) {
   if (!parsedParams.success) return notFound()
 
   const { migrationId } = parsedParams.output
-
 
   return <MigrationDetailPage migrationId={migrationId} />
 }
