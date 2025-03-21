@@ -32,7 +32,7 @@ export const processSQLInChunks = async (
 
     while (true) {
       // NOTE: To minimize unnecessary retries, avoid increasing currentChunkSize excessively,
-      //       especially when errorOffset is present.
+      //       especially when retryOffset is present.
       if (retryDirection === retryDirectionValues.decrease) {
         if (i + currentChunkSize > lines.length) {
           currentChunkSize = lines.length - i
@@ -40,9 +40,9 @@ export const processSQLInChunks = async (
       }
 
       const chunk = lines.slice(i, i + currentChunkSize).join('\n')
-      const [errorOffset, readOffset, errors] = await callback(chunk)
+      const [retryOffset, readOffset, errors] = await callback(chunk)
 
-      if (errorOffset !== null) {
+      if (retryOffset !== null) {
         if (retryDirection === retryDirectionValues.decrease) {
           currentChunkSize--
           if (currentChunkSize === 0) {

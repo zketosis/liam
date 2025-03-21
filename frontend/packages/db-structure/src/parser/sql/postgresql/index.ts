@@ -22,7 +22,7 @@ export const processor: Processor = async (sql: string) => {
 
   const errors = await processSQLInChunks(sql, CHUNK_SIZE, async (chunk) => {
     let readOffset: number | null = null
-    let errorOffset: number | null = null
+    let retryOffset: number | null = null
     const errors: ProcessError[] = []
 
     const { parse_tree, error: parseError } = await parse(chunk)
@@ -33,8 +33,8 @@ export const processor: Processor = async (sql: string) => {
 
     if (parseError !== null) {
       errors.push(new UnexpectedTokenWarningError(parseError.message))
-      errorOffset = parseError.cursorpos
-      return [errorOffset, readOffset, errors]
+      retryOffset = parseError.cursorpos
+      return [retryOffset, readOffset, errors]
     }
 
     let isLastStatementComplete = true
@@ -45,8 +45,8 @@ export const processor: Processor = async (sql: string) => {
       if (lastStmt?.stmt_len === undefined) {
         isLastStatementComplete = false
         if (lastStmt?.stmt_location === undefined) {
-          errorOffset = 0 // no error, but the statement is not complete
-          return [errorOffset, readOffset, errors]
+          retryOffset = 0 // no error, but the statement is not complete
+          return [retryOffset, readOffset, errors]
         }
         readOffset = lastStmt?.stmt_location - 1
       }
@@ -65,7 +65,7 @@ export const processor: Processor = async (sql: string) => {
 
     mergeDBStructures(dbSchema, convertedSchema)
 
-    return [errorOffset, readOffset, errors]
+    return [retryOffset, readOffset, errors]
   })
 
   return { value: dbSchema, errors: parseErrors.concat(errors) }
