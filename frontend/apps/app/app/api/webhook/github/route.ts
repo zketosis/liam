@@ -1,8 +1,8 @@
 import crypto from 'node:crypto'
-import { savePullRequestTask } from '@/src/trigger/jobs'
 import { prisma } from '@liam-hq/db'
-import { supportedEvents, validateConfig } from '@liam-hq/github'
+import { supportedEvents } from '@liam-hq/github'
 import type { GitHubWebhookPayload } from '@liam-hq/github'
+import { savePullRequest } from '@liam-hq/jobs'
 import { type NextRequest, NextResponse } from 'next/server'
 import { checkSchemaChanges } from './utils/checkSchemaChanges'
 
@@ -96,8 +96,8 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
               )
             }
             // Queue the savePullRequest task
-            await savePullRequestTask.trigger({
-              pullRequestNumber: pullRequest.number,
+            await savePullRequest({
+              prNumber: pullRequest.number,
               pullRequestTitle: pullRequest.title,
               projectId,
               owner: data.repository.owner.login,

@@ -1,8 +1,8 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { prisma } from '@liam-hq/db'
-import { langfuseLangchainHandler } from '../../lib'
-import type { GenerateReviewPayload, ReviewResponse } from '../types'
+import type { GenerateReviewPayload } from '../types'
+import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 const REVIEW_TEMPLATE = `
 You are a database design expert.
@@ -21,9 +21,9 @@ Please provide a comprehensive review of the database schema changes. Your revie
 The response must be a single string containing your detailed review.
 `
 
-export async function processGenerateReview(
+export const processGenerateReview = async (
   payload: GenerateReviewPayload,
-): Promise<string> {
+): Promise<string> => {
   try {
     const docs = await prisma.doc.findMany({
       where: {

@@ -1,3 +1,16 @@
+export type SavePullRequestPayload = {
+  prNumber: number
+  pullRequestTitle: string
+  owner: string
+  name: string
+  repositoryId: number
+  branchName: string
+}
+
+export type SavePullRequestWithProjectPayload = SavePullRequestPayload & {
+  projectId: number
+}
+
 export type GenerateReviewPayload = {
   pullRequestId: number
   projectId: number
@@ -32,12 +45,4 @@ export type ReviewResponse = {
   pullRequestId: number
   repositoryId: number
   branchName: string
-}
-
-export type SchemaChangeInfo = {
-  filename: string
-  content: string
-  owner: string
-  name: string
-  pullRequestNumber: number
 }
