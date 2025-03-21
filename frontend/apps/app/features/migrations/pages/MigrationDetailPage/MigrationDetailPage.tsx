@@ -4,10 +4,16 @@ import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import styles from './MigrationDetailPage.module.css'
 
-type Params = {
+type Props = {
+  projectId: string
   migrationId: string
+  erdLinks: Array<{
+    path: string
+    filename: string
+  }>
 }
-async function getMigration({ migrationId }: Params) {
+
+async function getMigrationContents(migrationId: string) {
   const migration = await prisma.migration.findUnique({
     where: {
       id: Number(migrationId),
@@ -18,6 +24,7 @@ async function getMigration({ migrationId }: Params) {
       createdAt: true,
       pullRequest: {
         select: {
+          id: true,
           pullNumber: true,
         },
       },
@@ -28,26 +35,37 @@ async function getMigration({ migrationId }: Params) {
     return notFound()
   }
 
-  return migration
+  const pullRequest = migration.pullRequest
+
+  const overallReview = await prisma.overallReview.findFirst({
+    where: {
+      pullRequestId: pullRequest.id,
+    },
+  })
+
+  if (!overallReview) {
+    return notFound()
+  }
+
+  return {
+    migration,
+    overallReview,
+  }
 }
 
-type Props = {
-  projectId: string
-  migrationId: string
-  erdLinks: Array<{
-    path: string
-    filename: string
-  }>
-}
-
-export const MigrationDetailPage: FC<Props> = async ({
-  projectId,
+export const MigrationDetailPage: FC<Props> = async ({ 
   migrationId,
-  erdLinks,
-}) => {
-  const migration = await getMigration({ migrationId })
+  erdLinks, }) => {
+  const { migration, overallReview } = await getMigrationContents(migrationId)
+
+  const projectId = overallReview.projectId
+
+  const formattedReviewDate = overallReview.reviewedAt
+    ? overallReview.reviewedAt.toLocaleDateString('en-US')
+    : 'Not available'
+
   return (
-    <div className={styles.wrapper}>
+    <main className={styles.wrapper}>
       <Link
         href={`/app/projects/${projectId}`}
         className={styles.backLink}
@@ -55,6 +73,7 @@ export const MigrationDetailPage: FC<Props> = async ({
       >
         ← Back to Project Detail
       </Link>
+
       <div className={styles.heading}>
         <h1 className={styles.title}>{migration.title}</h1>
         <p className={styles.subTitle}>#{migration.pullRequest.pullNumber}</p>
@@ -78,7 +97,17 @@ export const MigrationDetailPage: FC<Props> = async ({
         <div className={styles.box}>
           <h2 className={styles.h2}>Summary</h2>
         </div>
+        <div className={styles.box}>
+          <h2 className={styles.h2}>Review Content</h2>
+          <pre className={styles.reviewContent}>
+            {overallReview.reviewComment}
+          </pre>
+        </div>
       </div>
-    </div>
+
+      <div className={styles.metadataSection}>
+        <p className={styles.metadata}>Review Date: {formattedReviewDate}</p>
+      </div>
+    </main>
   )
 }
