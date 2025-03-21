@@ -21,6 +21,11 @@ export const processor: Processor = async (sql: string) => {
   const parseErrors: ProcessError[] = []
 
   const errors = await processSQLInChunks(sql, CHUNK_SIZE, async (chunk) => {
+    // Offset markers for chunk processing control:
+    // - readOffset: Tracks the position after the last complete statement,
+    //   used when a statement is partially processed and needs continuation
+    // - retryOffset: Indicates where parsing failed and/or should be retried
+    //   with a different chunk size (used in shrinking/expanding modes)
     let readOffset: number | null = null
     let retryOffset: number | null = null
     const errors: ProcessError[] = []
