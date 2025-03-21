@@ -70,7 +70,7 @@ export const processSQLInChunks = async (
       } else if (readOffset !== null) {
         const lineNumber = getLineNumber(chunk, readOffset)
         if (lineNumber === null) {
-          throw new Error('UnexpectedCondition')
+          throw new Error('UnexpectedCondition. lineNumber === null')
         }
         i += lineNumber
         break

@@ -33,7 +33,9 @@ export const processor: Processor = async (sql: string) => {
     const { parse_tree, error: parseError } = await parse(chunk)
 
     if (parse_tree.stmts.length > 0 && parseError !== null) {
-      throw new Error('UnexpectedCondition')
+      throw new Error(
+        'UnexpectedCondition. parse_tree.stmts.length > 0 && parseError !== null',
+      )
     }
 
     if (parseError !== null) {
