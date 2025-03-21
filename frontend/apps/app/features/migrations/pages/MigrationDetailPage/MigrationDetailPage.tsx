@@ -27,7 +27,7 @@ async function getMigrationContents(migrationId: string) {
   })
 
   if (!migration) {
-    notFound()
+    return notFound()
   }
 
   const pullRequest = migration.pullRequest
@@ -39,7 +39,7 @@ async function getMigrationContents(migrationId: string) {
   })
 
   if (!overallReview) {
-    notFound()
+    return notFound()
   }
 
   return {
@@ -49,10 +49,6 @@ async function getMigrationContents(migrationId: string) {
 }
 
 export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
-  if (!migrationId) {
-    notFound()
-  }
-
   const { migration, overallReview } = await getMigrationContents(migrationId)
 
   const projectId = overallReview.projectId
