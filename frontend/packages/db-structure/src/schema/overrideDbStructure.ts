@@ -55,7 +55,7 @@ export function applyOverrides(
   originalStructure: DBStructure,
   override: DBOverride,
 ): DBStructure {
-  const result = structuredClone(originalStructure)
+  const result = JSON.parse(JSON.stringify(originalStructure))
   const { overrides } = override
 
   // Add new tables
