@@ -1309,7 +1309,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@next/env"></a>
-### @next/env v15.1.2
+### @next/env v15.2.3
 #### 
 
 ##### Paths
@@ -1331,7 +1331,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@next/swc-linux-x64-gnu"></a>
-### @next/swc-linux-x64-gnu v15.1.2
+### @next/swc-linux-x64-gnu v15.2.3
 #### 
 
 ##### Paths
@@ -1342,7 +1342,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@next/swc-linux-x64-musl"></a>
-### @next/swc-linux-x64-musl v15.1.2
+### @next/swc-linux-x64-musl v15.2.3
 #### 
 
 ##### Paths
@@ -11353,7 +11353,7 @@ Public Domain manually approved
 
 
 <a name="next"></a>
-### next v15.1.2
+### next v15.2.3
 #### 
 
 ##### Paths
