@@ -1,7 +1,6 @@
 import * as v from 'valibot'
 import {
   type DBStructure,
-  type Relationship,
   columnNameSchema,
   columnSchema,
   relationshipNameSchema,
@@ -117,7 +116,7 @@ export function applyOverrides(
         primaryColumnName,
         foreignTableName,
         foreignColumnName,
-      } = relationshipDefinition as Relationship
+      } = relationshipDefinition
 
       if (!result.tables[primaryTableName]) {
         throw new Error(
@@ -143,8 +142,7 @@ export function applyOverrides(
         )
       }
 
-      result.relationships[relationshipName] =
-        relationshipDefinition as Relationship
+      result.relationships[relationshipName] = relationshipDefinition
     }
   }
 
