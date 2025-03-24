@@ -49,7 +49,8 @@ React Flow also satisfies our UX requirements:
 
 ### Negative
 
-- Additional dependency in our codebase
+- We depend strongly on React Flow and call the API directly
+  - But even if the React Flow is not optimal for us, we have decided that it is faster to rewrite everything.
 - Some performance tuning was necessary for optimal results with large datasets
 - Limited by React Flow's architecture and update cycle for future features
 
