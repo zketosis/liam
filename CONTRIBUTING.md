@@ -46,7 +46,12 @@ To set up a development environment, please follow these steps:
    pnpm vercel:env-pull
    ```
 
-   This will download the environment variables from Vercel and write them to the specified file (defaults to `.env.local` if no file is specified). After updating environment variables on Vercel (through the dashboard or CLI), you'll need to run this command again to get the updated values.
+   This will download the environment variables from Vercel and write them to the specified file. After updating environment variables on Vercel (through the dashboard or CLI), you'll need to run this command again to get the updated values.
+
+   Next, create a `.env.local` file at the root directory and set values for the following keys:
+
+   - `OPENAI_API_KEY`
+   - `TRIGGER_SECRET_KEY`
 
    **For other contributors:**
 
