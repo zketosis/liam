@@ -3,6 +3,7 @@ import {
   type DBStructure,
   columnNameSchema,
   columnSchema,
+  dbStructureSchema,
   relationshipNameSchema,
   relationshipSchema,
   tableNameSchema,
@@ -54,7 +55,11 @@ export function applyOverrides(
   originalStructure: DBStructure,
   override: DBOverride,
 ): DBStructure {
-  const result = JSON.parse(JSON.stringify(originalStructure))
+  const result = v.parse(
+    dbStructureSchema,
+    JSON.parse(JSON.stringify(originalStructure)),
+  )
+
   const { overrides } = override
 
   // Add new tables
