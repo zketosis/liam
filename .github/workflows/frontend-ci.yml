@@ -27,6 +27,12 @@ jobs:
               - '.github/workflows/frontend-ci.yml'
               - '.github/actions/pnpm-setup/**'
               - './frontend/**'
+              - '.syncpackrc'
+              - 'biome.jsonc'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'turbo.json'
 
   frontend-lint:
     needs: [setup-job]
