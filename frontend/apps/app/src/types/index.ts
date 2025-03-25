@@ -28,3 +28,10 @@ export type ReviewResponse = {
   pullRequestId: number
   repositoryId: number
 }
+
+export type DocSuggestion = {
+  docId: string | null
+  new: boolean
+  original: string
+  revised: string
+}

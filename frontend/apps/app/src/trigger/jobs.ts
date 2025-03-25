@@ -1,9 +1,14 @@
 import { postComment } from '@/src/functions/postComment'
+import { processGenerateDocsSuggestion } from '@/src/functions/processGenerateDocsSuggestion'
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import { processSavePullRequest } from '@/src/functions/processSavePullRequest'
 import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
-import type { GenerateReviewPayload, ReviewResponse } from '../types'
+import type {
+  DocSuggestion,
+  GenerateReviewPayload,
+  ReviewResponse,
+} from '../types'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
@@ -70,6 +75,13 @@ export const saveReviewTask = task({
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
       })
+
+      // Trigger docs suggestion generation after review is saved
+      await generateDocsSuggestionTask.trigger({
+        reviewComment: payload.reviewComment,
+        projectId: payload.projectId,
+      })
+
       return { success: true }
     } catch (error) {
       console.error('Error in review process:', error)
@@ -101,5 +113,27 @@ export const postCommentTask = task({
     logger.log('Executing comment post task:', { payload })
     const result = await postComment(payload)
     return result
+  },
+})
+
+export const generateDocsSuggestionTask = task({
+  id: 'generate-docs-suggestion',
+  run: async (payload: { reviewComment: string; projectId: number }) => {
+    const suggestions = await processGenerateDocsSuggestion(payload)
+    logger.log('Generated docs suggestions:', { suggestions })
+    await saveDocsTask.trigger({
+      suggestions,
+      projectId: payload.projectId,
+    })
+    return { suggestions }
+  },
+})
+
+export const saveDocsTask = task({
+  id: 'save-docs',
+  run: async (payload: { suggestions: DocSuggestion[]; projectId: number }) => {
+    logger.log('Executing save docs task:', { payload })
+    // TODO: Implement actual database operations to save/update docs
+    return { success: true }
   },
 })
