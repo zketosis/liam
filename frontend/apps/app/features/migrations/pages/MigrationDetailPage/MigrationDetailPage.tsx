@@ -1,4 +1,9 @@
+import {
+  getPullRequestDetails,
+  getPullRequestFiles,
+} from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
+import { minimatch } from 'minimatch'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -21,6 +26,13 @@ async function getMigrationContents(migrationId: string) {
         select: {
           id: true,
           pullNumber: true,
+          repository: {
+            select: {
+              installationId: true,
+              name: true,
+              owner: true,
+            },
+          },
         },
       },
     },
@@ -31,6 +43,7 @@ async function getMigrationContents(migrationId: string) {
   }
 
   const pullRequest = migration.pullRequest
+  const { repository } = pullRequest
 
   const overallReview = await prisma.overallReview.findFirst({
     where: {
@@ -42,14 +55,46 @@ async function getMigrationContents(migrationId: string) {
     return notFound()
   }
 
+  const prDetails = await getPullRequestDetails(
+    Number(repository.installationId),
+    repository.owner,
+    repository.name,
+    Number(pullRequest.pullNumber),
+  )
+
+  const files = await getPullRequestFiles(
+    Number(repository.installationId),
+    repository.owner,
+    repository.name,
+    Number(pullRequest.pullNumber),
+  )
+
+  const patterns = await prisma.watchSchemaFilePattern.findMany({
+    where: { projectId: Number(overallReview.projectId) },
+    select: { pattern: true },
+  })
+
+  const matchedFiles = files
+    .map((file) => file.filename)
+    .filter((filename) =>
+      patterns.some((pattern) => minimatch(filename, pattern.pattern)),
+    )
+
+  const erdLinks = matchedFiles.map((filename) => ({
+    path: `/app/projects/${overallReview.projectId}/erd/${prDetails.head.ref}/${filename}`,
+    filename,
+  }))
+
   return {
     migration,
     overallReview,
+    erdLinks,
   }
 }
 
 export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
-  const { migration, overallReview } = await getMigrationContents(migrationId)
+  const { migration, overallReview, erdLinks } =
+    await getMigrationContents(migrationId)
 
   const projectId = overallReview.projectId
 
@@ -59,11 +104,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
   return (
     <main className={styles.wrapper}>
-      <Link
-        href={`/app/projects/${projectId}`}
-        className={styles.backLink}
-        aria-label="Back to project detail"
-      >
+      <Link href={`/app/projects/${projectId}`} className={styles.backLink}>
         ← Back to Project Detail
       </Link>
 
@@ -74,6 +115,13 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
       <div className={styles.twoColumns}>
         <div className={styles.box}>
           <h2 className={styles.h2}>Migration Health</h2>
+          <div className={styles.erdLinks}>
+            {erdLinks.map(({ path, filename }) => (
+              <Link key={path} href={path} className={styles.erdLink}>
+                View ERD Diagram: {filename} →
+              </Link>
+            ))}
+          </div>
         </div>
         <div className={styles.box}>
           <h2 className={styles.h2}>Summary</h2>

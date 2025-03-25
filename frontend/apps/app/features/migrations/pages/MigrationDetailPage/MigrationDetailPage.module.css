@@ -62,6 +62,18 @@
   letter-spacing: 0.0375rem;
 }
 
+.erdLink {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.erdLink:hover {
+  text-decoration: underline;
+}
+
 .reviewContent {
   margin-top: 1rem;
   background-color: var(--bg-secondary, #fff);
