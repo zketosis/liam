@@ -28,7 +28,8 @@
       "dependsOn": ["^gen"]
     },
     "lint": {
-      "dependsOn": ["gen", "^build", "^lint"]
+      "dependsOn": ["gen", "^build", "^lint"],
+      "inputs": ["prelint"]
     },
     "fmt": {},
     "test": {
