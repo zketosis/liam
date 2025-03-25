@@ -24,12 +24,12 @@
     "fmt:biome": "biome check --write --unsafe .",
     "gen": "pnpm run '/^gen:.*/'",
     "gen:prisma": "prisma generate",
-    "gen:supabase": "supabase gen types typescript --local > supabase/database.types.ts",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "migrate:dev": "sh ./scripts/migrate-dev.sh",
     "migrate:status": "prisma migrate status",
+    "supabase:gen": "supabase gen types typescript --local > supabase/database.types.ts && biome check --write --unsafe supabase/database.types.ts",
     "supabase:reset": "pnpm supabase db reset",
     "supabase:start": "pnpm supabase start",
     "supabase:stop": "pnpm supabase stop"
