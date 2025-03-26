@@ -19,3 +19,4 @@ export {
   anIndex,
   aRelationship,
 } from './factories.js'
+export { applyOverrides } from './overrideDbStructure.js'
