@@ -1,4 +1,4 @@
-import type { Installation } from '@/libs/github/types'
+import type { Installation } from '@liam-hq/github'
 import type { FC } from 'react'
 import { InstallationSelector } from './InstallationSelector/InstallationSelector'
 import styles from './ProjectNewPage.module.css'
