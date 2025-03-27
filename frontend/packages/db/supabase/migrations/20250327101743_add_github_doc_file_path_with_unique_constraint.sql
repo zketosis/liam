@@ -12,6 +12,8 @@ create table "public"."GitHubDocFilePath" (
 
 alter sequence "public"."GitHubDocFilePath_id_seq" owned by "public"."GitHubDocFilePath"."id";
 
+CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON public."GitHubDocFilePath" USING btree (path, "projectId");
+
 CREATE UNIQUE INDEX "GitHubDocFilePath_pkey" ON public."GitHubDocFilePath" USING btree (id);
 
 alter table "public"."GitHubDocFilePath" add constraint "GitHubDocFilePath_pkey" PRIMARY KEY using index "GitHubDocFilePath_pkey";

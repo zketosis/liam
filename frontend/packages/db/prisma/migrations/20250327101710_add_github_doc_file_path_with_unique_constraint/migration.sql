@@ -10,5 +10,8 @@ CREATE TABLE "GitHubDocFilePath" (
     CONSTRAINT "GitHubDocFilePath_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "GitHubDocFilePath"("path", "projectId");
+
 -- AddForeignKey
 ALTER TABLE "GitHubDocFilePath" ADD CONSTRAINT "GitHubDocFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
