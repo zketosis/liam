@@ -34,6 +34,7 @@ describe('processSaveReview', () => {
         projectId: 1,
         pullRequestId: mockPullRequest.id,
         reviewComment: 'Test review comment',
+        branchName: 'test-branch',
       },
     )
   })
@@ -45,6 +46,7 @@ describe('processSaveReview', () => {
       repositoryId: 1,
       projectId: 1,
       reviewComment: 'Test review comment',
+      branchName: 'test-branch',
     }
 
     const result = await processSaveReview(testPayload)
@@ -63,6 +65,7 @@ describe('processSaveReview', () => {
           },
         },
         reviewComment: testPayload.reviewComment,
+        branchName: testPayload.branchName,
       },
     })
   })
@@ -78,6 +81,7 @@ describe('processSaveReview', () => {
       repositoryId: 999,
       projectId: 1,
       reviewComment: 'Test review comment',
+      branchName: 'test-branch',
     }
 
     await expect(processSaveReview(testPayload)).rejects.toThrow(

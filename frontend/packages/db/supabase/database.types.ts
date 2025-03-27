@@ -221,6 +221,7 @@ export type Database = {
       }
       OverallReview: {
         Row: {
+          branchName: string
           createdAt: string
           id: number
           projectId: number | null
@@ -230,6 +231,7 @@ export type Database = {
           updatedAt: string
         }
         Insert: {
+          branchName: string
           createdAt?: string
           id?: number
           projectId?: number | null
@@ -239,6 +241,7 @@ export type Database = {
           updatedAt: string
         }
         Update: {
+          branchName?: string
           createdAt?: string
           id?: number
           projectId?: number | null

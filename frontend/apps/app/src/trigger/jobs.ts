@@ -24,6 +24,7 @@ export const savePullRequestTask = task({
     owner: string
     name: string
     repositoryId: number
+    branchName: string
   }) => {
     logger.log('Executing PR save task:', { payload })
 
@@ -34,6 +35,7 @@ export const savePullRequestTask = task({
         owner: payload.owner,
         name: payload.name,
         repositoryId: payload.repositoryId,
+        branchName: payload.branchName,
       })
       logger.info('Successfully saved PR to database:', { prId: result.prId })
 
@@ -88,6 +90,7 @@ export const saveReviewTask = task({
         projectId: payload.projectId,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
+        branchName: payload.branchName,
       })
 
       // Trigger docs suggestion generation after review is saved

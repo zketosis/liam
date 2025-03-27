@@ -2,6 +2,7 @@ export type GenerateReviewPayload = {
   pullRequestId: number
   projectId: number
   repositoryId: number
+  branchName: string
   owner: string
   name: string
   pullRequestNumber: number
@@ -30,6 +31,7 @@ export type ReviewResponse = {
   projectId: number
   pullRequestId: number
   repositoryId: number
+  branchName: string
 }
 
 export type SchemaChangeInfo = {

@@ -34,6 +34,7 @@ export async function processSaveReview(
           },
         },
         reviewComment: payload.reviewComment,
+        branchName: payload.branchName,
       } as Prisma.OverallReviewCreateInput,
     })
 
