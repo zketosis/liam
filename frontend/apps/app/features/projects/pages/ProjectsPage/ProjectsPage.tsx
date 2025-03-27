@@ -1,17 +1,7 @@
-import { createClient } from '@/libs/db/server'
 import Link from 'next/link'
 import type { FC } from 'react'
 import styles from './ProjectsPage.module.css'
-
-async function getProjects() {
-  const supabase = await createClient()
-  const { data: projects } = await supabase
-    .from('Project')
-    .select('id, name, createdAt')
-    .order('id', { ascending: false })
-
-  return projects
-}
+import { getProjects } from './getProjects'
 
 export const ProjectsPage: FC = async () => {
   const projects = await getProjects()

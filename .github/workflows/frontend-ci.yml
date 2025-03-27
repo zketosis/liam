@@ -54,6 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/pnpm-setup
+      - run: pnpm --filter @liam-hq/db supabase:start
       - run: pnpm test:turbo
 
   check-supabase-types-diff:
