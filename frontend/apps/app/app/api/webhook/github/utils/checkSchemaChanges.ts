@@ -1,6 +1,6 @@
-import { getPullRequestFiles } from '@/libs/github/api.server'
 import { savePullRequestTask } from '@/src/trigger/jobs'
 import { prisma } from '@liam-hq/db'
+import { getPullRequestFiles } from '@liam-hq/github'
 import { minimatch } from 'minimatch'
 
 type CheckSchemaChangesParams = {

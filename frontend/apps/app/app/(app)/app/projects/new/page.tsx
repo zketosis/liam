@@ -1,6 +1,6 @@
 import { ProjectNewPage } from '@/features/projects/pages'
 import { createClient } from '@/libs/db/server'
-import { getInstallations } from '@/libs/github/api.browser'
+import { getInstallations } from '@liam-hq/github'
 import { notFound } from 'next/navigation'
 import React from 'react'
 

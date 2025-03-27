@@ -1,7 +1,7 @@
 'use server'
 
-import { updateFileContent } from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
+import { updateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
 import * as v from 'valibot'
 

@@ -1,5 +1,5 @@
-import { getFileContentWithSha } from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
+import { getFileContentWithSha } from '@liam-hq/github'
 import type { KnowledgeType } from '@prisma/client'
 
 type CreateKnowledgeSuggestionPayload = {
