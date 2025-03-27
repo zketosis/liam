@@ -34,5 +34,8 @@ export type GitHubWebhookPayload = {
   pull_request?: {
     number: number
     title: string
+    head: {
+      ref: string
+    }
   }
 }
