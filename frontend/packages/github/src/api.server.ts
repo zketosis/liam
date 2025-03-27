@@ -1,14 +1,14 @@
 import crypto from 'node:crypto'
-import type { FileChange } from '@/types/github'
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
+import type { FileChange } from './types'
 
 const createOctokit = async (installationId: number) => {
   const octokit = new Octokit({
     authStrategy: createAppAuth,
     auth: {
-      appId: process.env.GITHUB_APP_ID,
-      privateKey: process.env.GITHUB_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      appId: process.env['GITHUB_APP_ID'],
+      privateKey: process.env['GITHUB_PRIVATE_KEY']?.replace(/\\n/g, '\n'),
       installationId,
     },
   })
@@ -123,7 +123,7 @@ export const verifyWebhookSignature = (
 ): boolean => {
   const hmac = crypto.createHmac(
     'sha256',
-    process.env.GITHUB_WEBHOOK_SECRET || '',
+    process.env['GITHUB_WEBHOOK_SECRET'] || '',
   )
   const digest = `sha256=${hmac.update(payload).digest('hex')}`
 

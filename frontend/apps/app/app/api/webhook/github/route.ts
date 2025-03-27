@@ -1,8 +1,8 @@
-import { verifyWebhookSignature } from '@/libs/github/api.server'
-import { supportedEvents, validateConfig } from '@/libs/github/config'
 import { savePullRequestTask } from '@/src/trigger/jobs'
-import type { GitHubWebhookPayload } from '@/types/github'
 import { prisma } from '@liam-hq/db'
+import { verifyWebhookSignature } from '@liam-hq/github'
+import { supportedEvents, validateConfig } from '@liam-hq/github'
+import type { GitHubWebhookPayload } from '@liam-hq/github'
 import { type NextRequest, NextResponse } from 'next/server'
 import { checkSchemaChanges } from './utils/checkSchemaChanges'
 
