@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set output directory for schema DDL
-OUTPUT_DIR="frontend/packages/db/schema"
+OUTPUT_DIR="schema"
 SCHEMA_FILE="$OUTPUT_DIR/schema.sql"
 
 # Create output directory if it doesn't exist
