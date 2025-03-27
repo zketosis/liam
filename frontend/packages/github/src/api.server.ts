@@ -136,7 +136,7 @@ export const getRepository = async (
  * Gets file content and SHA from GitHub repository
  * @returns Object containing content and SHA
  */
-export const getFileContentWithSha = async (
+export const getFileContent = async (
   repositoryFullName: string,
   filePath: string,
   ref: string,
@@ -172,26 +172,6 @@ export const getFileContentWithSha = async (
     console.error(`Error fetching file content for ${filePath}:`, error)
     return { content: null, sha: null }
   }
-}
-
-/**
- * Gets file content from GitHub repository
- * @returns File content as string or null
- * @deprecated Use getFileContentWithSha instead which provides both content and SHA
- */
-export const getFileContent = async (
-  repositoryFullName: string,
-  filePath: string,
-  ref: string,
-  installationId: number,
-): Promise<string | null> => {
-  const result = await getFileContentWithSha(
-    repositoryFullName,
-    filePath,
-    ref,
-    installationId,
-  )
-  return result.content
 }
 
 export const updateFileContent = async (
