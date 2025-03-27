@@ -145,7 +145,7 @@ export const generateDocsSuggestionTask = task({
     owner: string
     name: string
     installationId: number
-    type: 'SCHEMA' | 'DOCS'
+    type: 'DOCS'
     path: string
   }) => {
     const suggestions = await processGenerateDocsSuggestion(payload)
