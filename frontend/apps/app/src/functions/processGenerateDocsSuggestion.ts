@@ -21,21 +21,18 @@ Migration Review Summary:
 
 Existing Docs:
 {docsArray}
-// Each item: { id: string | null, title: string, content: string }
 
 ---
 
-Return your output in the following JSON format:
-
-[
-  {
-    "docId": "<string | null>",             // null if this is a new doc
-    "new": <true | false>,                  // true if this is a new doc
-    "original": "<string>",                 // the existing sentence or paragraph ("" if new)
-    "revised": "<string>"                   // your improved or new version
-  },
-  ...
-]`
+Return your output as a JSON array of suggestions.
+Each suggestion object must contain these fields:
+{
+  "docId": "<string or null for new docs>",
+  "new": "<boolean - true for new docs>",
+  "original": "<string - empty string for new docs>",
+  "revised": "<string - your suggested new or improved content>"
+}
+`
 
 export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
@@ -64,14 +61,17 @@ export async function processGenerateDocsSuggestion(payload: {
 
     const model = new ChatOpenAI({
       temperature: 0.7,
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-4o-mini',
     })
 
     const chain = prompt.pipe(model)
     const response = await chain.invoke(
       {
         reviewResult: payload.reviewComment,
-        docsArray: JSON.stringify(docsArray),
+        docsArray:
+          docsArray.length > 0
+            ? JSON.stringify(docsArray)
+            : 'No existing docs found',
       },
       {
         callbacks: [langfuseLangchainHandler],
