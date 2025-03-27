@@ -24,21 +24,43 @@ Existing Docs:
 
 ---
 
-Return your output as a JSON array of suggestions.
-Each suggestion object must contain these fields:
-{
-  "docId": "<string or null for new docs>",
-  "new": "<boolean - true for new docs>",
-  "original": "<string - empty string for new docs>",
-  "revised": "<string - your suggested new or improved content>"
-}
+Please provide your suggestions in a clear and structured format. For each suggestion:
+- Indicate if this is a new document or an improvement to an existing one
+- For existing docs, reference the original content you're suggesting to improve
+- Provide your revised or new content with clear explanations
 `
 
 export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
   projectId: number
-}): Promise<DocSuggestion[]> {
+}): Promise<string> {
   try {
+    // Check if project exists
+    const project = await prisma.project.findUnique({
+      where: {
+        id: payload.projectId,
+      },
+    })
+
+    if (!project) {
+      throw new Error(`Project with ID ${payload.projectId} not found`)
+    }
+
+    // Check for existing mapping
+    const existingMapping = await prisma.projectRepositoryMapping.findFirst({
+      where: {
+        projectId: payload.projectId,
+      },
+    })
+
+    if (existingMapping) {
+      // If mapping exists, we might want to:
+      // - Update the existing mapping
+      // - Throw an error
+      // - Use the existing mapping
+      console.warn('Mapping already exists for this project')
+    }
+
     // Fetch existing docs for the project
     const docs = await prisma.doc.findMany({
       where: {
@@ -78,7 +100,7 @@ export async function processGenerateDocsSuggestion(payload: {
       },
     )
 
-    return JSON.parse(response.content.toString()) as DocSuggestion[]
+    return response.content.toString()
   } catch (error) {
     console.error('Error generating docs suggestions:', error)
     throw error

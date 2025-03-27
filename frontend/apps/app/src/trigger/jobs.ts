@@ -131,7 +131,7 @@ export const generateDocsSuggestionTask = task({
 
 export const saveDocsTask = task({
   id: 'save-docs',
-  run: async (payload: { suggestions: DocSuggestion[]; projectId: number }) => {
+  run: async (payload: { suggestions: string; projectId: number }) => {
     logger.log('Executing save docs task:', { payload })
     // TODO: Implement actual database operations to save/update docs
     return { success: true }
