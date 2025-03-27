@@ -29,7 +29,7 @@
     "lint:tsc": "tsc --noEmit",
     "migrate:dev": "sh ./scripts/migrate-dev.sh",
     "migrate:status": "prisma migrate status",
-    "schema:gen": "sh ./scripts/generate-schema-ddl.sh",
+    "schema:gen": "bash ./scripts/generate-schema-ddl.sh",
     "supabase:gen": "supabase gen types typescript --local > supabase/database.types.ts && biome check --write --unsafe supabase/database.types.ts",
     "supabase:migration": "supabase db diff -f",
     "supabase:reset": "pnpm supabase db reset",
