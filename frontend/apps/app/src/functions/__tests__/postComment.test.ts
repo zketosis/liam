@@ -72,6 +72,7 @@ describe('postComment', () => {
       projectId: 1,
       pullRequestId: mockPullRequest.id,
       repositoryId: mockRepository.id,
+      branchName: 'test-branch',
     }
 
     const result = await postComment(testPayload)
@@ -105,6 +106,7 @@ describe('postComment', () => {
       projectId: 1,
       pullRequestId: mockPullRequest.id,
       repositoryId: mockRepository.id,
+      branchName: 'test-branch',
     }
 
     const result = await postComment(testPayload)
@@ -130,6 +132,7 @@ describe('postComment', () => {
       projectId: 1,
       pullRequestId: mockPullRequest.id,
       repositoryId: 999,
+      branchName: 'test-branch',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
@@ -147,6 +150,7 @@ describe('postComment', () => {
       projectId: 1,
       pullRequestId: 999,
       repositoryId: mockRepository.id,
+      branchName: 'test-branch',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
@@ -167,6 +171,7 @@ describe('postComment', () => {
       projectId: 1,
       pullRequestId: mockPullRequest.id,
       repositoryId: mockRepository.id,
+      branchName: 'test-branch',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(

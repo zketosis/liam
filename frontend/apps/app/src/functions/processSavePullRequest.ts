@@ -12,6 +12,7 @@ export type SavePullRequestPayload = {
   owner: string
   name: string
   repositoryId: number
+  branchName: string
 }
 
 export type SavePullRequestResult = {
