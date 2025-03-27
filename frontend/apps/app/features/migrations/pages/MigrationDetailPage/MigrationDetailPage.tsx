@@ -1,8 +1,5 @@
-import {
-  getPullRequestDetails,
-  getPullRequestFiles,
-} from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
+import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
 import { minimatch } from 'minimatch'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'

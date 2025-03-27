@@ -1,5 +1,5 @@
-import type { Session } from '@liam-hq/db'
 import { Octokit } from '@octokit/rest'
+import type { Session } from '@supabase/supabase-js'
 
 export async function getInstallations(session: Session) {
   const octokit = new Octokit({

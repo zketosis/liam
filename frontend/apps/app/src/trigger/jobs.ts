@@ -1,13 +1,18 @@
+import { getInstallationIdFromRepositoryId } from '@/src/functions/getInstallationIdFromRepositoryId'
 import { postComment } from '@/src/functions/postComment'
+
 import { processGenerateDocsSuggestion } from '@/src/functions/processGenerateDocsSuggestion'
+
+import { processCreateKnowledgeSuggestion } from '@/src/functions/processCreateKnowledgeSuggestion'
+
 import { processGenerateReview } from '@/src/functions/processGenerateReview'
 import { processSavePullRequest } from '@/src/functions/processSavePullRequest'
 import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import type {
-  DocSuggestion,
   GenerateReviewPayload,
   ReviewResponse,
+  SchemaChangeInfo,
 } from '../types'
 
 export const savePullRequestTask = task({
@@ -65,21 +70,36 @@ export const generateReviewTask = task({
 
 export const saveReviewTask = task({
   id: 'save-review',
-  run: async (payload: ReviewResponse) => {
+  run: async (payload: ReviewResponse & GenerateReviewPayload) => {
     logger.log('Executing review save task:', { payload })
     try {
       await processSaveReview(payload)
+
+      logger.log('Creating knowledge suggestions for docs:', {
+        count: payload.schemaFiles.length,
+      })
+
+      const installationId = await getInstallationIdFromRepositoryId(
+        payload.repositoryId,
+      )
+
+      // For each schema file, create a knowledge suggestion
+      await createKnowledgeSuggestionTask.trigger({
+        projectId: payload.projectId,
+        type: 'DOCS',
+        title: `Docs update from PR #${payload.pullRequestNumber}`,
+        path: 'README.md',
+        content: `edited from PR #${payload.pullRequestNumber}`,
+        repositoryOwner: payload.owner,
+        repositoryName: payload.name,
+        installationId,
+      })
+
       await postCommentTask.trigger({
         reviewComment: payload.reviewComment,
         projectId: payload.projectId,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
-      })
-
-      // Trigger docs suggestion generation after review is saved
-      await generateDocsSuggestionTask.trigger({
-        reviewComment: payload.reviewComment,
-        projectId: payload.projectId,
       })
 
       return { success: true }
@@ -116,24 +136,29 @@ export const postCommentTask = task({
   },
 })
 
-export const generateDocsSuggestionTask = task({
-  id: 'generate-docs-suggestion',
-  run: async (payload: { reviewComment: string; projectId: number }) => {
-    const suggestions = await processGenerateDocsSuggestion(payload)
-    logger.log('Generated docs suggestions:', { suggestions })
-    await saveDocsTask.trigger({
-      suggestions,
-      projectId: payload.projectId,
-    })
-    return { suggestions }
-  },
-})
+export const createKnowledgeSuggestionTask = task({
+  id: 'create-knowledge-suggestion',
+  run: async (payload: {
+    projectId: number
+    type: 'SCHEMA' | 'DOCS'
+    title: string
+    path: string
+    content: string
+    repositoryOwner: string
+    repositoryName: string
+    installationId: number
+  }) => {
+    logger.log('Executing create knowledge suggestion task:', { payload })
 
-export const saveDocsTask = task({
-  id: 'save-docs',
-  run: async (payload: { suggestions: string; projectId: number }) => {
-    logger.log('Executing save docs task:', { payload })
-    // TODO: Implement actual database operations to save/update docs
-    return { success: true }
+    try {
+      const result = await processCreateKnowledgeSuggestion(payload)
+      logger.info('Successfully created knowledge suggestion:', {
+        suggestionId: result.suggestionId,
+      })
+      return result
+    } catch (error) {
+      logger.error('Error in createKnowledgeSuggestion task:', { error })
+      throw error
+    }
   },
 })

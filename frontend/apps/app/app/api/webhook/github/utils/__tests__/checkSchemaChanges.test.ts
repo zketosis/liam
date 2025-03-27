@@ -1,10 +1,10 @@
-import { getPullRequestFiles } from '@/libs/github/api.server'
 import { savePullRequestTask } from '@/src/trigger/jobs'
 import { prisma } from '@liam-hq/db'
+import { getPullRequestFiles } from '@liam-hq/github'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { checkSchemaChanges } from '../checkSchemaChanges'
 
-vi.mock('@/libs/github/api.server', () => ({
+vi.mock('@liam-hq/github', () => ({
   getPullRequestFiles: vi.fn(() =>
     Promise.resolve([
       {
@@ -70,6 +70,7 @@ describe('checkSchemaChanges', () => {
         additions: 10,
         deletions: 2,
         changes: 12,
+        patch: 'console.log("Hello, world!");',
         fileType: 'text',
       },
       {
@@ -78,6 +79,7 @@ describe('checkSchemaChanges', () => {
         additions: 5,
         deletions: 1,
         changes: 6,
+        patch: 'console.log("Hello, world!");',
         fileType: 'text',
       },
     ])
@@ -104,6 +106,7 @@ describe('checkSchemaChanges', () => {
         additions: 20,
         deletions: 0,
         changes: 20,
+        patch: 'console.log("Hello, world!");',
         fileType: 'text',
       },
       {
@@ -112,6 +115,7 @@ describe('checkSchemaChanges', () => {
         additions: 10,
         deletions: 2,
         changes: 12,
+        patch: 'console.log("Hello, world!");',
         fileType: 'text',
       },
     ])

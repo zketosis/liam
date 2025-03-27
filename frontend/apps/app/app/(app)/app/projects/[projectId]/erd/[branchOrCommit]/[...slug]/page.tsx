@@ -1,6 +1,5 @@
 import path from 'node:path'
 import type { PageProps } from '@/app/types'
-import { getFileContent, getRepository } from '@/libs/github/api.server'
 import { prisma } from '@liam-hq/db'
 import {
   type SupportedFormat,
@@ -9,6 +8,7 @@ import {
   setPrismWasmUrl,
   supportedFormatSchema,
 } from '@liam-hq/db-structure/parser'
+import { getFileContent, getRepository } from '@liam-hq/github'
 import * as Sentry from '@sentry/nextjs'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
