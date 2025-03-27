@@ -23,8 +23,8 @@ export const aTable = (override?: Partial<Table>): Table => ({
   name: 'users',
   comment: null,
   ...override,
-  indices: {
-    ...override?.indices,
+  indexes: {
+    ...override?.indexes,
   },
   columns: {
     ...override?.columns,

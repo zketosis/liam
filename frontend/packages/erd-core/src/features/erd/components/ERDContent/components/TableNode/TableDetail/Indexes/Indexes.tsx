@@ -1,15 +1,15 @@
-import type { Indices as IndicesType } from '@liam-hq/db-structure'
+import type { Indexes as IndexesType } from '@liam-hq/db-structure'
 import { FileText } from '@liam-hq/ui'
 import type { FC } from 'react'
 import { CollapsibleHeader } from '../CollapsibleHeader'
 import { IndexesItem } from './IndexesItem'
 
 type Props = {
-  indices: IndicesType
+  indexes: IndexesType
 }
 
-export const Indices: FC<Props> = ({ indices }) => {
-  const contentMaxHeight = Object.keys(indices).length * 400
+export const Indexes: FC<Props> = ({ indexes }) => {
+  const contentMaxHeight = Object.keys(indexes).length * 400
 
   return (
     <CollapsibleHeader
@@ -21,7 +21,7 @@ export const Indices: FC<Props> = ({ indices }) => {
       stickyTopHeight={41}
       contentMaxHeight={contentMaxHeight}
     >
-      {Object.entries(indices).map(([key, index]) => (
+      {Object.entries(indexes).map(([key, index]) => (
         <IndexesItem key={key} index={index} />
       ))}
     </CollapsibleHeader>
