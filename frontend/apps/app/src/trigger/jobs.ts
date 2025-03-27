@@ -83,23 +83,23 @@ export const saveReviewTask = task({
         payload.repositoryId,
       )
 
-      // For each schema file, create a knowledge suggestion
-      await createKnowledgeSuggestionTask.trigger({
-        projectId: payload.projectId,
-        type: 'DOCS',
-        title: `Docs update from PR #${payload.pullRequestNumber}`,
-        path: 'README.md',
-        content: `edited from PR #${payload.pullRequestNumber}`,
-        repositoryOwner: payload.owner,
-        repositoryName: payload.name,
-        installationId,
-      })
-
       await postCommentTask.trigger({
         reviewComment: payload.reviewComment,
         projectId: payload.projectId,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
+      })
+
+      // Trigger docs suggestion generation after review is saved
+      await generateDocsSuggestionTask.trigger({
+        reviewComment: payload.reviewComment,
+        projectId: payload.projectId,
+        pullRequestNumber: payload.pullRequestNumber,
+        owner: payload.owner,
+        name: payload.name,
+        installationId,
+        type: 'DOCS',
+        path: 'README.md',
       })
 
       return { success: true }
@@ -133,6 +133,37 @@ export const postCommentTask = task({
     logger.log('Executing comment post task:', { payload })
     const result = await postComment(payload)
     return result
+  },
+})
+
+export const generateDocsSuggestionTask = task({
+  id: 'generate-docs-suggestion',
+  run: async (payload: {
+    reviewComment: string
+    projectId: number
+    pullRequestNumber: number
+    owner: string
+    name: string
+    installationId: number
+    type: 'SCHEMA' | 'DOCS'
+    path: string
+  }) => {
+    const suggestions = await processGenerateDocsSuggestion(payload)
+    logger.log('Generated docs suggestions:', { suggestions })
+
+    // Create knowledge suggestion for each generated suggestion
+    await createKnowledgeSuggestionTask.trigger({
+      projectId: payload.projectId,
+      type: payload.type,
+      title: `Docs update from PR #${payload.pullRequestNumber}`,
+      path: payload.path,
+      content: suggestions,
+      repositoryOwner: payload.owner,
+      repositoryName: payload.name,
+      installationId: payload.installationId,
+    })
+
+    return { suggestions }
   },
 })
 
