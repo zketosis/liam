@@ -1,9 +1,9 @@
+import { prisma } from '@liam-hq/db'
 import {
   getFileContent,
   getPullRequestDetails,
   getPullRequestFiles,
-} from '@/libs/github/api.server'
-import { prisma } from '@liam-hq/db'
+} from '@liam-hq/github'
 import { minimatch } from 'minimatch'
 
 export type SavePullRequestPayload = {

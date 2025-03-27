@@ -1,8 +1,8 @@
+import { prisma } from '@liam-hq/db'
 import {
   createPullRequestComment,
   updatePullRequestComment,
-} from '@/libs/github/api.server'
-import { prisma } from '@liam-hq/db'
+} from '@liam-hq/github'
 import type { ReviewResponse } from '../types'
 
 export async function postComment(

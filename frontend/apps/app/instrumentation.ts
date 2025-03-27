@@ -1,4 +1,4 @@
-import { validateConfig } from '@/libs/github/config'
+import { validateConfig } from '@liam-hq/github'
 import * as Sentry from '@sentry/nextjs'
 
 export async function register() {

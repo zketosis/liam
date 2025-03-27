@@ -7,6 +7,6 @@ import type { Database } from '../supabase/database.types'
 
 export const prisma = new PrismaClient()
 
-export type { EmailOtpType, Session } from '@supabase/supabase-js'
+export type { EmailOtpType } from '@supabase/supabase-js'
 export const createServerClient = _createServerClient<Database>
 export const createBrowserClient = _createBrowserClient<Database>

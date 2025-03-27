@@ -1,13 +1,13 @@
+import { prisma } from '@liam-hq/db'
 import {
   createPullRequestComment,
   updatePullRequestComment,
-} from '@/libs/github/api.server'
-import { prisma } from '@liam-hq/db'
+} from '@liam-hq/github'
 import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 import { postComment } from '../postComment'
 
 // Mock the GitHub API functions
-vi.mock('@/libs/github/api.server', () => ({
+vi.mock('@liam-hq/github', () => ({
   createPullRequestComment: vi.fn(),
   updatePullRequestComment: vi.fn(),
 }))
