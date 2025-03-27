@@ -1,7 +1,11 @@
 import path from 'node:path'
 import type { PageProps } from '@/app/types'
 import { createClient } from '@/libs/db/server'
-import { applyOverrides } from '@liam-hq/db-structure'
+import {
+  type DBStructure,
+  applyOverrides,
+  dbOverrideSchema,
+} from '@liam-hq/db-structure'
 import {
   type SupportedFormat,
   detectFormat,
@@ -14,8 +18,49 @@ import * as Sentry from '@sentry/nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
-import { override } from './constants'
 import ERDViewer from './erdViewer'
+
+const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
+
+const processOverrideFile = async (
+  repositoryFullName: string,
+  branchOrCommit: string,
+  installationId: number,
+  dbStructure: DBStructure,
+) => {
+  const overrideContent = await getFileContent(
+    repositoryFullName,
+    OVERRIDE_SCHEMA_FILE_PATH,
+    branchOrCommit,
+    installationId,
+  )
+
+  if (overrideContent === null) {
+    return { result: dbStructure, error: null }
+  }
+
+  const parsedOverrideContent = v.safeParse(
+    dbOverrideSchema,
+    JSON.parse(overrideContent),
+  )
+
+  if (!parsedOverrideContent.success) {
+    return {
+      result: null,
+      error: {
+        name: 'ValidationError',
+        message: 'Failed to validate schema override file.',
+        instruction:
+          'Please ensure the override file is in the correct format.',
+      },
+    }
+  }
+
+  return {
+    result: applyOverrides(dbStructure, parsedOverrideContent.output),
+    error: null,
+  }
+}
 
 const paramsSchema = v.object({
   projectId: v.string(),
@@ -117,10 +162,27 @@ export default async function Page({
     }
 
     const { value: dbStructure, errors } = await parse(content, format)
-    const overriddenDbStructure = applyOverrides(dbStructure, override)
 
     for (const error of errors) {
       Sentry.captureException(error)
+    }
+
+    const { result: overriddenDbStructure, error: overrideError } =
+      await processOverrideFile(
+        repositoryFullName,
+        branchOrCommit,
+        Number(repository.installationId),
+        dbStructure,
+      )
+
+    if (overrideError) {
+      return (
+        <ERDViewer
+          dbStructure={blankDbStructure}
+          defaultSidebarOpen={false}
+          errorObjects={[overrideError]}
+        />
+      )
     }
 
     const cookieStore = await cookies()
