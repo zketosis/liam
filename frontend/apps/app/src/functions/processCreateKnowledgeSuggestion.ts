@@ -1,5 +1,5 @@
 import { prisma } from '@liam-hq/db'
-import { getFileContentWithSha } from '@liam-hq/github'
+import { getFileContent } from '@liam-hq/github'
 import type { KnowledgeType } from '@prisma/client'
 
 type CreateKnowledgeSuggestionPayload = {
@@ -30,7 +30,7 @@ export const processCreateKnowledgeSuggestion = async (
   const repositoryFullName = `${repositoryOwner}/${repositoryName}`
 
   // Fetch the current file content and SHA from GitHub
-  const { sha } = await getFileContentWithSha(
+  const { sha } = await getFileContent(
     repositoryFullName,
     path,
     'tmp-knowledge-suggestion', // Use tmp-knowledge-suggestion branch
