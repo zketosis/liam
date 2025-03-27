@@ -1,4 +1,3 @@
-import type { Column } from '@liam-hq/db-structure'
 import { clsx } from 'clsx'
 import type { FC } from 'react'
 import styles from './IndexesItem.module.css'
