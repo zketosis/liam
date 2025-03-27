@@ -64,6 +64,7 @@ model OverallReview {
   project       Project?    @relation(fields: [projectId], references: [id])
   pullRequestId Int
   pullRequest   PullRequest @relation(fields: [pullRequestId], references: [id])
+  branchName    String
   reviewComment String?
   reviewedAt    DateTime   @default(now())
   createdAt       DateTime  @default(now())
