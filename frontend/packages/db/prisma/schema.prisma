@@ -19,6 +19,7 @@ model Project {
   watchSchemaFilePatterns WatchSchemaFilePattern[]
   docs      Doc[]
   knowledgeSuggestions KnowledgeSuggestion[]
+  githubDocFilePaths GitHubDocFilePath[]
 }
 
 model Repository {
@@ -134,4 +135,14 @@ model KnowledgeSuggestion {
   approvedAt     DateTime?     // Approval timestamp (null if not approved)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+}
+
+model GitHubDocFilePath {
+  id             Int      @id @default(autoincrement())
+  path           String   // File path in GitHub repository
+  isReviewEnabled Boolean @default(true)  // Whether ReviewAgent should read this file
+  projectId      Int
+  project        Project  @relation(fields: [projectId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

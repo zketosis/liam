@@ -140,6 +140,41 @@ export type Database = {
           },
         ]
       }
+      GitHubDocFilePath: {
+        Row: {
+          createdAt: string
+          id: number
+          isReviewEnabled: boolean
+          path: string
+          projectId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          id?: number
+          isReviewEnabled?: boolean
+          path: string
+          projectId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          id?: number
+          isReviewEnabled?: boolean
+          path?: string
+          projectId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'GitHubDocFilePath_projectId_fkey'
+            columns: ['projectId']
+            isOneToOne: false
+            referencedRelation: 'Project'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       KnowledgeSuggestion: {
         Row: {
           approvedAt: string | null
