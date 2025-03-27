@@ -1,1 +1,0 @@
-export { DocDetailPage } from './DocDetailPage'
