@@ -1,4 +1,3 @@
-import crypto from 'node:crypto'
 import { createAppAuth } from '@octokit/auth-app'
 import { Octokit } from '@octokit/rest'
 import type { FileChange } from './types'
@@ -115,19 +114,6 @@ export const updatePullRequestComment = async (
   })
 
   return response.data
-}
-
-export const verifyWebhookSignature = (
-  payload: string,
-  signature: string,
-): boolean => {
-  const hmac = crypto.createHmac(
-    'sha256',
-    process.env['GITHUB_WEBHOOK_SECRET'] || '',
-  )
-  const digest = `sha256=${hmac.update(payload).digest('hex')}`
-
-  return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature))
 }
 
 export const getRepository = async (

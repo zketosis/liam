@@ -1,10 +1,23 @@
+import crypto from 'node:crypto'
 import { savePullRequestTask } from '@/src/trigger/jobs'
 import { prisma } from '@liam-hq/db'
-import { verifyWebhookSignature } from '@liam-hq/github'
 import { supportedEvents, validateConfig } from '@liam-hq/github'
 import type { GitHubWebhookPayload } from '@liam-hq/github'
 import { type NextRequest, NextResponse } from 'next/server'
 import { checkSchemaChanges } from './utils/checkSchemaChanges'
+
+const verifyWebhookSignature = (
+  payload: string,
+  signature: string,
+): boolean => {
+  const hmac = crypto.createHmac(
+    'sha256',
+    process.env.GITHUB_WEBHOOK_SECRET || '',
+  )
+  const digest = `sha256=${hmac.update(payload).digest('hex')}`
+
+  return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature))
+}
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
   try {
