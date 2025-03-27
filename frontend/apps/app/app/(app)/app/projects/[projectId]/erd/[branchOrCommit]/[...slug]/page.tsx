@@ -1,6 +1,7 @@
 import path from 'node:path'
 import type { PageProps } from '@/app/types'
-import { prisma } from '@liam-hq/db'
+import { createClient } from '@/libs/db/server'
+import { applyOverrides } from '@liam-hq/db-structure'
 import {
   type SupportedFormat,
   detectFormat,
@@ -8,12 +9,12 @@ import {
   setPrismWasmUrl,
   supportedFormatSchema,
 } from '@liam-hq/db-structure/parser'
-import { getFileContent, getRepository } from '@liam-hq/github'
+import { getFileContent } from '@liam-hq/github'
 import * as Sentry from '@sentry/nextjs'
-import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
+import { override } from './constants'
 import ERDViewer from './erdViewer'
 
 const paramsSchema = v.object({
@@ -39,20 +40,22 @@ export default async function Page({
   const blankDbStructure = { tables: {}, relationships: {} }
 
   try {
-    const project = await prisma.project.findUnique({
-      where: { id: Number(projectId) },
-      include: {
-        repositoryMappings: {
-          include: {
-            repository: {
-              select: { owner: true, name: true, installationId: true },
-            },
-          },
-        },
-      },
-    })
+    const supabase = await createClient()
+    const { data: project } = await supabase
+      .from('Project')
+      .select(`
+        *,
+        ProjectRepositoryMapping:ProjectRepositoryMapping(
+          *,
+          Repository:Repository(
+            name, owner, installationId
+          )
+        )
+      `)
+      .eq('id', Number(projectId))
+      .single()
 
-    const repository = project?.repositoryMappings[0]?.repository
+    const repository = project?.ProjectRepositoryMapping[0].Repository
     if (!repository?.installationId || !repository.owner || !repository.name) {
       throw new Error('Repository information not found')
     }
@@ -114,6 +117,8 @@ export default async function Page({
     }
 
     const { value: dbStructure, errors } = await parse(content, format)
+    const overriddenDbStructure = applyOverrides(dbStructure, override)
+
     for (const error of errors) {
       Sentry.captureException(error)
     }
@@ -133,7 +138,7 @@ export default async function Page({
 
     return (
       <ERDViewer
-        dbStructure={dbStructure}
+        dbStructure={overriddenDbStructure}
         defaultSidebarOpen={defaultSidebarOpen}
         defaultPanelSizes={defaultPanelSizes}
         errorObjects={errors.map((error) => ({
