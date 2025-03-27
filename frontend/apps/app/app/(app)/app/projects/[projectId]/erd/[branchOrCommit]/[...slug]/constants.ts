@@ -26,7 +26,7 @@ export const override = {
             comment: 'Post title',
           },
         },
-        indices: {},
+        indexes: {},
       },
     },
   },
