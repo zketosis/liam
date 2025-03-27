@@ -18,19 +18,13 @@ export const CommonLayout: React.FC<CommonLayoutProps> = ({ children }) => {
         <nav className={styles.nav}>
           <ul>
             <li>
-              <Link href="/projects" className={styles.link}>
+              <Link href="/app/projects" className={styles.link}>
                 <span className={styles.icon}>📁</span>
                 Projects
               </Link>
             </li>
           </ul>
         </nav>
-        <div className={styles.collaborators}>
-          <Link href="/collaborators" className={styles.link}>
-            <span className={styles.icon}>👥</span>
-            Collaborators
-          </Link>
-        </div>
       </aside>
       <main className={styles.content}>{children}</main>
     </div>
