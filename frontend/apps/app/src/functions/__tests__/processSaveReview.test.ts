@@ -1,80 +1,82 @@
 import { prisma } from '@liam-hq/db'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 import { processSaveReview } from '../processSaveReview'
 
+// Mock Prisma
+vi.mock('@liam-hq/db', () => ({
+  prisma: {
+    pullRequest: {
+      findFirst: vi.fn(),
+    },
+    overallReview: {
+      create: vi.fn(),
+      findFirst: vi.fn(),
+    },
+  },
+}))
+
 describe('processSaveReview', () => {
-  type TestProject = Awaited<ReturnType<typeof prisma.project.create>>
-  type TestRepo = Awaited<ReturnType<typeof prisma.repository.create>>
-  type TestPullRequest = Awaited<ReturnType<typeof prisma.pullRequest.create>>
+  const mockPullRequest = {
+    id: 1,
+    pullNumber: BigInt(1),
+    repositoryId: 1,
+  }
 
-  let testProject: TestProject
-  let testRepo: TestRepo
-  let testPullRequest: TestPullRequest
-
-  beforeEach(async () => {
-    // Clean up the test database
-    await prisma.overallReview.deleteMany()
-    await prisma.migration.deleteMany()
-    await prisma.pullRequest.deleteMany()
-    await prisma.repository.deleteMany()
-    await prisma.project.deleteMany()
-
-    // Set up test data
-    testProject = await prisma.project.create({
-      data: {
-        name: 'Test Project',
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // Setup default mock returns
+    ;(
+      prisma.pullRequest.findFirst as unknown as MockInstance
+    ).mockResolvedValue(mockPullRequest)
+    ;(prisma.overallReview.create as unknown as MockInstance).mockResolvedValue(
+      {
+        id: 1,
+        projectId: 1,
+        pullRequestId: mockPullRequest.id,
+        reviewComment: 'Test review comment',
       },
-    })
-
-    testRepo = await prisma.repository.create({
-      data: {
-        name: 'test-repo',
-        owner: 'test-owner',
-        installationId: BigInt(1),
-      },
-    })
-
-    testPullRequest = await prisma.pullRequest.create({
-      data: {
-        pullNumber: BigInt(1),
-        repositoryId: testRepo.id,
-      },
-    })
+    )
   })
 
   it('should successfully save a review', async () => {
     const testPayload = {
-      pullRequestId: testPullRequest.id,
-      pullRequestNumber: testPullRequest.pullNumber,
-      repositoryId: testRepo.id,
-      projectId: testProject.id,
+      pullRequestId: mockPullRequest.id,
+      pullRequestNumber: mockPullRequest.pullNumber,
+      repositoryId: 1,
+      projectId: 1,
       reviewComment: 'Test review comment',
     }
 
-    // Execute test
     const result = await processSaveReview(testPayload)
 
-    // Verify
     expect(result.success).toBe(true)
-
-    // Verify the database
-    const savedReview = await prisma.overallReview.findFirst({
-      where: {
-        projectId: testPayload.projectId,
-        pullRequestId: testPullRequest.id,
+    expect(prisma.overallReview.create).toHaveBeenCalledWith({
+      data: {
+        project: {
+          connect: {
+            id: testPayload.projectId,
+          },
+        },
+        pullRequest: {
+          connect: {
+            id: mockPullRequest.id,
+          },
+        },
+        reviewComment: testPayload.reviewComment,
       },
     })
-
-    expect(savedReview).toBeTruthy()
-    expect(savedReview?.reviewComment).toBe('Test review comment')
   })
 
   it('should throw error when pull request not found', async () => {
+    ;(
+      prisma.pullRequest.findFirst as unknown as MockInstance
+    ).mockResolvedValue(null)
+
     const testPayload = {
       pullRequestId: 999,
       pullRequestNumber: BigInt(999),
       repositoryId: 999,
-      projectId: testProject.id,
+      projectId: 1,
       reviewComment: 'Test review comment',
     }
 
