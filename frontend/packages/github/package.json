@@ -17,6 +17,7 @@
     "vitest": "3.0.8"
   },
   "scripts": {
+    "build": "tsc",
     "dev": "tsc --watch",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
