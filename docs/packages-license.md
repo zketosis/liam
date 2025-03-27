@@ -15339,7 +15339,7 @@ Unknown manually approved
 
 
 <a name="vite"></a>
-### vite v6.2.1
+### vite v6.2.3
 #### 
 
 ##### Paths
