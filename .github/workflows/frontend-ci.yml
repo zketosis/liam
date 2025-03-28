@@ -58,15 +58,16 @@ jobs:
       - run: cp .env.template .env
       - run: ./scripts/extract-supabase-anon-key.sh
       - run: pnpm test:turbo
-      - name: Check for diff in generated types
+      - run: pnpm --filter @liam-hq/db supabase:gen
+      - name: Check for diff in generated types and schema.sql
+        env:
+          # check two files.
+          GENERATED_FILES: "frontend/packages/db/supabase/database.types.ts frontend/packages/db/schema/schema.sql"
         run: |
-          pnpm --filter @liam-hq/db supabase:gen
-          git add frontend/packages/db/supabase/database.types.ts
-          if ! git diff HEAD --ignore-space-at-eol --exit-code frontend/packages/db/supabase/database.types.ts; then
-            echo "Generated types differ from committed file."
-            git diff HEAD frontend/packages/db/supabase/database.types.ts
+          if ! git diff HEAD --ignore-space-at-eol --exit-code ${{ env.GENERATED_FILES }}; then
+            echo "Generated types and schema.sql differ from committed files."
             exit 1
           else
-            echo "Generated types are up-to-date."
+            echo "Generated types and schema.sql are up-to-date."
             exit 0
           fi

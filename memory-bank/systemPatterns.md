@@ -11,6 +11,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **OSS and Paid Plan Coexistence**: The product is designed to coexist with its OSS version, offering high-value features in paid plans to ensure a sustainable business model.
 - **Monorepo Structure**: The decision to use a monorepo structure with pnpm workspaces enables efficient code sharing and dependency management.
 - **TypeScript-First**: All components and functions are written in TypeScript to ensure type safety and improve developer experience.
+- **Database Access Strategy**: Transitioning from Prisma ORM to Supabase JS for database access to leverage Supabase's optimized query capabilities and standardize the data access layer.
 
 ## Design Patterns
 - **Modular Architecture**: The system is built with a modular architecture to allow for easy integration and extension of features.
@@ -19,6 +20,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Continuous Learning**: The AI components are designed to continuously learn from past reviews to improve accuracy and relevance over time.
 - **Component-Based UI**: The UI is built using a component-based approach with React, promoting reusability and maintainability.
 - **Server-Client Separation**: Clear separation of server and client components in Next.js, with appropriate data fetching responsibilities.
+- **Flexible Data Access**: The system currently supports multiple database access methods (Prisma ORM and Supabase JS) to provide flexibility in how data is retrieved and manipulated. Supabase JS implementation uses optimized queries with nested joins for efficient data retrieval. The long-term plan is to standardize on Supabase JS across all components.
 
 ## Component Relationships
 - **GitHub Webhook Handler**: Receives webhook events from GitHub, extracts schema changes, and triggers the review process.
@@ -26,6 +28,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Review Agent**: Works closely with the GitHub App to provide real-time analysis and feedback on migration changes.
 - **Migration Review Page**: Serves as the central interface for users to review detailed migration changes, AI suggestions, and improvement points.
 - **Interactive Knowledge Base**: Links review comments with ER diagrams to enhance contextual understanding and formalize best practices.
+- **Document Viewer**: Renders raw text content from GitHub repositories, providing a simple way to view documentation and other text files.
 
 ## Repository Structure
 The project follows a structured organization with clear separation of concerns:

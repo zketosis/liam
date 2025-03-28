@@ -1,0 +1,143 @@
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backLink {
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.infoCard {
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  color: #fff;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 14px;
+  color: #fff;
+}
+
+.value {
+  font-size: 16px;
+  color: #fff;
+  font-family: monospace;
+}
+
+.linkGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.actionLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.actionLink:hover {
+  background-color: #666;
+}
+
+.linkArrow {
+  font-size: 20px;
+  color: #fff;
+}
+
+.noPatterns {
+  padding: 16px;
+  text-align: center;
+  color: #fff;
+  border: 1px solid var(--global-foreground, #fff);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.resourceGrid {
+  display: grid;
+  gap: 32px;
+}
+
+.resourceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resourceTitle {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: #fff;
+}
+
+.resourceLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border: 1px solid var(--global-foreground, #fff);
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.resourceLink:hover {
+  background-color: #666;
+  transform: translateY(-1px);
+}

@@ -1,3 +1,4 @@
+import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -47,7 +48,9 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
       <div>
         <div>
           <Link
-            href={`/app/projects/${projectId}`}
+            href={urlgen('projects/[projectId]', {
+              projectId,
+            })}
             aria-label="Back to project details"
           >
             ← Back to Project
@@ -66,7 +69,13 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
             {knowledgeSuggestions.map((suggestion) => (
               <li key={suggestion.id}>
                 <Link
-                  href={`/app/projects/${projectId}/knowledge-suggestions/${suggestion.id}`}
+                  href={urlgen(
+                    'projects/[projectId]/knowledge-suggestions/[id]',
+                    {
+                      projectId,
+                      id: `${suggestion.id}`,
+                    },
+                  )}
                 >
                   <div>{suggestion.title}</div>
                   <div>

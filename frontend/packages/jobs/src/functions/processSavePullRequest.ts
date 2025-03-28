@@ -6,14 +6,7 @@ import {
 } from '@liam-hq/github'
 import { minimatch } from 'minimatch'
 
-export type SavePullRequestPayload = {
-  prNumber: number
-  pullRequestTitle: string
-  owner: string
-  name: string
-  repositoryId: number
-  branchName: string
-}
+import type { SavePullRequestPayload } from '../types'
 
 export type SavePullRequestResult = {
   success: boolean

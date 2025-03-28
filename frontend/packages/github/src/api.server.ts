@@ -181,7 +181,7 @@ export const updateFileContent = async (
   sha: string,
   message: string,
   installationId: number,
-  branch = 'tmp-knowledge-suggestion',
+  branch: string,
 ): Promise<boolean> => {
   const [owner, repo] = repositoryFullName.split('/')
 
@@ -207,5 +207,62 @@ export const updateFileContent = async (
   } catch (error) {
     console.error(`Error updating file content for ${filePath}:`, error)
     return false
+  }
+}
+
+export const getRepositoryBranches = async (
+  installationId: number,
+  owner: string,
+  repo: string,
+) => {
+  const octokit = await createOctokit(installationId)
+
+  const { data: branches } = await octokit.repos.listBranches({
+    owner,
+    repo,
+    per_page: 100,
+  })
+
+  return branches
+}
+
+/**
+ * Creates a new file in the GitHub repository
+ * @returns Object containing success status and SHA of the created file
+ */
+export const createFileContent = async (
+  repositoryFullName: string,
+  filePath: string,
+  content: string,
+  message: string,
+  installationId: number,
+  branch = 'main',
+): Promise<{ success: boolean; sha: string | null }> => {
+  const [owner, repo] = repositoryFullName.split('/')
+
+  if (!owner || !repo) {
+    console.error('Invalid repository format:', repositoryFullName)
+    return { success: false, sha: null }
+  }
+
+  const octokit = await createOctokit(installationId)
+
+  try {
+    const response = await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path: filePath,
+      message,
+      content: Buffer.from(content).toString('base64'),
+      branch,
+    })
+
+    return {
+      success: true,
+      sha: response.data.content?.sha || null,
+    }
+  } catch (error) {
+    console.error(`Error creating file ${filePath}:`, error)
+    return { success: false, sha: null }
   }
 }

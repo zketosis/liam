@@ -1,19 +1,17 @@
-import { getInstallationIdFromRepositoryId } from '@/src/functions/getInstallationIdFromRepositoryId'
-import { postComment } from '@/src/functions/postComment'
-
-import { processGenerateDocsSuggestion } from '@/src/functions/processGenerateDocsSuggestion'
-
-import { processCreateKnowledgeSuggestion } from '@/src/functions/processCreateKnowledgeSuggestion'
-
-import { processGenerateReview } from '@/src/functions/processGenerateReview'
-import { processSavePullRequest } from '@/src/functions/processSavePullRequest'
-import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
+import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
+import { postComment } from '../functions/postComment'
+import { processCreateKnowledgeSuggestion } from '../functions/processCreateKnowledgeSuggestion'
+import { processGenerateDocsSuggestion } from '../functions/processGenerateDocsSuggestion'
+import { processGenerateReview } from '../functions/processGenerateReview'
+import { processSavePullRequest } from '../functions/processSavePullRequest'
+import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
   ReviewResponse,
-  SchemaChangeInfo,
+  SavePullRequestWithProjectPayload,
 } from '../types'
+import { helloWorldTask } from './helloworld'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
@@ -102,7 +100,7 @@ export const saveReviewTask = task({
         name: payload.name,
         installationId,
         type: 'DOCS',
-        path: 'README.md',
+        branchName: payload.branchName,
       })
 
       return { success: true }
@@ -149,22 +147,35 @@ export const generateDocsSuggestionTask = task({
     name: string
     installationId: number
     type: 'DOCS'
-    path: string
+    branchName: string
   }) => {
     const suggestions = await processGenerateDocsSuggestion(payload)
     logger.log('Generated docs suggestions:', { suggestions })
 
-    // Create knowledge suggestion for each generated suggestion
-    await createKnowledgeSuggestionTask.trigger({
-      projectId: payload.projectId,
-      type: payload.type,
-      title: `Docs update from PR #${payload.pullRequestNumber}`,
-      path: payload.path,
-      content: suggestions,
-      repositoryOwner: payload.owner,
-      repositoryName: payload.name,
-      installationId: payload.installationId,
-    })
+    const suggestionKeys = [
+      'schemaPatterns',
+      'schemaContext',
+      'migrationPatterns',
+      'migrationOpsContext',
+      'liamrules',
+    ]
+
+    for (const key of suggestionKeys) {
+      const content = suggestions[key]
+      if (!content) {
+        logger.warn(`No content found for suggestion key: ${key}`)
+        continue
+      }
+
+      await createKnowledgeSuggestionTask.trigger({
+        projectId: payload.projectId,
+        type: payload.type,
+        title: `Docs update from PR #${payload.pullRequestNumber}`,
+        path: `docs/${key}`,
+        content,
+        branch: payload.branchName,
+      })
+    }
 
     return { suggestions }
   },
@@ -178,12 +189,9 @@ export const createKnowledgeSuggestionTask = task({
     title: string
     path: string
     content: string
-    repositoryOwner: string
-    repositoryName: string
-    installationId: number
+    branch: string
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
-
     try {
       const result = await processCreateKnowledgeSuggestion(payload)
       logger.info('Successfully created knowledge suggestion:', {
@@ -196,3 +204,21 @@ export const createKnowledgeSuggestionTask = task({
     }
   },
 })
+
+export const savePullRequest = async (
+  payload: SavePullRequestWithProjectPayload,
+) => {
+  await savePullRequestTask.trigger({
+    pullRequestNumber: payload.prNumber,
+    pullRequestTitle: payload.pullRequestTitle,
+    projectId: payload.projectId,
+    owner: payload.owner,
+    name: payload.name,
+    repositoryId: payload.repositoryId,
+    branchName: payload.branchName,
+  })
+}
+
+export const helloWorld = async (name?: string) => {
+  await helloWorldTask.trigger({ name: name ?? 'World' })
+}

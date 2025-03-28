@@ -1,5 +1,6 @@
 'use server'
 
+import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import { updateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
@@ -17,7 +18,6 @@ const formDataSchema = v.object({
     v.string(),
     v.transform((value) => Number(value)),
   ),
-  branch: v.string(),
 })
 
 export const approveKnowledgeSuggestion = async (formData: FormData) => {
@@ -27,7 +27,6 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
     repositoryOwner: formData.get('repositoryOwner'),
     repositoryName: formData.get('repositoryName'),
     installationId: formData.get('installationId'),
-    branch: formData.get('branch') ?? 'tmp-knowledge-suggestion',
   }
 
   const parsedData = v.safeParse(formDataSchema, formDataObject)
@@ -36,13 +35,8 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
     throw new Error(`Invalid form data: ${JSON.stringify(parsedData.issues)}`)
   }
 
-  const {
-    suggestionId,
-    repositoryOwner,
-    repositoryName,
-    installationId,
-    branch,
-  } = parsedData.output
+  const { suggestionId, repositoryOwner, repositoryName, installationId } =
+    parsedData.output
 
   try {
     // Get the knowledge suggestion
@@ -65,7 +59,7 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
       suggestion.fileSha,
       suggestion.title, // Use title as commit message
       installationId,
-      branch,
+      suggestion.branchName,
     )
 
     if (!success) {
@@ -84,7 +78,10 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     // Redirect back to the knowledge suggestion detail page
     redirect(
-      `/app/projects/${suggestion.projectId}/knowledge-suggestions/${suggestionId}`,
+      urlgen('projects/[projectId]/knowledge-suggestions/[id]', {
+        projectId: `${suggestion.projectId}`,
+        id: `${suggestionId}`,
+      }),
     )
   } catch (error) {
     console.error('Error approving knowledge suggestion:', error)

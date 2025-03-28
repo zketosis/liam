@@ -13,6 +13,7 @@ export {
   aColumn,
   aRelationship,
   applyOverrides,
+  dbOverrideSchema,
 } from './schema/index.js'
 
 export type { ProcessError } from './parser.js'

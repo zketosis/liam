@@ -1,3 +1,4 @@
+import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -76,7 +77,7 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <Link
-            href="/app/projects"
+            href={urlgen('projects')}
             className={styles.backLink}
             aria-label="Back to projects list"
           >
@@ -86,16 +87,26 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
         </div>
         <div className={styles.headerActions}>
           <Link
-            href={`/app/projects/${project.id}/migrations`}
+            href={urlgen('projects/[projectId]/migrations', {
+              projectId,
+            })}
             className={styles.actionButton}
           >
             View Migrations
           </Link>
           <Link
-            href={`/app/projects/${project.id}/docs`}
+            href={urlgen('projects/[projectId]/docs', {
+              projectId,
+            })}
             className={styles.actionButton}
           >
             View Docs
+          </Link>
+          <Link
+            href={`/app/projects/${project.id}/branches`}
+            className={styles.actionButton}
+          >
+            View Branches
           </Link>
         </div>
       </div>
@@ -111,7 +122,9 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
           {project.migrations.map((migration) => (
             <li key={migration.id}>
               <Link
-                href={`/app/migrations/${migration.id}`}
+                href={urlgen('migrations/[migrationId]', {
+                  migrationId: `${migration.id}`,
+                })}
                 style={{
                   textDecoration: 'underline',
                 }}
