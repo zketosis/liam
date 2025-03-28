@@ -158,7 +158,7 @@ export const generateDocsSuggestionTask = task({
       type: payload.type,
       title: `Docs update from PR #${payload.pullRequestNumber}`,
       path: payload.path,
-      content: suggestions,
+      content: JSON.stringify(suggestions),
       repositoryOwner: payload.owner,
       repositoryName: payload.name,
       installationId: payload.installationId,

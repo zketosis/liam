@@ -56,11 +56,21 @@ Please analyze the migration review and:
 3. Add field/model specific insights to .liamrules
 4. Return the complete updated content for any modified files
 
+Return your analysis as a JSON object with the following keys:
+// schemaPatterns
+// schemaContext
+// migrationPatterns
+// migrationOpsContext
+// liamrules
+
+Each key should contain the full updated content for the respective file, or be left unchanged.
+
 Remember:
 - Only include project-specific insights
 - Be precise and intentional
 - Focus on reusable knowledge
 - Maintain accuracy and clarity
+- Return valid JSON format
 `
 
 const DOC_FILES = [
@@ -75,7 +85,7 @@ export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
   projectId: number
   branchOrCommit?: string
-}): Promise<string> {
+}): Promise<Record<string, string>> {
   try {
     // Get repository information from prisma
     const projectRepo = await prisma.projectRepositoryMapping.findFirst({
@@ -135,7 +145,16 @@ export async function processGenerateDocsSuggestion(payload: {
       },
     )
 
-    return response.content.toString()
+    // Clean up the response and parse JSON
+    try {
+      const rawContent = response.content.toString()
+      // Remove markdown code block markers if they exist
+      const jsonStr = rawContent.replace(/^```(?:json)?\s*|\s*```$/g, '')
+      return JSON.parse(jsonStr)
+    } catch (error) {
+      console.error('Error parsing LLM response:', error)
+      throw new Error('Invalid response format from LLM')
+    }
   } catch (error) {
     console.error('Error generating docs suggestions:', error)
     throw error
