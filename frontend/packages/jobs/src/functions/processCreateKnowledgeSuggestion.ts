@@ -8,24 +8,33 @@ type CreateKnowledgeSuggestionPayload = {
   title: string
   path: string
   content: string
-  repositoryOwner: string
-  repositoryName: string
-  installationId: number
 }
 
 export const processCreateKnowledgeSuggestion = async (
   payload: CreateKnowledgeSuggestionPayload,
 ) => {
-  const {
-    projectId,
-    type,
-    title,
-    path,
-    content,
-    repositoryOwner,
-    repositoryName,
-    installationId,
-  } = payload
+  const { projectId, type, title, path, content } = payload
+
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: {
+      repositoryMappings: {
+        include: {
+          repository: true,
+        },
+        take: 1,
+      },
+    },
+  })
+
+  if (!project || !project.repositoryMappings[0]?.repository) {
+    throw new Error('Repository information not found for the project')
+  }
+
+  const repository = project.repositoryMappings[0].repository
+  const repositoryOwner = repository.owner
+  const repositoryName = repository.name
+  const installationId = Number(repository.installationId)
 
   const repositoryFullName = `${repositoryOwner}/${repositoryName}`
 
