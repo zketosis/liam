@@ -28,7 +28,7 @@ const processOverrideFile = async (
   installationId: number,
   dbStructure: DBStructure,
 ) => {
-  const overrideContent = await getFileContent(
+  const { content: overrideContent } = await getFileContent(
     repositoryFullName,
     OVERRIDE_SCHEMA_FILE_PATH,
     branchOrCommit,
