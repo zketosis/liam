@@ -25,6 +25,5 @@
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest --watch=false"
-  },
-  "types": "./dist/index.d.ts"
+  }
 }
