@@ -19,7 +19,7 @@ describe(processor, () => {
             }),
             ...override?.columns,
           },
-          indices: override?.indices ?? {},
+          indexes: override?.indexes ?? {},
         }),
       },
     })
@@ -209,7 +209,7 @@ describe(processor, () => {
             unique: false,
           }),
         },
-        indices: {
+        indexes: {
           users_email_idx: anIndex({
             name: 'users_email_idx',
             columns: ['email'],
@@ -262,7 +262,7 @@ describe(processor, () => {
             notNull: false,
           }),
         },
-        indices: {
+        indexes: {
           users_email_key: anIndex({
             name: 'users_email_key',
             unique: true,

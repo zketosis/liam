@@ -31,14 +31,14 @@ const indexSchema = v.object({
 })
 export type Index = v.InferOutput<typeof indexSchema>
 
-const indicesSchema = v.record(indexNameSchema, indexSchema)
-export type Indices = v.InferOutput<typeof indicesSchema>
+const indexesSchema = v.record(indexNameSchema, indexSchema)
+export type Indexes = v.InferOutput<typeof indexesSchema>
 
 export const tableSchema = v.object({
   name: tableNameSchema,
   columns: columnsSchema,
   comment: v.nullable(v.string()),
-  indices: indicesSchema,
+  indexes: indexesSchema,
 })
 
 export type Table = v.InferOutput<typeof tableSchema>
