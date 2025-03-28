@@ -100,7 +100,7 @@ export const saveReviewTask = task({
         name: payload.name,
         installationId,
         type: 'DOCS',
-        path: 'README.md',
+        branchName: payload.branchName,
       })
 
       return { success: true }
@@ -147,22 +147,36 @@ export const generateDocsSuggestionTask = task({
     name: string
     installationId: number
     type: 'DOCS'
-    path: string
+    branchName: string
   }) => {
     const suggestions = await processGenerateDocsSuggestion(payload)
     logger.log('Generated docs suggestions:', { suggestions })
 
-    // Create knowledge suggestion for each generated suggestion
-    await createKnowledgeSuggestionTask.trigger({
-      projectId: payload.projectId,
-      type: payload.type,
-      title: `Docs update from PR #${payload.pullRequestNumber}`,
-      path: payload.path,
-      content: JSON.stringify(suggestions),
-      repositoryOwner: payload.owner,
-      repositoryName: payload.name,
-      installationId: payload.installationId,
-    })
+    const suggestionKeys = [
+      'schemaPatterns',
+      'schemaContext',
+      'migrationPatterns',
+      'migrationOpsContext',
+      'liamrules',
+    ]
+
+    for (const key of suggestionKeys) {
+      // Execute each task
+      await createKnowledgeSuggestionTask.trigger({
+        projectId: payload.projectId,
+        type: payload.type,
+        title: `Docs update from PR #${payload.pullRequestNumber}`,
+        path: `docs/${key}`,
+        content: suggestions[key],
+        repositoryOwner: payload.owner,
+        repositoryName: payload.name,
+        installationId: payload.installationId,
+        branch: payload.branchName,
+      })
+
+      // Wait for 2 seconds before processing the next task to avoid API rate limits
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+    }
 
     return { suggestions }
   },
@@ -179,6 +193,7 @@ export const createKnowledgeSuggestionTask = task({
     repositoryOwner: string
     repositoryName: string
     installationId: number
+    branch: string
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
