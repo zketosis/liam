@@ -1,3 +1,4 @@
+import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
 import { minimatch } from 'minimatch'
@@ -78,7 +79,11 @@ async function getMigrationContents(migrationId: string) {
     )
 
   const erdLinks = matchedFiles.map((filename) => ({
-    path: `/app/projects/${overallReview.projectId}/erd/${prDetails.head.ref}/${filename}`,
+    path: urlgen('projects/[projectId]/erd/[branchOrCommit]/[...slug]', {
+      projectId: `${overallReview.projectId}`,
+      branchOrCommit: prDetails.head.ref,
+      slug: filename,
+    }),
     filename,
   }))
 
@@ -101,7 +106,10 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
   return (
     <main className={styles.wrapper}>
-      <Link href={`/app/projects/${projectId}`} className={styles.backLink}>
+      <Link
+        href={urlgen('projects/[projectId]', { projectId: `${projectId}` })}
+        className={styles.backLink}
+      >
         ← Back to Project Detail
       </Link>
 
