@@ -12,6 +12,7 @@ export type SavePullRequestPayload = {
   owner: string
   name: string
   repositoryId: number
+  branchName: string
 }
 
 export type SavePullRequestResult = {
@@ -95,7 +96,7 @@ export async function processSavePullRequest(
   }> = await Promise.all(
     matchedFiles.map(async (file) => {
       try {
-        const content = await getFileContent(
+        const { content } = await getFileContent(
           `${repository.owner}/${repository.name}`,
           file.filename,
           prDetails.head.ref,

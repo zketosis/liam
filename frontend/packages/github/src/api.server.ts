@@ -132,42 +132,11 @@ export const getRepository = async (
   return data
 }
 
+/**
+ * Gets file content and SHA from GitHub repository
+ * @returns Object containing content and SHA
+ */
 export const getFileContent = async (
-  repositoryFullName: string,
-  filePath: string,
-  ref: string,
-  installationId: number,
-): Promise<string | null> => {
-  const [owner, repo] = repositoryFullName.split('/')
-
-  if (!owner || !repo) {
-    console.error('Invalid repository format:', repositoryFullName)
-    return null
-  }
-
-  const octokit = await createOctokit(installationId)
-
-  try {
-    const { data } = await octokit.repos.getContent({
-      owner,
-      repo,
-      path: filePath,
-      ref,
-    })
-
-    if ('type' in data && data.type === 'file' && 'content' in data) {
-      return Buffer.from(data.content, 'base64').toString('utf-8')
-    }
-
-    console.warn('Not a file:', filePath)
-    return null
-  } catch (error) {
-    console.error(`Error fetching file content for ${filePath}:`, error)
-    return null
-  }
-}
-
-export const getFileContentWithSha = async (
   repositoryFullName: string,
   filePath: string,
   ref: string,

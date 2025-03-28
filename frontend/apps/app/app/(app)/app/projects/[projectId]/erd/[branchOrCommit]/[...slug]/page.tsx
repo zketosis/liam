@@ -62,7 +62,7 @@ export default async function Page({
 
     const repositoryFullName = `${repository.owner}/${repository.name}`
 
-    const content = await getFileContent(
+    const { content } = await getFileContent(
       repositoryFullName,
       filePath,
       branchOrCommit,
