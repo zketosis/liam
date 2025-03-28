@@ -161,13 +161,18 @@ export const generateDocsSuggestionTask = task({
     ]
 
     for (const key of suggestionKeys) {
-      // Execute each task
+      const content = suggestions[key]
+      if (!content) {
+        logger.warn(`No content found for suggestion key: ${key}`)
+        continue
+      }
+
       await createKnowledgeSuggestionTask.trigger({
         projectId: payload.projectId,
         type: payload.type,
         title: `Docs update from PR #${payload.pullRequestNumber}`,
         path: `docs/${key}`,
-        content: suggestions[key],
+        content,
         repositoryOwner: payload.owner,
         repositoryName: payload.name,
         installationId: payload.installationId,
