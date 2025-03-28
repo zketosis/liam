@@ -1,3 +1,4 @@
+import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import type { FC } from 'react'
 import styles from './ProjectsPage.module.css'
@@ -10,7 +11,7 @@ export const ProjectsPage: FC = async () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Projects</h1>
-        <Link href="/app/projects/new" className={styles.createButton}>
+        <Link href={urlgen('projects/new')} className={styles.createButton}>
           Create New Project
         </Link>
       </div>
@@ -25,7 +26,9 @@ export const ProjectsPage: FC = async () => {
           {projects.map((project) => (
             <Link
               key={project.id}
-              href={`/app/projects/${project.id}`}
+              href={urlgen('projects/[projectId]', {
+                projectId: `${project.id}`,
+              })}
               className={styles.projectCard}
             >
               <h2>{project.name || 'Untitled Project'}</h2>

@@ -1,6 +1,7 @@
 import path from 'node:path'
 import type { PageProps } from '@/app/types'
 import { createClient } from '@/libs/db/server'
+import { branchOrCommitSchema } from '@/utils/routes'
 import {
   type DBStructure,
   applyOverrides,
@@ -64,7 +65,7 @@ const processOverrideFile = async (
 
 const paramsSchema = v.object({
   projectId: v.string(),
-  branchOrCommit: v.string(),
+  branchOrCommit: branchOrCommitSchema,
   slug: v.array(v.string()),
 })
 
