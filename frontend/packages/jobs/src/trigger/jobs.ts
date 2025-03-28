@@ -178,9 +178,6 @@ export const generateDocsSuggestionTask = task({
         installationId: payload.installationId,
         branch: payload.branchName,
       })
-
-      // Wait for 2 seconds before processing the next task to avoid API rate limits
-      await new Promise((resolve) => setTimeout(resolve, 2000))
     }
 
     return { suggestions }
