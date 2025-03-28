@@ -1,7 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { prisma } from '@liam-hq/db'
-import { langfuseLangchainHandler } from '../../lib'
+import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const MIGRATION_DOCS_REVIEW_TEMPLATE = `
 You are a migration review assistant helping to maintain high-quality documentation (Docs) for database schema changes.

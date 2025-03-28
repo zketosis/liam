@@ -44,7 +44,7 @@ export async function postComment(
 
     const migration = prRecord.migration
 
-    const migrationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/app/migrations/${migration.id}`
+    const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${migration.id}`
 
     // Append migration URL to the review comment
     const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}`

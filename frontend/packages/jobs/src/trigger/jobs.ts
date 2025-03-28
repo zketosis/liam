@@ -1,19 +1,17 @@
-import { getInstallationIdFromRepositoryId } from '@/src/functions/getInstallationIdFromRepositoryId'
-import { postComment } from '@/src/functions/postComment'
-
-import { processGenerateDocsSuggestion } from '@/src/functions/processGenerateDocsSuggestion'
-
-import { processCreateKnowledgeSuggestion } from '@/src/functions/processCreateKnowledgeSuggestion'
-
-import { processGenerateReview } from '@/src/functions/processGenerateReview'
-import { processSavePullRequest } from '@/src/functions/processSavePullRequest'
-import { processSaveReview } from '@/src/functions/processSaveReview'
 import { logger, task } from '@trigger.dev/sdk/v3'
+import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
+import { postComment } from '../functions/postComment'
+import { processCreateKnowledgeSuggestion } from '../functions/processCreateKnowledgeSuggestion'
+import { processGenerateDocsSuggestion } from '../functions/processGenerateDocsSuggestion'
+import { processGenerateReview } from '../functions/processGenerateReview'
+import { processSavePullRequest } from '../functions/processSavePullRequest'
+import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
   ReviewResponse,
-  SchemaChangeInfo,
+  SavePullRequestWithProjectPayload,
 } from '../types'
+import { helloWorldTask } from './helloworld'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
@@ -183,7 +181,6 @@ export const createKnowledgeSuggestionTask = task({
     installationId: number
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
-
     try {
       const result = await processCreateKnowledgeSuggestion(payload)
       logger.info('Successfully created knowledge suggestion:', {
@@ -196,3 +193,21 @@ export const createKnowledgeSuggestionTask = task({
     }
   },
 })
+
+export const savePullRequest = async (
+  payload: SavePullRequestWithProjectPayload,
+) => {
+  await savePullRequestTask.trigger({
+    pullRequestNumber: payload.prNumber,
+    pullRequestTitle: payload.pullRequestTitle,
+    projectId: payload.projectId,
+    owner: payload.owner,
+    name: payload.name,
+    repositoryId: payload.repositoryId,
+    branchName: payload.branchName,
+  })
+}
+
+export const helloWorld = async (name?: string) => {
+  await helloWorldTask.trigger({ name: name ?? 'World' })
+}

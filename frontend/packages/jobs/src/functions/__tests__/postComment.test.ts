@@ -25,6 +25,9 @@ vi.mock('@liam-hq/db', () => ({
   },
 }))
 
+// Mock environment variables
+vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
+
 describe('postComment', () => {
   const mockRepository = {
     id: 1,

@@ -1,4 +1,4 @@
-import { helloWorldTask } from '@/src/trigger/helloworld'
+import { helloWorld } from '@liam-hq/jobs'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export const GET = async (request: NextRequest): Promise<NextResponse> => {
@@ -6,7 +6,7 @@ export const GET = async (request: NextRequest): Promise<NextResponse> => {
 
   let result = 'hello world task processing initiated'
   try {
-    await helloWorldTask.trigger({ name })
+    await helloWorld(name)
   } catch (error) {
     console.error(error)
     result = error instanceof Error ? error.message : 'unknown error'

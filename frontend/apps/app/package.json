@@ -9,6 +9,7 @@
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/erd-core": "workspace:*",
     "@liam-hq/github": "workspace:*",
+    "@liam-hq/jobs": "workspace:*",
     "@liam-hq/ui": "workspace:*",
     "@next/third-parties": "15.1.5",
     "@octokit/auth-app": "6.1.3",

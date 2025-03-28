@@ -2,9 +2,9 @@ import { prisma } from '@liam-hq/db'
 import type { Prisma } from '@prisma/client'
 import type { ReviewResponse } from '../types'
 
-export async function processSaveReview(
+export const processSaveReview = async (
   payload: ReviewResponse,
-): Promise<{ success: boolean }> {
+): Promise<{ success: boolean }> => {
   try {
     const pullRequest = await prisma.pullRequest.findFirst({
       where: {
