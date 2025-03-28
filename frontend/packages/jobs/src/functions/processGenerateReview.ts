@@ -1,6 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { prisma } from '@liam-hq/db'
+import { getFileContent } from '@liam-hq/github'
 import type { GenerateReviewPayload } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
@@ -25,22 +26,54 @@ export const processGenerateReview = async (
   payload: GenerateReviewPayload,
 ): Promise<string> => {
   try {
-    const docs = await prisma.doc.findMany({
+    // Get repository installationId
+    const repository = await prisma.repository.findUnique({
       where: {
-        projectId: payload.projectId,
+        id: payload.repositoryId,
       },
       select: {
-        title: true,
-        content: true,
+        installationId: true,
       },
     })
 
-    const docsContent = docs
-      .map(
-        (doc: { title: string; content: string }) =>
-          `# ${doc.title}\n\n${doc.content}`,
-      )
-      .join('\n\n---\n\n')
+    if (!repository) {
+      throw new Error(`Repository with ID ${payload.repositoryId} not found`)
+    }
+
+    // Get review-enabled doc paths
+    const docPaths = await prisma.gitHubDocFilePath.findMany({
+      where: {
+        projectId: payload.projectId,
+        isReviewEnabled: true,
+      },
+    })
+
+    // Fetch content for each doc path
+    const docsContentArray = await Promise.all(
+      docPaths.map(async (docPath) => {
+        try {
+          const fileData = await getFileContent(
+            `${payload.owner}/${payload.name}`,
+            docPath.path,
+            payload.branchName,
+            Number(repository.installationId),
+          )
+
+          if (!fileData.content) {
+            console.warn(`No content found for ${docPath.path}`)
+            return null
+          }
+
+          return `# ${docPath.path}\n\n${fileData.content}`
+        } catch (error) {
+          console.error(`Error fetching content for ${docPath.path}:`, error)
+          return null
+        }
+      }),
+    )
+
+    // Filter out null values and join content
+    const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
     const prompt = PromptTemplate.fromTemplate(REVIEW_TEMPLATE)
 
     const model = new ChatOpenAI({
