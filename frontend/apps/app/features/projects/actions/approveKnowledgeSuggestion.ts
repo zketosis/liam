@@ -1,5 +1,6 @@
 'use server'
 
+import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import { updateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
@@ -84,7 +85,10 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     // Redirect back to the knowledge suggestion detail page
     redirect(
-      `/app/projects/${suggestion.projectId}/knowledge-suggestions/${suggestionId}`,
+      urlgen('projects/[projectId]/knowledge-suggestions/[id]', {
+        projectId: `${suggestion.projectId}`,
+        id: `${suggestionId}`,
+      }),
     )
   } catch (error) {
     console.error('Error approving knowledge suggestion:', error)

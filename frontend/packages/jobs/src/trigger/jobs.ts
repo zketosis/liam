@@ -173,9 +173,6 @@ export const generateDocsSuggestionTask = task({
         title: `Docs update from PR #${payload.pullRequestNumber}`,
         path: `docs/${key}`,
         content,
-        repositoryOwner: payload.owner,
-        repositoryName: payload.name,
-        installationId: payload.installationId,
         branch: payload.branchName,
       })
     }
@@ -192,9 +189,6 @@ export const createKnowledgeSuggestionTask = task({
     title: string
     path: string
     content: string
-    repositoryOwner: string
-    repositoryName: string
-    installationId: number
     branch: string
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })

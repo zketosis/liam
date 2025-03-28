@@ -1,3 +1,4 @@
+import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import type React from 'react'
 import type { ReactNode } from 'react'
@@ -18,7 +19,7 @@ export const CommonLayout: React.FC<CommonLayoutProps> = ({ children }) => {
         <nav className={styles.nav}>
           <ul>
             <li>
-              <Link href="/app/projects" className={styles.link}>
+              <Link href={urlgen('projects')} className={styles.link}>
                 <span className={styles.icon}>📁</span>
                 Projects
               </Link>

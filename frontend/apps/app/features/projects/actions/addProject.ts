@@ -1,5 +1,6 @@
 'use server'
 
+import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import { redirect } from 'next/navigation'
 
@@ -34,5 +35,5 @@ export const addProject = async (formData: FormData) => {
     return project
   })
 
-  redirect(`/app/projects/${result.id}`)
+  redirect(urlgen('projects/[projectId]', { projectId: `${result.id}` }))
 }
