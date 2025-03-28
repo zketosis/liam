@@ -23,14 +23,14 @@ export const getDocumentContent = async ({
     const repositoryFullName = `${repository.owner}/${repository.name}`
     const filePath = docFilePath.join('/')
 
-    const content = await getFileContent(
+    const fileData = await getFileContent(
       repositoryFullName,
       filePath,
       branchOrCommit,
       repository.installationId,
     )
 
-    return content
+    return fileData.content
   } catch (error) {
     console.error('Error fetching document content:', error)
     return null
