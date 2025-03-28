@@ -51,7 +51,6 @@ async function getProjectAndBranches(projectId: string) {
         repositoryOwner: repository.owner,
         branches: branches.map((branch) => ({
           name: branch.name,
-          protected: branch.protected,
         })),
       }
     }),
@@ -93,12 +92,12 @@ export const ProjectBranchesListPage: FC<Props> = async ({ projectId }) => {
             <ul className={styles.branchList}>
               {repo.branches.map((branch) => (
                 <li key={branch.name} className={styles.branchItem}>
-                  <div className={styles.branchName}>
+                  <Link
+                    href={`/app/projects/${project.id}/ref/${branch.name}`}
+                    className={styles.branchName}
+                  >
                     {branch.name}
-                    {branch.protected && (
-                      <span className={styles.protectedBadge}>Protected</span>
-                    )}
-                  </div>
+                  </Link>
                 </li>
               ))}
             </ul>
