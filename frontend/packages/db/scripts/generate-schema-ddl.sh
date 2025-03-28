@@ -40,11 +40,11 @@ PG_DUMP=(
 # --schema=public to target only the public schema
 # --schema-only to output only schema definitions
 # --no-owner to omit ownership information
-"${PG_DUMP[@]}" "$DB_URL" \
+"${PG_DUMP[@]}" "${DB_URL}" \
   --schema=public \
   --schema-only \
   --no-owner \
-  --file "$SCHEMA_FILE"
+  --file "${SCHEMA_FILE}"
 
 if [ $? -ne 0 ]; then
   echo "Error: pg_dump failed to generate schema DDL"
