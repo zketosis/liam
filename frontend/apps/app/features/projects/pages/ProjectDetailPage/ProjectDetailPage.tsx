@@ -97,6 +97,12 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
           >
             View Docs
           </Link>
+          <Link
+            href={`/app/projects/${project.id}/branches`}
+            className={styles.actionButton}
+          >
+            View Branches
+          </Link>
         </div>
       </div>
 

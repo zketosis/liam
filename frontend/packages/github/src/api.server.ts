@@ -240,3 +240,19 @@ export const updateFileContent = async (
     return false
   }
 }
+
+export const getRepositoryBranches = async (
+  installationId: number,
+  owner: string,
+  repo: string,
+) => {
+  const octokit = await createOctokit(installationId)
+
+  const { data: branches } = await octokit.repos.listBranches({
+    owner,
+    repo,
+    per_page: 100,
+  })
+
+  return branches
+}
