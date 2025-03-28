@@ -16,7 +16,12 @@ const verifyWebhookSignature = (
   )
   const digest = `sha256=${hmac.update(payload).digest('hex')}`
 
-  return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature))
+  try {
+    return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature))
+  } catch (_error) {
+    // If buffers have different lengths, comparison fails
+    return false
+  }
 }
 
 export const POST = async (request: NextRequest): Promise<NextResponse> => {
