@@ -1,5 +1,5 @@
 import { prisma } from '@liam-hq/db'
-import { getFileContent } from '@liam-hq/github'
+import { createFileContent, getFileContent } from '@liam-hq/github'
 import type { KnowledgeType } from '@prisma/client'
 
 type CreateKnowledgeSuggestionPayload = {
@@ -8,12 +8,13 @@ type CreateKnowledgeSuggestionPayload = {
   title: string
   path: string
   content: string
+  branch: string
 }
 
 export const processCreateKnowledgeSuggestion = async (
   payload: CreateKnowledgeSuggestionPayload,
 ) => {
-  const { projectId, type, title, path, content } = payload
+  const { projectId, type, title, path, content, branch } = payload
 
   const project = await prisma.project.findUnique({
     where: { id: projectId },
@@ -37,27 +38,44 @@ export const processCreateKnowledgeSuggestion = async (
   const installationId = Number(repository.installationId)
 
   const repositoryFullName = `${repositoryOwner}/${repositoryName}`
+  let fileSha: string | null = null
 
-  // Fetch the current file content and SHA from GitHub
-  const { sha } = await getFileContent(
+  // First, try to get the SHA of the existing file
+  const existingFile = await getFileContent(
     repositoryFullName,
     path,
-    'tmp-knowledge-suggestion', // Use tmp-knowledge-suggestion branch
+    branch,
     installationId,
   )
 
-  if (!sha) {
-    throw new Error('Failed to get file SHA from GitHub')
+  if (existingFile.sha) {
+    fileSha = existingFile.sha
+  } else {
+    // If file doesn't exist, create a new one
+    const result = await createFileContent(
+      repositoryFullName,
+      path,
+      content,
+      `Create ${title}`,
+      installationId,
+      branch,
+    )
+
+    if (!result.success || !result.sha) {
+      throw new Error('Failed to create file in GitHub')
+    }
+
+    fileSha = result.sha
   }
 
-  // Create the knowledge suggestion
+  // Create the knowledge suggestion with the file SHA
   const knowledgeSuggestion = await prisma.knowledgeSuggestion.create({
     data: {
       type,
       title,
       path,
       content,
-      fileSha: sha,
+      fileSha,
       projectId,
     },
   })

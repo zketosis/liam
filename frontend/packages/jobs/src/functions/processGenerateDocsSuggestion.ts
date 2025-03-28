@@ -1,6 +1,7 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { prisma } from '@liam-hq/db'
+import { getFileContent } from '@liam-hq/github'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const MIGRATION_DOCS_REVIEW_TEMPLATE = `
@@ -55,35 +56,73 @@ Please analyze the migration review and:
 3. Add field/model specific insights to .liamrules
 4. Return the complete updated content for any modified files
 
+Return your analysis as a JSON object with the following keys:
+// schemaPatterns
+// schemaContext
+// migrationPatterns
+// migrationOpsContext
+// liamrules
+
+Each key should contain the full updated content for the respective file, or be left unchanged.
+
 Remember:
 - Only include project-specific insights
 - Be precise and intentional
 - Focus on reusable knowledge
 - Maintain accuracy and clarity
+- Return valid JSON format
 `
+
+const DOC_FILES = [
+  'schemaPatterns.md',
+  'schemaContext.md',
+  'migrationPatterns.md',
+  'migrationOpsContext.md',
+  '.liamrules',
+]
 
 export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
   projectId: number
-}): Promise<string> {
+  branchOrCommit?: string
+}): Promise<Record<string, string>> {
   try {
-    // Fetch existing docs for the project
-    const docs = await prisma.doc.findMany({
+    // Get repository information from prisma
+    const projectRepo = await prisma.projectRepositoryMapping.findFirst({
       where: {
         projectId: payload.projectId,
       },
-      select: {
-        id: true,
-        title: true,
-        content: true,
+      include: {
+        repository: true,
       },
     })
 
-    const docsArray = docs.map((doc) => ({
-      id: doc.id.toString(),
-      title: doc.title,
-      content: doc.content,
-    }))
+    if (!projectRepo?.repository) {
+      throw new Error('Repository information not found')
+    }
+
+    const { repository } = projectRepo
+    const repositoryFullName = `${repository.owner}/${repository.name}`
+    const branch = payload.branchOrCommit || 'main'
+
+    // Fetch all doc files from GitHub
+    const docsPromises = DOC_FILES.map(async (filename) => {
+      const filePath = `docs/${filename}`
+      const fileData = await getFileContent(
+        repositoryFullName,
+        filePath,
+        branch,
+        Number(repository.installationId),
+      )
+
+      return {
+        id: filename,
+        title: filename.replace('.md', ''),
+        content: fileData.content || '',
+      }
+    })
+
+    const docsArray = await Promise.all(docsPromises)
 
     const prompt = PromptTemplate.fromTemplate(MIGRATION_DOCS_REVIEW_TEMPLATE)
 
@@ -106,7 +145,16 @@ export async function processGenerateDocsSuggestion(payload: {
       },
     )
 
-    return response.content.toString()
+    // Clean up the response and parse JSON
+    try {
+      const rawContent = response.content.toString()
+      // Remove markdown code block markers if they exist
+      const jsonStr = rawContent.replace(/^```(?:json)?\s*|\s*```$/g, '')
+      return JSON.parse(jsonStr)
+    } catch (error) {
+      console.error('Error parsing LLM response:', error)
+      throw new Error('Invalid response format from LLM')
+    }
   } catch (error) {
     console.error('Error generating docs suggestions:', error)
     throw error
