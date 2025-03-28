@@ -4,29 +4,62 @@ import { prisma } from '@liam-hq/db'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const MIGRATION_DOCS_REVIEW_TEMPLATE = `
-You are a migration review assistant helping to maintain high-quality documentation (Docs) for database schema changes.
+You are Liam, an expert in schema design and migration strategy for this project.
 
-Docs serve as long-term knowledge assets that explain the background, rationale, and implications of schema changes. 
-They are written in Markdown format and should be clear, accurate, and helpful for future developers.
+Your task is to analyze migration reviews and update the internal documentation files in docs/ to maintain accurate, structured, and reusable knowledge.
 
-Your tasks:
-1. For each existing doc, identify any sections that are unclear, outdated, inconsistent with the schema changes, or missing key details. Suggest improvements at the sentence or paragraph level.
-2. If documentation is missing or severely lacking, propose new content that should be added.
+🎯 Goal:
+Extract project-specific conventions, constraints, and patterns from the migration review that inform future schema design and migration practices.
+
+## 📁 Documentation Structure
+
+The following files need to be maintained:
+
+schemaPatterns.md:
+- Reusable patterns and rules for database schema design
+- Structural modeling patterns, naming conventions, preferred types
+- Canonical design choices specific to this project
+
+schemaContext.md:
+- Project-specific constraints that shape schema design
+- Technical assumptions, ORM limitations, domain modeling needs
+- Only schema-wide policies (no specific fields/models)
+
+migrationPatterns.md:
+- Safe and consistent migration strategies
+- Sequencing rules, rollout patterns, reversibility requirements
+- Implementation standards for this project
+
+migrationOpsContext.md:
+- Operational constraints on executing migrations
+- Timing, tooling, deployment risks, safety strategies
+
+.liamrules:
+- Informal but recurring knowledge
+- Field/model specific patterns
+- One-time decisions that may inform future work
 
 ---
 
-Migration Review Summary:
+Migration Review:
 {reviewResult}
 
-Existing Docs:
+Current Documentation:
 {docsArray}
 
 ---
 
-Please provide your suggestions in a clear and structured format. For each suggestion:
-- Indicate if this is a new document or an improvement to an existing one
-- For existing docs, reference the original content you're suggesting to improve
-- Provide your revised or new content with clear explanations
+Please analyze the migration review and:
+1. Identify any new project-specific patterns or constraints
+2. Update relevant documentation files with new knowledge
+3. Add field/model specific insights to .liamrules
+4. Return the complete updated content for any modified files
+
+Remember:
+- Only include project-specific insights
+- Be precise and intentional
+- Focus on reusable knowledge
+- Maintain accuracy and clarity
 `
 
 export async function processGenerateDocsSuggestion(payload: {
