@@ -6,7 +6,8 @@
 - **OpenAI**: Provider of AI models used for generating schema reviews.
 - **Trigger.dev**: Task orchestration platform used for implementing the review pipeline.
 - **GitHub App**: Integrated to automate comments and review approvals on PRs.
-- **Prisma**: ORM for database access and management.
+- **Prisma**: ORM for database access and management (currently being phased out).
+- **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins. Planned to replace Prisma across all components.
 - **AWS**: Deployed in the us-east-1 region for its high affinity with English-speaking markets and potential for future multi-region expansion.
 - **TypeScript**: Strongly-typed programming language that builds on JavaScript.
 - **React 18**: UI library for building component-based interfaces.
@@ -50,6 +51,7 @@
 ## Technical Constraints
 - The product must coexist with its OSS version, offering high-value features in paid plans to ensure a sustainable business model.
 - The AI components require continuous learning from past reviews to improve accuracy and relevance over time.
+- During the transition from Prisma to Supabase JS, both database access methods will coexist, requiring careful coordination to ensure consistent data access patterns.
 
 ## Dependencies
 - **AWS**: Used for deployment, with a focus on the us-east-1 region.
