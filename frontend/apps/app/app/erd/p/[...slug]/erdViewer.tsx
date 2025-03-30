@@ -37,14 +37,12 @@ export default function ERDViewer({
     setShowCookieConsent(window === window.parent)
   }, [dbStructure])
 
-  // Update your versionData to match exactly what versionSchema expects
   const versionData = {
-    version: '0.1.0',
-    gitHash: process.env.NEXT_PUBLIC_GIT_HASH ?? 'unknown',
-    envName: process.env.NEXT_PUBLIC_ENV_NAME ?? 'development',
-    date: process.env.NEXT_PUBLIC_RELEASE_DATE ?? new Date().toISOString(),
+    version: '0.1.0', // NOTE: no maintained version for ERD Web
+    gitHash: process.env.NEXT_PUBLIC_GIT_HASH,
+    envName: process.env.NEXT_PUBLIC_ENV_NAME,
+    date: process.env.NEXT_PUBLIC_RELEASE_DATE,
     displayedOn: 'web',
-    // Add any other required fields from the schema
   }
   const version = v.parse(versionSchema, versionData)
 
