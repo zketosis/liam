@@ -49,13 +49,15 @@ async function getBranchDetails(projectId: number) {
     console.error('Error fetching doc paths:', docPathsError)
   }
 
-  const transformedPatterns = patterns?.map(pattern => ({
-    pattern: pattern.pattern
-  })) || []
+  const transformedPatterns =
+    patterns?.map((pattern) => ({
+      pattern: pattern.pattern,
+    })) || []
 
-  const transformedDocPaths = docPaths?.map(docPath => ({
-    path: docPath.path
-  })) || []
+  const transformedDocPaths =
+    docPaths?.map((docPath) => ({
+      path: docPath.path,
+    })) || []
 
   return {
     ...project,
@@ -96,11 +98,14 @@ export const BranchDetailPage = async ({
               {project.docPaths?.map((docPath) => (
                 <Link
                   key={docPath.path}
-                  href={urlgen('projects/[projectId]/ref/[branchOrCommit]/docs/[docFilePath]', {
-                    projectId: String(projectId),
-                    branchOrCommit,
-                    docFilePath: docPath.path,
-                  })}
+                  href={urlgen(
+                    'projects/[projectId]/ref/[branchOrCommit]/docs/[docFilePath]',
+                    {
+                      projectId: String(projectId),
+                      branchOrCommit,
+                      docFilePath: docPath.path,
+                    },
+                  )}
                   className={styles.resourceLink}
                 >
                   View Documentation for {docPath.path}
@@ -119,11 +124,14 @@ export const BranchDetailPage = async ({
               {project.schemaPatterns?.map((pattern) => (
                 <Link
                   key={pattern.pattern}
-                  href={urlgen('projects/[projectId]/erd/[branchOrCommit]/[...slug]', {
-                    projectId: String(projectId),
-                    branchOrCommit,
-                    slug: pattern.pattern,
-                  })}
+                  href={urlgen(
+                    'projects/[projectId]/erd/[branchOrCommit]/[...slug]',
+                    {
+                      projectId: String(projectId),
+                      branchOrCommit,
+                      slug: pattern.pattern,
+                    },
+                  )}
                   className={styles.resourceLink}
                 >
                   View ERD for {pattern.pattern}
