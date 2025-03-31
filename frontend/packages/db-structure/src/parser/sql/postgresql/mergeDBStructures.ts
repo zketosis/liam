@@ -9,9 +9,9 @@ export const mergeDBStructures = (target: DBStructure, source: DBStructure) => {
         ...target.tables[tableName]?.columns,
         ...table.columns,
       },
-      indices: {
-        ...target.tables[tableName]?.indices,
-        ...table.indices,
+      indexes: {
+        ...target.tables[tableName]?.indexes,
+        ...table.indexes,
       },
     }
   }

@@ -28,7 +28,7 @@ export const RelatedTables: FC<Props> = ({ nodes, edges, onOpenMainPane }) => {
       title="Related tables"
       icon={<WaypointsIcon width={12} />}
       isContentVisible={true}
-      // NOTE: Header height for Columns/Indices/Unique sections:
+      // NOTE: Header height for Columns/Indexes/Unique sections:
       // (40px (content) + 1px (borders)) * 3 = 123px
       stickyTopHeight={123}
       // NOTE: 360px is the height of the content

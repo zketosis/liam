@@ -2,7 +2,7 @@ import type {
   Cardinality,
   Columns,
   ForeignKeyConstraint,
-  Indices,
+  Indexes,
   Relationship,
   Tables,
 } from '../../schema/index.js'
@@ -91,7 +91,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
 
   for (const tblsTable of result.data.tables) {
     const columns: Columns = {}
-    const indices: Indices = {}
+    const indexes: Indexes = {}
 
     const uniqueColumnNames = new Set(
       tblsTable.constraints
@@ -124,7 +124,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
 
     if (tblsTable.indexes) {
       for (const tblsIndex of tblsTable.indexes) {
-        indices[tblsIndex.name] = anIndex({
+        indexes[tblsIndex.name] = anIndex({
           name: tblsIndex.name,
           columns: tblsIndex.columns,
           unique: tblsIndex.def.toLowerCase().includes('unique'),
@@ -135,7 +135,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     tables[tblsTable.name] = aTable({
       name: tblsTable.name,
       columns,
-      indices,
+      indexes,
       comment: tblsTable.comment ?? null,
     })
   }

@@ -8,16 +8,10 @@ export const useCustomReactflow = () => {
 
   const fitView = useCallback(
     async (options?: FitViewOptions) => {
-      // NOTE: Added setTimeout() to reference the updated nodes after setNodes() updates the value.
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          primitiveFitView({
-            minZoom: MIN_ZOOM,
-            maxZoom: MAX_ZOOM,
-            ...options,
-          })
-          resolve()
-        }, 50)
+      primitiveFitView({
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+        ...options,
       })
     },
     [primitiveFitView],

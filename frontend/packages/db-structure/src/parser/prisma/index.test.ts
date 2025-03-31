@@ -27,13 +27,13 @@ describe(_processor, () => {
             }),
             ...override?.columns,
           },
-          indices: {
+          indexes: {
             users_pkey: anIndex({
               name: 'users_pkey',
               unique: true,
               columns: ['id'],
             }),
-            ...override?.indices,
+            ...override?.indexes,
           },
           comment: override?.comment ?? null,
         }),
@@ -196,7 +196,7 @@ describe(_processor, () => {
             unique: true,
           }),
         },
-        indices: {
+        indexes: {
           users_pkey: anIndex({
             name: 'users_pkey',
             unique: true,
@@ -351,7 +351,7 @@ describe(_processor, () => {
             unique: true,
           }),
         },
-        indices: {
+        indexes: {
           users_email_key: anIndex({
             name: 'users_email_key',
             unique: true,
@@ -421,7 +421,7 @@ describe(_processor, () => {
                 unique: true,
               }),
             },
-            indices: {
+            indexes: {
               users_pkey: anIndex({
                 name: 'users_pkey',
                 columns: ['_id'],
@@ -452,7 +452,7 @@ describe(_processor, () => {
                 unique: false,
               }),
             },
-            indices: {
+            indexes: {
               posts_pkey: anIndex({
                 name: 'posts_pkey',
                 unique: true,

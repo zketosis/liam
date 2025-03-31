@@ -215,7 +215,7 @@ export const convertToDBStructure = (stmts: RawStmt[]): ProcessResult => {
       name: tableName,
       columns,
       comment: null,
-      indices: {},
+      indexes: {},
     }
   }
 
@@ -245,8 +245,8 @@ export const convertToDBStructure = (stmts: RawStmt[]): ProcessResult => {
         name: tables[tableName]?.name || tableName,
         comment: tables[tableName]?.comment || null,
         columns: tables[tableName]?.columns || {},
-        indices: {
-          ...tables[tableName]?.indices,
+        indexes: {
+          ...tables[tableName]?.indexes,
           [indexName]: {
             name: indexName,
             unique: unique,
