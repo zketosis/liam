@@ -1,4 +1,5 @@
 import { createClient } from '@/libs/db/server'
+import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import styles from './BranchDetailPage.module.css'
@@ -48,11 +49,21 @@ async function getBranchDetails(projectId: number) {
     console.error('Error fetching doc paths:', docPathsError)
   }
 
+  const transformedPatterns =
+    patterns?.map((pattern) => ({
+      pattern: pattern.pattern,
+    })) || []
+
+  const transformedDocPaths =
+    docPaths?.map((docPath) => ({
+      path: docPath.path,
+    })) || []
+
   return {
     ...project,
     repository: project.ProjectRepositoryMapping[0].Repository,
-    schemaPatterns: patterns || [],
-    docPaths: docPaths || [],
+    schemaPatterns: transformedPatterns,
+    docPaths: transformedDocPaths,
   }
 }
 
@@ -87,7 +98,14 @@ export const BranchDetailPage = async ({
               {project.docPaths?.map((docPath) => (
                 <Link
                   key={docPath.path}
-                  href={`/app/projects/${projectId}/ref/${branchOrCommit}/${docPath.path}`}
+                  href={urlgen(
+                    'projects/[projectId]/ref/[branchOrCommit]/docs/[docFilePath]',
+                    {
+                      projectId: String(projectId),
+                      branchOrCommit,
+                      docFilePath: docPath.path,
+                    },
+                  )}
                   className={styles.resourceLink}
                 >
                   View Documentation for {docPath.path}
@@ -106,7 +124,14 @@ export const BranchDetailPage = async ({
               {project.schemaPatterns?.map((pattern) => (
                 <Link
                   key={pattern.pattern}
-                  href={`/app/projects/${projectId}/erd/${branchOrCommit}/${pattern.pattern}`}
+                  href={urlgen(
+                    'projects/[projectId]/erd/[branchOrCommit]/[...slug]',
+                    {
+                      projectId: String(projectId),
+                      branchOrCommit,
+                      slug: pattern.pattern,
+                    },
+                  )}
                   className={styles.resourceLink}
                 >
                   View ERD for {pattern.pattern}
@@ -124,7 +149,9 @@ export const BranchDetailPage = async ({
             <div className={styles.resourceSection}>
               <h3 className={styles.resourceTitle}>Knowledge Suggestions</h3>
               <Link
-                href={`/app/projects/${projectId}/knowledge-suggestions`}
+                href={urlgen('projects/[projectId]/knowledge-suggestions', {
+                  projectId: String(projectId),
+                })}
                 className={styles.resourceLink}
               >
                 View Knowledge Suggestions
