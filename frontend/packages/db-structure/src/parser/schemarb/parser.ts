@@ -20,7 +20,7 @@ import type {
   DBStructure,
   ForeignKeyConstraint,
   Index,
-  Indices,
+  Indexes,
   Relationship,
   Table,
   Tables,
@@ -126,7 +126,7 @@ function extractIdColumn(argNodes: Node[]): Column | null {
 
 function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
   const columns: Column[] = []
-  const indices: Index[] = []
+  const indexes: Index[] = []
 
   for (const blockNode of blockNodes) {
     if (blockNode instanceof StatementsNode) {
@@ -138,7 +138,7 @@ function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
         ) {
           if (node.name === 'index') {
             const index = extractIndexDetails(node)
-            indices.push(index)
+            indexes.push(index)
             continue
           }
 
@@ -149,7 +149,7 @@ function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
     }
   }
 
-  return [columns, indices]
+  return [columns, indexes]
 }
 
 function extractColumnDetails(node: CallNode): Column {
@@ -393,26 +393,26 @@ class DBStructureFinder extends Visitor {
     table.comment = extractTableComment(argNodes)
 
     const columns: Column[] = []
-    const indices: Index[] = []
+    const indexes: Index[] = []
 
     const idColumn = extractIdColumn(argNodes)
     if (idColumn) columns.push(idColumn)
 
     const blockNodes = node.block?.compactChildNodes() || []
-    const [extractColumns, extractIndices] = extractTableDetails(blockNodes)
+    const [extractColumns, extractIndexes] = extractTableDetails(blockNodes)
 
     columns.push(...extractColumns)
-    indices.push(...extractIndices)
+    indexes.push(...extractIndexes)
 
     table.columns = columns.reduce((acc, column) => {
       acc[column.name] = column
       return acc
     }, {} as Columns)
 
-    table.indices = indices.reduce((acc, index) => {
+    table.indexes = indexes.reduce((acc, index) => {
       acc[index.name] = index
       return acc
-    }, {} as Indices)
+    }, {} as Indexes)
 
     this.tables.push(table)
   }

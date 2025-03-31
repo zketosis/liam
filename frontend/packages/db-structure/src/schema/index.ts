@@ -8,7 +8,7 @@ export type {
   Relationship,
   Relationships,
   Index,
-  Indices,
+  Indexes,
   ForeignKeyConstraint,
   Cardinality,
 } from './dbStructure.js'

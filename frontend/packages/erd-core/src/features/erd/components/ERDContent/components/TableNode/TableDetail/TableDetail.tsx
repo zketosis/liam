@@ -22,10 +22,9 @@ import { type FC, useCallback } from 'react'
 import { hasNonRelatedChildNodes, updateNodesHiddenState } from '../../../utils'
 import { Columns } from './Columns'
 import { Comment } from './Comment'
-import { Indices } from './Indices'
+import { Indexes } from './Indexes'
 import { RelatedTables } from './RelatedTables'
 import styles from './TableDetail.module.css'
-import { Unique } from './Unique'
 import { extractDBStructureForTable } from './extractDBStructureForTable'
 
 type Props = {
@@ -104,8 +103,7 @@ export const TableDetail: FC<Props> = ({ table }) => {
       <div className={styles.body}>
         {table.comment && <Comment comment={table.comment} />}
         <Columns columns={table.columns} />
-        <Indices indices={table.indices} />
-        <Unique columns={table.columns} />
+        <Indexes indexes={table.indexes} />
         <div className={styles.relatedTables}>
           <RelatedTables
             nodes={nodes}

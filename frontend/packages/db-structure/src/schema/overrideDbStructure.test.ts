@@ -31,7 +31,7 @@ describe('overrideDbStructure', () => {
             comment: 'Unique username',
           },
         },
-        indices: {
+        indexes: {
           users_username_idx: {
             name: 'users_username_idx',
             unique: true,
@@ -75,7 +75,7 @@ describe('overrideDbStructure', () => {
                   comment: 'Post title',
                 },
               },
-              indices: {},
+              indexes: {},
             },
           },
         },
@@ -101,7 +101,7 @@ describe('overrideDbStructure', () => {
               name: 'users',
               comment: 'Duplicate table',
               columns: {},
-              indices: {},
+              indexes: {},
             },
           },
         },
@@ -272,7 +272,7 @@ describe('overrideDbStructure', () => {
               comment: 'Post title',
             },
           },
-          indices: {},
+          indexes: {},
         },
       },
       relationships: {},
@@ -478,7 +478,7 @@ describe('overrideDbStructure', () => {
                   comment: 'Foreign key to users',
                 },
               },
-              indices: {},
+              indexes: {},
             },
           },
           // Override existing table

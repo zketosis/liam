@@ -94,7 +94,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       name: model.name,
       columns,
       comment: model.documentation ?? null,
-      indices: {},
+      indexes: {},
     }
   }
   for (const model of dmmf.datamodel.models) {
@@ -146,7 +146,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       getFieldRenamedIndex(index, tableFieldRenaming),
     )
     if (!indexInfo) continue
-    table.indices[indexInfo.name] = indexInfo
+    table.indexes[indexInfo.name] = indexInfo
   }
 
   return {

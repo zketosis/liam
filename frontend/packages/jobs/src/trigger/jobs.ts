@@ -100,7 +100,7 @@ export const saveReviewTask = task({
         name: payload.name,
         installationId,
         type: 'DOCS',
-        path: 'README.md',
+        branchName: payload.branchName,
       })
 
       return { success: true }
@@ -147,22 +147,35 @@ export const generateDocsSuggestionTask = task({
     name: string
     installationId: number
     type: 'DOCS'
-    path: string
+    branchName: string
   }) => {
     const suggestions = await processGenerateDocsSuggestion(payload)
     logger.log('Generated docs suggestions:', { suggestions })
 
-    // Create knowledge suggestion for each generated suggestion
-    await createKnowledgeSuggestionTask.trigger({
-      projectId: payload.projectId,
-      type: payload.type,
-      title: `Docs update from PR #${payload.pullRequestNumber}`,
-      path: payload.path,
-      content: suggestions,
-      repositoryOwner: payload.owner,
-      repositoryName: payload.name,
-      installationId: payload.installationId,
-    })
+    const suggestionKeys = [
+      'schemaPatterns',
+      'schemaContext',
+      'migrationPatterns',
+      'migrationOpsContext',
+      'liamrules',
+    ]
+
+    for (const key of suggestionKeys) {
+      const content = suggestions[key]
+      if (!content) {
+        logger.warn(`No content found for suggestion key: ${key}`)
+        continue
+      }
+
+      await createKnowledgeSuggestionTask.trigger({
+        projectId: payload.projectId,
+        type: payload.type,
+        title: `Docs update from PR #${payload.pullRequestNumber}`,
+        path: `docs/${key}`,
+        content,
+        branch: payload.branchName,
+      })
+    }
 
     return { suggestions }
   },
@@ -176,9 +189,7 @@ export const createKnowledgeSuggestionTask = task({
     title: string
     path: string
     content: string
-    repositoryOwner: string
-    repositoryName: string
-    installationId: number
+    branch: string
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {

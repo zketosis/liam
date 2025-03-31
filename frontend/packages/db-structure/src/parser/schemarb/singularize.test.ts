@@ -22,8 +22,8 @@ describe('singularize', () => {
     expect(singularize('oxen')).toBe('ox')
   })
 
-  it('should convert indices to index', () => {
-    expect(singularize('indices')).toBe('index')
+  it('should convert indexes to index', () => {
+    expect(singularize('indexes')).toBe('index')
   })
 
   it('should convert matrices to matrix', () => {

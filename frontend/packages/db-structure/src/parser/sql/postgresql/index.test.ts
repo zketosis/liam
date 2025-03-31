@@ -21,8 +21,8 @@ describe(processor, () => {
             }),
             ...override?.columns,
           },
-          indices: {
-            ...override?.indices,
+          indexes: {
+            ...override?.indexes,
           },
           comment: override?.comment ?? null,
         }),

@@ -90,7 +90,7 @@ export const createParserTestCases = (
           name: 'email',
         }),
       },
-      indices: {
+      indexes: {
         [indexName]: anIndex({
           name: indexName,
           unique: false,
@@ -104,7 +104,7 @@ export const createParserTestCases = (
         name: 'email',
       }),
     },
-    indices: {
+    indexes: {
       index_users_on_email: anIndex({
         name: 'index_users_on_email',
         unique: true,
