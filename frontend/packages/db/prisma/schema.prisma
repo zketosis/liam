@@ -130,7 +130,7 @@ model KnowledgeSuggestion {
   title          String        // Used as commit message
   path           String        // Target file path
   content        String        // Full content of the new file
-  fileSha        String        // SHA of the file to be updated
+  fileSha        String?       // SHA of the file to be updated (nullable)
   branchName     String        // Branch name for GitHub operations
   projectId      Int
   project        Project       @relation(fields: [projectId], references: [id])
