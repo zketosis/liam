@@ -174,28 +174,6 @@ export const getFileContent = async (
   }
 }
 
-export const updateFileContent = async (
-  repositoryFullName: string,
-  filePath: string,
-  content: string,
-  sha: string,
-  message: string,
-  installationId: number,
-  branch: string,
-): Promise<boolean> => {
-  const result = await createOrUpdateFileContent(
-    repositoryFullName,
-    filePath,
-    content,
-    message,
-    installationId,
-    branch,
-    sha,
-  )
-
-  return result.success
-}
-
 export const getRepositoryBranches = async (
   installationId: number,
   owner: string,
@@ -258,26 +236,4 @@ export const createOrUpdateFileContent = async (
     console.error(`Error creating/updating file ${filePath}:`, error)
     return { success: false, sha: null }
   }
-}
-
-/**
- * Creates a new file in the GitHub repository
- * @returns Object containing success status and SHA of the created file
- */
-export const createFileContent = async (
-  repositoryFullName: string,
-  filePath: string,
-  content: string,
-  message: string,
-  installationId: number,
-  branch = 'main',
-): Promise<{ success: boolean; sha: string | null }> => {
-  return createOrUpdateFileContent(
-    repositoryFullName,
-    filePath,
-    content,
-    message,
-    installationId,
-    branch,
-  )
 }

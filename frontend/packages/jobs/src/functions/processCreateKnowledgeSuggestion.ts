@@ -1,5 +1,5 @@
 import { prisma } from '@liam-hq/db'
-import { createFileContent, getFileContent } from '@liam-hq/github'
+import { createOrUpdateFileContent, getFileContent } from '@liam-hq/github'
 import type { KnowledgeType } from '@prisma/client'
 
 type CreateKnowledgeSuggestionPayload = {
@@ -52,7 +52,7 @@ export const processCreateKnowledgeSuggestion = async (
     fileSha = existingFile.sha
   } else {
     // If file doesn't exist, create a new one
-    const result = await createFileContent(
+    const result = await createOrUpdateFileContent(
       repositoryFullName,
       path,
       content,
