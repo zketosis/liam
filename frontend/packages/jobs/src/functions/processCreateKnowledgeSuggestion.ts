@@ -1,6 +1,7 @@
 import { prisma } from '@liam-hq/db'
-import { createOrUpdateFileContent, getFileContent } from '@liam-hq/github'
-import type { KnowledgeType } from '@prisma/client'
+import { getFileContent } from '@liam-hq/github'
+
+type KnowledgeType = 'SCHEMA' | 'DOCS'
 
 type CreateKnowledgeSuggestionPayload = {
   projectId: number
@@ -51,21 +52,7 @@ export const processCreateKnowledgeSuggestion = async (
   if (existingFile.sha) {
     fileSha = existingFile.sha
   } else {
-    // If file doesn't exist, create a new one
-    const result = await createOrUpdateFileContent(
-      repositoryFullName,
-      path,
-      content,
-      `Create ${title}`,
-      installationId,
-      branch,
-    )
-
-    if (!result.success || !result.sha) {
-      throw new Error('Failed to create file in GitHub')
-    }
-
-    fileSha = result.sha
+    fileSha = null
   }
 
   // Create the knowledge suggestion with the file SHA
