@@ -194,7 +194,7 @@ export type Database = {
           branchName: string
           content: string
           createdAt?: string
-          fileSha: string | null
+          fileSha?: string | null
           id?: number
           path: string
           projectId: number
