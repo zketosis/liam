@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
     "title" "text" NOT NULL,
     "path" "text" NOT NULL,
     "content" "text" NOT NULL,
-    "fileSha" "text" NOT NULL,
+    "fileSha" "text",
     "projectId" integer NOT NULL,
     "approvedAt" timestamp(3) without time zone,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
