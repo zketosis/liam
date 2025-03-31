@@ -6,7 +6,7 @@
     "@liam-hq/cli": "workspace:*"
   },
   "scripts": {
-    "build": "node ../../packages/cli/dist-cli/bin/cli.js erd build --input https://github.com/mastodon/mastodon/blob/main/db/schema.rb --format schemarb",
+    "build": "node ../../packages/cli/dist-cli/bin/cli.js erd build --input https://github.com/mastodon/mastodon/blob/1bc28709ccde4106ab7d654ad5888a14c6bb1724/db/schema.rb --format schemarb",
     "update_dist_content": "node ./scripts/update_dist_content.mjs"
   }
 }

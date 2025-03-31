@@ -174,42 +174,6 @@ export const getFileContent = async (
   }
 }
 
-export const updateFileContent = async (
-  repositoryFullName: string,
-  filePath: string,
-  content: string,
-  sha: string,
-  message: string,
-  installationId: number,
-  branch: string,
-): Promise<boolean> => {
-  const [owner, repo] = repositoryFullName.split('/')
-
-  if (!owner || !repo) {
-    console.error('Invalid repository format:', repositoryFullName)
-    return false
-  }
-
-  const octokit = await createOctokit(installationId)
-
-  try {
-    await octokit.repos.createOrUpdateFileContents({
-      owner,
-      repo,
-      path: filePath,
-      message,
-      content: Buffer.from(content).toString('base64'),
-      sha,
-      branch,
-    })
-
-    return true
-  } catch (error) {
-    console.error(`Error updating file content for ${filePath}:`, error)
-    return false
-  }
-}
-
 export const getRepositoryBranches = async (
   installationId: number,
   owner: string,
@@ -230,13 +194,19 @@ export const getRepositoryBranches = async (
  * Creates a new file in the GitHub repository
  * @returns Object containing success status and SHA of the created file
  */
-export const createFileContent = async (
+/**
+ * Creates or updates a file in the GitHub repository
+ * @param sha If provided, updates an existing file. If not provided, creates a new file.
+ * @returns Object containing success status and SHA of the created/updated file
+ */
+export const createOrUpdateFileContent = async (
   repositoryFullName: string,
   filePath: string,
   content: string,
   message: string,
   installationId: number,
   branch = 'main',
+  sha?: string,
 ): Promise<{ success: boolean; sha: string | null }> => {
   const [owner, repo] = repositoryFullName.split('/')
 
@@ -255,6 +225,7 @@ export const createFileContent = async (
       message,
       content: Buffer.from(content).toString('base64'),
       branch,
+      ...(sha ? { sha } : {}),
     })
 
     return {
@@ -262,7 +233,7 @@ export const createFileContent = async (
       sha: response.data.content?.sha || null,
     }
   } catch (error) {
-    console.error(`Error creating file ${filePath}:`, error)
+    console.error(`Error creating/updating file ${filePath}:`, error)
     return { success: false, sha: null }
   }
 }
