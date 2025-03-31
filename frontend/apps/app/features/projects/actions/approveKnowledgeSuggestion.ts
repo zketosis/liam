@@ -2,7 +2,7 @@
 
 import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
-import { updateFileContent } from '@liam-hq/github'
+import { createOrUpdateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
 import * as v from 'valibot'
 
@@ -52,17 +52,17 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     // Update the file on GitHub
     const repositoryFullName = `${repositoryOwner}/${repositoryName}`
-    const success = await updateFileContent(
+    const result = await createOrUpdateFileContent(
       repositoryFullName,
       suggestion.path,
       suggestion.content,
-      suggestion.fileSha,
       suggestion.title, // Use title as commit message
       installationId,
       suggestion.branchName,
+      suggestion.fileSha,
     )
 
-    if (!success) {
+    if (!result.success) {
       throw new Error('Failed to update file on GitHub')
     }
 
