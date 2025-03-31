@@ -78,10 +78,14 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     // Redirect back to the knowledge suggestion detail page
     redirect(
-      urlgen('projects/[projectId]/knowledge-suggestions/[id]', {
-        projectId: `${suggestion.projectId}`,
-        id: `${suggestionId}`,
-      }),
+      urlgen(
+        'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
+        {
+          projectId: `${suggestion.projectId}`,
+          branchOrCommit: suggestion.branchName,
+          id: `${suggestionId}`,
+        },
+      ),
     )
   } catch (error) {
     console.error('Error approving knowledge suggestion:', error)

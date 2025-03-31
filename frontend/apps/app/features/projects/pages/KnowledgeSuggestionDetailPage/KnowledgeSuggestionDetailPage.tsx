@@ -62,9 +62,13 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
       <div>
         <div>
           <Link
-            href={urlgen('projects/[projectId]/knowledge-suggestions', {
-              projectId,
-            })}
+            href={urlgen(
+              'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions',
+              {
+                projectId,
+                branchOrCommit: suggestion.branchName,
+              },
+            )}
             aria-label="Back to knowledge suggestions list"
           >
             ← Back to Knowledge Suggestions
