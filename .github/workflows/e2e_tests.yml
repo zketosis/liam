@@ -19,32 +19,35 @@ jobs:
       URL: ${{ github.event.deployment_status.target_url }}
       ENVIRONMENT: ${{ github.event.deployment.environment }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+
       - name: Check deployment conditions
         id: check
+        shell: bash
+        working-directory: ${{ github.workspace }}
         run: |
+          ENVIRONMENT="${{ github.event.deployment.environment }}"
+          TARGET_URL="${{ github.event.deployment_status.target_url }}"
           if [[ "${{ github.event_name }}" == "deployment_status" && \
                 "${{ github.event.deployment_status.state }}" == "success" && \
                 ( \
                   ( \
-                    "$GITHUB_ENVIRONMENT" == *"Production"* && \
-                    "$GITHUB_TARGET_URL" == *"liam-app-git-main"* \
+                    [[ "$ENVIRONMENT" == *"Production"* ]] && \
+                    [[ "$TARGET_URL" == *"liam-app-git-main"* ]] \
                   ) || \
                   ( \
-                    "$GITHUB_ENVIRONMENT" == *"Preview"* && \
-                    "$GITHUB_TARGET_URL" != *"liam-erd-sample"* && \
-                    "$GITHUB_TARGET_URL" != *"liam-docs"* \
+                    [[ "$ENVIRONMENT" == *"Preview"* ]] && \
+                    [[ "$TARGET_URL" != *"liam-erd-sample"* ]] && \
+                    [[ "$TARGET_URL" != *"liam-docs"* ]] \
                   ) \
                 ) ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
           else
             echo "should_run=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: Checkout repository
-        if: steps.check.outputs.should_run == 'true'
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.deployment.sha }}
 
       - name: Setup pnpm
         if: steps.check.outputs.should_run == 'true'
