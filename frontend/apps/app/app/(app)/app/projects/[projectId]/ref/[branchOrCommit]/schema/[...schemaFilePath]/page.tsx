@@ -69,7 +69,7 @@ const processOverrideFile = async (
 const paramsSchema = v.object({
   projectId: v.string(),
   branchOrCommit: branchOrCommitSchema,
-  slug: v.array(v.string()),
+  schemaFilePath: v.array(v.string()),
 })
 
 const searchParamsSchema = v.object({
@@ -83,8 +83,8 @@ export default async function Page({
   const parsedParams = v.safeParse(paramsSchema, await params)
   if (!parsedParams.success) throw notFound()
 
-  const { projectId, branchOrCommit, slug } = parsedParams.output
-  const filePath = slug.join('/')
+  const { projectId, branchOrCommit, schemaFilePath } = parsedParams.output
+  const filePath = schemaFilePath.join('/')
 
   const blankDbStructure = { tables: {}, relationships: {} }
 

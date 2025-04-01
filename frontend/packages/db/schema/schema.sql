@@ -72,6 +72,18 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 
 
+CREATE TYPE "public"."CategoryEnum" AS ENUM (
+    'MIGRATION_SAFETY',
+    'DATA_INTEGRITY',
+    'PERFORMANCE_IMPACT',
+    'PROJECT_RULES_CONSISTENCY',
+    'SECURITY_OR_SCALABILITY'
+);
+
+
+ALTER TYPE "public"."CategoryEnum" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."KnowledgeType" AS ENUM (
     'SCHEMA',
     'DOCS'
@@ -79,6 +91,16 @@ CREATE TYPE "public"."KnowledgeType" AS ENUM (
 
 
 ALTER TYPE "public"."KnowledgeType" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."SeverityEnum" AS ENUM (
+    'CRITICAL',
+    'WARNING',
+    'POSITIVE'
+);
+
+
+ALTER TYPE "public"."SeverityEnum" OWNER TO "postgres";
 
 SET default_tablespace = '';
 
@@ -313,6 +335,65 @@ ALTER SEQUENCE "public"."Repository_id_seq" OWNED BY "public"."Repository"."id";
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
+    "id" integer NOT NULL,
+    "overallReviewId" integer NOT NULL,
+    "overallScore" integer NOT NULL,
+    "category" "public"."CategoryEnum" NOT NULL,
+    "severity" "public"."SeverityEnum" NOT NULL,
+    "description" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewIssue" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewIssue_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewIssue_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."ReviewIssue_id_seq" OWNED BY "public"."ReviewIssue"."id";
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."ReviewScore" (
+    "id" integer NOT NULL,
+    "overallReviewId" integer NOT NULL,
+    "overallScore" integer NOT NULL,
+    "category" "public"."CategoryEnum" NOT NULL,
+    "reason" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewScore" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewScore_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewScore_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."ReviewScore_id_seq" OWNED BY "public"."ReviewScore"."id";
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."WatchSchemaFilePattern" (
     "id" integer NOT NULL,
     "pattern" "text" NOT NULL,
@@ -387,6 +468,14 @@ ALTER TABLE ONLY "public"."Repository" ALTER COLUMN "id" SET DEFAULT "nextval"('
 
 
 
+ALTER TABLE ONLY "public"."ReviewIssue" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewIssue_id_seq"'::"regclass");
+
+
+
+ALTER TABLE ONLY "public"."ReviewScore" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewScore_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."WatchSchemaFilePattern" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."WatchSchemaFilePattern_id_seq"'::"regclass");
 
 
@@ -428,6 +517,16 @@ ALTER TABLE ONLY "public"."PullRequest"
 
 ALTER TABLE ONLY "public"."Repository"
     ADD CONSTRAINT "Repository_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."ReviewIssue"
+    ADD CONSTRAINT "ReviewIssue_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."ReviewScore"
+    ADD CONSTRAINT "ReviewScore_pkey" PRIMARY KEY ("id");
 
 
 
@@ -498,6 +597,16 @@ ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
 
 ALTER TABLE ONLY "public"."PullRequest"
     ADD CONSTRAINT "PullRequest_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."ReviewIssue"
+    ADD CONSTRAINT "ReviewIssue_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."ReviewScore"
+    ADD CONSTRAINT "ReviewScore_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -794,6 +903,30 @@ GRANT ALL ON TABLE "public"."Repository" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewIssue" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewIssue" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewIssue" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewScore" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewScore" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
 
 
 

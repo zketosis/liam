@@ -125,11 +125,11 @@ export const BranchDetailPage = async ({
                 <Link
                   key={pattern.pattern}
                   href={urlgen(
-                    'projects/[projectId]/erd/[branchOrCommit]/[...slug]',
+                    'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]',
                     {
                       projectId: String(projectId),
                       branchOrCommit,
-                      slug: pattern.pattern,
+                      schemaFilePath: pattern.pattern,
                     },
                   )}
                   className={styles.resourceLink}
@@ -149,9 +149,13 @@ export const BranchDetailPage = async ({
             <div className={styles.resourceSection}>
               <h3 className={styles.resourceTitle}>Knowledge Suggestions</h3>
               <Link
-                href={urlgen('projects/[projectId]/knowledge-suggestions', {
-                  projectId: String(projectId),
-                })}
+                href={urlgen(
+                  'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions',
+                  {
+                    projectId: String(projectId),
+                    branchOrCommit,
+                  },
+                )}
                 className={styles.resourceLink}
               >
                 View Knowledge Suggestions
