@@ -9,6 +9,7 @@ export {
   type Relationships,
   type Cardinality,
   type TableGroup,
+  type DBOverride,
   dbStructureSchema,
   aTable,
   aColumn,
