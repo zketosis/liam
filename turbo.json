@@ -4,7 +4,15 @@
     "build": {
       "dependsOn": ["^build", "gen"],
       "outputs": ["dist", "dist-cli"],
-      "env": ["SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]
+      "env": [
+        "SENTRY_AUTH_TOKEN", 
+        "SENTRY_ORG", 
+        "SENTRY_PROJECT",
+        "LANGFUSE_PUBLIC_KEY",
+        "LANGFUSE_SECRET_KEY",
+        "LANGFUSE_BASE_URL",
+        "NEXT_PUBLIC_ENV_NAME"
+      ]
     },
     "@liam-hq/docs#build": {
       "dependsOn": ["^build"],
