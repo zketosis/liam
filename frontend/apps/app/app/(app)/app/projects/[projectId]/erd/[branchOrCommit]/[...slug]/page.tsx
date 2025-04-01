@@ -37,7 +37,10 @@ const processOverrideFile = async (
   )
 
   if (overrideContent === null) {
-    return { result: dbStructure, error: null }
+    return {
+      result: { dbStructure, tableGroups: {} },
+      error: null,
+    }
   }
 
   const parsedOverrideContent = v.safeParse(
@@ -168,13 +171,12 @@ export default async function Page({
       Sentry.captureException(error)
     }
 
-    const { result: overriddenDbStructure, error: overrideError } =
-      await processOverrideFile(
-        repositoryFullName,
-        branchOrCommit,
-        Number(repository.installationId),
-        dbStructure,
-      )
+    const { result, error: overrideError } = await processOverrideFile(
+      repositoryFullName,
+      branchOrCommit,
+      Number(repository.installationId),
+      dbStructure,
+    )
 
     if (overrideError) {
       return (
@@ -184,6 +186,11 @@ export default async function Page({
           errorObjects={[overrideError]}
         />
       )
+    }
+
+    const { dbStructure: overriddenDbStructure, tableGroups } = result || {
+      dbStructure,
+      tableGroups: {},
     }
 
     const cookieStore = await cookies()
@@ -202,6 +209,7 @@ export default async function Page({
     return (
       <ERDViewer
         dbStructure={overriddenDbStructure}
+        tableGroups={tableGroups}
         defaultSidebarOpen={defaultSidebarOpen}
         defaultPanelSizes={defaultPanelSizes}
         errorObjects={errors.map((error) => ({
