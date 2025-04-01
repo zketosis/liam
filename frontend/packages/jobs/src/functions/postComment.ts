@@ -1,8 +1,8 @@
-import { prisma } from '@liam-hq/db'
 import {
   createPullRequestComment,
   updatePullRequestComment,
 } from '@liam-hq/github'
+import { createClient } from '../libs/supabase'
 import type { ReviewResponse } from '../types'
 
 export async function postComment(
@@ -10,40 +10,46 @@ export async function postComment(
 ): Promise<{ success: boolean; message: string }> {
   try {
     const { reviewComment, pullRequestId, repositoryId } = payload
+    const supabase = createClient()
 
     // Get repository information
-    const repository = await prisma.repository.findFirst({
-      where: {
-        id: repositoryId,
-      },
-    })
+    const { data: repository, error: repoError } = await supabase
+      .from('Repository')
+      .select('*')
+      .eq('id', repositoryId)
+      .single()
 
-    if (!repository) {
-      throw new Error(`Repository with ID ${repositoryId} not found`)
+    if (repoError || !repository) {
+      throw new Error(
+        `Repository with ID ${repositoryId} not found: ${repoError?.message}`,
+      )
     }
 
     // Check if there's an existing PR record with a comment
-    const prRecord = await prisma.pullRequest.findFirst({
-      where: {
-        id: pullRequestId,
-      },
-      include: {
-        migration: true,
-      },
-    })
+    const { data: prRecord, error: prError } = await supabase
+      .from('PullRequest')
+      .select(`
+        *,
+        Migration!Migration_pullRequestId_fkey (
+          id
+        )
+      `)
+      .eq('id', pullRequestId)
+      .single()
 
-    if (!prRecord) {
-      throw new Error(`Pull request with ID ${pullRequestId} not found`)
+    if (prError || !prRecord) {
+      throw new Error(
+        `Pull request with ID ${pullRequestId} not found: ${prError?.message}`,
+      )
     }
 
-    if (!prRecord.migration) {
+    if (!prRecord.Migration || !prRecord.Migration[0]) {
       throw new Error(
         `Migration for Pull request with ID ${pullRequestId} not found`,
       )
     }
 
-    const migration = prRecord.migration
-
+    const migration = prRecord.Migration[0]
     const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${migration.id}`
 
     // Append migration URL to the review comment
@@ -73,14 +79,16 @@ export async function postComment(
       )
 
       // Update PR record with the comment ID
-      await prisma.pullRequest.update({
-        where: {
-          id: pullRequestId,
-        },
-        data: {
-          commentId: BigInt(commentResponse.id),
-        },
-      })
+      const { error: updateError } = await supabase
+        .from('PullRequest')
+        .update({ commentId: commentResponse.id })
+        .eq('id', pullRequestId)
+
+      if (updateError) {
+        throw new Error(
+          `Failed to update pull request with comment ID: ${updateError.message}`,
+        )
+      }
     }
 
     return {
