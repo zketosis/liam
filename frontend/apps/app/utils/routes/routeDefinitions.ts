@@ -9,10 +9,10 @@ export type RouteDefinitions = {
     projectId: string
     branchOrCommit: string
   }) => string
-  'projects/[projectId]/erd/[branchOrCommit]/[...slug]': (params: {
+  'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]': (params: {
     projectId: string
     branchOrCommit: string
-    slug: string
+    schemaFilePath: string
   }) => string
   'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions': (params: {
     projectId: string
@@ -51,13 +51,13 @@ export const routeDefinitions: RouteDefinitions = {
     const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
     return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}`
   },
-  'projects/[projectId]/erd/[branchOrCommit]/[...slug]': ({
+  'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]': ({
     projectId,
     branchOrCommit,
-    slug,
+    schemaFilePath,
   }) => {
     const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
-    return `/app/projects/${projectId}/erd/${encodedBranchOrCommit}/${slug}`
+    return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/schema/${schemaFilePath}`
   },
   'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions': ({
     projectId,
