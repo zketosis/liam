@@ -105,9 +105,6 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
               prNumber: pullRequest.number,
               pullRequestTitle: pullRequest.title,
               projectId,
-              owner: data.repository.owner.login,
-              name: data.repository.name,
-              repositoryId: repository.id,
               branchName: pullRequest.head.ref,
             })
 
