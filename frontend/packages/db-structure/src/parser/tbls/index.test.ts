@@ -213,6 +213,7 @@ describe(processor, () => {
           users_email_idx: anIndex({
             name: 'users_email_idx',
             columns: ['email'],
+            type: 'btree',
             unique: false,
           }),
         },
@@ -266,6 +267,7 @@ describe(processor, () => {
           users_email_key: anIndex({
             name: 'users_email_key',
             unique: true,
+            type: 'btree',
             columns: ['email'],
           }),
         },

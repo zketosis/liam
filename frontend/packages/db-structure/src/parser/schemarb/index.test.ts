@@ -197,7 +197,9 @@ describe(processor, () => {
         end
       `)
 
-      expect(value).toEqual(parserTestCases['index (unique: false)'](indexName))
+      expect(value).toEqual(
+        parserTestCases['index (unique: false)'](indexName, ''),
+      )
     })
 
     it('index (unique: true)', async () => {
@@ -208,7 +210,7 @@ describe(processor, () => {
         end
       `)
 
-      expect(value).toEqual(parserTestCases['index (unique: true)'])
+      expect(value).toEqual(parserTestCases['index (unique: true)'](''))
     })
 
     it('foreign key (one-to-many)', async () => {

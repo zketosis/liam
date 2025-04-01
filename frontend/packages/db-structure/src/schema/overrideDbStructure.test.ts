@@ -36,6 +36,7 @@ describe('overrideDbStructure', () => {
             name: 'users_username_idx',
             unique: true,
             columns: ['username'],
+            type: '',
           },
         },
       },

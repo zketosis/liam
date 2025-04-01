@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1151 MIT
+* 1152 MIT
 * 120 Apache 2.0
 * 80 ISC
 * 31 New BSD
@@ -4407,6 +4407,17 @@ LGPL-3.0-or-later permitted
 * /home/runner/work/liam/liam
 
 <a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
+
+
+
+<a name="@valibot/to-json-schema"></a>
+### @valibot/to-json-schema v1.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 

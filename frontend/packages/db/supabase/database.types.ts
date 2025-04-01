@@ -357,6 +357,85 @@ export type Database = {
         }
         Relationships: []
       }
+      ReviewIssue: {
+        Row: {
+          category: Database['public']['Enums']['CategoryEnum']
+          createdAt: string
+          description: string
+          id: number
+          overallReviewId: number
+          overallScore: number
+          severity: Database['public']['Enums']['SeverityEnum']
+          updatedAt: string
+        }
+        Insert: {
+          category: Database['public']['Enums']['CategoryEnum']
+          createdAt?: string
+          description: string
+          id?: number
+          overallReviewId: number
+          overallScore: number
+          severity: Database['public']['Enums']['SeverityEnum']
+          updatedAt: string
+        }
+        Update: {
+          category?: Database['public']['Enums']['CategoryEnum']
+          createdAt?: string
+          description?: string
+          id?: number
+          overallReviewId?: number
+          overallScore?: number
+          severity?: Database['public']['Enums']['SeverityEnum']
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ReviewIssue_overallReviewId_fkey'
+            columns: ['overallReviewId']
+            isOneToOne: false
+            referencedRelation: 'OverallReview'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      ReviewScore: {
+        Row: {
+          category: Database['public']['Enums']['CategoryEnum']
+          createdAt: string
+          id: number
+          overallReviewId: number
+          overallScore: number
+          reason: string
+          updatedAt: string
+        }
+        Insert: {
+          category: Database['public']['Enums']['CategoryEnum']
+          createdAt?: string
+          id?: number
+          overallReviewId: number
+          overallScore: number
+          reason: string
+          updatedAt: string
+        }
+        Update: {
+          category?: Database['public']['Enums']['CategoryEnum']
+          createdAt?: string
+          id?: number
+          overallReviewId?: number
+          overallScore?: number
+          reason?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ReviewScore_overallReviewId_fkey'
+            columns: ['overallReviewId']
+            isOneToOne: false
+            referencedRelation: 'OverallReview'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       WatchSchemaFilePattern: {
         Row: {
           createdAt: string
@@ -397,7 +476,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      CategoryEnum:
+        | 'MIGRATION_SAFETY'
+        | 'DATA_INTEGRITY'
+        | 'PERFORMANCE_IMPACT'
+        | 'PROJECT_RULES_CONSISTENCY'
+        | 'SECURITY_OR_SCALABILITY'
       KnowledgeType: 'SCHEMA' | 'DOCS'
+      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE'
     }
     CompositeTypes: {
       [_ in never]: never

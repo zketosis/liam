@@ -83,7 +83,7 @@ export const createParserTestCases = (
       }),
     },
   }),
-  'index (unique: false)': (indexName: string) =>
+  'index (unique: false)': (indexName: string, type: string) =>
     userTable({
       columns: {
         email: aColumn({
@@ -93,25 +93,28 @@ export const createParserTestCases = (
       indexes: {
         [indexName]: anIndex({
           name: indexName,
+          type,
           unique: false,
           columns: ['id', 'email'],
         }),
       },
     }),
-  'index (unique: true)': userTable({
-    columns: {
-      email: aColumn({
-        name: 'email',
-      }),
-    },
-    indexes: {
-      index_users_on_email: anIndex({
-        name: 'index_users_on_email',
-        unique: true,
-        columns: ['email'],
-      }),
-    },
-  }),
+  'index (unique: true)': (type: string) =>
+    userTable({
+      columns: {
+        email: aColumn({
+          name: 'email',
+        }),
+      },
+      indexes: {
+        index_users_on_email: anIndex({
+          name: 'index_users_on_email',
+          type,
+          unique: true,
+          columns: ['email'],
+        }),
+      },
+    }),
   'foreign key (one-to-many)': (name: string) => ({
     [name]: {
       name,

@@ -131,7 +131,9 @@ describe(processor, () => {
         CREATE INDEX index_users_on_id_and_email ON public.users USING btree (id, email);
       `)
 
-      expect(value).toEqual(parserTestCases['index (unique: false)'](indexName))
+      expect(value).toEqual(
+        parserTestCases['index (unique: false)'](indexName, 'btree'),
+      )
     })
 
     it('index (unique: true)', async () => {
@@ -144,7 +146,7 @@ describe(processor, () => {
         CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
       `)
 
-      expect(value).toEqual(parserTestCases['index (unique: true)'])
+      expect(value).toEqual(parserTestCases['index (unique: true)']('btree'))
     })
 
     // FIXME: `CONSTRAINT` statement is not supported yet

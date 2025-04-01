@@ -175,7 +175,9 @@ describe(_processor, () => {
           @@index([id, email])
         }
       `)
-      expect(value).toEqual(parserTestCases['index (unique: false)'](indexName))
+      expect(value).toEqual(
+        parserTestCases['index (unique: false)'](indexName, ''),
+      )
     })
 
     it('index (unique: true)', async () => {
@@ -431,6 +433,7 @@ describe(_processor, () => {
                 name: 'users_raw_email_address_key',
                 columns: ['raw_email_address'],
                 unique: true,
+                type: '',
               },
             },
           }),

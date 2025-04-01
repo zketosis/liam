@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
+import styles from './KnowledgeSuggestionDetailPage.module.css'
 
 type Props = {
   projectId: string
@@ -58,9 +59,9 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
   const repository = suggestion.project.repositoryMappings[0]?.repository
 
   return (
-    <div>
-      <div>
-        <div>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
           <Link
             href={urlgen(
               'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions',
@@ -69,54 +70,63 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
                 branchOrCommit: suggestion.branchName,
               },
             )}
+            className={styles.backLink}
             aria-label="Back to knowledge suggestions list"
           >
             ← Back to Knowledge Suggestions
           </Link>
-          <h1>{suggestion.title}</h1>
+          <h1 className={styles.title}>{suggestion.title}</h1>
         </div>
       </div>
 
-      <div>
-        <div>
-          <span>Type: {suggestion.type}</span>
-          <span>Path: {suggestion.path}</span>
-          <span>Status: {suggestion.approvedAt ? 'Approved' : 'Pending'}</span>
-          <span>
+      <div className={styles.content}>
+        <div className={styles.metaSection}>
+          <span className={styles.metaItem}>Type: {suggestion.type}</span>
+          <span className={styles.metaItem}>Path: {suggestion.path}</span>
+          <span
+            className={suggestion.approvedAt ? styles.approved : styles.pending}
+          >
+            Status: {suggestion.approvedAt ? 'Approved' : 'Pending'}
+          </span>
+          <span className={styles.metaItem}>
             Created: {suggestion.createdAt.toLocaleDateString('en-US')}
           </span>
           {suggestion.approvedAt && (
-            <span>
+            <span className={styles.metaItem}>
               Approved: {suggestion.approvedAt.toLocaleDateString('en-US')}
             </span>
           )}
         </div>
 
-        <div>
-          <h2>Content</h2>
-          <pre>{suggestion.content}</pre>
+        <div className={styles.contentSection}>
+          <h2 className={styles.sectionTitle}>Content</h2>
+          <pre className={styles.codeContent}>{suggestion.content}</pre>
         </div>
 
         {!suggestion.approvedAt && repository && (
-          <form action={approveKnowledgeSuggestion}>
-            <input type="hidden" name="suggestionId" value={suggestion.id} />
-            <input
-              type="hidden"
-              name="repositoryOwner"
-              value={repository.owner}
-            />
-            <input
-              type="hidden"
-              name="repositoryName"
-              value={repository.name}
-            />
-            <input
-              type="hidden"
-              name="installationId"
-              value={repository.installationId.toString()}
-            />
-            <button type="submit">Approve</button>
-          </form>
+          <div className={styles.actionSection}>
+            <form action={approveKnowledgeSuggestion}>
+              <input type="hidden" name="suggestionId" value={suggestion.id} />
+              <input
+                type="hidden"
+                name="repositoryOwner"
+                value={repository.owner}
+              />
+              <input
+                type="hidden"
+                name="repositoryName"
+                value={repository.name}
+              />
+              <input
+                type="hidden"
+                name="installationId"
+                value={repository.installationId.toString()}
+              />
+              <button type="submit" className={styles.approveButton}>
+                Approve
+              </button>
+            </form>
+          </div>
         )}
       </div>
     </div>

@@ -3,6 +3,7 @@ import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
+import styles from './KnowledgeSuggestionsListPage.module.css'
 
 type Props = {
   projectId: string
@@ -43,31 +44,34 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
   )
 
   return (
-    <div>
-      <div>
-        <div>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
           <Link
             href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
               projectId,
               branchOrCommit,
             })}
-            aria-label="Back to branch details"
+            className={styles.backLink}
+            aria-label="Back to project details"
           >
             ← Back to Branch Details
           </Link>
-          <h1>Knowledge Suggestions for {branchOrCommit}</h1>
+          <h1 className={styles.title}>
+            Knowledge Suggestions for {branchOrCommit}
+          </h1>
         </div>
       </div>
 
-      <div>
+      <div className={styles.content}>
         {knowledgeSuggestions.length === 0 ? (
-          <div>
+          <div className={styles.emptyState}>
             <p>No knowledge suggestions found for this branch.</p>
           </div>
         ) : (
-          <ul>
+          <ul className={styles.suggestionsList}>
             {knowledgeSuggestions.map((suggestion) => (
-              <li key={suggestion.id}>
+              <li key={suggestion.id} className={styles.suggestionItem}>
                 <Link
                   href={urlgen(
                     'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
@@ -77,15 +81,26 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
                       id: `${suggestion.id}`,
                     },
                   )}
+                  className={styles.suggestionLink}
                 >
-                  <div>{suggestion.title}</div>
-                  <div>
-                    <span>Type: {suggestion.type}</span>
-                    <span>Path: {suggestion.path}</span>
-                    <span>
+                  <div className={styles.suggestionTitle}>
+                    {suggestion.title}
+                  </div>
+                  <div className={styles.suggestionMeta}>
+                    <span className={styles.metaItem}>
+                      Type: {suggestion.type}
+                    </span>
+                    <span className={styles.metaItem}>
+                      Path: {suggestion.path}
+                    </span>
+                    <span
+                      className={
+                        suggestion.approvedAt ? styles.approved : styles.pending
+                      }
+                    >
                       Status: {suggestion.approvedAt ? 'Approved' : 'Pending'}
                     </span>
-                    <span>
+                    <span className={styles.metaItem}>
                       Created:{' '}
                       {new Date(suggestion.createdAt).toLocaleDateString(
                         'en-US',
