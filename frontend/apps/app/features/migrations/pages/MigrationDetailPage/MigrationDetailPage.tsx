@@ -79,11 +79,14 @@ async function getMigrationContents(migrationId: string) {
     )
 
   const erdLinks = matchedFiles.map((filename) => ({
-    path: urlgen('projects/[projectId]/erd/[branchOrCommit]/[...slug]', {
-      projectId: `${overallReview.projectId}`,
-      branchOrCommit: prDetails.head.ref,
-      slug: filename,
-    }),
+    path: urlgen(
+      'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]',
+      {
+        projectId: `${overallReview.projectId}`,
+        branchOrCommit: prDetails.head.ref,
+        schemaFilePath: filename,
+      },
+    ),
     filename,
   }))
 

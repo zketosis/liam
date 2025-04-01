@@ -125,11 +125,11 @@ export const BranchDetailPage = async ({
                 <Link
                   key={pattern.pattern}
                   href={urlgen(
-                    'projects/[projectId]/erd/[branchOrCommit]/[...slug]',
+                    'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]',
                     {
                       projectId: String(projectId),
                       branchOrCommit,
-                      slug: pattern.pattern,
+                      schemaFilePath: pattern.pattern,
                     },
                   )}
                   className={styles.resourceLink}
