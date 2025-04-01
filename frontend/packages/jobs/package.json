@@ -30,7 +30,6 @@
     "dev": "tsc --watch",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
-    "generate-schema": "json-schema-to-zod --input ./src/prompts/JSON_SCHEMA.json --output ./src/prompts/JSON_SCHEMA.generated.ts",
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
