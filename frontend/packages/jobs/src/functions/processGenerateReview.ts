@@ -1,26 +1,7 @@
-import { PromptTemplate } from '@langchain/core/prompts'
-import { ChatOpenAI } from '@langchain/openai'
 import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
+import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload } from '../types'
-import { langfuseLangchainHandler } from './langfuseLangchainHandler'
-
-const REVIEW_TEMPLATE = `
-You are a database design expert.
-Please analyze the following schema changes and provide a detailed review.
-
-Documentation Context:
-{docsContent}
-
-Schema Files:
-{schemaFiles}
-
-Schema Changes:
-{schemaChanges}
-
-Please provide a comprehensive review of the database schema changes. Your review should be detailed and constructive.
-The response must be a single string containing your detailed review.
-`
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
@@ -74,26 +55,13 @@ export const processGenerateReview = async (
 
     // Filter out null values and join content
     const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
-    const prompt = PromptTemplate.fromTemplate(REVIEW_TEMPLATE)
 
-    const model = new ChatOpenAI({
-      temperature: 0.7,
-      model: 'gpt-4o-mini',
-    })
-
-    const chain = prompt.pipe(model)
-    const response = await chain.invoke(
-      {
-        docsContent,
-        schemaFiles: payload.schemaFiles,
-        schemaChanges: payload.schemaChanges,
-      },
-      {
-        callbacks: [langfuseLangchainHandler],
-      },
+    const review = await generateReview(
+      docsContent,
+      payload.schemaFiles,
+      payload.schemaChanges,
     )
-
-    return response.content.toString()
+    return review.bodyMarkdown
   } catch (error) {
     console.error('Error generating review:', error)
     throw error
