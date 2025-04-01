@@ -1,3 +1,4 @@
+import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { PromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
@@ -46,6 +47,7 @@ export const generateReview = async (
   docsContent: string,
   schemaFiles: GenerateReviewPayload['schemaFiles'],
   schemaChanges: GenerateReviewPayload['schemaChanges'],
+  callbacks: Callbacks,
 ) => {
   const prompt = PromptTemplate.fromTemplate(REVIEW_TEMPLATE)
   const model = new ChatOpenAI({
@@ -53,11 +55,16 @@ export const generateReview = async (
     model: 'gpt-4o-mini',
   })
   const chain = prompt.pipe(model.withStructuredOutput(reviewJsonSchema))
-  const response = await chain.invoke({
-    docsContent,
-    schemaFiles,
-    schemaChanges,
-  })
+  const response = await chain.invoke(
+    {
+      docsContent,
+      schemaFiles,
+      schemaChanges,
+    },
+    {
+      callbacks,
+    },
+  )
   const parsedResponse = parse(reviewSchema, response)
   return parsedResponse
 }

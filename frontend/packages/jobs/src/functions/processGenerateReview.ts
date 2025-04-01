@@ -2,6 +2,7 @@ import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
 import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload } from '../types'
+import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
@@ -55,11 +56,12 @@ export const processGenerateReview = async (
 
     // Filter out null values and join content
     const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
-
+    const callbacks = [langfuseLangchainHandler]
     const review = await generateReview(
       docsContent,
       payload.schemaFiles,
       payload.schemaChanges,
+      callbacks,
     )
     return review.bodyMarkdown
   } catch (error) {
