@@ -1,5 +1,12 @@
 # @liam-hq/cli
 
+## 0.5.2
+
+### Patch Changes
+
+- [#1048](https://github.com/liam-hq/liam/pull/1048) - :bug fixed prompt text postgres for init / Thanks [@yymm120](https://github.com/yymm120)!
+- [#1037](https://github.com/liam-hq/liam/pull/1037) - ✨ Adding type to indexes / Thanks [@ya2s](https://github.com/ya2s)!
+
 ## 0.5.1
 
 ### Patch Changes
