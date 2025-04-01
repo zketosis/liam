@@ -1,5 +1,12 @@
 {
   "overrides": {
+    "tableGroups": {
+      "Github": {
+        "name": "Github",
+        "tables": ["Repository", "PullRequest", "ProjectRepositoryMapping"],
+        "comment": "Tables related to Github"
+      }
+    },
     "addTables": {
       "posts": {
         "name": "posts",
@@ -26,7 +33,7 @@
             "comment": "Post title"
           }
         },
-        "indices": {}
+        "indexes": {}
       }
     }
   }

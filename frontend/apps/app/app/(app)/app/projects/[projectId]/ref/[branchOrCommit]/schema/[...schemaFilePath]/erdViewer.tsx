@@ -2,6 +2,7 @@
 
 import { CookieConsent } from '@/components/CookieConsent'
 import type { DBStructure, ProcessError } from '@liam-hq/db-structure'
+import type { TableGroup } from '@liam-hq/db-structure'
 import {
   ERDRenderer,
   VersionProvider,
@@ -17,8 +18,9 @@ type ErrorObject = {
   instruction?: string
 }
 
-type ERDViewerProps = {
+export type ERDViewerProps = {
   dbStructure: DBStructure
+  tableGroups?: Record<string, TableGroup>
   errorObjects: ErrorObject[]
   defaultSidebarOpen: boolean
   defaultPanelSizes?: number[]
@@ -26,6 +28,7 @@ type ERDViewerProps = {
 
 export default function ERDViewer({
   dbStructure,
+  tableGroups = {},
   errorObjects,
   defaultSidebarOpen,
   defaultPanelSizes = [20, 80],
@@ -53,6 +56,7 @@ export default function ERDViewer({
           defaultSidebarOpen={defaultSidebarOpen}
           defaultPanelSizes={defaultPanelSizes}
           errorObjects={errorObjects}
+          tableGroups={tableGroups}
         />
       </VersionProvider>
       {isShowCookieConsent && <CookieConsent />}

@@ -82,16 +82,16 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const result = applyOverrides(originalStructure, override)
+      const { dbStructure } = applyOverrides(originalStructure, override)
 
       // Check if new table was added
-      expect(result.tables['posts']).toBeDefined()
-      expect(result.tables['posts']?.name).toBe('posts')
-      expect(result.tables['posts']?.comment).toBe('Blog posts')
-      expect(result.tables['posts']?.columns['title']).toBeDefined()
+      expect(dbStructure.tables['posts']).toBeDefined()
+      expect(dbStructure.tables['posts']?.name).toBe('posts')
+      expect(dbStructure.tables['posts']?.comment).toBe('Blog posts')
+      expect(dbStructure.tables['posts']?.columns['title']).toBeDefined()
 
       // Check that the original table is still there
-      expect(result.tables['users']).toBeDefined()
+      expect(dbStructure.tables['users']).toBeDefined()
     })
 
     it('should throw an error when adding a table that already exists', () => {
@@ -126,14 +126,14 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const result = applyOverrides(originalStructure, override)
+      const { dbStructure } = applyOverrides(originalStructure, override)
 
-      expect(result.tables['users']?.comment).toBe(
+      expect(dbStructure.tables['users']?.comment).toBe(
         'Updated user accounts table',
       )
       // Original columns should be preserved
-      expect(result.tables['users']?.columns['id']).toBeDefined()
-      expect(result.tables['users']?.columns['username']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['id']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['username']).toBeDefined()
     })
 
     it('should throw an error when overriding a non-existent table', () => {
@@ -186,23 +186,25 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const result = applyOverrides(originalStructure, override)
+      const { dbStructure } = applyOverrides(originalStructure, override)
 
       // Check new columns were added
-      expect(result.tables['users']?.columns['email']).toBeDefined()
-      expect(result.tables['users']?.columns['email']?.type).toBe('varchar')
-      expect(result.tables['users']?.columns['email']?.comment).toBe(
+      expect(dbStructure.tables['users']?.columns['email']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['email']?.type).toBe(
+        'varchar',
+      )
+      expect(dbStructure.tables['users']?.columns['email']?.comment).toBe(
         'User email address',
       )
 
-      expect(result.tables['users']?.columns['created_at']).toBeDefined()
-      expect(result.tables['users']?.columns['created_at']?.default).toBe(
+      expect(dbStructure.tables['users']?.columns['created_at']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['created_at']?.default).toBe(
         'now()',
       )
 
       // Original columns should still be there
-      expect(result.tables['users']?.columns['id']).toBeDefined()
-      expect(result.tables['users']?.columns['username']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['id']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['username']).toBeDefined()
     })
 
     it('should throw an error when adding a column that already exists', () => {
@@ -297,19 +299,19 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const result = applyOverrides(structureWithPosts, override)
+      const { dbStructure } = applyOverrides(structureWithPosts, override)
 
       // Check if relationship was added
-      expect(result.relationships['posts_users_fk']).toBeDefined()
-      expect(result.relationships['posts_users_fk']?.cardinality).toBe(
+      expect(dbStructure.relationships['posts_users_fk']).toBeDefined()
+      expect(dbStructure.relationships['posts_users_fk']?.cardinality).toBe(
         'ONE_TO_MANY',
       )
-      expect(result.relationships['posts_users_fk']?.primaryTableName).toBe(
-        'users',
-      )
-      expect(result.relationships['posts_users_fk']?.foreignTableName).toBe(
-        'posts',
-      )
+      expect(
+        dbStructure.relationships['posts_users_fk']?.primaryTableName,
+      ).toBe('users')
+      expect(
+        dbStructure.relationships['posts_users_fk']?.foreignTableName,
+      ).toBe('posts')
     })
 
     it('should throw an error for duplicate relationship names', () => {
@@ -517,22 +519,22 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const result = applyOverrides(originalStructure, override)
+      const { dbStructure } = applyOverrides(originalStructure, override)
 
       // Check new table was added
-      expect(result.tables['posts']).toBeDefined()
+      expect(dbStructure.tables['posts']).toBeDefined()
 
       // Check table comment was updated
-      expect(result.tables['users']?.comment).toBe(
+      expect(dbStructure.tables['users']?.comment).toBe(
         'User accounts with enhanced permissions',
       )
 
       // Check new column was added
-      expect(result.tables['users']?.columns['email']).toBeDefined()
+      expect(dbStructure.tables['users']?.columns['email']).toBeDefined()
 
       // Check relationship was added
-      expect(result.relationships['posts_users_fk']).toBeDefined()
-      expect(result.relationships['posts_users_fk']?.cardinality).toBe(
+      expect(dbStructure.relationships['posts_users_fk']).toBeDefined()
+      expect(dbStructure.relationships['posts_users_fk']?.cardinality).toBe(
         'ONE_TO_MANY',
       )
     })

@@ -19,4 +19,10 @@ export {
   anIndex,
   aRelationship,
 } from './factories.js'
-export { applyOverrides, dbOverrideSchema } from './overrideDbStructure.js'
+export {
+  applyOverrides,
+  dbOverrideSchema,
+  tableGroupSchema,
+  tableGroupNameSchema,
+} from './overrideDbStructure.js'
+export type { TableGroup } from './overrideDbStructure.js'
