@@ -29,22 +29,18 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}
         run: |
+          EVENT_NAME="${{ github.event_name }}"
+          EVENT_STATE="${{ github.event.deployment_status.state }}"
           ENVIRONMENT="${{ github.event.deployment.environment }}"
           TARGET_URL="${{ github.event.deployment_status.target_url }}"
-          if [[ "${{ github.event_name }}" == "deployment_status" && \
-                "${{ github.event.deployment_status.state }}" == "success" && \
-                ( \
-                  ( \
-                    [[ "$ENVIRONMENT" == *"Production"* ]] && \
-                    [[ "$TARGET_URL" == *"liam-app-git-main"* ]] \
-                  ) || \
-                  ( \
-                    [[ "$ENVIRONMENT" == *"Preview"* ]] && \
-                    [[ "$TARGET_URL" != *"liam-erd-sample"* ]] && \
-                    [[ "$TARGET_URL" != *"liam-docs"* ]] \
-                  ) \
-                ) ]]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
+
+          if [ "$EVENT_NAME" = "deployment_status" ] && [ "$EVENT_STATE" = "success" ]; then
+            if { [ "$ENVIRONMENT" = *"Production"* ] && [ "$TARGET_URL" = *"liam-app-git-main"* ]; } || \
+               { [ "$ENVIRONMENT" = *"Preview"* ] && [ "$TARGET_URL" != *"liam-erd-sample"* ] && [ "$TARGET_URL" != *"liam-docs"* ]; }; then
+              echo "should_run=true" >> $GITHUB_OUTPUT
+            else
+              echo "should_run=false" >> $GITHUB_OUTPUT
+            fi
           else
             echo "should_run=false" >> $GITHUB_OUTPUT
           fi
