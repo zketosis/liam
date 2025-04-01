@@ -7,8 +7,11 @@ export type SavePullRequestPayload = {
   branchName: string
 }
 
-export type SavePullRequestWithProjectPayload = SavePullRequestPayload & {
+export type SavePullRequestWithProjectPayload = {
+  prNumber: number
+  pullRequestTitle: string
   projectId: number
+  branchName: string
 }
 
 export type GenerateReviewPayload = {
