@@ -1,5 +1,11 @@
 # @liam-hq/db-structure
 
+## 0.0.17
+
+### Patch Changes
+
+- [#1037](https://github.com/liam-hq/liam/pull/1037) - ✨ Adding type to indexes / Thanks [@ya2s](https://github.com/ya2s)!
+
 ## 0.0.16
 
 ### Patch Changes
