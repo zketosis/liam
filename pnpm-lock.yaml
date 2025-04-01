@@ -531,6 +531,9 @@ importers:
       '@liam-hq/db':
         specifier: workspace:*
         version: link:../db
+      '@liam-hq/db-structure':
+        specifier: workspace:*
+        version: link:../db-structure
       '@liam-hq/github':
         specifier: workspace:*
         version: link:../github

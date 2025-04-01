@@ -46,3 +46,15 @@ export type ReviewResponse = {
   repositoryId: number
   branchName: string
 }
+
+export type GenerateSchemaMetaPayload = {
+  overallReviewId: number
+}
+
+export type SchemaMetaResult = {
+  overrides: Record<string, unknown>
+  projectId: number
+  pullRequestNumber: number
+  branchName: string
+  title: string
+}
