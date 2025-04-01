@@ -59,7 +59,7 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
       suggestion.title, // Use title as commit message
       installationId,
       suggestion.branchName,
-      suggestion.fileSha,
+      suggestion.fileSha || undefined,
     )
 
     if (!result.success) {

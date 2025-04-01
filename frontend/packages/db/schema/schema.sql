@@ -85,63 +85,6 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 
-CREATE TABLE IF NOT EXISTS "public"."Doc" (
-    "id" integer NOT NULL,
-    "title" "text" NOT NULL,
-    "content" "text" NOT NULL,
-    "latestVersionId" integer,
-    "projectId" integer NOT NULL,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."Doc" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."DocVersion" (
-    "id" integer NOT NULL,
-    "docId" integer NOT NULL,
-    "version" integer NOT NULL,
-    "content" "text" NOT NULL,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "title" "text" NOT NULL
-);
-
-
-ALTER TABLE "public"."DocVersion" OWNER TO "postgres";
-
-
-CREATE SEQUENCE IF NOT EXISTS "public"."DocVersion_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "public"."DocVersion_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."DocVersion_id_seq" OWNED BY "public"."DocVersion"."id";
-
-
-
-CREATE SEQUENCE IF NOT EXISTS "public"."Doc_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "public"."Doc_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."Doc_id_seq" OWNED BY "public"."Doc"."id";
-
-
-
 CREATE TABLE IF NOT EXISTS "public"."GitHubDocFilePath" (
     "id" integer NOT NULL,
     "path" "text" NOT NULL,
@@ -176,7 +119,7 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
     "title" "text" NOT NULL,
     "path" "text" NOT NULL,
     "content" "text" NOT NULL,
-    "fileSha" "text" NOT NULL,
+    "fileSha" "text",
     "projectId" integer NOT NULL,
     "approvedAt" timestamp(3) without time zone,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -412,14 +355,6 @@ CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
 ALTER TABLE "public"."_prisma_migrations" OWNER TO "postgres";
 
 
-ALTER TABLE ONLY "public"."Doc" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Doc_id_seq"'::"regclass");
-
-
-
-ALTER TABLE ONLY "public"."DocVersion" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."DocVersion_id_seq"'::"regclass");
-
-
-
 ALTER TABLE ONLY "public"."GitHubDocFilePath" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."GitHubDocFilePath_id_seq"'::"regclass");
 
 
@@ -453,16 +388,6 @@ ALTER TABLE ONLY "public"."Repository" ALTER COLUMN "id" SET DEFAULT "nextval"('
 
 
 ALTER TABLE ONLY "public"."WatchSchemaFilePattern" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."WatchSchemaFilePattern_id_seq"'::"regclass");
-
-
-
-ALTER TABLE ONLY "public"."DocVersion"
-    ADD CONSTRAINT "DocVersion_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."Doc"
-    ADD CONSTRAINT "Doc_pkey" PRIMARY KEY ("id");
 
 
 
@@ -516,10 +441,6 @@ ALTER TABLE ONLY "public"."_prisma_migrations"
 
 
 
-CREATE UNIQUE INDEX "DocVersion_docId_version_key" ON "public"."DocVersion" USING "btree" ("docId", "version");
-
-
-
 CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDocFilePath" USING "btree" ("path", "projectId");
 
 
@@ -537,16 +458,6 @@ CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullR
 
 
 CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
-
-
-
-ALTER TABLE ONLY "public"."DocVersion"
-    ADD CONSTRAINT "DocVersion_docId_fkey" FOREIGN KEY ("docId") REFERENCES "public"."Doc"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."Doc"
-    ADD CONSTRAINT "Doc_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -805,18 +716,6 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
-
-
-
-GRANT ALL ON SEQUENCE "public"."DocVersion_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."DocVersion_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."DocVersion_id_seq" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."Doc_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."Doc_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."Doc_id_seq" TO "service_role";
 
 
 
