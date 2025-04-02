@@ -38,8 +38,8 @@ export default defineConfig({
       }),
       esbuildPlugin(
         sentryEsbuildPlugin({
-          org: 'liam-hq',
-          project: 'trigger-jobs',
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
           authToken: process.env.SENTRY_AUTH_TOKEN,
         }),
         { placement: 'last', target: 'deploy' },
@@ -49,8 +49,12 @@ export default defineConfig({
   init: async () => {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
-      environment:
-        process.env.NODE_ENV === 'production' ? 'production' : 'development',
+      
+      tracesSampleRate: 1,
+      
+      debug: false,
+      
+      environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     })
   },
   onFailure: async (payload, error, { ctx }) => {
