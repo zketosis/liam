@@ -1,9 +1,17 @@
-import { prisma } from '@liam-hq/db'
 import {
   createPullRequestComment,
   updatePullRequestComment,
 } from '@liam-hq/github'
-import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  type MockInstance,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest'
+import { createClient } from '../../libs/supabase'
 import { postComment } from '../postComment'
 
 // Mock the GitHub API functions
@@ -12,54 +20,56 @@ vi.mock('@liam-hq/github', () => ({
   updatePullRequestComment: vi.fn(),
 }))
 
-// Mock Prisma
-vi.mock('@liam-hq/db', () => ({
-  prisma: {
-    repository: {
-      findFirst: vi.fn(),
-    },
-    pullRequest: {
-      findFirst: vi.fn(),
-      update: vi.fn(),
-    },
-  },
-}))
-
 // Mock environment variables
 vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 
 describe('postComment', () => {
-  const mockRepository = {
-    id: 1,
+  const supabase = createClient()
+
+  // Test data
+  const testRepository = {
+    id: 9999,
     name: 'test-repo',
     owner: 'test-owner',
-    installationId: BigInt(1),
+    installationId: 12345,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   }
 
-  const mockPullRequest = {
-    id: 1,
-    pullNumber: BigInt(1),
-    repositoryId: 1,
+  const testPullRequest = {
+    id: 9999,
+    pullNumber: 1,
+    repositoryId: 9999,
     commentId: null,
-    migration: {
-      id: 1,
-      title: 'Test Migration',
-    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   }
 
-  beforeEach(() => {
+  const testMigration = {
+    id: 9999,
+    title: 'Test Migration',
+    pullRequestId: 9999,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  // Setup: Insert test data before tests
+  beforeEach(async () => {
     vi.clearAllMocks()
-    // Setup default mock returns
-    ;(prisma.repository.findFirst as unknown as MockInstance).mockResolvedValue(
-      mockRepository,
-    )
-    ;(
-      prisma.pullRequest.findFirst as unknown as MockInstance
-    ).mockResolvedValue(mockPullRequest)
-    ;(prisma.pullRequest.update as unknown as MockInstance).mockResolvedValue({
-      ...mockPullRequest,
-      commentId: BigInt(123),
-    })
+
+    // Insert test data
+    await supabase.from('Repository').insert(testRepository)
+    await supabase.from('PullRequest').insert(testPullRequest)
+    await supabase.from('Migration').insert(testMigration)
+  })
+
+  // Cleanup: Remove test data after tests
+  afterEach(async () => {
+    // Delete test data in reverse order to avoid foreign key constraints
+    await supabase.from('Migration').delete().eq('id', testMigration.id)
+    await supabase.from('PullRequest').delete().eq('id', testPullRequest.id)
+    await supabase.from('Repository').delete().eq('id', testRepository.id)
   })
 
   it('should create a new comment when no comment exists', async () => {
@@ -73,8 +83,8 @@ describe('postComment', () => {
     const testPayload = {
       reviewComment: 'Test review comment',
       projectId: 1,
-      pullRequestId: mockPullRequest.id,
-      repositoryId: mockRepository.id,
+      pullRequestId: testPullRequest.id,
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
     }
 
@@ -82,33 +92,37 @@ describe('postComment', () => {
 
     expect(result.success).toBe(true)
     expect(createPullRequestComment).toHaveBeenCalledWith(
-      Number(mockRepository.installationId),
-      mockRepository.owner,
-      mockRepository.name,
-      Number(mockPullRequest.pullNumber),
+      testRepository.installationId,
+      testRepository.owner,
+      testRepository.name,
+      testPullRequest.pullNumber,
       expect.stringContaining('Test review comment'),
     )
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
-    expect(prisma.pullRequest.update).toHaveBeenCalledWith({
-      where: { id: mockPullRequest.id },
-      data: { commentId: BigInt(mockCommentId) },
-    })
+
+    // Verify the update in the database
+    const { data: updatedPR } = await supabase
+      .from('PullRequest')
+      .select('*')
+      .eq('id', testPullRequest.id)
+      .single()
+
+    expect(updatedPR?.commentId).toBe(mockCommentId)
   })
 
   it('should update existing comment when comment exists', async () => {
-    const existingCommentId = BigInt(456)
-    ;(
-      prisma.pullRequest.findFirst as unknown as MockInstance
-    ).mockResolvedValue({
-      ...mockPullRequest,
-      commentId: existingCommentId,
-    })
+    // First update the test pull request to have a comment ID
+    const existingCommentId = 456
+    await supabase
+      .from('PullRequest')
+      .update({ commentId: existingCommentId })
+      .eq('id', testPullRequest.id)
 
     const testPayload = {
       reviewComment: 'Updated review comment',
       projectId: 1,
-      pullRequestId: mockPullRequest.id,
-      repositoryId: mockRepository.id,
+      pullRequestId: testPullRequest.id,
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
     }
 
@@ -116,69 +130,74 @@ describe('postComment', () => {
 
     expect(result.success).toBe(true)
     expect(updatePullRequestComment).toHaveBeenCalledWith(
-      Number(mockRepository.installationId),
-      mockRepository.owner,
-      mockRepository.name,
-      Number(existingCommentId),
+      testRepository.installationId,
+      testRepository.owner,
+      testRepository.name,
+      existingCommentId,
       expect.stringContaining('Updated review comment'),
     )
     expect(updatePullRequestComment).toHaveBeenCalledTimes(1)
   })
 
   it('should throw error when repository not found', async () => {
-    ;(prisma.repository.findFirst as unknown as MockInstance).mockResolvedValue(
-      null,
-    )
-
     const testPayload = {
       reviewComment: 'Test review comment',
       projectId: 1,
-      pullRequestId: mockPullRequest.id,
-      repositoryId: 999,
+      pullRequestId: testPullRequest.id,
+      repositoryId: 999999, // Non-existent ID
       branchName: 'test-branch',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
-      'Repository with ID 999 not found',
+      /Repository with ID 999999 not found/,
     )
   })
 
   it('should throw error when pull request not found', async () => {
-    ;(
-      prisma.pullRequest.findFirst as unknown as MockInstance
-    ).mockResolvedValue(null)
-
     const testPayload = {
       reviewComment: 'Test review comment',
       projectId: 1,
-      pullRequestId: 999,
-      repositoryId: mockRepository.id,
+      pullRequestId: 999999, // Non-existent ID
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
-      'Pull request with ID 999 not found',
+      /Pull request with ID 999999 not found/,
     )
   })
 
   it('should throw error when migration not found', async () => {
-    ;(
-      prisma.pullRequest.findFirst as unknown as MockInstance
-    ).mockResolvedValue({
-      ...mockPullRequest,
-      migration: null,
-    })
+    // Create a pull request without a migration
+    const prWithoutMigration = {
+      id: 8888,
+      pullNumber: 2,
+      repositoryId: testRepository.id,
+      commentId: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    await supabase.from('PullRequest').insert(prWithoutMigration)
 
     const testPayload = {
       reviewComment: 'Test review comment',
       projectId: 1,
-      pullRequestId: mockPullRequest.id,
-      repositoryId: mockRepository.id,
+      pullRequestId: prWithoutMigration.id,
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
     }
 
-    await expect(postComment(testPayload)).rejects.toThrow(
-      `Migration for Pull request with ID ${mockPullRequest.id} not found`,
-    )
+    try {
+      await expect(postComment(testPayload)).rejects.toThrow(
+        /Migration for Pull request with ID 8888 not found/,
+      )
+    } finally {
+      // Clean up the extra test data
+      await supabase
+        .from('PullRequest')
+        .delete()
+        .eq('id', prWithoutMigration.id)
+    }
   })
 })
