@@ -17,6 +17,8 @@
     "@liam-hq/docs",
     "@liam-hq/figma-to-css-variables",
     "@liam-hq/db",
-    "@liam-hq/jobs"
+    "@liam-hq/jobs",
+    "@liam-hq/prompt-test",
+    "node-gtts"
   ]
 }
