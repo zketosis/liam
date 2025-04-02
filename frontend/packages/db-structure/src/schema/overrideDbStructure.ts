@@ -1,25 +1,16 @@
 import * as v from 'valibot'
 import {
   type DBStructure,
+  type TableGroup,
   columnNameSchema,
   columnSchema,
   dbStructureSchema,
   relationshipNameSchema,
   relationshipSchema,
+  tableGroupNameSchema,
+  tableGroupSchema,
   tableNameSchema,
 } from './dbStructure.js'
-
-// Schema for table group name
-export const tableGroupNameSchema = v.string()
-
-// Schema for table group
-export const tableGroupSchema = v.object({
-  name: v.string(),
-  tables: v.array(tableNameSchema),
-  comment: v.nullable(v.string()),
-})
-
-export type TableGroup = v.InferOutput<typeof tableGroupSchema>
 
 // Schema for adding columns to an existing table
 const addColumnsSchema = v.record(columnNameSchema, columnSchema)
@@ -56,6 +47,7 @@ export type DBOverride = v.InferOutput<typeof dbOverrideSchema>
  * 1. Apply overrides to existing tables (e.g., replacing comments)
  * 2. Add new columns to existing tables
  * 3. Add new relationships
+ * 4. Process and merge table groups from both original structure and overrides
  * @param originalStructure The original DB structure
  * @param override The override definitions
  * @returns The merged DB structure and table grouping information
@@ -71,7 +63,10 @@ export function applyOverrides(
 
   const { overrides } = override
 
-  const tableGroups: Record<string, TableGroup> = {}
+  // Initialize table groups from the original DB structure if it exists
+  const tableGroups: Record<string, TableGroup> = originalStructure.tableGroups
+    ? { ...originalStructure.tableGroups }
+    : {}
 
   // Apply table overrides
   if (overrides.tables) {
@@ -165,6 +160,9 @@ export function applyOverrides(
       tableGroups[groupName] = groupDefinition
     }
   }
+
+  // Set table groups to the result DB structure
+  result.tableGroups = tableGroups
 
   return { dbStructure: result, tableGroups }
 }
