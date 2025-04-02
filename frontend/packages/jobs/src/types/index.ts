@@ -42,8 +42,10 @@ export type GenerateReviewPayload = {
   }>
 }
 
+export type Review = InferOutput<typeof reviewSchema>
+
 export type ReviewResponse = {
-  review: InferOutput<typeof reviewSchema>
+  review: Review
   projectId: number
   pullRequestId: number
   repositoryId: number

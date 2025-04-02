@@ -1,14 +1,12 @@
 import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
-import type { InferOutput } from 'valibot'
 import { generateReview } from '../prompts/generateReview/generateReview'
-import type { reviewSchema } from '../prompts/generateReview/reviewSchema'
-import type { GenerateReviewPayload } from '../types'
+import type { GenerateReviewPayload, Review } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
-): Promise<InferOutput<typeof reviewSchema>> => {
+): Promise<Review> => {
   try {
     // Get repository installationId
     const repository = await prisma.repository.findUnique({
