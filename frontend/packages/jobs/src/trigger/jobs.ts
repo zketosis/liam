@@ -1,14 +1,23 @@
+import { prisma } from '@liam-hq/db'
 import { logger, task } from '@trigger.dev/sdk/v3'
+
+// FIXME: This should be imported from the app package once we have proper package structure
+const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
 import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
 import { postComment } from '../functions/postComment'
 import { processCreateKnowledgeSuggestion } from '../functions/processCreateKnowledgeSuggestion'
-import { processGenerateDocsSuggestion } from '../functions/processGenerateDocsSuggestion'
+import {
+  DOC_FILES,
+  processGenerateDocsSuggestion,
+} from '../functions/processGenerateDocsSuggestion'
 import { processGenerateReview } from '../functions/processGenerateReview'
+import { processGenerateSchemaMeta } from '../functions/processGenerateSchemaMeta'
 import { processSavePullRequest } from '../functions/processSavePullRequest'
 import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
   PostCommentPayload,
+  GenerateSchemaMetaPayload,
   ReviewResponse,
   SavePullRequestWithProjectPayload,
 } from '../types'
@@ -104,6 +113,30 @@ export const saveReviewTask = task({
         branchName: payload.branchName,
       })
 
+      // Get the overall review ID from the database
+      const overallReview = await prisma.overallReview.findFirst({
+        where: {
+          pullRequestId: payload.pullRequestId,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          id: true,
+        },
+      })
+
+      if (!overallReview) {
+        logger.error('No overall review found for pull request', {
+          pullRequestId: payload.pullRequestId,
+        })
+      } else {
+        // Trigger schema meta suggestion generation after review is saved
+        await generateSchemaMetaSuggestionTask.trigger({
+          overallReviewId: overallReview.id,
+        })
+      }
+
       return { success: true }
     } catch (error) {
       console.error('Error in review process:', error)
@@ -153,15 +186,7 @@ export const generateDocsSuggestionTask = task({
     const suggestions = await processGenerateDocsSuggestion(payload)
     logger.log('Generated docs suggestions:', { suggestions })
 
-    const suggestionKeys = [
-      'schemaPatterns',
-      'schemaContext',
-      'migrationPatterns',
-      'migrationOpsContext',
-      'liamrules',
-    ]
-
-    for (const key of suggestionKeys) {
+    for (const key of DOC_FILES) {
       const content = suggestions[key]
       if (!content) {
         logger.warn(`No content found for suggestion key: ${key}`)
@@ -179,6 +204,27 @@ export const generateDocsSuggestionTask = task({
     }
 
     return { suggestions }
+  },
+})
+
+export const generateSchemaMetaSuggestionTask = task({
+  id: 'generate-schema-meta-suggestion',
+  run: async (payload: GenerateSchemaMetaPayload) => {
+    logger.log('Executing schema meta suggestion task:', { payload })
+    const result = await processGenerateSchemaMeta(payload)
+    logger.info('Generated schema meta suggestion:', { result })
+
+    // Create a knowledge suggestion with the schema meta using the returned information
+    await createKnowledgeSuggestionTask.trigger({
+      projectId: result.projectId,
+      type: 'SCHEMA',
+      title: result.title,
+      path: OVERRIDE_SCHEMA_FILE_PATH,
+      content: JSON.stringify(result.overrides, null, 2),
+      branch: result.branchName,
+    })
+
+    return { result }
   },
 })
 
@@ -209,13 +255,28 @@ export const createKnowledgeSuggestionTask = task({
 export const savePullRequest = async (
   payload: SavePullRequestWithProjectPayload,
 ) => {
+  const projectMapping = await prisma.projectRepositoryMapping.findFirst({
+    where: {
+      projectId: payload.projectId,
+    },
+    include: {
+      repository: true,
+    },
+  })
+
+  if (!projectMapping) {
+    throw new Error(`No repository found for project ID: ${payload.projectId}`)
+  }
+
+  const { repository } = projectMapping
+
   await savePullRequestTask.trigger({
     pullRequestNumber: payload.prNumber,
     pullRequestTitle: payload.pullRequestTitle,
     projectId: payload.projectId,
-    owner: payload.owner,
-    name: payload.name,
-    repositoryId: payload.repositoryId,
+    owner: repository.owner,
+    name: repository.name,
+    repositoryId: repository.id,
     branchName: payload.branchName,
   })
 }

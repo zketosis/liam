@@ -25,4 +25,4 @@ export {
   tableGroupSchema,
   tableGroupNameSchema,
 } from './overrideDbStructure.js'
-export type { TableGroup } from './overrideDbStructure.js'
+export type { TableGroup, DBOverride } from './overrideDbStructure.js'

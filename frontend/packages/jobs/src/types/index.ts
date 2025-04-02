@@ -10,8 +10,11 @@ export type SavePullRequestPayload = {
   branchName: string
 }
 
-export type SavePullRequestWithProjectPayload = SavePullRequestPayload & {
+export type SavePullRequestWithProjectPayload = {
+  prNumber: number
+  pullRequestTitle: string
   projectId: number
+  branchName: string
 }
 
 export type GenerateReviewPayload = {
@@ -58,4 +61,16 @@ export type PostCommentPayload = {
   pullRequestId: number
   repositoryId: number
   branchName: string
+}
+
+export type GenerateSchemaMetaPayload = {
+  overallReviewId: number
+}
+
+export type SchemaMetaResult = {
+  overrides: Record<string, unknown>
+  projectId: number
+  pullRequestNumber: number
+  branchName: string
+  title: string
 }
