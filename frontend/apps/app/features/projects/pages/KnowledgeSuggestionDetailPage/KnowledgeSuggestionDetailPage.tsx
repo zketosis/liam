@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
+import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
 
 type Props = {
@@ -101,6 +102,13 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
         <div className={styles.contentSection}>
           <h2 className={styles.sectionTitle}>Content</h2>
           <pre className={styles.codeContent}>{suggestion.content}</pre>
+          {/* Client-side user feedback component */}
+          <div className={styles.feedbackSection}>
+            <UserFeedbackClient 
+              entityType="knowledge_suggestion"
+              entityId={suggestion.id}
+            />
+          </div>
         </div>
 
         {!suggestion.approvedAt && repository && (

@@ -5,6 +5,7 @@ import { minimatch } from 'minimatch'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
+import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
@@ -75,7 +76,7 @@ async function getMigrationContents(migrationId: string) {
   const matchedFiles = files
     .map((file) => file.filename)
     .filter((filename) =>
-      patterns.some((pattern) => minimatch(filename, pattern.pattern)),
+      patterns.some((pattern: { pattern: string }) => minimatch(filename, pattern.pattern)),
     )
 
   const erdLinks = matchedFiles.map((filename) => ({
@@ -139,6 +140,13 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           <pre className={styles.reviewContent}>
             {overallReview.reviewComment}
           </pre>
+          {/* Client-side user feedback component */}
+          <div className={styles.feedbackSection}>
+            <UserFeedbackClient 
+              entityType="migration_review"
+              entityId={overallReview.id}
+            />
+          </div>
         </div>
       </div>
 

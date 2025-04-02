@@ -95,6 +95,9 @@ importers:
       flags:
         specifier: 3.1.1
         version: 3.1.1(@opentelemetry/api@1.9.0)(next@15.2.3(@opentelemetry/api@1.9.0)(@playwright/test@1.51.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      langfuse:
+        specifier: ^3.37.1
+        version: 3.37.1
       langfuse-langchain:
         specifier: 3.36.0
         version: 3.36.0(langchain@0.3.19(@langchain/core@0.3.42(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8)))(axios@1.8.4)(cheerio@1.0.0)(encoding@0.1.13)(handlebars@4.7.8)(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8))(ws@8.18.1))
@@ -609,7 +612,7 @@ importers:
         version: 16.4.7
       promptfoo:
         specifier: 0.107.7
-        version: 0.107.7(gn3flpddelw43t5v7iy7pupk3e)
+        version: 0.107.7(52l6vvc4yq6q72szmgclvrikna)
       tsx:
         specifier: 4.7.1
         version: 4.7.1
@@ -7345,14 +7348,18 @@ packages:
     resolution: {integrity: sha512-7ZOFJ51u4dOeCpsQ8otNuNYeMb7xsExVQcOIBOByPFKjjd1mjf/03xF907F44dRzgf7n1U8ZYa0XgMSRgxKNoA==}
     engines: {node: '>=18'}
 
+  langfuse-core@3.37.1:
+    resolution: {integrity: sha512-YfCegzOmy8Ex1SQg2eCO5a77YwVAJZ7hVUUbfIx+ncREEM9Smk4FrveNG0bOKS3n9C4TJZpX12DfQ+819gmHtw==}
+    engines: {node: '>=18'}
+
   langfuse-langchain@3.36.0:
     resolution: {integrity: sha512-0qK/BVOPjNTSZB0H9Yz5lXztiAbRrGM9YG2H7z/tnjEi3aXHJrbOEXQoi7a7qBoWKjy+Un/4qfUk5s8D2nIK2Q==}
     engines: {node: '>=18'}
     peerDependencies:
       langchain: '>=0.0.157 <0.4.0'
 
-  langfuse@3.37.0:
-    resolution: {integrity: sha512-NpemB+5i6VT9CXmBwQTE4q1DPOY/DH7OMxBJn8Rcirw+z2HYJpTRH8j48cBjzwqmYtqLdqyJMzAALa2ReQ50hQ==}
+  langfuse@3.37.1:
+    resolution: {integrity: sha512-U+Jbbpeqaqb10k/xuEkXWvK0Jsh/vVRGOl5j3jIOl0K71V1oeDGRym2PI1kF7dJyIARyGUxBVSbeSIQFM32cxQ==}
     engines: {node: '>=18'}
 
   langsmith@0.3.15:
@@ -18099,7 +18106,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.8.4)
+      retry-axios: 2.6.0(axios@1.8.4(debug@4.4.0))
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -18675,15 +18682,19 @@ snapshots:
     dependencies:
       mustache: 4.2.0
 
+  langfuse-core@3.37.1:
+    dependencies:
+      mustache: 4.2.0
+
   langfuse-langchain@3.36.0(langchain@0.3.19(@langchain/core@0.3.42(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8)))(axios@1.8.4)(cheerio@1.0.0)(encoding@0.1.13)(handlebars@4.7.8)(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8))(ws@8.18.1)):
     dependencies:
       langchain: 0.3.19(@langchain/core@0.3.42(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8)))(axios@1.8.4)(cheerio@1.0.0)(encoding@0.1.13)(handlebars@4.7.8)(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8))(ws@8.18.1)
-      langfuse: 3.37.0
+      langfuse: 3.37.1
       langfuse-core: 3.37.0
 
-  langfuse@3.37.0:
+  langfuse@3.37.1:
     dependencies:
-      langfuse-core: 3.37.0
+      langfuse-core: 3.37.1
 
   langsmith@0.3.15(openai@4.91.1(encoding@0.1.13)(ws@8.18.1)(zod@3.23.8)):
     dependencies:
@@ -20263,7 +20274,7 @@ snapshots:
 
   promisepipe@3.0.0: {}
 
-  promptfoo@0.107.7(gn3flpddelw43t5v7iy7pupk3e):
+  promptfoo@0.107.7(52l6vvc4yq6q72szmgclvrikna):
     dependencies:
       '@adaline/anthropic': 0.20.0
       '@adaline/azure': 0.9.2
@@ -20320,7 +20331,7 @@ snapshots:
       inquirer: 11.1.0
       js-rouge: 3.0.0
       js-yaml: 4.1.0
-      langfuse: 3.37.0
+      langfuse: 3.37.1
       mathjs: 14.4.0
       node-cache: 5.1.2
       node-sql-parser: 5.3.8
@@ -20835,7 +20846,7 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
 
-  retry-axios@2.6.0(axios@1.8.4):
+  retry-axios@2.6.0(axios@1.8.4(debug@4.4.0)):
     dependencies:
       axios: 1.8.4(debug@4.4.0)
 
