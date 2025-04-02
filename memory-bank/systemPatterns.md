@@ -21,6 +21,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Component-Based UI**: The UI is built using a component-based approach with React, promoting reusability and maintainability.
 - **Server-Client Separation**: Clear separation of server and client components in Next.js, with appropriate data fetching responsibilities.
 - **Flexible Data Access**: The system currently supports multiple database access methods (Prisma ORM and Supabase JS) to provide flexibility in how data is retrieved and manipulated. Supabase JS implementation uses optimized queries with nested joins for efficient data retrieval. The long-term plan is to standardize on Supabase JS across all components.
+- **Transaction Management**: Moving away from manual rollback processing in server actions to a more robust approach using Supabase RPC for transaction management. This will provide a consistent and reliable way to handle database transactions across the application.
 
 ## Component Relationships
 - **GitHub Webhook Handler**: Receives webhook events from GitHub, extracts schema changes, and triggers the review process.

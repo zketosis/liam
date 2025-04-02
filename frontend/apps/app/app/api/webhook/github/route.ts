@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { prisma } from '@liam-hq/db'
+import { createClient } from '@/libs/db/server'
 import { supportedEvents } from '@liam-hq/github'
 import type { GitHubWebhookPayload } from '@liam-hq/github'
 import { savePullRequest } from '@liam-hq/jobs'
@@ -59,22 +59,28 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
           throw new Error('Pull request data is missing')
         }
 
-        const repository = await prisma.repository.findFirst({
-          where: {
-            installationId: data.installation.id,
-          },
-        })
-        if (!repository) {
+        const supabase = await createClient()
+
+        const { data: repository, error: repositoryError } = await supabase
+          .from('Repository')
+          .select('*')
+          .eq('installationId', data.installation.id)
+          .limit(1)
+          .single()
+
+        if (repositoryError || !repository) {
           throw new Error('Repository not found')
         }
 
-        const projectRepositoryMapping =
-          await prisma.projectRepositoryMapping.findFirst({
-            where: {
-              repositoryId: repository.id,
-            },
-          })
-        if (!projectRepositoryMapping) {
+        const { data: projectRepositoryMapping, error: mappingError } =
+          await supabase
+            .from('ProjectRepositoryMapping')
+            .select('*')
+            .eq('repositoryId', repository.id)
+            .limit(1)
+            .single()
+
+        if (mappingError || !projectRepositoryMapping) {
           throw new Error('Mapping not found')
         }
         const projectId = projectRepositoryMapping.projectId
