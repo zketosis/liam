@@ -1,5 +1,8 @@
 import { prismaExtension } from '@trigger.dev/build/extensions/prisma'
 import { defineConfig } from '@trigger.dev/sdk/v3'
+import { esbuildPlugin } from '@trigger.dev/build/extensions'
+import { sentryEsbuildPlugin } from '@sentry/esbuild-plugin'
+import * as Sentry from '@sentry/node'
 import * as dotenv from 'dotenv'
 
 if (process.env.NODE_ENV !== 'production') {
@@ -33,7 +36,29 @@ export default defineConfig({
       prismaExtension({
         schema: '../../packages/db/prisma/schema.prisma',
       }),
+      esbuildPlugin(
+        sentryEsbuildPlugin({
+          org: "liam-hq",
+          project: "trigger-jobs",
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+        }),
+        { placement: "last", target: "deploy" }
+      ),
     ],
+  },
+  init: async () => {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      environment: process.env.NODE_ENV === "production" ? "production" : "development",
+    });
+  },
+  onFailure: async (payload, error, { ctx }) => {
+    Sentry.captureException(error, {
+      extra: {
+        payload,
+        ctx,
+      },
+    });
   },
   dirs: ['./src/trigger'],
 })

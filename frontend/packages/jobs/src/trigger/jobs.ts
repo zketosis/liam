@@ -21,6 +21,7 @@ import type {
   SavePullRequestWithProjectPayload,
 } from '../types'
 import { helloWorldTask } from './helloworld'
+import { sentryErrorTest } from './sentry-error-test'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
@@ -282,4 +283,8 @@ export const savePullRequest = async (
 
 export const helloWorld = async (name?: string) => {
   await helloWorldTask.trigger({ name: name ?? 'World' })
+}
+
+export const testSentryError = async () => {
+  await sentryErrorTest.trigger()
 }
