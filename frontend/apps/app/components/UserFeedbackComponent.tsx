@@ -1,17 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { generateTraceId, getLangfuseWeb } from '../lib/langfuseWeb'
+import { getLangfuseWeb } from '../lib/langfuseWeb'
 import styles from './UserFeedbackComponent.module.css'
 
 type UserFeedbackComponentProps = {
-  entityType: string
-  entityId: string | number
+  traceId: string | null
 }
 
 export const UserFeedbackComponent = ({
-  entityType,
-  entityId,
+  traceId,
 }: UserFeedbackComponentProps) => {
   const [feedback, setFeedback] = useState<number | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -20,9 +18,8 @@ export const UserFeedbackComponent = ({
     try {
       setIsSubmitting(true)
       const langfuseWeb = getLangfuseWeb()
-      if (!langfuseWeb) return
+      if (!langfuseWeb || !traceId) return
 
-      const traceId = generateTraceId(entityType, entityId)
       await langfuseWeb.score({
         traceId,
         name: 'user_feedback',

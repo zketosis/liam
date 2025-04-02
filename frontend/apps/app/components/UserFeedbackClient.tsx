@@ -4,10 +4,9 @@ import React from 'react'
 import { UserFeedbackComponent } from './UserFeedbackComponent'
 
 type UserFeedbackClientProps = {
-  entityType: string
-  entityId: string | number
+  traceId: string | null
 }
 
-export function UserFeedbackClient({ entityType, entityId }: UserFeedbackClientProps) {
-  return <UserFeedbackComponent entityType={entityType} entityId={entityId} />
+export function UserFeedbackClient({ traceId }: UserFeedbackClientProps) {
+  return <UserFeedbackComponent traceId={traceId} />
 }

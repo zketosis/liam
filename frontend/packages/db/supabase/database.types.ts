@@ -113,6 +113,7 @@ export type Database = {
           path: string
           projectId: number
           title: string
+          traceId: string | null
           type: Database['public']['Enums']['KnowledgeType']
           updatedAt: string
         }
@@ -126,6 +127,7 @@ export type Database = {
           path: string
           projectId: number
           title: string
+          traceId?: string | null
           type: Database['public']['Enums']['KnowledgeType']
           updatedAt: string
         }
@@ -139,6 +141,7 @@ export type Database = {
           path?: string
           projectId?: number
           title?: string
+          traceId?: string | null
           type?: Database['public']['Enums']['KnowledgeType']
           updatedAt?: string
         }
@@ -193,6 +196,7 @@ export type Database = {
           pullRequestId: number
           reviewComment: string | null
           reviewedAt: string
+          traceId: string | null
           updatedAt: string
         }
         Insert: {
@@ -203,6 +207,7 @@ export type Database = {
           pullRequestId: number
           reviewComment?: string | null
           reviewedAt?: string
+          traceId?: string | null
           updatedAt: string
         }
         Update: {
@@ -213,6 +218,7 @@ export type Database = {
           pullRequestId?: number
           reviewComment?: string | null
           reviewedAt?: string
+          traceId?: string | null
           updatedAt?: string
         }
         Relationships: [

@@ -143,8 +143,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>
             <UserFeedbackClient 
-              entityType="migration_review"
-              entityId={overallReview.id}
+              traceId={overallReview.traceId}
             />
           </div>
         </div>

@@ -8,10 +8,3 @@ export const getLangfuseWeb = () => {
   }
   return null
 }
-
-export const generateTraceId = (
-  entityType: string,
-  entityId: string | number,
-) => {
-  return `${entityType}_${entityId}`
-}

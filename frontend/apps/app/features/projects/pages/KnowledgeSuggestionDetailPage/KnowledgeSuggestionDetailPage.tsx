@@ -105,8 +105,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>
             <UserFeedbackClient 
-              entityType="knowledge_suggestion"
-              entityId={suggestion.id}
+              traceId={suggestion.traceId}
             />
           </div>
         </div>
