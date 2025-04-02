@@ -2,7 +2,10 @@ import { logger, task } from '@trigger.dev/sdk/v3'
 import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
 import { postComment } from '../functions/postComment'
 import { processCreateKnowledgeSuggestion } from '../functions/processCreateKnowledgeSuggestion'
-import { processGenerateDocsSuggestion } from '../functions/processGenerateDocsSuggestion'
+import {
+  DOC_FILES,
+  processGenerateDocsSuggestion,
+} from '../functions/processGenerateDocsSuggestion'
 import { processGenerateReview } from '../functions/processGenerateReview'
 import { processSavePullRequest } from '../functions/processSavePullRequest'
 import { processSaveReview } from '../functions/processSaveReview'
@@ -152,15 +155,7 @@ export const generateDocsSuggestionTask = task({
     const suggestions = await processGenerateDocsSuggestion(payload)
     logger.log('Generated docs suggestions:', { suggestions })
 
-    const suggestionKeys = [
-      'schemaPatterns',
-      'schemaContext',
-      'migrationPatterns',
-      'migrationOpsContext',
-      'liamrules',
-    ]
-
-    for (const key of suggestionKeys) {
+    for (const key of DOC_FILES) {
       const content = suggestions[key]
       if (!content) {
         logger.warn(`No content found for suggestion key: ${key}`)

@@ -3,13 +3,13 @@ import { getFileContent } from '@liam-hq/github'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
-const DOC_FILES = [
+export const DOC_FILES = [
   'schemaPatterns.md',
   'schemaContext.md',
   'migrationPatterns.md',
   'migrationOpsContext.md',
   '.liamrules',
-]
+] as const
 
 export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
