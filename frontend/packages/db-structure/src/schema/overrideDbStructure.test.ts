@@ -465,7 +465,10 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const { dbStructure } = applyOverrides(structureWithPostsForTest, override)
+      const { dbStructure } = applyOverrides(
+        structureWithPostsForTest,
+        override,
+      )
 
       // Check table comment was updated
       expect(dbStructure.tables['users']?.comment).toBe(
