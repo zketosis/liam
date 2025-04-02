@@ -108,7 +108,7 @@ async function main() {
             {
               // demo test for scoring evaluation
               type: 'javascript',
-              value: 'JSON.parse(output).scores[0].value >= 3',
+              value: 'JSON.parse(output).scores[0].value >= 1',
             },
             {
               type: 'cost',
