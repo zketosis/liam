@@ -76,8 +76,8 @@ async function getMigrationContents(migrationId: string) {
   const matchedFiles = files
     .map((file) => file.filename)
     .filter((filename) =>
-      patterns.some(
-        (pattern: { pattern: string }) => minimatch(filename, pattern.pattern),
+      patterns.some((pattern: { pattern: string }) =>
+        minimatch(filename, pattern.pattern),
       ),
     )
 
