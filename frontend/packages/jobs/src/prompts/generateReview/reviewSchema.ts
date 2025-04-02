@@ -18,9 +18,9 @@ const KindEnum = enumType({
 })
 
 const SeverityEnum = enumType({
-  high: 'high',
-  medium: 'medium',
-  low: 'low',
+  CRITICAL: 'CRITICAL',
+  WARNING: 'WARNING',
+  POSITIVE: 'POSITIVE',
 })
 
 export const reviewSchema = object({

@@ -18,7 +18,7 @@ Your JSON-formatted response must contain:
     - Performance Impact
     - Project Rules Consistency
     - Security or Scalability
-  - "severity": "high", "medium", or "low" depending on impact.
+  - "severity": For each issue, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem, and "POSITIVE" if it does not indicate an issue.
   - "description": A clear and precise explanation of the issue.
   - "suggestion": Actionable recommendations for addressing the issue.
 - An array of scores for each issue kind in the "scores" field, each including:
