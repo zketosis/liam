@@ -1,8 +1,8 @@
-import { prismaExtension } from '@trigger.dev/build/extensions/prisma'
-import { defineConfig } from '@trigger.dev/sdk/v3'
-import { esbuildPlugin } from '@trigger.dev/build/extensions'
 import { sentryEsbuildPlugin } from '@sentry/esbuild-plugin'
 import * as Sentry from '@sentry/node'
+import { esbuildPlugin } from '@trigger.dev/build/extensions'
+import { prismaExtension } from '@trigger.dev/build/extensions/prisma'
+import { defineConfig } from '@trigger.dev/sdk/v3'
 import * as dotenv from 'dotenv'
 
 if (process.env.NODE_ENV !== 'production') {
@@ -38,19 +38,20 @@ export default defineConfig({
       }),
       esbuildPlugin(
         sentryEsbuildPlugin({
-          org: "liam-hq",
-          project: "trigger-jobs",
+          org: 'liam-hq',
+          project: 'trigger-jobs',
           authToken: process.env.SENTRY_AUTH_TOKEN,
         }),
-        { placement: "last", target: "deploy" }
+        { placement: 'last', target: 'deploy' },
       ),
     ],
   },
   init: async () => {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
-      environment: process.env.NODE_ENV === "production" ? "production" : "development",
-    });
+      environment:
+        process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    })
   },
   onFailure: async (payload, error, { ctx }) => {
     Sentry.captureException(error, {
@@ -58,7 +59,7 @@ export default defineConfig({
         payload,
         ctx,
       },
-    });
+    })
   },
   dirs: ['./src/trigger'],
 })
