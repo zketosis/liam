@@ -17,6 +17,7 @@ import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
   GenerateSchemaMetaPayload,
+  PostCommentPayload,
   ReviewResponse,
   SavePullRequestWithProjectPayload,
 } from '../types'
@@ -67,13 +68,13 @@ export const savePullRequestTask = task({
 export const generateReviewTask = task({
   id: 'generate-review',
   run: async (payload: GenerateReviewPayload) => {
-    const reviewComment = await processGenerateReview(payload)
-    logger.log('Generated review:', { reviewComment })
+    const review = await processGenerateReview(payload)
+    logger.log('Generated review:', { review })
     await saveReviewTask.trigger({
-      reviewComment,
+      review,
       ...payload,
     })
-    return { reviewComment }
+    return { review }
   },
 })
 
@@ -93,7 +94,7 @@ export const saveReviewTask = task({
       )
 
       await postCommentTask.trigger({
-        reviewComment: payload.reviewComment,
+        reviewComment: payload.review.bodyMarkdown,
         projectId: payload.projectId,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
@@ -102,7 +103,7 @@ export const saveReviewTask = task({
 
       // Trigger docs suggestion generation after review is saved
       await generateDocsSuggestionTask.trigger({
-        reviewComment: payload.reviewComment,
+        reviewComment: payload.review.bodyMarkdown,
         projectId: payload.projectId,
         pullRequestNumber: payload.pullRequestNumber,
         owner: payload.owner,
@@ -163,7 +164,7 @@ export const saveReviewTask = task({
 
 export const postCommentTask = task({
   id: 'post-comment',
-  run: async (payload: ReviewResponse) => {
+  run: async (payload: PostCommentPayload) => {
     logger.log('Executing comment post task:', { payload })
     const result = await postComment(payload)
     return result

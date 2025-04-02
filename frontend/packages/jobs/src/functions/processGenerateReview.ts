@@ -1,12 +1,12 @@
 import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
 import { generateReview } from '../prompts/generateReview/generateReview'
-import type { GenerateReviewPayload } from '../types'
+import type { GenerateReviewPayload, Review } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
-): Promise<string> => {
+): Promise<Review> => {
   try {
     // Get repository installationId
     const repository = await prisma.repository.findUnique({
@@ -63,7 +63,7 @@ export const processGenerateReview = async (
       payload.schemaChanges,
       callbacks,
     )
-    return review.bodyMarkdown
+    return review
   } catch (error) {
     console.error('Error generating review:', error)
     throw error
