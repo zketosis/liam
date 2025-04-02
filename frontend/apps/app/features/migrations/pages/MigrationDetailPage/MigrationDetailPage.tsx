@@ -1,6 +1,7 @@
 import { urlgen } from '@/utils/routes'
 import { prisma } from '@liam-hq/db'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
+import clsx from 'clsx'
 import { minimatch } from 'minimatch'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -46,6 +47,9 @@ async function getMigrationContents(migrationId: string) {
   const overallReview = await prisma.overallReview.findFirst({
     where: {
       pullRequestId: pullRequest.id,
+    },
+    include: {
+      reviewIssues: true,
     },
   })
 
@@ -139,6 +143,34 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           <pre className={styles.reviewContent}>
             {overallReview.reviewComment}
           </pre>
+        </div>
+        <div className={styles.box}>
+          <h2 className={styles.h2}>Review Issues</h2>
+          <div className={styles.reviewIssues}>
+            {overallReview.reviewIssues.length > 0 ? (
+              overallReview.reviewIssues.map((issue) => (
+                <div
+                  key={issue.id}
+                  className={clsx(
+                    styles.reviewIssue,
+                    styles[`severity${issue.severity}`],
+                  )}
+                >
+                  <div className={styles.issueHeader}>
+                    <span className={styles.issueCategory}>
+                      {issue.category}
+                    </span>
+                    <span className={styles.issueSeverity}>
+                      {issue.severity}
+                    </span>
+                  </div>
+                  <p className={styles.issueDescription}>{issue.description}</p>
+                </div>
+              ))
+            ) : (
+              <p className={styles.noIssues}>No review issues found.</p>
+            )}
+          </div>
         </div>
       </div>
 
