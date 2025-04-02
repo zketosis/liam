@@ -1,48 +1,73 @@
-import { prisma } from '@liam-hq/db'
+import { createClient } from '../libs/supabase'
 import type { ReviewResponse } from '../types'
 
 export const processSaveReview = async (
   payload: ReviewResponse,
 ): Promise<{ success: boolean }> => {
   try {
-    const pullRequest = await prisma.pullRequest.findUnique({
-      where: {
-        id: payload.pullRequestId,
-      },
-    })
+    const supabase = await createClient()
+    const { data: pullRequest, error: pullRequestError } = await supabase
+      .from('PullRequest')
+      .select('*')
+      .eq('id', payload.pullRequestId)
+      .single()
 
-    if (!pullRequest) {
+    if (pullRequestError || !pullRequest) {
       throw new Error('PullRequest not found')
     }
 
-    const now = new Date()
+    const now = new Date().toISOString()
 
     // create overall review
-    await prisma.overallReview.create({
-      data: {
+    const { data: overallReview, error: overallReviewError } = await supabase
+      .from('OverallReview')
+      .insert({
         projectId: payload.projectId,
         pullRequestId: pullRequest.id,
         reviewComment: payload.review.bodyMarkdown,
         branchName: payload.branchName,
         updatedAt: now,
-        reviewScores: {
-          create: payload.review.scores.map((score) => ({
-            overallScore: score.value,
-            category: mapCategoryEnum(score.kind),
-            reason: score.reason,
-            updatedAt: now,
-          })),
-        },
-        reviewIssues: {
-          create: payload.review.issues.map((issue) => ({
-            category: mapCategoryEnum(issue.kind),
-            severity: mapSeverityEnum(issue.severity),
-            description: issue.description,
-            updatedAt: now,
-          })),
-        },
-      },
-    })
+      })
+      .select()
+      .single()
+
+    if (overallReviewError || !overallReview) {
+      throw new Error('Failed to create overall review')
+    }
+
+    // create review scores
+    const reviewScores = payload.review.scores.map((score) => ({
+      overallReviewId: overallReview.id,
+      overallScore: score.value,
+      category: mapCategoryEnum(score.kind),
+      reason: score.reason,
+      updatedAt: now,
+    }))
+
+    const { error: reviewScoresError } = await supabase
+      .from('ReviewScore')
+      .insert(reviewScores)
+
+    if (reviewScoresError) {
+      throw new Error('Failed to create review scores')
+    }
+
+    // create review issues
+    const reviewIssues = payload.review.issues.map((issue) => ({
+      overallReviewId: overallReview.id,
+      category: mapCategoryEnum(issue.kind),
+      severity: mapSeverityEnum(issue.severity),
+      description: issue.description,
+      updatedAt: now,
+    }))
+
+    const { error: reviewIssuesError } = await supabase
+      .from('ReviewIssue')
+      .insert(reviewIssues)
+
+    if (reviewIssuesError) {
+      throw new Error('Failed to create review issues')
+    }
 
     return {
       success: true,

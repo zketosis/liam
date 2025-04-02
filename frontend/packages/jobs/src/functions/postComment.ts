@@ -2,8 +2,8 @@ import {
   createPullRequestComment,
   updatePullRequestComment,
 } from '@liam-hq/github'
-import type { PostCommentPayload } from '../types'
 import { createClient } from '../libs/supabase'
+import type { PostCommentPayload } from '../types'
 
 export async function postComment(
   payload: PostCommentPayload,

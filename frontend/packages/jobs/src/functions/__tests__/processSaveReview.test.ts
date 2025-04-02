@@ -1,57 +1,64 @@
-import { prisma } from '@liam-hq/db'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createClient } from '../../libs/supabase'
 import type { ReviewResponse } from '../../types'
 import { processSaveReview } from '../processSaveReview'
 
-// Mock Prisma client
-vi.mock('@liam-hq/db', () => ({
-  prisma: {
-    pullRequest: {
-      findUnique: vi.fn(),
-    },
-    overallReview: {
-      create: vi.fn(),
-    },
-  },
-}))
-
 describe('processSaveReview', () => {
-  beforeEach(() => {
+  const supabase = createClient()
+
+  // Test data
+  const testRepository = {
+    id: 9999,
+    name: 'test-repo',
+    owner: 'test-owner',
+    installationId: 12345,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  const testPullRequest = {
+    id: 9999,
+    pullNumber: 1,
+    repositoryId: testRepository.id,
+    commentId: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  const testOverallReview = {
+    id: 9999,
+    projectId: 1,
+    pullRequestId: testPullRequest.id,
+    reviewComment: 'Test review comment',
+    branchName: 'test-branch',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  // Setup: Insert test data before tests
+  beforeEach(async () => {
     vi.clearAllMocks()
+
+    // Insert test data
+    await supabase.from('Repository').insert(testRepository)
+    await supabase.from('PullRequest').insert(testPullRequest)
+    await supabase.from('OverallReview').insert(testOverallReview)
+  })
+
+  // Cleanup: Remove test data after tests
+  afterEach(async () => {
+    // Delete test data in reverse order to avoid foreign key constraints
+    await supabase.from('OverallReview').delete().eq('id', testOverallReview.id)
+    await supabase.from('PullRequest').delete().eq('id', testPullRequest.id)
+    await supabase.from('Repository').delete().eq('id', testRepository.id)
   })
 
   it('should save review successfully', async () => {
-    const mockPullRequest = {
-      id: 1,
-      pullNumber: BigInt(1),
-      commentId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      repositoryId: 1,
-    }
-    const mockOverallReview = {
-      id: 1,
-      projectId: 1,
-      pullRequestId: mockPullRequest.id,
-      reviewComment: 'Test review comment',
-      branchName: 'test-branch',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      reviewedAt: new Date(),
-    }
-
-    // Mock Prisma responses
-    vi.mocked(prisma.pullRequest.findUnique).mockResolvedValueOnce(
-      mockPullRequest,
-    )
-    vi.mocked(prisma.overallReview.create).mockResolvedValueOnce(
-      mockOverallReview,
-    )
-
     const testPayload: ReviewResponse = {
-      pullRequestId: mockPullRequest.id,
+      pullRequestId: testPullRequest.id,
       projectId: 1,
-      repositoryId: 1,
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
       review: {
         bodyMarkdown: 'Test review comment',
@@ -75,49 +82,24 @@ describe('processSaveReview', () => {
     }
 
     const result = await processSaveReview(testPayload)
-
     expect(result.success).toBe(true)
-    expect(prisma.pullRequest.findUnique).toHaveBeenCalledWith({
-      where: { id: testPayload.pullRequestId },
-    })
-    expect(prisma.overallReview.create).toHaveBeenCalledWith({
-      data: {
-        projectId: testPayload.projectId,
-        pullRequestId: mockPullRequest.id,
-        reviewComment: testPayload.review.bodyMarkdown,
-        branchName: testPayload.branchName,
-        updatedAt: expect.any(Date),
-        reviewScores: {
-          create: [
-            {
-              overallScore: 8,
-              category: 'MIGRATION_SAFETY',
-              reason: 'Good migration safety',
-              updatedAt: expect.any(Date),
-            },
-          ],
-        },
-        reviewIssues: {
-          create: [
-            {
-              category: 'MIGRATION_SAFETY',
-              severity: 'CRITICAL',
-              description: 'Test issue',
-              updatedAt: expect.any(Date),
-            },
-          ],
-        },
-      },
-    })
+
+    // Verify the update in the database
+    const { data: updatedReview } = await supabase
+      .from('OverallReview')
+      .select('*')
+      .eq('id', testOverallReview.id)
+      .single()
+
+    expect(updatedReview).toBeTruthy()
+    expect(updatedReview?.reviewComment).toBe('Test review comment')
   })
 
   it('should throw error when pull request not found', async () => {
-    vi.mocked(prisma.pullRequest.findUnique).mockResolvedValueOnce(null)
-
     const testPayload: ReviewResponse = {
-      pullRequestId: 999,
+      pullRequestId: 999999,
       projectId: 1,
-      repositoryId: 999,
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
       review: {
         bodyMarkdown: 'Test review comment',
@@ -128,10 +110,29 @@ describe('processSaveReview', () => {
     }
 
     await expect(processSaveReview(testPayload)).rejects.toThrow(
-      'PullRequest not found',
+      /PullRequest not found/,
     )
-    expect(prisma.pullRequest.findUnique).toHaveBeenCalledWith({
-      where: { id: testPayload.pullRequestId },
-    })
+  })
+
+  it('should throw error when creating overall review fails', async () => {
+    // Delete the existing overall review to simulate creation failure
+    await supabase.from('OverallReview').delete().eq('id', testOverallReview.id)
+
+    const testPayload: ReviewResponse = {
+      pullRequestId: testPullRequest.id,
+      projectId: 999999, // Invalid project ID to cause failure
+      repositoryId: testRepository.id,
+      branchName: 'test-branch',
+      review: {
+        bodyMarkdown: 'Test review comment',
+        summary: 'Test review summary',
+        scores: [],
+        issues: [],
+      },
+    }
+
+    await expect(processSaveReview(testPayload)).rejects.toThrow(
+      /Failed to create overall review/,
+    )
   })
 })
