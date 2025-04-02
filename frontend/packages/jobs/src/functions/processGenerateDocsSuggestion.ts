@@ -1,5 +1,6 @@
 import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
+import { Langfuse } from 'langfuse'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
@@ -58,12 +59,36 @@ export async function processGenerateDocsSuggestion(payload: {
         ? JSON.stringify(docsArray)
         : 'No existing docs found'
 
+    const langfuse = new Langfuse({
+      publicKey: process.env['LANGFUSE_PUBLIC_KEY'] ?? '',
+      secretKey: process.env['LANGFUSE_SECRET_KEY'] ?? '',
+      baseUrl: process.env['LANGFUSE_BASE_URL'] ?? 'https://cloud.langfuse.com',
+    })
+
+    const trace = langfuse.trace({
+      name: 'knowledge-suggestion-generation',
+      userId: `project-${payload.projectId}`,
+    })
+
+    const traceId = trace.id
+    console.log('Generated traceId for knowledge suggestion:', traceId)
+
     const callbacks = [langfuseLangchainHandler]
     const result = await generateDocsSuggestion(
       payload.reviewComment,
       docsArrayString,
       callbacks,
     )
+    
+    await prisma.knowledgeSuggestion.updateMany({
+      where: {
+        projectId: payload.projectId,
+        branchName: payload.branchOrCommit || 'main',
+      },
+      data: {
+        traceId,
+      },
+    })
 
     // Filter out undefined values and return
     return Object.fromEntries(
