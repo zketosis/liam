@@ -159,34 +159,46 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           <h2 className={styles.h2}>Review Issues</h2>
           <div className={styles.reviewIssues}>
             {overallReview.reviewIssues.length > 0 ? (
-              overallReview.reviewIssues.map(
-                (issue: {
-                  id: number
-                  category: string
-                  severity: string
-                  description: string
-                }) => (
-                  <div
-                    key={issue.id}
-                    className={clsx(
-                      styles.reviewIssue,
-                      styles[`severity${issue.severity}`],
-                    )}
-                  >
-                    <div className={styles.issueHeader}>
-                      <span className={styles.issueCategory}>
-                        {issue.category}
-                      </span>
-                      <span className={styles.issueSeverity}>
-                        {issue.severity}
-                      </span>
+              [...overallReview.reviewIssues]
+                .sort((a, b) => {
+                  const severityOrder = {
+                    CRITICAL: 0,
+                    WARNING: 1,
+                    POSITIVE: 2,
+                  }
+                  return (
+                    severityOrder[a.severity as keyof typeof severityOrder] -
+                    severityOrder[b.severity as keyof typeof severityOrder]
+                  )
+                })
+                .map(
+                  (issue: {
+                    id: number
+                    category: string
+                    severity: string
+                    description: string
+                  }) => (
+                    <div
+                      key={issue.id}
+                      className={clsx(
+                        styles.reviewIssue,
+                        styles[`severity${issue.severity}`],
+                      )}
+                    >
+                      <div className={styles.issueHeader}>
+                        <span className={styles.issueCategory}>
+                          {issue.category}
+                        </span>
+                        <span className={styles.issueSeverity}>
+                          {issue.severity}
+                        </span>
+                      </div>
+                      <p className={styles.issueDescription}>
+                        {issue.description}
+                      </p>
                     </div>
-                    <p className={styles.issueDescription}>
-                      {issue.description}
-                    </p>
-                  </div>
-                ),
-              )
+                  ),
+                )
             ) : (
               <p className={styles.noIssues}>No review issues found.</p>
             )}
