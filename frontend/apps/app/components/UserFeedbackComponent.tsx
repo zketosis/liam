@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { getLangfuseWeb, generateTraceId } from '../lib/langfuseWeb'
+import { generateTraceId, getLangfuseWeb } from '../lib/langfuseWeb'
 import styles from './UserFeedbackComponent.module.css'
 
 type UserFeedbackComponentProps = {
@@ -9,7 +9,10 @@ type UserFeedbackComponentProps = {
   entityId: string | number
 }
 
-export const UserFeedbackComponent = ({ entityType, entityId }: UserFeedbackComponentProps) => {
+export const UserFeedbackComponent = ({
+  entityType,
+  entityId,
+}: UserFeedbackComponentProps) => {
   const [feedback, setFeedback] = useState<number | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -38,6 +41,7 @@ export const UserFeedbackComponent = ({ entityType, entityId }: UserFeedbackComp
       <span className={styles.feedbackLabel}>Was this helpful?</span>
       <div className={styles.buttonContainer}>
         <button
+          type="button"
           onClick={() => handleUserFeedback(1)}
           className={`${styles.feedbackButton} ${feedback === 1 ? styles.selected : ''}`}
           disabled={isSubmitting || feedback !== null}
@@ -46,6 +50,7 @@ export const UserFeedbackComponent = ({ entityType, entityId }: UserFeedbackComp
           👍
         </button>
         <button
+          type="button"
           onClick={() => handleUserFeedback(0)}
           className={`${styles.feedbackButton} ${feedback === 0 ? styles.selected : ''}`}
           disabled={isSubmitting || feedback !== null}
@@ -55,7 +60,9 @@ export const UserFeedbackComponent = ({ entityType, entityId }: UserFeedbackComp
         </button>
       </div>
       {feedback !== null && (
-        <div className={styles.thankYouMessage}>Thank you for your feedback!</div>
+        <div className={styles.thankYouMessage}>
+          Thank you for your feedback!
+        </div>
       )}
     </div>
   )

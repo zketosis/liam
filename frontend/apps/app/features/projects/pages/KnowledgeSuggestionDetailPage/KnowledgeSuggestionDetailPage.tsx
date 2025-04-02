@@ -3,8 +3,8 @@ import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
-import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
+import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
 
 type Props = {
