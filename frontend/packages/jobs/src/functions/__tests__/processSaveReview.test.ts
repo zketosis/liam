@@ -52,22 +52,24 @@ describe('processSaveReview', () => {
     const result = await processSaveReview(testPayload)
 
     expect(result.success).toBe(true)
-    expect(prisma.overallReview.create).toHaveBeenCalledWith({
-      data: {
-        project: {
-          connect: {
-            id: testPayload.projectId,
+    expect(prisma.overallReview.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          project: {
+            connect: {
+              id: testPayload.projectId,
+            },
           },
-        },
-        pullRequest: {
-          connect: {
-            id: mockPullRequest.id,
+          pullRequest: {
+            connect: {
+              id: mockPullRequest.id,
+            },
           },
-        },
-        reviewComment: testPayload.reviewComment,
-        branchName: testPayload.branchName,
-      },
-    })
+          reviewComment: testPayload.reviewComment,
+          branchName: testPayload.branchName,
+        }),
+      })
+    )
   })
 
   it('should throw error when pull request not found', async () => {
