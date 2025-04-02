@@ -58,7 +58,6 @@ describe('postComment', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    // Insert test data
     await supabase.from('Repository').insert(testRepository)
     await supabase.from('PullRequest').insert(testPullRequest)
     await supabase.from('Migration').insert(testMigration)
