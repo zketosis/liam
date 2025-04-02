@@ -76,7 +76,9 @@ async function getMigrationContents(migrationId: string) {
   const matchedFiles = files
     .map((file) => file.filename)
     .filter((filename) =>
-      patterns.some((pattern: { pattern: string }) => minimatch(filename, pattern.pattern)),
+      patterns.some(
+        (pattern: { pattern: string }) => minimatch(filename, pattern.pattern),
+      ),
     )
 
   const erdLinks = matchedFiles.map((filename) => ({
@@ -142,9 +144,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           </pre>
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>
-            <UserFeedbackClient 
-              traceId={overallReview.traceId}
-            />
+            <UserFeedbackClient traceId={overallReview.traceId} />
           </div>
         </div>
       </div>
