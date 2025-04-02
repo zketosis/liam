@@ -1,6 +1,9 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 import { SYSTEM_PROMPT, USER_PROMPT, reviewJsonSchema } from '@liam-hq/jobs'
+import * as dotenv from 'dotenv'
 import promptfoo from 'promptfoo'
+
+dotenv.config({ path: '.env.local' })
 
 interface SchemaFile {
   filename: string

@@ -8,6 +8,7 @@
     "@langchain/core": "0.3.42",
     "@liam-hq/configs": "workspace:*",
     "@liam-hq/jobs": "workspace:*",
+    "dotenv": "16.4.7",
     "promptfoo": "0.107.7",
     "tsx": "4.7.1",
     "typescript": "5"
@@ -19,6 +20,7 @@
     "lint": "pnpm run '/^lint:.*/'",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "test": "tsx src/index.ts"
+    "test": "tsx src/index.ts",
+    "view": "pnpm dlx promptfoo view"
   }
 }

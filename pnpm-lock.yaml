@@ -601,6 +601,9 @@ importers:
       '@liam-hq/jobs':
         specifier: workspace:*
         version: link:../jobs
+      dotenv:
+        specifier: 16.4.7
+        version: 16.4.7
       promptfoo:
         specifier: 0.107.7
         version: 0.107.7(gn3flpddelw43t5v7iy7pupk3e)
