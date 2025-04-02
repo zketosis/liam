@@ -5,16 +5,19 @@ import {
 import { columnHandleId } from '@/features/erd/utils'
 import type { ShowMode } from '@/schemas/showMode'
 import type { Cardinality, DBStructure } from '@liam-hq/db-structure'
+import type { TableGroup } from '@liam-hq/db-structure'
 import type { Edge, Node } from '@xyflow/react'
 
 type Params = {
   dbStructure: DBStructure
   showMode: ShowMode
+  tableGroups?: Record<string, TableGroup>
 }
 
 export const convertDBStructureToNodes = ({
   dbStructure,
   showMode,
+  tableGroups = {},
 }: Params): {
   nodes: Node[]
   edges: Edge[]
@@ -41,6 +44,25 @@ export const convertDBStructureToNodes = ({
     })
   }
 
+  // Create table group nodes
+  const groupNodes: Node[] = Object.values(tableGroups).map((group) => ({
+    id: `group-${group.name}`,
+    type: 'tableGroup',
+    data: {
+      name: group.name,
+      comment: group.comment,
+    },
+    position: { x: 0, y: 0 },
+  }))
+
+  // Create mapping of tables to their groups
+  const tableToGroupMap = new Map<string, string>()
+  for (const group of Object.values(tableGroups)) {
+    for (const tableName of group.tables) {
+      tableToGroupMap.set(tableName, `group-${group.name}`)
+    }
+  }
+
   const nodes: Node[] = [
     {
       id: NON_RELATED_TABLE_GROUP_NODE_ID,
@@ -48,21 +70,28 @@ export const convertDBStructureToNodes = ({
       data: {},
       position: { x: 0, y: 0 },
     },
-    ...tables.map((table) => ({
-      id: table.name,
-      type: 'table',
-      data: {
-        table,
-        sourceColumnName: sourceColumns.get(table.name),
-        targetColumnCardinalities: tableColumnCardinalities.get(table.name),
-      },
-      position: { x: 0, y: 0 },
-      ariaLabel: `${table.name} table`,
-      zIndex: zIndex.nodeDefault,
-      ...(!tablesWithRelationships.has(table.name)
-        ? { parentId: NON_RELATED_TABLE_GROUP_NODE_ID }
-        : {}),
-    })),
+    ...groupNodes,
+    ...tables.map((table) => {
+      const groupId = tableToGroupMap.get(table.name)
+
+      return {
+        id: table.name,
+        type: 'table',
+        data: {
+          table,
+          sourceColumnName: sourceColumns.get(table.name),
+          targetColumnCardinalities: tableColumnCardinalities.get(table.name),
+        },
+        position: { x: 0, y: 0 },
+        ariaLabel: `${table.name} table`,
+        zIndex: zIndex.nodeDefault,
+        ...(!tablesWithRelationships.has(table.name) && !groupId
+          ? { parentId: NON_RELATED_TABLE_GROUP_NODE_ID }
+          : groupId
+            ? { parentId: groupId }
+            : {}),
+      }
+    }),
   ]
 
   const edges: Edge[] = relationships.map((rel) => ({

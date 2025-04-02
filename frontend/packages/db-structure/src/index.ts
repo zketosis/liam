@@ -8,6 +8,7 @@ export {
   type Indexes,
   type Relationships,
   type Cardinality,
+  type TableGroup,
   dbStructureSchema,
   aTable,
   aColumn,

@@ -149,9 +149,13 @@ export const BranchDetailPage = async ({
             <div className={styles.resourceSection}>
               <h3 className={styles.resourceTitle}>Knowledge Suggestions</h3>
               <Link
-                href={urlgen('projects/[projectId]/knowledge-suggestions', {
-                  projectId: String(projectId),
-                })}
+                href={urlgen(
+                  'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions',
+                  {
+                    projectId: String(projectId),
+                    branchOrCommit,
+                  },
+                )}
                 className={styles.resourceLink}
               >
                 View Knowledge Suggestions

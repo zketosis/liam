@@ -1,4 +1,5 @@
 import '@xyflow/react/dist/style.css'
+import type { TableGroup } from '@liam-hq/db-structure'
 import {
   type ImperativePanelHandle,
   ResizableHandle,
@@ -34,6 +35,7 @@ type Props = {
   defaultSidebarOpen?: boolean | undefined
   errorObjects?: ErrorObject[] | undefined
   defaultPanelSizes?: number[]
+  tableGroups?: Record<string, TableGroup>
 }
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state'
@@ -44,6 +46,7 @@ export const ERDRenderer: FC<Props> = ({
   defaultSidebarOpen = false,
   errorObjects = [],
   defaultPanelSizes = [20, 80],
+  tableGroups = {},
 }) => {
   const [open, setOpen] = useState(defaultSidebarOpen)
   const [isResizing, setIsResizing] = useState(false)
@@ -53,6 +56,7 @@ export const ERDRenderer: FC<Props> = ({
   const { nodes, edges } = convertDBStructureToNodes({
     dbStructure,
     showMode,
+    tableGroups,
   })
 
   const leftPanelRef = createRef<ImperativePanelHandle>()

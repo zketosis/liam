@@ -1,5 +1,5 @@
+import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -7,64 +7,66 @@ import styles from './KnowledgeSuggestionsListPage.module.css'
 
 type Props = {
   projectId: string
+  branchOrCommit: string
 }
 
-async function getKnowledgeSuggestions(projectId: string) {
-  try {
-    const projectId_num = Number(projectId)
+async function getKnowledgeSuggestions(
+  projectId: string,
+  branchOrCommit: string,
+) {
+  const projectId_num = Number(projectId)
+  const supabase = await createClient()
 
-    // Directly query knowledge suggestions by projectId
-    const knowledgeSuggestions = await prisma.knowledgeSuggestion.findMany({
-      where: {
-        projectId: projectId_num,
-      },
-      select: {
-        id: true,
-        type: true,
-        title: true,
-        path: true,
-        approvedAt: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
+  const { data: knowledgeSuggestions, error } = await supabase
+    .from('KnowledgeSuggestion')
+    .select(
+      'id, type, title, path, approvedAt, createdAt, updatedAt, branchName',
+    )
+    .eq('projectId', projectId_num)
+    .eq('branchName', branchOrCommit)
+    .order('createdAt', { ascending: false })
 
-    return knowledgeSuggestions
-  } catch (error) {
+  if (error) {
     console.error('Error fetching knowledge suggestions:', error)
     notFound()
   }
+
+  return knowledgeSuggestions || []
 }
 
 export const KnowledgeSuggestionsListPage: FC<Props> = async ({
   projectId,
+  branchOrCommit,
 }) => {
-  const knowledgeSuggestions = await getKnowledgeSuggestions(projectId)
+  const knowledgeSuggestions = await getKnowledgeSuggestions(
+    projectId,
+    branchOrCommit,
+  )
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <Link
-            href={urlgen('projects/[projectId]', {
+            href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
               projectId,
+              branchOrCommit,
             })}
             className={styles.backLink}
             aria-label="Back to project details"
           >
-            ← Back to Project
+            ← Back to Branch Details
           </Link>
-          <h1 className={styles.title}>Knowledge Suggestions</h1>
+          <h1 className={styles.title}>
+            Knowledge Suggestions for {branchOrCommit}
+          </h1>
         </div>
       </div>
 
       <div className={styles.content}>
         {knowledgeSuggestions.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No knowledge suggestions found for this project.</p>
+            <p>No knowledge suggestions found for this branch.</p>
           </div>
         ) : (
           <ul className={styles.suggestionsList}>
@@ -72,9 +74,10 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
               <li key={suggestion.id} className={styles.suggestionItem}>
                 <Link
                   href={urlgen(
-                    'projects/[projectId]/knowledge-suggestions/[id]',
+                    'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
                     {
                       projectId,
+                      branchOrCommit,
                       id: `${suggestion.id}`,
                     },
                   )}
@@ -99,7 +102,9 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
                     </span>
                     <span className={styles.metaItem}>
                       Created:{' '}
-                      {suggestion.createdAt.toLocaleDateString('en-US')}
+                      {new Date(suggestion.createdAt).toLocaleDateString(
+                        'en-US',
+                      )}
                     </span>
                   </div>
                 </Link>
