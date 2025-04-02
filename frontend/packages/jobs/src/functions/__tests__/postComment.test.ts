@@ -49,7 +49,7 @@ describe('postComment', () => {
   const testMigration = {
     id: 9999,
     title: 'Test Migration',
-    pullRequestId: 9999,
+    pullRequestId: 1,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
