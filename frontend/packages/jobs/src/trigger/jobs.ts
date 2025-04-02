@@ -1,3 +1,4 @@
+import { prisma } from '@liam-hq/db'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
 import { postComment } from '../functions/postComment'
@@ -203,13 +204,28 @@ export const createKnowledgeSuggestionTask = task({
 export const savePullRequest = async (
   payload: SavePullRequestWithProjectPayload,
 ) => {
+  const projectMapping = await prisma.projectRepositoryMapping.findFirst({
+    where: {
+      projectId: payload.projectId,
+    },
+    include: {
+      repository: true,
+    },
+  })
+
+  if (!projectMapping) {
+    throw new Error(`No repository found for project ID: ${payload.projectId}`)
+  }
+
+  const { repository } = projectMapping
+
   await savePullRequestTask.trigger({
     pullRequestNumber: payload.prNumber,
     pullRequestTitle: payload.pullRequestTitle,
     projectId: payload.projectId,
-    owner: payload.owner,
-    name: payload.name,
-    repositoryId: payload.repositoryId,
+    owner: repository.owner,
+    name: repository.name,
+    repositoryId: repository.id,
     branchName: payload.branchName,
   })
 }
