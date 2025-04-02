@@ -8,6 +8,7 @@
 - **GitHub App**: Integrated to automate comments and review approvals on PRs.
 - **Prisma**: ORM for database access and management (currently being phased out).
 - **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins. Planned to replace Prisma across all components.
+- **Supabase RPC**: Remote Procedure Call functionality in Supabase, planned for future implementation of robust transaction management across the application.
 - **AWS**: Deployed in the us-east-1 region for its high affinity with English-speaking markets and potential for future multi-region expansion.
 - **TypeScript**: Strongly-typed programming language that builds on JavaScript.
 - **React 18**: UI library for building component-based interfaces.
@@ -31,6 +32,7 @@
 - **Build System**: Turborepo for optimized builds.
 - **Linting & Formatting**: Biome for code quality.
 - **Testing**: Vitest for unit testing, Playwright for e2e testing.
+  - **Supabase Testing Approach**: A direct testing approach is used with Supabase. We create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments.
 
 ## Code Implementation Guidelines
 - Use TypeScript for all components and functions.

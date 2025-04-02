@@ -1,4 +1,4 @@
-import { prisma } from '@liam-hq/db'
+import { createClient } from '@/libs/db/server'
 import { getPullRequestFiles } from '@liam-hq/github'
 import { minimatch } from 'minimatch'
 
@@ -26,11 +26,17 @@ export const checkSchemaChanges = async (
   const filenames = files.map((file) => file.filename)
 
   // Get patterns for the project
-  const patterns = await prisma.watchSchemaFilePattern.findMany({
-    where: { projectId },
-    select: { pattern: true },
-  })
-  if (patterns.length === 0) {
+  const supabase = await createClient()
+  const { data: patterns, error } = await supabase
+    .from('WatchSchemaFilePattern')
+    .select('pattern')
+    .eq('projectId', projectId)
+
+  if (error) {
+    throw new Error('Failed to fetch schema file patterns')
+  }
+
+  if (!patterns || patterns.length === 0) {
     return { shouldContinue: false }
   }
   // Check if filenames match the patterns

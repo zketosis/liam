@@ -852,9 +852,21 @@ GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."Migration" TO "anon";
+GRANT ALL ON TABLE "public"."Migration" TO "authenticated";
+GRANT ALL ON TABLE "public"."Migration" TO "service_role";
+
+
+
 GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."OverallReview" TO "anon";
+GRANT ALL ON TABLE "public"."OverallReview" TO "authenticated";
+GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
 
 
 
@@ -885,6 +897,12 @@ GRANT ALL ON SEQUENCE "public"."ProjectRepositoryMapping_id_seq" TO "service_rol
 GRANT ALL ON SEQUENCE "public"."Project_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."Project_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."Project_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."PullRequest" TO "anon";
+GRANT ALL ON TABLE "public"."PullRequest" TO "authenticated";
+GRANT ALL ON TABLE "public"."PullRequest" TO "service_role";
 
 
 
@@ -927,6 +945,12 @@ GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."WatchSchemaFilePattern" TO "anon";
+GRANT ALL ON TABLE "public"."WatchSchemaFilePattern" TO "authenticated";
+GRANT ALL ON TABLE "public"."WatchSchemaFilePattern" TO "service_role";
 
 
 

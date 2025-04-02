@@ -1,6 +1,5 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import { prisma } from '@liam-hq/db'
 import { redirect } from 'next/navigation'
 
 export default async function Page() {
@@ -11,14 +10,12 @@ export default async function Page() {
     redirect(urlgen('login'))
   }
 
-  const projects = await prisma.project.findMany({
-    select: {
-      id: true,
-    },
-    take: 1,
-  })
+  const { data: projects } = await supabase
+    .from('Project')
+    .select('id')
+    .limit(1)
 
-  if (projects.length > 0) {
+  if (projects && projects.length > 0) {
     redirect(urlgen('projects'))
   }
 

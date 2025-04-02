@@ -41,6 +41,10 @@ The database schema has been optimized by removing the unused Doc and DocVersion
 
 A new schema metadata generation pipeline has been implemented that creates and stores metadata suggestions based on PR reviews. This pipeline includes a new task (`generateSchemaMetaSuggestionTask`) that is triggered after a review is saved, a processing function (`processGenerateSchemaMeta`) that fetches data from the database and generates schema metadata suggestions, and integration with the existing `createKnowledgeSuggestionTask` to store the generated metadata. The implementation includes proper type handling for Supabase queries, addressing challenges with bigint fields and nested relationships.
 
+As part of the transition to Supabase JS, manual rollback processing has been removed from the `addProject.ts` server action. This change prepares the way for implementing more robust transaction management using Supabase RPC in the future, which will provide a more consistent approach to handling database transactions across the application.
+
+The testing approach has been updated to use a direct testing strategy with Supabase. Instead of mocking the Supabase client or creating mock implementations of functions (as was necessary with Prisma), we now create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This approach provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments. This approach differs significantly from the Prisma approach, which typically required extensive mocking.
+
 ## Database Migration Workflow
 
 A standardized workflow has been established for database schema changes:

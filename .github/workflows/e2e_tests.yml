@@ -5,20 +5,6 @@ on:
 
 jobs:
   e2e-tests:
-    if: |
-      github.event_name == 'deployment_status' &&
-      github.event.deployment_status.state == 'success' &&
-      (
-        (
-          contains(github.event.deployment.environment, 'Production') &&
-          contains(github.event.deployment_status.target_url, 'liam-app-git-main')
-        ) ||
-        (
-          contains(github.event.deployment.environment, 'Preview') &&
-          !contains(github.event.deployment_status.target_url, 'liam-erd-sample') &&
-          !contains(github.event.deployment_status.target_url, 'liam-docs')
-        )
-      )
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
@@ -38,10 +24,33 @@ jobs:
         with:
           ref: ${{ github.event.deployment.sha }}
 
+      - name: Check deployment conditions
+        id: check
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        run: |
+          EVENT_NAME="${{ github.event_name }}"
+          EVENT_STATE="${{ github.event.deployment_status.state }}"
+          ENVIRONMENT="${{ github.event.deployment.environment }}"
+          TARGET_URL="${{ github.event.deployment_status.target_url }}"
+
+          if [ "$EVENT_NAME" = "deployment_status" ] && [ "$EVENT_STATE" = "success" ]; then
+            if { [ "$ENVIRONMENT" = *"Production"* ] && [ "$TARGET_URL" = *"liam-app-git-main"* ]; } || \
+               { [ "$ENVIRONMENT" = *"Preview"* ] && [ "$TARGET_URL" != *"liam-erd-sample"* ] && [ "$TARGET_URL" != *"liam-docs"* ]; }; then
+              echo "should_run=true" >> $GITHUB_OUTPUT
+            else
+              echo "should_run=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup pnpm
+        if: steps.check.outputs.should_run == 'true'
         uses: ./.github/actions/pnpm-setup
 
       - name: Cache Playwright browsers
+        if: steps.check.outputs.should_run == 'true'
         id: playwright-cache
         uses: actions/cache@v4
         with:
@@ -51,29 +60,33 @@ jobs:
             playwright-${{ runner.os }}-
 
       - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        if: ${{ steps.check.outputs.should_run == 'true' && steps.playwright-cache.outputs.cache-hit != 'true' }}
         run: pnpm exec playwright install --with-deps
 
       - name: Install system dependencies for WebKit
         # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
-        if: ${{ steps.playwright-cache.outputs.cache-hit == 'true' }}
+        if: ${{ steps.check.outputs.should_run == 'true' && steps.playwright-cache.outputs.cache-hit == 'true' }}
         run: pnpm exec playwright install-deps webkit
 
+      # This workflow is triggered for all deployments (liam-app, liam-erd-sample, liam-docs),
+      # but E2E tests are executed only for liam-app deployments now.
       - name: Run e2e tests
+        if: steps.check.outputs.should_run == 'true'
         run: pnpm exec playwright test --project="${{ matrix.browser }}"
         env:
           URL: ${{ env.URL }}
 
+      # FIXME: This step is not working well. All environments seem to be Preview.
       - name: Upload test results
+        if: ${{ steps.check.outputs.should_run == 'true' && failure() }}
         uses: actions/upload-artifact@v4
-        if: failure()
         with:
           name: test-results-${{ matrix.browser }}
           path: frontend/packages/e2e/test-results/
           retention-days: 30
 
       - name: Slack Notification on Failure
-        if: ${{ env.ENVIRONMENT == 'Production – liam-app' && failure() }}
+        if: ${{ steps.check.outputs.should_run == 'true' && env.ENVIRONMENT == 'Production – liam-app' && failure() }}
         uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}

@@ -1,7 +1,7 @@
 'use server'
 
+import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import { prisma } from '@liam-hq/db'
 import { createOrUpdateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
 import * as v from 'valibot'
@@ -39,14 +39,16 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
     parsedData.output
 
   try {
-    // Get the knowledge suggestion
-    const suggestion = await prisma.knowledgeSuggestion.findUnique({
-      where: {
-        id: suggestionId,
-      },
-    })
+    const supabase = await createClient()
 
-    if (!suggestion) {
+    // Get the knowledge suggestion
+    const { data: suggestion, error: findError } = await supabase
+      .from('KnowledgeSuggestion')
+      .select('*')
+      .eq('id', suggestionId)
+      .single()
+
+    if (findError || !suggestion) {
       throw new Error('Knowledge suggestion not found')
     }
 
@@ -67,14 +69,14 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
     }
 
     // Update the knowledge suggestion with approvedAt
-    await prisma.knowledgeSuggestion.update({
-      where: {
-        id: suggestionId,
-      },
-      data: {
-        approvedAt: new Date(),
-      },
-    })
+    const { error: updateError } = await supabase
+      .from('KnowledgeSuggestion')
+      .update({ approvedAt: new Date().toISOString() })
+      .eq('id', suggestionId)
+
+    if (updateError) {
+      throw new Error('Failed to update knowledge suggestion')
+    }
 
     // Redirect back to the knowledge suggestion detail page
     redirect(
