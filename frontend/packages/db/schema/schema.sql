@@ -144,10 +144,10 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
     "fileSha" "text",
     "projectId" integer NOT NULL,
     "approvedAt" timestamp(3) without time zone,
-    "traceId" "text",
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "branchName" "text" NOT NULL
+    "branchName" "text" NOT NULL,
+    "traceId" "text"
 );
 
 
@@ -202,10 +202,10 @@ CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
     "pullRequestId" integer NOT NULL,
     "reviewComment" "text",
     "reviewedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "traceId" "text",
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "branchName" "text" NOT NULL
+    "branchName" "text" NOT NULL,
+    "traceId" "text"
 );
 
 
