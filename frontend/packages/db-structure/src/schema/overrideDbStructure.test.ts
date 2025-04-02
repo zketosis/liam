@@ -384,6 +384,50 @@ describe('overrideDbStructure', () => {
 
   describe('Complex scenarios', () => {
     it('should handle multiple override operations at once', () => {
+      const structureWithPostsForTest: DBStructure = {
+        tables: {
+          ...originalStructure.tables,
+          posts: {
+            name: 'posts',
+            comment: 'Blog posts',
+            columns: {
+              id: {
+                name: 'id',
+                type: 'uuid',
+                default: null,
+                check: null,
+                primary: true,
+                unique: true,
+                notNull: true,
+                comment: 'Primary key',
+              },
+              user_id: {
+                name: 'user_id',
+                type: 'uuid',
+                default: null,
+                check: null,
+                primary: false,
+                unique: false,
+                notNull: true,
+                comment: 'Foreign key to users',
+              },
+              title: {
+                name: 'title',
+                type: 'varchar',
+                default: null,
+                check: null,
+                primary: false,
+                unique: false,
+                notNull: true,
+                comment: 'Post title',
+              },
+            },
+            indexes: {},
+          },
+        },
+        relationships: {},
+      }
+
       const override: DBOverride = {
         overrides: {
           // Override existing table
@@ -421,7 +465,7 @@ describe('overrideDbStructure', () => {
         },
       }
 
-      const { dbStructure } = applyOverrides(originalStructure, override)
+      const { dbStructure } = applyOverrides(structureWithPostsForTest, override)
 
       // Check table comment was updated
       expect(dbStructure.tables['users']?.comment).toBe(
