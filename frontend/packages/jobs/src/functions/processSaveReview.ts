@@ -62,7 +62,7 @@ export const processSaveReview = async (
     const reviewIssues = payload.review.issues.map((issue) => ({
       overallReviewId: overallReview.id,
       category: mapCategoryEnum(issue.kind),
-      severity: mapSeverityEnum(issue.severity),
+      severity: issue.severity,
       description: issue.description,
       updatedAt: now,
     }))
@@ -112,22 +112,6 @@ const mapCategoryEnum = (
   const result = mapping[category]
   if (!result) {
     throw new Error(`Invalid category: ${category}`)
-  }
-  return result
-}
-
-// Helper function to map severity from review schema to SeverityEnum
-const mapSeverityEnum = (
-  severity: string,
-): 'CRITICAL' | 'WARNING' | 'POSITIVE' => {
-  const mapping: Record<string, 'CRITICAL' | 'WARNING' | 'POSITIVE'> = {
-    high: 'CRITICAL',
-    medium: 'WARNING',
-    low: 'POSITIVE',
-  }
-  const result = mapping[severity]
-  if (!result) {
-    throw new Error(`Invalid severity: ${severity}`)
   }
   return result
 }
