@@ -49,12 +49,13 @@ export default defineConfig({
   init: async () => {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
-      
+
       tracesSampleRate: 1,
-      
+
       debug: false,
-      
-      environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+
+      environment:
+        process.env.NODE_ENV === 'production' ? 'production' : 'development',
     })
   },
   onFailure: async (payload, error, { ctx }) => {
