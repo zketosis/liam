@@ -12193,7 +12193,7 @@ Public Domain manually approved
 
 
 <a name="langfuse"></a>
-### langfuse v3.37.0
+### langfuse v3.37.1
 #### 
 
 ##### Paths
