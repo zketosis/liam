@@ -3,9 +3,6 @@ import { createClient } from '../../libs/supabase'
 import type { ReviewResponse } from '../../types'
 import { processSaveReview } from '../processSaveReview'
 
-// Mock environment variables
-vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
-
 describe('processSaveReview', () => {
   const supabase = createClient()
 
@@ -22,45 +19,61 @@ describe('processSaveReview', () => {
 
   const testPullRequest = {
     id: 9999,
-    pullNumber: 1,
-    repositoryId: testRepository.id,
+    pullNumber: 9999,
+    repositoryId: 9999,
     commentId: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
 
-  const testOverallReview = {
+  const testProject = {
     id: 9999,
-    projectId: 1,
-    pullRequestId: testPullRequest.id,
-    reviewComment: 'Test review comment',
-    branchName: 'test-branch',
+    name: 'test-project',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
 
-  // Setup: Insert test data before tests
   beforeEach(async () => {
     vi.clearAllMocks()
 
     // Insert test data
     await supabase.from('Repository').insert(testRepository)
     await supabase.from('PullRequest').insert(testPullRequest)
-    await supabase.from('OverallReview').insert(testOverallReview)
+    await supabase.from('Project').insert(testProject)
   })
 
-  // Cleanup: Remove test data after tests
   afterEach(async () => {
-    // Delete test data in reverse order to avoid foreign key constraints
-    await supabase.from('OverallReview').delete().eq('id', testOverallReview.id)
+    // Delete test data
+    // First, find all OverallReviews
+    const { data: reviews } = await supabase
+      .from('OverallReview')
+      .select('id')
+      .eq('pullRequestId', testPullRequest.id)
+
+    if (reviews && reviews.length > 0) {
+      const reviewIds = reviews.map((r) => r.id)
+      // Delete associated ReviewScores and ReviewIssues
+      await supabase
+        .from('ReviewScore')
+        .delete()
+        .in('overallReviewId', reviewIds)
+      await supabase
+        .from('ReviewIssue')
+        .delete()
+        .in('overallReviewId', reviewIds)
+      // Delete OverallReviews
+      await supabase.from('OverallReview').delete().in('id', reviewIds)
+    }
+
     await supabase.from('PullRequest').delete().eq('id', testPullRequest.id)
+    await supabase.from('Project').delete().eq('id', testProject.id)
     await supabase.from('Repository').delete().eq('id', testRepository.id)
   })
 
   it('should save review successfully', async () => {
     const testPayload: ReviewResponse = {
       pullRequestId: testPullRequest.id,
-      projectId: 1,
+      projectId: testProject.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
       review: {
@@ -87,26 +100,42 @@ describe('processSaveReview', () => {
     const result = await processSaveReview(testPayload)
     expect(result.success).toBe(true)
 
-    // Verify the update in the database
-    const { data: updatedReview } = await supabase
+    const { data: review, error } = await supabase
       .from('OverallReview')
       .select('*')
-      .eq('id', testOverallReview.id)
+      .eq('pullRequestId', testPullRequest.id)
       .single()
 
-    expect(updatedReview).toBeTruthy()
-    expect(updatedReview?.reviewComment).toBe('Test review comment')
+    if (error) throw error
+    expect(review).toBeTruthy()
+    expect(review.projectId).toBe(testProject.id)
+
+    const { data: scores, error: scoresError } = await supabase
+      .from('ReviewScore')
+      .select('*')
+      .eq('overallReviewId', review.id)
+    if (scoresError) throw scoresError
+    expect(scores).toBeTruthy()
+    expect(scores.length).toBeGreaterThanOrEqual(1)
+
+    const { data: issues, error: issuesError } = await supabase
+      .from('ReviewIssue')
+      .select('*')
+      .eq('overallReviewId', review.id)
+    if (issuesError) throw issuesError
+    expect(issues).toBeTruthy()
+    expect(issues.length).toBeGreaterThanOrEqual(1)
   })
 
   it('should throw error when pull request not found', async () => {
     const testPayload: ReviewResponse = {
       pullRequestId: 999999,
-      projectId: 1,
-      repositoryId: testRepository.id,
+      projectId: 9999,
+      repositoryId: 9999,
       branchName: 'test-branch',
       review: {
-        bodyMarkdown: 'Test review comment',
-        summary: 'Test review summary',
+        bodyMarkdown: 'Test review',
+        summary: 'summary',
         scores: [],
         issues: [],
       },
@@ -118,17 +147,14 @@ describe('processSaveReview', () => {
   })
 
   it('should throw error when creating overall review fails', async () => {
-    // Delete the existing overall review to simulate creation failure
-    await supabase.from('OverallReview').delete().eq('id', testOverallReview.id)
-
     const testPayload: ReviewResponse = {
-      pullRequestId: testPullRequest.id,
-      projectId: 999999, // Invalid project ID to cause failure
-      repositoryId: testRepository.id,
+      pullRequestId: 9999,
+      projectId: 999999,
+      repositoryId: 9999,
       branchName: 'test-branch',
       review: {
-        bodyMarkdown: 'Test review comment',
-        summary: 'Test review summary',
+        bodyMarkdown: 'Test review',
+        summary: 'summary',
         scores: [],
         issues: [],
       },

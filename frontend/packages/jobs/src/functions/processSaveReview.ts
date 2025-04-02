@@ -5,7 +5,7 @@ export const processSaveReview = async (
   payload: ReviewResponse,
 ): Promise<{ success: boolean }> => {
   try {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { data: pullRequest, error: pullRequestError } = await supabase
       .from('PullRequest')
       .select('*')
@@ -13,7 +13,9 @@ export const processSaveReview = async (
       .single()
 
     if (pullRequestError || !pullRequest) {
-      throw new Error('PullRequest not found')
+      throw new Error(
+        `PullRequest not found: ${JSON.stringify(pullRequestError)}`,
+      )
     }
 
     const now = new Date().toISOString()
@@ -32,7 +34,9 @@ export const processSaveReview = async (
       .single()
 
     if (overallReviewError || !overallReview) {
-      throw new Error('Failed to create overall review')
+      throw new Error(
+        `Failed to create overall review: ${JSON.stringify(overallReviewError)}`,
+      )
     }
 
     // create review scores
@@ -49,7 +53,9 @@ export const processSaveReview = async (
       .insert(reviewScores)
 
     if (reviewScoresError) {
-      throw new Error('Failed to create review scores')
+      throw new Error(
+        `Failed to create review scores: ${JSON.stringify(reviewScoresError)}`,
+      )
     }
 
     // create review issues
@@ -66,7 +72,9 @@ export const processSaveReview = async (
       .insert(reviewIssues)
 
     if (reviewIssuesError) {
-      throw new Error('Failed to create review issues')
+      throw new Error(
+        `Failed to create review issues: ${JSON.stringify(reviewIssuesError)}`,
+      )
     }
 
     return {
