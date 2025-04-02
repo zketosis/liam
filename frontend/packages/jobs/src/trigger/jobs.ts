@@ -16,8 +16,8 @@ import { processSavePullRequest } from '../functions/processSavePullRequest'
 import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
-  PostCommentPayload,
   GenerateSchemaMetaPayload,
+  PostCommentPayload,
   ReviewResponse,
   SavePullRequestWithProjectPayload,
 } from '../types'

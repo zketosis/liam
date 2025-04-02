@@ -92,7 +92,7 @@ describe('processSaveReview', () => {
         issues: [
           {
             kind: 'Migration Safety',
-            severity: 'high',
+            severity: 'CRITICAL',
             description: 'Test issue',
             suggestion: 'Fix the issue',
           },
