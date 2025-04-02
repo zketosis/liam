@@ -26,7 +26,7 @@ export type GenerateReviewPayload = {
     filename: string
     content: string
   }>
-  schemaChanges: Array<{
+  fileChanges: Array<{
     filename: string
     status:
       | 'added'
