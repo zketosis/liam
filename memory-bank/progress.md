@@ -13,6 +13,8 @@
 - Supabase JS integration for database access in the document viewer page, with optimized queries using nested joins.
 - Dynamic branch name management for KnowledgeSuggestion operations, replacing hardcoded branch names.
 - Streamlined database schema with removal of unused Doc and DocVersion models, focusing on GitHub-integrated document management.
+- Schema metadata generation pipeline that creates and stores metadata suggestions based on PR reviews.
+- Type-safe implementation of Supabase queries with proper handling of bigint fields and nested relationships.
 
 ## What's Left to Build
 
@@ -36,6 +38,8 @@ A new text document viewer page has been implemented at `/app/projects/[projectI
 A documentation list page has been implemented at `/app/projects/[projectId]/ref/[branchOrCommit]/docs` that displays all GitHubDocFilePath entries for a project. The page provides links to individual document pages and shows the review status of each document. This enhances the user experience by providing a centralized view of all documentation files associated with a project.
 
 The database schema has been optimized by removing the unused Doc and DocVersion models. Document management is now fully handled through the GitHubDocFilePath model, which provides a more direct integration with GitHub repositories. This change reflects the project's shift towards tighter GitHub integration and a more streamlined approach to document handling.
+
+A new schema metadata generation pipeline has been implemented that creates and stores metadata suggestions based on PR reviews. This pipeline includes a new task (`generateSchemaMetaSuggestionTask`) that is triggered after a review is saved, a processing function (`processGenerateSchemaMeta`) that fetches data from the database and generates schema metadata suggestions, and integration with the existing `createKnowledgeSuggestionTask` to store the generated metadata. The implementation includes proper type handling for Supabase queries, addressing challenges with bigint fields and nested relationships.
 
 As part of the transition to Supabase JS, manual rollback processing has been removed from the `addProject.ts` server action. This change prepares the way for implementing more robust transaction management using Supabase RPC in the future, which will provide a more consistent approach to handling database transactions across the application.
 
@@ -65,3 +69,5 @@ This workflow ensures consistency between the database schema, Prisma client, an
 - The review prompt template is simple and could be improved to provide more detailed analysis.
 - Continuous learning for AI components is required to improve accuracy and relevance over time.
 - The coexistence with the OSS version needs to be managed carefully to ensure a sustainable business model.
+- Type compatibility issues between Prisma and Supabase require careful handling, particularly for bigint fields and nested relationships.
+- The transition from Prisma to Supabase JS is ongoing and requires consistent patterns for database access across the application.
