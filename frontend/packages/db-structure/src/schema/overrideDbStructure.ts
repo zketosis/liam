@@ -7,7 +7,6 @@ import {
   relationshipNameSchema,
   relationshipSchema,
   tableNameSchema,
-  tableSchema,
 } from './dbStructure.js'
 
 // Schema for table group name
@@ -36,9 +35,6 @@ export type TableOverride = v.InferOutput<typeof tableOverrideSchema>
 // Schema for the entire override structure
 export const dbOverrideSchema = v.object({
   overrides: v.object({
-    // For adding completely new tables
-    addTables: v.optional(v.record(tableNameSchema, tableSchema)),
-
     // For overriding properties of existing tables
     tables: v.optional(v.record(tableNameSchema, tableOverrideSchema)),
 
@@ -56,6 +52,10 @@ export type DBOverride = v.InferOutput<typeof dbOverrideSchema>
 
 /**
  * Applies override definitions to the existing DB structure.
+ * This function will:
+ * 1. Apply overrides to existing tables (e.g., replacing comments)
+ * 2. Add new columns to existing tables
+ * 3. Add new relationships
  * @param originalStructure The original DB structure
  * @param override The override definitions
  * @returns The merged DB structure and table grouping information
@@ -72,20 +72,6 @@ export function applyOverrides(
   const { overrides } = override
 
   const tableGroups: Record<string, TableGroup> = {}
-
-  // Add new tables
-  if (overrides.addTables) {
-    for (const [tableName, tableDefinition] of Object.entries(
-      overrides.addTables,
-    )) {
-      if (result.tables[tableName]) {
-        throw new Error(
-          `Table ${tableName} already exists in the database structure`,
-        )
-      }
-      result.tables[tableName] = tableDefinition
-    }
-  }
 
   // Apply table overrides
   if (overrides.tables) {
