@@ -96,7 +96,9 @@ describe('postComment', () => {
       testRepository.owner,
       testRepository.name,
       testPullRequest.pullNumber,
-      expect.stringContaining('Test review comment'),
+      expect.stringContaining(`Test review comment
+
+Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigration.id}`),
     )
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
 
