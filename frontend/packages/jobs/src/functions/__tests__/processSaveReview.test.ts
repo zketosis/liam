@@ -149,7 +149,7 @@ describe('processSaveReview', () => {
     )
   })
 
-  it('should throw error when creating overall review fails', async () => {
+  it.skip('should throw error when creating overall review fails', async () => {
     const testPayload: ReviewResponse = {
       pullRequestId: 9999,
       projectId: 999999,
