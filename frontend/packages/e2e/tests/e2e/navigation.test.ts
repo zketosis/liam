@@ -92,7 +92,7 @@ test.describe('Navigation and URL Parameters', () => {
     })
 
     // FIXME: Browser back on hidden table is not working properly
-    test.skip('should handle back/forward navigation with table hiding', async ({
+    test('should handle back/forward navigation with table hiding', async ({
       page,
     }) => {
       // Initial state
