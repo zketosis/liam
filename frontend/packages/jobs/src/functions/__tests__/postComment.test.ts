@@ -23,7 +23,7 @@ vi.mock('@liam-hq/github', () => ({
 // Mock environment variables
 vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 
-describe('postComment', () => {
+describe.skip('postComment', () => {
   const supabase = createClient()
 
   // Test data
@@ -72,7 +72,7 @@ describe('postComment', () => {
     await supabase.from('Repository').delete().eq('id', testRepository.id)
   })
 
-  it.skip('should create a new comment when no comment exists', async () => {
+  it('should create a new comment when no comment exists', async () => {
     const mockCommentId = 123
     ;(createPullRequestComment as unknown as MockInstance).mockResolvedValue({
       id: mockCommentId,
@@ -153,7 +153,7 @@ describe('postComment', () => {
     )
   })
 
-  it.skip('should throw error when pull request not found', async () => {
+  it('should throw error when pull request not found', async () => {
     const testPayload = {
       reviewComment: 'Test review comment',
       projectId: 1,
@@ -167,7 +167,7 @@ describe('postComment', () => {
     )
   })
 
-  it.skip('should throw error when migration not found', async () => {
+  it('should throw error when migration not found', async () => {
     // Create a pull request without a migration
     const prWithoutMigration = {
       id: 8888,
