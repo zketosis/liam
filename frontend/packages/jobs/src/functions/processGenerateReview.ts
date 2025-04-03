@@ -1,5 +1,9 @@
 import { prisma } from '@liam-hq/db'
-import { getFileContent } from '@liam-hq/github'
+import {
+  getFileContent,
+  getIssueComments,
+  getPullRequestDetails,
+} from '@liam-hq/github'
 import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload, Review } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
@@ -56,11 +60,40 @@ export const processGenerateReview = async (
 
     // Filter out null values and join content
     const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
+
+    // Fetch PR details to get the description
+    const prDetails = await getPullRequestDetails(
+      Number(repository.installationId),
+      payload.owner,
+      payload.name,
+      payload.pullRequestNumber,
+    )
+
+    // Fetch PR comments
+    const prComments = await getIssueComments(
+      Number(repository.installationId),
+      payload.owner,
+      payload.name,
+      payload.pullRequestNumber,
+    )
+
+    // Format PR description
+    const prDescription = prDetails.body || 'No description provided.'
+
+    // Format comments for the prompt
+    const formattedComments = prComments
+      .map(
+        (comment) => `${comment.user?.login || 'Anonymous'}: ${comment.body}`,
+      )
+      .join('\n\n')
+
     const callbacks = [langfuseLangchainHandler]
     const review = await generateReview(
       docsContent,
       payload.schemaFiles,
-      payload.schemaChanges,
+      payload.fileChanges,
+      prDescription,
+      formattedComments,
       callbacks,
     )
     return review

@@ -62,9 +62,29 @@
   letter-spacing: 0.0375rem;
 }
 
+.healthContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 16px);
+  height: 100%;
+}
+
+.radarChartContainer {
+  flex: 1;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.erdLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 8px);
+}
+
 .erdLink {
   display: inline-block;
-  margin-top: 1rem;
   color: var(--color-primary);
   text-decoration: none;
   font-weight: 500;
@@ -103,4 +123,64 @@
 
 .metadata:last-child {
   margin-bottom: 0;
+}
+
+/* Review Issues Styles */
+.reviewIssues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 12px);
+  margin-top: var(--spacing-4, 16px);
+}
+
+.reviewIssue {
+  padding: var(--spacing-3, 12px);
+  border-radius: var(--border-radius-md, 6px);
+  border-left: 4px solid;
+  background-color: var(--overlay-5, rgba(255, 255, 255, 0.05));
+}
+
+.severityCRITICAL {
+  border-left-color: var(--color-error, #ff4d4f);
+  background-color: var(--color-error-bg, rgba(255, 77, 79, 0.1));
+}
+
+.severityWARNING {
+  border-left-color: var(--color-warning, #faad14);
+  background-color: var(--color-warning-bg, rgba(250, 173, 20, 0.1));
+}
+
+.severityPOSITIVE {
+  border-left-color: var(--color-success, #52c41a);
+  background-color: var(--color-success-bg, rgba(82, 196, 26, 0.1));
+}
+
+.issueHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2, 8px);
+  font-weight: 600;
+}
+
+.issueCategory {
+  font-size: var(--font-size-3, 0.75rem);
+  color: var(--global-foreground, #fff);
+  text-transform: uppercase;
+}
+
+.issueSeverity {
+  font-size: var(--font-size-3, 0.75rem);
+  color: var(--global-foreground, #fff);
+}
+
+.issueDescription {
+  font-size: var(--font-size-4, 0.8125rem);
+  line-height: 1.5;
+  color: var(--global-foreground, #fff);
+}
+
+.noIssues {
+  font-style: italic;
+  color: var(--global-mute-text, #bebfc1);
+  font-size: var(--font-size-4, 0.8125rem);
 }

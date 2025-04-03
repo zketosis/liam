@@ -129,7 +129,7 @@ vars:
         createdAt      DateTime      @default(now())
         updatedAt      DateTime      @updatedAt
       }
-  schemaChanges:
+  fileChanges:
   - filename: frontend/packages/db/prisma/schema.prisma
     status: modified
     changes: 12

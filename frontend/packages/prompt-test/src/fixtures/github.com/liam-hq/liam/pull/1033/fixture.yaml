@@ -1118,7 +1118,7 @@ vars:
       -- PostgreSQL database dump complete
       --
 
-  schemaChanges:
+  fileChanges:
   - filename: frontend/apps/app/features/projects/actions/approveKnowledgeSuggestion.ts
     status: modified
     changes: 13
