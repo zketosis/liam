@@ -36,7 +36,7 @@
     "yoctocolors": "2.1.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@rollup/plugin-node-resolve": "15.3.1",
     "@rollup/plugin-typescript": "12.1.1",
     "@types/glob": "8.1.0",

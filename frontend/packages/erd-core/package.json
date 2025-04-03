@@ -19,7 +19,7 @@
     "valtio": "2.1.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@types/react": "18",

@@ -3,18 +3,7 @@ import type { reviewSchema } from '../prompts/generateReview/reviewSchema'
 
 export type SavePullRequestPayload = {
   prNumber: number
-  pullRequestTitle: string
-  owner: string
-  name: string
-  repositoryId: number
-  branchName: string
-}
-
-export type SavePullRequestWithProjectPayload = {
-  prNumber: number
-  pullRequestTitle: string
   projectId: number
-  branchName: string
 }
 
 export type GenerateReviewPayload = {

@@ -8,4 +8,4 @@ jobs:
   add-assignee-to-pr:
     permissions:
       pull-requests: write
-    uses: route06/actions/.github/workflows/add_assignee_to_pr.yml@v2
+    uses: route06/actions/.github/workflows/add_assignee_to_pr.yml@155715656c4cd9079f1213d08d058e78dd00cae7 # v2
