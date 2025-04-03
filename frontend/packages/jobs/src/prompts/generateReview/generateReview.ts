@@ -7,7 +7,13 @@ import { parse } from 'valibot'
 import type { GenerateReviewPayload } from '../../types'
 import { reviewSchema } from './reviewSchema'
 
-export const SYSTEM_PROMPT = `You are a database design expert tasked with reviewing database schema changes. Analyze the provided context and schema changes carefully, and respond strictly in the provided JSON schema format.
+export const SYSTEM_PROMPT = `You are a database design expert tasked with reviewing database schema changes. Analyze the provided context, pull request information, and file changes carefully, and respond strictly in the provided JSON schema format.
+
+When analyzing the changes, consider:
+1. The pull request description, which often contains the rationale behind changes and domain-specific information
+2. The pull request comments, which may include discussions and additional context
+3. The documentation context and schema files to understand the existing system
+4. The file changes to identify potential issues and improvements
 
 Your JSON-formatted response must contain:
 
@@ -43,21 +49,29 @@ Ensure your response strictly adheres to the provided JSON schema.
 **Your output must be raw JSON only. Do not include any markdown code blocks or extraneous formatting.**
 `
 
-export const USER_PROMPT = `Documentation Context:
+export const USER_PROMPT = `Pull Request Description:
+{prDescription}
+
+Pull Request Comments:
+{prComments}
+
+Documentation Context:
 {docsContent}
 
 Schema Files:
 {schemaFiles}
 
-Schema Changes:
-{schemaChanges}`
+File Changes:
+{fileChanges}`
 
 export const reviewJsonSchema: JSONSchema7 = toJsonSchema(reviewSchema)
 
 export const generateReview = async (
   docsContent: string,
   schemaFiles: GenerateReviewPayload['schemaFiles'],
-  schemaChanges: GenerateReviewPayload['schemaChanges'],
+  fileChanges: GenerateReviewPayload['fileChanges'],
+  prDescription: string,
+  prComments: string,
   callbacks: Callbacks,
 ) => {
   const chatPrompt = ChatPromptTemplate.fromMessages([
@@ -75,7 +89,9 @@ export const generateReview = async (
     {
       docsContent,
       schemaFiles,
-      schemaChanges,
+      fileChanges,
+      prDescription,
+      prComments,
     },
     {
       callbacks,
