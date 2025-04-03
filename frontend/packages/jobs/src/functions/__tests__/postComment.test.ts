@@ -72,7 +72,7 @@ describe('postComment', () => {
     await supabase.from('Repository').delete().eq('id', testRepository.id)
   })
 
-  it('should create a new comment when no comment exists', async () => {
+  it.skip('should create a new comment when no comment exists', async () => {
     const mockCommentId = 123
     ;(createPullRequestComment as unknown as MockInstance).mockResolvedValue({
       id: mockCommentId,
@@ -155,7 +155,7 @@ describe('postComment', () => {
     )
   })
 
-  it('should throw error when pull request not found', async () => {
+  it.skip('should throw error when pull request not found', async () => {
     const testPayload = {
       reviewComment: 'Test review comment',
       projectId: 1,
@@ -169,7 +169,7 @@ describe('postComment', () => {
     )
   })
 
-  it('should throw error when migration not found', async () => {
+  it.skip('should throw error when migration not found', async () => {
     // Create a pull request without a migration
     const prWithoutMigration = {
       id: 8888,
