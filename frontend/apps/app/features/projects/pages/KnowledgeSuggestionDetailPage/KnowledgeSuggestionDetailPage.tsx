@@ -1,5 +1,5 @@
+import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -19,29 +19,27 @@ async function getKnowledgeSuggestionDetail(
   try {
     const projectId_num = Number(projectId)
     const suggestionId_num = Number(suggestionId)
+    const supabase = await createClient()
 
     // Get the knowledge suggestion with project info
-    const suggestion = await prisma.knowledgeSuggestion.findFirst({
-      where: {
-        id: suggestionId_num,
-        projectId: projectId_num,
-      },
-      include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-            repositoryMappings: {
-              include: {
-                repository: true,
-              },
-            },
-          },
-        },
-      },
-    })
+    const { data: suggestion, error } = await supabase
+      .from('KnowledgeSuggestion')
+      .select(`
+        *,
+        project:Project(
+          id,
+          name,
+          repositoryMappings:ProjectRepositoryMapping(
+            repository:Repository(*)
+          )
+        )
+      `)
+      .eq('id', suggestionId_num)
+      .eq('projectId', projectId_num)
+      .single()
 
-    if (!suggestion) {
+    if (error || !suggestion) {
+      console.error('Error fetching knowledge suggestion:', error)
       notFound()
     }
 
@@ -90,11 +88,13 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
             Status: {suggestion.approvedAt ? 'Approved' : 'Pending'}
           </span>
           <span className={styles.metaItem}>
-            Created: {suggestion.createdAt.toLocaleDateString('en-US')}
+            Created:{' '}
+            {new Date(suggestion.createdAt).toLocaleDateString('en-US')}
           </span>
           {suggestion.approvedAt && (
             <span className={styles.metaItem}>
-              Approved: {suggestion.approvedAt.toLocaleDateString('en-US')}
+              Approved:{' '}
+              {new Date(suggestion.approvedAt).toLocaleDateString('en-US')}
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { prisma } from '@liam-hq/db'
+import { createClient } from '@/libs/db/server'
 import { getRepositoryBranches } from '@liam-hq/github'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -10,55 +10,54 @@ type Props = {
 }
 
 async function getProjectAndBranches(projectId: string) {
-  const project = await prisma.project.findUnique({
-    where: {
-      id: Number(projectId),
-    },
-    select: {
-      id: true,
-      name: true,
-      repositoryMappings: {
-        select: {
-          repository: {
-            select: {
-              id: true,
-              name: true,
-              owner: true,
-              installationId: true,
-            },
-          },
-        },
-      },
-    },
-  })
+  try {
+    const supabase = await createClient()
+    const { data: project, error } = await supabase
+      .from('Project')
+      .select(`
+        id,
+        name,
+        ProjectRepositoryMapping:ProjectRepositoryMapping(
+          Repository:Repository(
+            id, name, owner, installationId
+          )
+        )
+      `)
+      .eq('id', Number(projectId))
+      .single()
 
-  if (!project) {
+    if (error || !project) {
+      notFound()
+    }
+
+    const branchesByRepo = await Promise.all(
+      project.ProjectRepositoryMapping.map(async (mapping) => {
+        const repository = mapping.Repository
+        const branches = await getRepositoryBranches(
+          Number(repository.installationId),
+          repository.owner,
+          repository.name,
+        )
+
+        return {
+          repositoryId: repository.id,
+          repositoryName: repository.name,
+          repositoryOwner: repository.owner,
+          branches: branches.map((branch) => ({
+            name: branch.name,
+          })),
+        }
+      }),
+    )
+
+    return {
+      id: project.id,
+      name: project.name,
+      branchesByRepo,
+    }
+  } catch (error) {
+    console.error('Error fetching project and branches:', error)
     notFound()
-  }
-
-  const branchesByRepo = await Promise.all(
-    project.repositoryMappings.map(async (mapping) => {
-      const { repository } = mapping
-      const branches = await getRepositoryBranches(
-        Number(repository.installationId),
-        repository.owner,
-        repository.name,
-      )
-
-      return {
-        repositoryId: repository.id,
-        repositoryName: repository.name,
-        repositoryOwner: repository.owner,
-        branches: branches.map((branch) => ({
-          name: branch.name,
-        })),
-      }
-    }),
-  )
-
-  return {
-    ...project,
-    branchesByRepo,
   }
 }
 
