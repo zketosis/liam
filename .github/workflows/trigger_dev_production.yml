@@ -32,6 +32,7 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          NEXT_PUBLIC_ENV_NAME: production
         run: pnpm deploy:jobs
 
       - name: Slack Notification on Failure
