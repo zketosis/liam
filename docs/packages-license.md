@@ -3667,7 +3667,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rollup/plugin-node-resolve"></a>
-### @rollup/plugin-node-resolve v15.3.0
+### @rollup/plugin-node-resolve v15.3.1
 #### 
 
 ##### Paths
