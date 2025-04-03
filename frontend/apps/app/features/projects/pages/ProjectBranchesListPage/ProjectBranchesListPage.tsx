@@ -28,10 +28,6 @@ type RepoBranches = {
   }>
 }
 
-type Branch = {
-  name: string
-}
-
 async function getProjectAndBranches(projectId: string) {
   const project = await prisma.project.findUnique({
     where: {
@@ -113,7 +109,7 @@ export const ProjectBranchesListPage: FC<Props> = async ({ projectId }) => {
             </h2>
 
             <ul className={styles.branchList}>
-              {repo.branches.map((branch: Branch) => (
+              {repo.branches.map((branch) => (
                 <li key={branch.name} className={styles.branchItem}>
                   <Link
                     href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
