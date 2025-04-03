@@ -3,10 +3,10 @@ import {
   updatePullRequestComment,
 } from '@liam-hq/github'
 import { createClient } from '../libs/supabase'
-import type { ReviewResponse } from '../types'
+import type { PostCommentPayload } from '../types'
 
 export async function postComment(
-  payload: ReviewResponse,
+  payload: PostCommentPayload,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const { reviewComment, pullRequestId, repositoryId } = payload
