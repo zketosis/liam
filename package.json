@@ -7,7 +7,7 @@
     "@changesets/get-github-info": "0.6.0",
     "@changesets/types": "6.0.0",
     "@turbo/gen": "2.1.2",
-    "syncpack": "13.0.0",
+    "syncpack": "13.0.3",
     "turbo": "2.1.2",
     "vercel": "41.4.0"
   },
