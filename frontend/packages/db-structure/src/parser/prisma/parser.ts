@@ -97,6 +97,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       columns,
       comment: model.documentation ?? null,
       indexes: {},
+      constraints: {},
     }
   }
   for (const model of dmmf.datamodel.models) {
