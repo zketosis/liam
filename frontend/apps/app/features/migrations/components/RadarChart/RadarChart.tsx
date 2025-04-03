@@ -3,13 +3,15 @@
 import { useMemo } from 'react'
 import styles from './RadarChart.module.css'
 
-export enum CategoryEnum {
-  MIGRATION_SAFETY = 'MIGRATION_SAFETY',
-  DATA_INTEGRITY = 'DATA_INTEGRITY',
-  PERFORMANCE_IMPACT = 'PERFORMANCE_IMPACT',
-  PROJECT_RULES_CONSISTENCY = 'PROJECT_RULES_CONSISTENCY',
-  SECURITY_OR_SCALABILITY = 'SECURITY_OR_SCALABILITY',
-}
+export const categoryEnum = {
+  MIGRATION_SAFETY: 'MIGRATION_SAFETY',
+  DATA_INTEGRITY: 'DATA_INTEGRITY',
+  PERFORMANCE_IMPACT: 'PERFORMANCE_IMPACT',
+  PROJECT_RULES_CONSISTENCY: 'PROJECT_RULES_CONSISTENCY',
+  SECURITY_OR_SCALABILITY: 'SECURITY_OR_SCALABILITY',
+} as const
+
+export type CategoryEnum = (typeof categoryEnum)[keyof typeof categoryEnum]
 
 export type ReviewScore = {
   id: number
@@ -22,7 +24,7 @@ type RadarChartProps = {
   scores: ReviewScore[]
 }
 
-const CATEGORIES = Object.values(CategoryEnum)
+const CATEGORIES = Object.values(categoryEnum)
 const DEFAULT_SCORE = 10
 const MAX_SCORE = 10
 
@@ -33,7 +35,7 @@ export const RadarChart = ({ scores }: RadarChartProps) => {
 
     // Initialize all categories with default score
     for (const category of CATEGORIES) {
-      dataMap.set(category as CategoryEnum, DEFAULT_SCORE)
+      dataMap.set(category, DEFAULT_SCORE)
     }
 
     // Update with actual scores
@@ -55,7 +57,7 @@ export const RadarChart = ({ scores }: RadarChartProps) => {
 
     return CATEGORIES.map((category, i) => {
       const angle = (i * 2 * Math.PI) / CATEGORIES.length - Math.PI / 2
-      const score = chartData.get(category as CategoryEnum) || DEFAULT_SCORE
+      const score = chartData.get(category) || DEFAULT_SCORE
       const normalizedScore = score / MAX_SCORE
       const x = center + radius * normalizedScore * Math.cos(angle)
       const y = center + radius * normalizedScore * Math.sin(angle)
