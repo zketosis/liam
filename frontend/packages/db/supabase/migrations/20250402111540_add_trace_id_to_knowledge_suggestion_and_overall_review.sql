@@ -1,3 +1,2 @@
-ALTER TABLE "public"."KnowledgeSuggestion" ADD COLUMN IF NOT EXISTS "traceId" text;
-
-ALTER TABLE "public"."OverallReview" ADD COLUMN IF NOT EXISTS "traceId" text;
+-- traceId columns already exist in schema.sql, no need to add them again
+-- This migration file is kept as a record of the change

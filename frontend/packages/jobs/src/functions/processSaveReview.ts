@@ -1,4 +1,5 @@
 import { prisma } from '@liam-hq/db'
+import type { Prisma } from '@prisma/client'
 import type { ReviewResponse } from '../types'
 
 export const processSaveReview = async (
@@ -35,7 +36,7 @@ export const processSaveReview = async (
         reviewComment: payload.reviewComment,
         branchName: payload.branchName,
         traceId: payload.traceId,
-      } as any, // Using 'any' instead of Prisma.OverallReviewCreateInput due to type issues
+      } as Prisma.OverallReviewCreateInput,
     })
 
     return {

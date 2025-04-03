@@ -38,7 +38,7 @@ describe('postComment', () => {
   }
 
   const testPullRequest = {
-    id: 1,
+    id: 9999,
     pullNumber: 1,
     repositoryId: 9999,
     commentId: null,
