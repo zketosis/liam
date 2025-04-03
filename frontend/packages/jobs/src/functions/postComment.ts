@@ -7,6 +7,88 @@ import {
 import { createClient } from '../libs/supabase'
 import type { PostCommentPayload } from '../types'
 
+/**
+ * Generate ER diagram links for schema files in a pull request
+ */
+async function generateERDLinks({
+  installationId,
+  owner,
+  repo,
+  pullNumber,
+  repositoryId,
+  branchRef,
+}: {
+  installationId: string | number
+  owner: string
+  repo: string
+  pullNumber: string | number
+  repositoryId: number
+  branchRef: string
+}): Promise<string> {
+  const supabase = createClient()
+  
+  const { data: projectMappings, error: mappingsError } = await supabase
+    .from('ProjectRepositoryMapping')
+    .select('projectId')
+    .eq('repositoryId', repositoryId)
+
+  if (mappingsError) {
+    console.error('Error fetching project mappings:', mappingsError)
+    throw new Error('Project mappings not found')
+  }
+
+  const projectIds = projectMappings.map(
+    (mapping: { projectId: number }) => mapping.projectId,
+  )
+
+  const { data: schemaPaths, error: pathsError } = await supabase
+    .from('GitHubSchemaFilePath')
+    .select('path, projectId')
+    .in('projectId', projectIds)
+
+  if (pathsError) {
+    console.error('Error fetching schema paths:', pathsError)
+    throw new Error('Schema paths not found')
+  }
+
+  const files = await getPullRequestFiles(
+    Number(installationId),
+    owner,
+    repo,
+    Number(pullNumber),
+  )
+
+  const matchedFiles = files
+    .map((file) => file.filename)
+    .filter((filename) =>
+      schemaPaths.some((schemaPath) => filename === schemaPath.path),
+    )
+
+  let erdLinksText = ''
+  if (matchedFiles.length > 0) {
+    erdLinksText = '\n\nER Diagrams:'
+
+    const filesByProject = new Map<number, string[]>()
+
+    for (const filename of matchedFiles) {
+      const schemaPath = schemaPaths.find((sp) => sp.path === filename)
+      if (schemaPath) {
+        const projectFiles = filesByProject.get(schemaPath.projectId) || []
+        projectFiles.push(filename)
+        filesByProject.set(schemaPath.projectId, projectFiles)
+      }
+    }
+
+    for (const [projectId, filenames] of filesByProject.entries()) {
+      for (const filename of filenames) {
+        erdLinksText += `\n- View ERD for ${filename}: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${branchRef}/schema/${filename}`
+      }
+    }
+  }
+
+  return erdLinksText
+}
+
 export async function postComment(
   payload: PostCommentPayload,
 ): Promise<{ success: boolean; message: string }> {
@@ -66,64 +148,14 @@ export async function postComment(
       Number(prRecord.pullNumber),
     )
 
-    const { data: projectMappings, error: mappingsError } = await supabase
-      .from('ProjectRepositoryMapping')
-      .select('projectId')
-      .eq('repositoryId', repositoryId)
-
-    if (mappingsError) {
-      console.error('Error fetching project mappings:', mappingsError)
-      throw new Error('Project mappings not found')
-    }
-
-    const projectIds = projectMappings.map(
-      (mapping: { projectId: number }) => mapping.projectId,
-    )
-
-    const { data: schemaPaths, error: pathsError } = await supabase
-      .from('GitHubSchemaFilePath')
-      .select('path, projectId')
-      .in('projectId', projectIds)
-
-    if (pathsError) {
-      console.error('Error fetching schema paths:', pathsError)
-      throw new Error('Schema paths not found')
-    }
-
-    const files = await getPullRequestFiles(
-      Number(installationId),
+    const erdLinksText = await generateERDLinks({
+      installationId,
       owner,
       repo,
-      Number(prRecord.pullNumber),
-    )
-
-    const matchedFiles = files
-      .map((file) => file.filename)
-      .filter((filename) =>
-        schemaPaths.some((schemaPath) => filename === schemaPath.path),
-      )
-
-    let erdLinksText = ''
-    if (matchedFiles.length > 0) {
-      erdLinksText = '\n\nER Diagrams:'
-
-      const filesByProject = new Map<number, string[]>()
-
-      for (const filename of matchedFiles) {
-        const schemaPath = schemaPaths.find((sp) => sp.path === filename)
-        if (schemaPath) {
-          const projectFiles = filesByProject.get(schemaPath.projectId) || []
-          projectFiles.push(filename)
-          filesByProject.set(schemaPath.projectId, projectFiles)
-        }
-      }
-
-      for (const [projectId, filenames] of filesByProject.entries()) {
-        for (const filename of filenames) {
-          erdLinksText += `\n- View ERD for ${filename}: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${prDetails.head.ref}/schema/${filename}`
-        }
-      }
-    }
+      pullNumber: prRecord.pullNumber,
+      repositoryId: Number(repositoryId),
+      branchRef: prDetails.head.ref,
+    })
 
     const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinksText}`
 
