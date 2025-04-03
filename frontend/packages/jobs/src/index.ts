@@ -1,7 +1,7 @@
 export type {
   GenerateReviewPayload,
   ReviewResponse,
-  SavePullRequestWithProjectPayload,
+  SavePullRequestPayload,
 } from './types'
 
 export { processGenerateReview } from './functions/processGenerateReview'
@@ -9,6 +9,6 @@ export { processSavePullRequest } from './functions/processSavePullRequest'
 export { processSaveReview } from './functions/processSaveReview'
 export { postComment } from './functions/postComment'
 
-export { savePullRequest, helloWorld } from './trigger/jobs'
+export { savePullRequestTask, helloWorld } from './trigger/jobs'
 
 export * from './prompts'

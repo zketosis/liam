@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   codeql:
-    uses: route06/actions/.github/workflows/codeql.yml@v2
+    uses: route06/actions/.github/workflows/codeql.yml@155715656c4cd9079f1213d08d058e78dd00cae7 # v2
