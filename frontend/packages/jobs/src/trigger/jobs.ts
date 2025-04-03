@@ -19,40 +19,42 @@ import type {
   GenerateSchemaMetaPayload,
   PostCommentPayload,
   ReviewResponse,
-  SavePullRequestWithProjectPayload,
+  SavePullRequestPayload,
 } from '../types'
 import { helloWorldTask } from './helloworld'
 
 export const savePullRequestTask = task({
   id: 'save-pull-request',
-  run: async (payload: {
-    pullRequestNumber: number
-    pullRequestTitle: string
-    projectId: number
-    owner: string
-    name: string
-    repositoryId: number
-    branchName: string
-  }) => {
+  run: async (payload: SavePullRequestPayload) => {
     logger.log('Executing PR save task:', { payload })
 
     try {
-      const result = await processSavePullRequest({
-        prNumber: payload.pullRequestNumber,
-        pullRequestTitle: payload.pullRequestTitle,
-        owner: payload.owner,
-        name: payload.name,
-        repositoryId: payload.repositoryId,
-        branchName: payload.branchName,
-      })
+      const result = await processSavePullRequest(payload)
       logger.info('Successfully saved PR to database:', { prId: result.prId })
+
+      // Get repository information from the result
+      const supabase = createClient()
+      const { data: repository, error: repositoryError } = await supabase
+        .from('Repository')
+        .select('*')
+        .eq('id', result.repositoryId)
+        .single()
+
+      if (repositoryError || !repository) {
+        throw new Error(
+          `Repository not found: ${JSON.stringify(repositoryError)}`,
+        )
+      }
 
       // Trigger the next task in the chain - generate review
       await generateReviewTask.trigger({
-        ...payload,
         pullRequestId: result.prId,
         projectId: payload.projectId,
-        repositoryId: payload.repositoryId,
+        repositoryId: repository.id,
+        branchName: result.branchName,
+        owner: repository.owner,
+        name: repository.name,
+        pullRequestNumber: payload.prNumber,
         schemaFiles: result.schemaFiles,
         fileChanges: result.fileChanges,
       })
@@ -255,37 +257,6 @@ export const createKnowledgeSuggestionTask = task({
     }
   },
 })
-
-export const savePullRequest = async (
-  payload: SavePullRequestWithProjectPayload,
-) => {
-  const supabase = createClient()
-  const { data: projectMapping, error } = await supabase
-    .from('ProjectRepositoryMapping')
-    .select(`
-      *,
-      repository:Repository(*)
-    `)
-    .eq('projectId', payload.projectId)
-    .limit(1)
-    .maybeSingle()
-
-  if (error || !projectMapping) {
-    throw new Error(`No repository found for project ID: ${payload.projectId}`)
-  }
-
-  const { repository } = projectMapping
-
-  await savePullRequestTask.trigger({
-    pullRequestNumber: payload.prNumber,
-    pullRequestTitle: payload.pullRequestTitle,
-    projectId: payload.projectId,
-    owner: repository.owner,
-    name: repository.name,
-    repositoryId: repository.id,
-    branchName: payload.branchName,
-  })
-}
 
 export const helloWorld = async (name?: string) => {
   await helloWorldTask.trigger({ name: name ?? 'World' })
