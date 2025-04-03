@@ -54,7 +54,8 @@ async function getMigrationContents(migrationId: string) {
         id,
         category,
         severity,
-        description
+        description,
+        suggestion
       ),
       reviewScores:ReviewScore (
         id,
@@ -198,6 +199,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                     category: string
                     severity: string
                     description: string
+                    suggestion: string | null
                   }) => (
                     <div
                       key={issue.id}
@@ -217,6 +219,14 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                       <p className={styles.issueDescription}>
                         {issue.description}
                       </p>
+                      {issue.suggestion && (
+                        <div className={styles.issueSuggestion}>
+                          <h4 className={styles.suggestionTitle}>
+                            💡 Suggestion:
+                          </h4>
+                          <p>{issue.suggestion}</p>
+                        </div>
+                      )}
                     </div>
                   ),
                 )

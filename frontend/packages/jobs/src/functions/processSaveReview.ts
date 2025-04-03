@@ -64,6 +64,7 @@ export const processSaveReview = async (
       category: mapCategoryEnum(issue.kind),
       severity: issue.severity,
       description: issue.description,
+      suggestion: issue.suggestion,
       updatedAt: now,
     }))
 

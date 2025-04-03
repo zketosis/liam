@@ -177,6 +177,26 @@
   font-size: var(--font-size-4, 0.8125rem);
   line-height: 1.5;
   color: var(--global-foreground, #fff);
+  margin-bottom: var(--spacing-2, 8px);
+}
+
+.issueSuggestion {
+  margin-top: var(--spacing-2, 8px);
+  padding-top: var(--spacing-2, 8px);
+  border-top: 1px solid var(--overlay-10, rgba(255, 255, 255, 0.1));
+}
+
+.suggestionTitle {
+  font-size: var(--font-size-3, 0.75rem);
+  font-weight: 600;
+  color: var(--global-foreground, #fff);
+  margin-bottom: var(--spacing-1, 4px);
+}
+
+.issueSuggestion p {
+  font-size: var(--font-size-4, 0.8125rem);
+  line-height: 1.5;
+  color: var(--global-foreground, #fff);
 }
 
 .noIssues {
