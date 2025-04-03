@@ -41,7 +41,10 @@ Your JSON-formatted response must contain:
     - A score of 7-9 indicates minor issues or concerns
     - A score of 10 indicates perfect design with no issues
   - "reason": An explanation justifying the score provided, including what deductions were made and why. If no issues were found in a category, explicitly state that a score of 10 was given because no issues were identified.
-- A brief summary of the review in the "summary" field.
+- A concise summary in the "summary" field that:
+  - Describes the migration changes in about 1 line
+  - Highlights the most important issues or risks (if any exist); if no significant issues are found, highlight positive aspects of the migration instead
+  - Is about 3 lines in total length
 - A detailed and constructive overall review in the "bodyMarkdown" field.
   - The bodyMarkdown should be a markdown formatted string.
 
