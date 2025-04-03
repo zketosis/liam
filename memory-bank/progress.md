@@ -17,6 +17,8 @@
 - Type-safe implementation of Supabase queries with proper handling of bigint fields and nested relationships.
 - Improved schema file management with the GitHubSchemaFilePath table (renamed from WatchSchemaFilePattern) and direct path comparison instead of pattern matching.
 - Standardized Supabase client usage across the codebase using a shared createClient function.
+- Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
+- Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
 
 ## What's Left to Build
 

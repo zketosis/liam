@@ -28,6 +28,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Transaction Management**: Moving away from manual rollback processing in server actions to a more robust approach using Supabase RPC for transaction management. This will provide a consistent and reliable way to handle database transactions across the application.
 - **Direct Path Comparison**: Using direct path comparison instead of pattern matching for schema file detection, providing a more precise and efficient approach to schema file management.
 - **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as GitHubSchemaFilePath and GitHubDocFilePath for GitHub-integrated file management.
+- **Context-Enriched AI Prompts**: The AI review generation incorporates multiple sources of context (PR descriptions, comments, documentation, schema files, and code changes) to provide more comprehensive and relevant analysis.
 
 ## Component Relationships
 - **GitHub Webhook Handler**: Receives webhook events from GitHub, extracts schema changes, and triggers the review process.

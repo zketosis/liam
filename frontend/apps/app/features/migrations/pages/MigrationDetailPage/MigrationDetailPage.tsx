@@ -5,6 +5,8 @@ import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
+import { RadarChart } from '../../components/RadarChart/RadarChart'
+import type { CategoryEnum as RadarChartCategoryEnum } from '../../components/RadarChart/RadarChart'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
@@ -53,6 +55,13 @@ async function getMigrationContents(migrationId: string) {
         category,
         severity,
         description
+      ),
+      reviewScores:ReviewScore (
+        id,
+        overallReviewId,
+        overallScore,
+        category,
+        reason
       )
     `)
     .eq('pullRequestId', pullRequest.id)
@@ -138,12 +147,24 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
       <div className={styles.twoColumns}>
         <div className={styles.box}>
           <h2 className={styles.h2}>Migration Health</h2>
-          <div className={styles.erdLinks}>
-            {erdLinks.map(({ path, filename }) => (
-              <Link key={path} href={path} className={styles.erdLink}>
-                View ERD Diagram: {filename} →
-              </Link>
-            ))}
+          <div className={styles.healthContent}>
+            <div className={styles.radarChartContainer}>
+              <RadarChart
+                scores={overallReview.reviewScores.map((score) => ({
+                  id: score.id,
+                  overallReviewId: score.overallReviewId,
+                  overallScore: score.overallScore,
+                  category: score.category as RadarChartCategoryEnum,
+                }))}
+              />
+            </div>
+            <div className={styles.erdLinks}>
+              {erdLinks.map(({ path, filename }) => (
+                <Link key={path} href={path} className={styles.erdLink}>
+                  View ERD Diagram: {filename} →
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
         <div className={styles.box}>
