@@ -49,7 +49,7 @@ export type Table = v.InferOutput<typeof tableSchema>
 const cardinalitySchema = v.picklist(['ONE_TO_ONE', 'ONE_TO_MANY'])
 export type Cardinality = v.InferOutput<typeof cardinalitySchema>
 
-const foreignKeyConstraintSchema = v.picklist([
+const foreignKeyConstraintReferenceOptionSchema = v.picklist([
   'CASCADE',
   'RESTRICT',
   'SET_NULL',
@@ -57,8 +57,8 @@ const foreignKeyConstraintSchema = v.picklist([
   'NO_ACTION',
 ])
 
-export type ForeignKeyConstraint = v.InferOutput<
-  typeof foreignKeyConstraintSchema
+export type ForeignKeyConstraintReferenceOption = v.InferOutput<
+  typeof foreignKeyConstraintReferenceOptionSchema
 >
 
 export const relationshipSchema = v.object({
@@ -68,8 +68,8 @@ export const relationshipSchema = v.object({
   foreignTableName: tableNameSchema,
   foreignColumnName: columnNameSchema,
   cardinality: cardinalitySchema,
-  updateConstraint: foreignKeyConstraintSchema,
-  deleteConstraint: foreignKeyConstraintSchema,
+  updateConstraint: foreignKeyConstraintReferenceOptionSchema,
+  deleteConstraint: foreignKeyConstraintReferenceOptionSchema,
 })
 export type Relationship = v.InferOutput<typeof relationshipSchema>
 
