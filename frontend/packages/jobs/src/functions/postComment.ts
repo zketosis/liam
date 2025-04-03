@@ -26,7 +26,6 @@ async function generateERDLinks({
   branchRef: string
 }): Promise<string> {
   const supabase = createClient()
-  
   const { data: projectMappings, error: mappingsError } = await supabase
     .from('ProjectRepositoryMapping')
     .select('projectId')
