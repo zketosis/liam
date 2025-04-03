@@ -23,6 +23,7 @@
 - Standardized Supabase client usage across the codebase using a shared createClient function.
 - Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
 - Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
+- Completed migration from Prisma to Supabase for database migrations, with standardized workflow documented.
 
 ## What's Left to Build
 
@@ -31,7 +32,7 @@
 - Further refinement of AI components to enhance the accuracy and relevance of suggestions.
 - Development of Builder User features, planned for later phases, leveraging accumulated review data and feedback.
 - Exploration of multi-region deployment opportunities as user needs grow.
-- Continue migration from Prisma client to Supabase JS across remaining components to standardize database access patterns (migration workflow is already completed).
+- Complete migration from Prisma client to Supabase JS across all components to standardize database access patterns (migration workflow is already completed).
 - Ensure consistent Supabase type updates whenever database schema changes are made.
 
 ## Current Status
@@ -57,6 +58,8 @@ As part of the transition to Supabase JS, manual rollback processing has been re
 The testing approach has been updated to use a direct testing strategy with Supabase. Instead of mocking the Supabase client or creating mock implementations of functions (as was necessary with Prisma), we now create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This approach provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments. This approach differs significantly from the Prisma approach, which typically required extensive mocking.
 
 The schema file management has been improved by renaming the `WatchSchemaFilePattern` table to `GitHubSchemaFilePath` and changing from pattern matching to direct path comparison. This provides a more precise and efficient approach to schema file management, aligning with the existing `GitHubDocFilePath` model and providing a more consistent approach to file path handling across the application. The implementation includes a migration file that handles the table rename and data transfer, updates to all affected components to use the new table name and field names, and standardization of Supabase client usage across the codebase.
+
+The database migration workflow has been fully transitioned from Prisma to Supabase. The Prisma migration scripts and folders have been removed, and a standardized Supabase migration workflow has been documented. This transition simplifies the database schema management process and aligns with the project's goal of standardizing on Supabase across all components. While the Prisma client is still used in some parts of the application (hence the `gen:prisma` script is retained), all database schema migrations are now handled through Supabase, using commands like `supabase:migration:new` and `supabase:migration:up`.
 
 ## Known Issues
 

@@ -22,7 +22,7 @@
     "vaul": "1.1.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
     "@storybook/react": "8.3.4",
     "@types/react": "18",

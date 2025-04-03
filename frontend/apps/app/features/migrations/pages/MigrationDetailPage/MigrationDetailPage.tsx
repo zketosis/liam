@@ -5,6 +5,7 @@ import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
+import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { RadarChart } from '../../components/RadarChart/RadarChart'
 import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
 import styles from './MigrationDetailPage.module.css'
@@ -175,6 +176,10 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           <pre className={styles.reviewContent}>
             {overallReview.reviewComment}
           </pre>
+          {/* Client-side user feedback component */}
+          <div className={styles.feedbackSection}>
+            <UserFeedbackClient traceId={overallReview.traceId} />
+          </div>
         </div>
         <div className={styles.box}>
           <h2 className={styles.h2}>Review Issues</h2>

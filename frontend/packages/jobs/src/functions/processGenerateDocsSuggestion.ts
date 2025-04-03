@@ -1,4 +1,5 @@
 import { getFileContent } from '@liam-hq/github'
+import { v4 as uuidv4 } from 'uuid'
 import { createClient } from '../libs/supabase'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
@@ -15,7 +16,7 @@ export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
   projectId: number
   branchOrCommit?: string
-}): Promise<Record<string, string>> {
+}): Promise<{ suggestions: Record<string, string>; traceId: string }> {
   try {
     const supabase = createClient()
 
@@ -61,17 +62,26 @@ export async function processGenerateDocsSuggestion(payload: {
         ? JSON.stringify(docsArray)
         : 'No existing docs found'
 
+    const predefinedRunId = uuidv4()
+
     const callbacks = [langfuseLangchainHandler]
     const result = await generateDocsSuggestion(
       payload.reviewComment,
       docsArrayString,
       callbacks,
+      predefinedRunId,
     )
 
-    // Filter out undefined values and return
-    return Object.fromEntries(
+    // Filter out undefined values
+    const suggestions = Object.fromEntries(
       Object.entries(result).filter(([_, value]) => value !== undefined),
     ) as Record<string, string>
+
+    // Return a properly structured object
+    return {
+      suggestions,
+      traceId: predefinedRunId,
+    }
   } catch (error) {
     console.error('Error generating docs suggestions:', error)
     throw error

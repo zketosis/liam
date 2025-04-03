@@ -10,7 +10,7 @@
     "@supabase/supabase-js": "2.49.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
     "@types/node": "22.9.0",
     "typescript": "5",
