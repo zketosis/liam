@@ -97,7 +97,7 @@ describe('postComment', () => {
       testRepository.name,
       testPullRequest.pullNumber,
       expect.stringContaining(
-        'Test review comment\n\nMigration URL: http://localhost:3000/app/migrations/9999'
+        'Test review comment\n\nMigration URL: http://localhost:3000/app/migrations/9999',
       ),
     )
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
