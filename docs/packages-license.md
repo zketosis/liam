@@ -3678,7 +3678,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rollup/plugin-typescript"></a>
-### @rollup/plugin-typescript v12.1.1
+### @rollup/plugin-typescript v12.1.2
 #### 
 
 ##### Paths
