@@ -397,6 +397,7 @@ export type Database = {
           id: number
           overallReviewId: number
           severity: Database['public']['Enums']['SeverityEnum']
+          suggestion: string | null
           updatedAt: string
         }
         Insert: {
@@ -406,6 +407,7 @@ export type Database = {
           id?: number
           overallReviewId: number
           severity: Database['public']['Enums']['SeverityEnum']
+          suggestion?: string | null
           updatedAt: string
         }
         Update: {
@@ -415,6 +417,7 @@ export type Database = {
           id?: number
           overallReviewId?: number
           severity?: Database['public']['Enums']['SeverityEnum']
+          suggestion?: string | null
           updatedAt?: string
         }
         Relationships: [
