@@ -4,6 +4,7 @@ on:
     branches:
       - staging
     paths:
+      - .github/workflows/trigger_dev_staging.yml
       - frontend/packages/jobs/**
       - frontend/packages/db-structure/**
       - frontend/packages/github/**

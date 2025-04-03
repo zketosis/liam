@@ -4,6 +4,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/trigger_dev_production.yml
       - frontend/packages/jobs/**
       - frontend/packages/db-structure/**
       - frontend/packages/github/**
