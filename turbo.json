@@ -8,6 +8,7 @@
         "SENTRY_AUTH_TOKEN",
         "SENTRY_ORG",
         "SENTRY_PROJECT",
+        "SENTRY_DSN",
         "LANGFUSE_PUBLIC_KEY",
         "LANGFUSE_SECRET_KEY",
         "LANGFUSE_BASE_URL",
@@ -19,6 +20,10 @@
     "@liam-hq/jobs#deploy": {
       "dependsOn": ["^build"],
       "passThroughEnv": [
+        "SENTRY_AUTH_TOKEN",
+        "SENTRY_ORG",
+        "SENTRY_PROJECT",
+        "SENTRY_DSN",
         "TRIGGER_ACCESS_TOKEN",
         "TRIGGER_PROJECT_ID"
       ]
