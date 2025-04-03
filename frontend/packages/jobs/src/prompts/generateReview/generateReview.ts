@@ -23,8 +23,18 @@ Your JSON-formatted response must contain:
   - "suggestion": Actionable recommendations for addressing the issue.
 - An array of scores for each issue kind in the "scores" field, each including:
   - "kind": One of the issue categories listed above.
-  - "value": A numeric score from 0 to 10, with 10 being the highest.
-  - "reason": An explanation justifying the score provided.
+  - "value": A numeric score from 0 to 10, using a deduction-based approach:
+    - Start with a perfect score of 10 (indicating no issues)
+    - Deduct points based on the number and severity of issues identified:
+      - CRITICAL issues: Deduct 2-4 points each
+      - WARNING issues: Deduct 1-2 points each
+      - No deductions for POSITIVE observations
+    - Consider the cumulative impact of multiple issues
+    - A score of 0-3 indicates critical, unfixable problems
+    - A score of 4-6 indicates significant issues requiring attention
+    - A score of 7-9 indicates minor issues or concerns
+    - A score of 10 indicates perfect design with no issues
+  - "reason": An explanation justifying the score provided, including what deductions were made and why. If no issues were found in a category, explicitly state that a score of 10 was given because no issues were identified.
 - A brief summary of the review in the "summary" field.
 - A detailed and constructive overall review in the "bodyMarkdown" field.
   - The bodyMarkdown should be a markdown formatted string.
