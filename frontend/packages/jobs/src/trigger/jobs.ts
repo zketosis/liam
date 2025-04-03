@@ -1,5 +1,5 @@
-import { prisma } from '@liam-hq/db'
 import { logger, task } from '@trigger.dev/sdk/v3'
+import { createClient } from '../libs/supabase'
 
 // FIXME: This should be imported from the app package once we have proper package structure
 const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
@@ -17,6 +17,7 @@ import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
   GenerateSchemaMetaPayload,
+  PostCommentPayload,
   ReviewResponse,
   SavePullRequestWithProjectPayload,
 } from '../types'
@@ -54,7 +55,7 @@ export const savePullRequestTask = task({
         projectId: payload.projectId,
         repositoryId: payload.repositoryId,
         schemaFiles: result.schemaFiles,
-        schemaChanges: result.schemaChanges,
+        fileChanges: result.fileChanges,
       })
 
       return result
@@ -68,13 +69,13 @@ export const savePullRequestTask = task({
 export const generateReviewTask = task({
   id: 'generate-review',
   run: async (payload: GenerateReviewPayload) => {
-    const reviewComment = await processGenerateReview(payload)
-    logger.log('Generated review:', { reviewComment })
+    const review = await processGenerateReview(payload)
+    logger.log('Generated review:', { review })
     await saveReviewTask.trigger({
-      reviewComment,
+      review,
       ...payload,
     })
-    return { reviewComment }
+    return { review }
   },
 })
 
@@ -94,7 +95,7 @@ export const saveReviewTask = task({
       )
 
       await postCommentTask.trigger({
-        reviewComment: payload.reviewComment,
+        reviewComment: payload.review.bodyMarkdown,
         projectId: payload.projectId,
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
@@ -103,7 +104,7 @@ export const saveReviewTask = task({
 
       // Trigger docs suggestion generation after review is saved
       await generateDocsSuggestionTask.trigger({
-        reviewComment: payload.reviewComment,
+        reviewComment: payload.review.bodyMarkdown,
         projectId: payload.projectId,
         pullRequestNumber: payload.pullRequestNumber,
         owner: payload.owner,
@@ -114,17 +115,21 @@ export const saveReviewTask = task({
       })
 
       // Get the overall review ID from the database
-      const overallReview = await prisma.overallReview.findFirst({
-        where: {
+      const supabase = createClient()
+      const { data: overallReview, error: overallReviewError } = await supabase
+        .from('OverallReview')
+        .select('id')
+        .eq('pullRequestId', payload.pullRequestId)
+        .order('createdAt', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (overallReviewError) {
+        logger.error('Error fetching overall review', {
+          error: overallReviewError,
           pullRequestId: payload.pullRequestId,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        select: {
-          id: true,
-        },
-      })
+        })
+      }
 
       if (!overallReview) {
         logger.error('No overall review found for pull request', {
@@ -164,7 +169,7 @@ export const saveReviewTask = task({
 
 export const postCommentTask = task({
   id: 'post-comment',
-  run: async (payload: ReviewResponse) => {
+  run: async (payload: PostCommentPayload) => {
     logger.log('Executing comment post task:', { payload })
     const result = await postComment(payload)
     return result
@@ -255,16 +260,18 @@ export const createKnowledgeSuggestionTask = task({
 export const savePullRequest = async (
   payload: SavePullRequestWithProjectPayload,
 ) => {
-  const projectMapping = await prisma.projectRepositoryMapping.findFirst({
-    where: {
-      projectId: payload.projectId,
-    },
-    include: {
-      repository: true,
-    },
-  })
+  const supabase = createClient()
+  const { data: projectMapping, error } = await supabase
+    .from('ProjectRepositoryMapping')
+    .select(`
+      *,
+      repository:Repository(*)
+    `)
+    .eq('projectId', payload.projectId)
+    .limit(1)
+    .maybeSingle()
 
-  if (!projectMapping) {
+  if (error || !projectMapping) {
     throw new Error(`No repository found for project ID: ${payload.projectId}`)
   }
 

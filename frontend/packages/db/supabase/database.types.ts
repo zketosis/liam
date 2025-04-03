@@ -102,6 +102,38 @@ export type Database = {
           },
         ]
       }
+      GitHubSchemaFilePath: {
+        Row: {
+          createdAt: string
+          id: number
+          path: string
+          projectId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          id?: number
+          path: string
+          projectId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          id?: number
+          path?: string
+          projectId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'GitHubSchemaFilePath_projectId_fkey'
+            columns: ['projectId']
+            isOneToOne: false
+            referencedRelation: 'Project'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       KnowledgeSuggestion: {
         Row: {
           approvedAt: string | null
@@ -364,7 +396,6 @@ export type Database = {
           description: string
           id: number
           overallReviewId: number
-          overallScore: number
           severity: Database['public']['Enums']['SeverityEnum']
           updatedAt: string
         }
@@ -374,7 +405,6 @@ export type Database = {
           description: string
           id?: number
           overallReviewId: number
-          overallScore: number
           severity: Database['public']['Enums']['SeverityEnum']
           updatedAt: string
         }
@@ -384,7 +414,6 @@ export type Database = {
           description?: string
           id?: number
           overallReviewId?: number
-          overallScore?: number
           severity?: Database['public']['Enums']['SeverityEnum']
           updatedAt?: string
         }
@@ -432,38 +461,6 @@ export type Database = {
             columns: ['overallReviewId']
             isOneToOne: false
             referencedRelation: 'OverallReview'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      WatchSchemaFilePattern: {
-        Row: {
-          createdAt: string
-          id: number
-          pattern: string
-          projectId: number
-          updatedAt: string
-        }
-        Insert: {
-          createdAt?: string
-          id?: number
-          pattern: string
-          projectId: number
-          updatedAt: string
-        }
-        Update: {
-          createdAt?: string
-          id?: number
-          pattern?: string
-          projectId?: number
-          updatedAt?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'WatchSchemaFilePattern_projectId_fkey'
-            columns: ['projectId']
-            isOneToOne: false
-            referencedRelation: 'Project'
             referencedColumns: ['id']
           },
         ]

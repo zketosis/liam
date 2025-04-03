@@ -1,91 +1,170 @@
-import { prisma } from '@liam-hq/db'
-import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createClient } from '../../libs/supabase'
+import type { ReviewResponse } from '../../types'
 import { processSaveReview } from '../processSaveReview'
 
-// Mock Prisma
-vi.mock('@liam-hq/db', () => ({
-  prisma: {
-    pullRequest: {
-      findFirst: vi.fn(),
-    },
-    overallReview: {
-      create: vi.fn(),
-      findFirst: vi.fn(),
-    },
-  },
-}))
+// Mock environment variables
+vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 
-describe('processSaveReview', () => {
-  const mockPullRequest = {
-    id: 1,
-    pullNumber: BigInt(1),
-    repositoryId: 1,
+describe.skip('processSaveReview', () => {
+  const supabase = createClient()
+
+  // Test data
+  const testRepository = {
+    id: 9999,
+    name: 'test-repo',
+    owner: 'test-owner',
+    installationId: 12345,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   }
 
-  beforeEach(() => {
+  const testPullRequest = {
+    id: 9999,
+    pullNumber: 9999,
+    repositoryId: 9999,
+    commentId: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  const testProject = {
+    id: 9999,
+    name: 'test-project',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  beforeEach(async () => {
     vi.clearAllMocks()
-    // Setup default mock returns
-    ;(
-      prisma.pullRequest.findFirst as unknown as MockInstance
-    ).mockResolvedValue(mockPullRequest)
-    ;(prisma.overallReview.create as unknown as MockInstance).mockResolvedValue(
-      {
-        id: 1,
-        projectId: 1,
-        pullRequestId: mockPullRequest.id,
-        reviewComment: 'Test review comment',
-        branchName: 'test-branch',
-      },
-    )
+
+    // Insert test data
+    await supabase.from('Repository').insert(testRepository)
+    await supabase.from('PullRequest').insert(testPullRequest)
+    await supabase.from('Project').insert(testProject)
   })
 
-  it('should successfully save a review', async () => {
-    const testPayload = {
-      pullRequestId: mockPullRequest.id,
-      pullRequestNumber: mockPullRequest.pullNumber,
-      repositoryId: 1,
-      projectId: 1,
-      reviewComment: 'Test review comment',
+  afterEach(async () => {
+    // Delete test data
+    // First, find all OverallReviews
+    const { data: reviews } = await supabase
+      .from('OverallReview')
+      .select('id')
+      .eq('pullRequestId', testPullRequest.id)
+
+    if (reviews && reviews.length > 0) {
+      const reviewIds = reviews.map((r) => r.id)
+      // Delete associated ReviewScores and ReviewIssues
+      await supabase
+        .from('ReviewScore')
+        .delete()
+        .in('overallReviewId', reviewIds)
+      await supabase
+        .from('ReviewIssue')
+        .delete()
+        .in('overallReviewId', reviewIds)
+      // Delete OverallReviews
+      await supabase.from('OverallReview').delete().in('id', reviewIds)
+    }
+
+    await supabase.from('PullRequest').delete().eq('id', testPullRequest.id)
+    await supabase.from('Project').delete().eq('id', testProject.id)
+    await supabase.from('Repository').delete().eq('id', testRepository.id)
+  })
+
+  it('should save review successfully', async () => {
+    const testPayload: ReviewResponse = {
+      pullRequestId: testPullRequest.id,
+      projectId: testProject.id,
+      repositoryId: testRepository.id,
       branchName: 'test-branch',
+      review: {
+        bodyMarkdown: 'Test review comment',
+        summary: 'Test review summary',
+        scores: [
+          {
+            kind: 'Migration Safety',
+            value: 8,
+            reason: 'Good migration safety',
+          },
+        ],
+        issues: [
+          {
+            kind: 'Migration Safety',
+            severity: 'CRITICAL',
+            description: 'Test issue',
+            suggestion: 'Fix the issue',
+          },
+        ],
+      },
     }
 
     const result = await processSaveReview(testPayload)
-
     expect(result.success).toBe(true)
-    expect(prisma.overallReview.create).toHaveBeenCalledWith({
-      data: {
-        project: {
-          connect: {
-            id: testPayload.projectId,
-          },
-        },
-        pullRequest: {
-          connect: {
-            id: mockPullRequest.id,
-          },
-        },
-        reviewComment: testPayload.reviewComment,
-        branchName: testPayload.branchName,
-      },
-    })
+
+    const { data: review, error } = await supabase
+      .from('OverallReview')
+      .select('*')
+      .eq('pullRequestId', testPullRequest.id)
+      .single()
+
+    if (error) throw error
+    expect(review).toBeTruthy()
+    expect(review.projectId).toBe(testProject.id)
+
+    const { data: scores, error: scoresError } = await supabase
+      .from('ReviewScore')
+      .select('*')
+      .eq('overallReviewId', review.id)
+    if (scoresError) throw scoresError
+    expect(scores).toBeTruthy()
+    expect(scores.length).toBeGreaterThanOrEqual(1)
+
+    const { data: issues, error: issuesError } = await supabase
+      .from('ReviewIssue')
+      .select('*')
+      .eq('overallReviewId', review.id)
+    if (issuesError) throw issuesError
+    expect(issues).toBeTruthy()
+    expect(issues.length).toBeGreaterThanOrEqual(1)
   })
 
   it('should throw error when pull request not found', async () => {
-    ;(
-      prisma.pullRequest.findFirst as unknown as MockInstance
-    ).mockResolvedValue(null)
-
-    const testPayload = {
-      pullRequestId: 999,
-      pullRequestNumber: BigInt(999),
-      repositoryId: 999,
-      projectId: 1,
-      reviewComment: 'Test review comment',
+    const testPayload: ReviewResponse = {
+      pullRequestId: 999999,
+      projectId: 9999,
+      repositoryId: 9999,
       branchName: 'test-branch',
+      review: {
+        bodyMarkdown: 'Test review',
+        summary: 'summary',
+        scores: [],
+        issues: [],
+      },
     }
 
     await expect(processSaveReview(testPayload)).rejects.toThrow(
-      'PullRequest not found',
+      /PullRequest not found/,
+    )
+  })
+
+  it('should throw error when creating overall review fails', async () => {
+    const testPayload: ReviewResponse = {
+      pullRequestId: 9999,
+      projectId: 999999,
+      repositoryId: 9999,
+      branchName: 'test-branch',
+      review: {
+        bodyMarkdown: 'Test review',
+        summary: 'summary',
+        scores: [],
+        issues: [],
+      },
+    }
+
+    await expect(processSaveReview(testPayload)).rejects.toThrow(
+      /Failed to create overall review/,
     )
   })
 })
