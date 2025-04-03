@@ -10,7 +10,7 @@ interface SchemaFile {
   content: string
 }
 
-interface SchemaChange {
+interface FileChange {
   filename: string
   status: string
   changes: number
@@ -20,7 +20,7 @@ interface SchemaChange {
 interface PromptVars {
   docsContent: string
   schemaFiles: SchemaFile[]
-  schemaChanges: SchemaChange[]
+  fileChanges: FileChange[]
 }
 
 const systemPrompt = (_vars: PromptVars) => {
@@ -33,7 +33,9 @@ const userPrompt = async (vars: PromptVars) => {
     await template.formatPromptValue({
       docsContent: vars.docsContent,
       schemaFiles: vars.schemaFiles,
-      schemaChanges: vars.schemaChanges,
+      fileChanges: vars.fileChanges,
+      prDescription: 'No description provided.',
+      prComments: 'No comments.',
     })
   ).value
   return promptString
@@ -85,7 +87,7 @@ async function main() {
                   'datasource db {\n  provider = "postgresql"\n  // NOTE: Use the non-pooling URL to avoid PrismaClientUnknownRequestError for now\n  url      = env("POSTGRES_URL_NON_POOLING")\n}\n\ngenerator client {\n  provider      = "prisma-client-js"\n  binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]\n}\n\nmodel Project {\n  id        Int      @id @default(autoincrement())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  reviews   OverallReview[]\n  repositoryMappings ProjectRepositoryMapping[]\n  watchSchemaFilePatterns WatchSchemaFilePattern[]\n  knowledgeSuggestions KnowledgeSuggestion[]\n  githubDocFilePaths GitHubDocFilePath[]\n}\n\nmodel Repository {\n  id             Int      @id @default(autoincrement())\n  name           String\n  owner          String\n  installationId BigInt\n  isActive       Boolean  @default(true)\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  pullRequests   PullRequest[]\n  projectMappings ProjectRepositoryMapping[]\n\n  @@unique([owner, name])\n}\n\nmodel PullRequest {\n  id             Int      @id @default(autoincrement())\n  pullNumber     BigInt\n  commentId      BigInt?\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n  migration Migration?\n  repositoryId   Int\n  repository     Repository @relation(fields: [repositoryId], references: [id])\n  reviews        OverallReview[]\n\n  @@unique([repositoryId, pullNumber])\n}\n\nmodel Migration {\n  id             Int         @id @default(autoincrement())\n  title          String\n  pullRequestId  Int         @unique\n  pullRequest    PullRequest @relation(fields: [pullRequestId], references: [id])\n  createdAt       DateTime  @default(now())\n  updatedAt       DateTime  @updatedAt\n}\n\nmodel OverallReview {\n  id            Int     @id @default(autoincrement())\n  projectId     Int?\n  project       Project?    @relation(fields: [projectId], references: [id])\n  pullRequestId Int\n  pullRequest   PullRequest @relation(fields: [pullRequestId], references: [id])\n  branchName    String\n  reviewComment String?\n  reviewedAt    DateTime   @default(now())\n  createdAt       DateTime  @default(now())\n  updatedAt       DateTime  @updatedAt\n}\n\nmodel ProjectRepositoryMapping {\n  id           Int        @id @default(autoincrement())\n  projectId    Int\n  project      Project    @relation(fields: [projectId], references: [id])\n  repositoryId Int\n  repository   Repository @relation(fields: [repositoryId], references: [id])\n  createdAt    DateTime   @default(now())\n  updatedAt    DateTime   @updatedAt\n\n  @@unique([projectId, repositoryId])\n}\n\nmodel WatchSchemaFilePattern {\n  id        Int      @id @default(autoincrement())\n  pattern   String\n  projectId Int\n  project   Project  @relation(fields: [projectId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\n\nenum KnowledgeType {\n  SCHEMA\n  DOCS\n}\n\nmodel KnowledgeSuggestion {\n  id             Int           @id @default(autoincrement())\n  type           KnowledgeType // Either Schema or Docs\n  title          String        // Used as commit message\n  path           String        // Target file path\n  content        String        // Full content of the new file\n  fileSha        String?       // SHA of the file to be updated (nullable)\n  branchName     String        // Branch name for GitHub operations\n  projectId      Int\n  project        Project       @relation(fields: [projectId], references: [id])\n  approvedAt     DateTime?     // Approval timestamp (null if not approved)\n  createdAt      DateTime      @default(now())\n  updatedAt      DateTime      @updatedAt\n}\n',
               },
             ],
-            schemaChanges: [
+            fileChanges: [
               {
                 filename: 'frontend/packages/db/prisma/schema.prisma',
                 status: 'modified',

@@ -54,7 +54,7 @@ export const savePullRequestTask = task({
         projectId: payload.projectId,
         repositoryId: payload.repositoryId,
         schemaFiles: result.schemaFiles,
-        schemaChanges: result.schemaChanges,
+        fileChanges: result.fileChanges,
       })
 
       return result

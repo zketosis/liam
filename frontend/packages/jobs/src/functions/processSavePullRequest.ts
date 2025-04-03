@@ -15,7 +15,7 @@ export type SavePullRequestResult = {
     filename: string
     content: string
   }>
-  schemaChanges: Array<{
+  fileChanges: Array<{
     filename: string
     status:
       | 'added'
@@ -109,7 +109,7 @@ export async function processSavePullRequest(
     }),
   )
 
-  const schemaChanges = fileChanges.map((file) => {
+  const fileChangesData = fileChanges.map((file) => {
     return {
       filename: file.filename,
       status: file.status,
@@ -149,6 +149,6 @@ export async function processSavePullRequest(
     success: true,
     prId: prRecord.id,
     schemaFiles,
-    schemaChanges,
+    fileChanges: fileChangesData,
   }
 }
