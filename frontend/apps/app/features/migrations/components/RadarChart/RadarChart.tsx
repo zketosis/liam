@@ -24,14 +24,14 @@ type RadarChartProps = {
   scores: ReviewScore[]
 }
 
-const CATEGORIES = Object.keys(categoryEnum) as (keyof typeof categoryEnum)[]
+const CATEGORIES = Object.values(categoryEnum)
 const DEFAULT_SCORE = 10
 const MAX_SCORE = 10
 
 export const RadarChart = ({ scores }: RadarChartProps) => {
   // Prepare data with default values (using useMemo to prevent recalculation)
   const chartData = useMemo(() => {
-    const dataMap = new Map<keyof typeof categoryEnum, number>()
+    const dataMap = new Map<CategoryEnum, number>()
 
     // Initialize all categories with default score
     for (const category of CATEGORIES) {
