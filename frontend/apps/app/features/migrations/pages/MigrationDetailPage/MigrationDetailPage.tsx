@@ -1,6 +1,7 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
+import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -13,7 +14,6 @@ type Props = {
 async function getMigrationContents(migrationId: string) {
   const supabase = await createClient()
 
-  // Get migration with pull request and repository details
   const { data: migration, error: migrationError } = await supabase
     .from('Migration')
     .select(`
@@ -44,19 +44,22 @@ async function getMigrationContents(migrationId: string) {
   const pullRequest = migration.PullRequest
   const repository = pullRequest.Repository
 
-  // Get overall review
   const { data: overallReview, error: reviewError } = await supabase
     .from('OverallReview')
-    .select('*')
+    .select(`
+      *,
+      reviewIssues:ReviewIssue (
+        id,
+        category,
+        severity,
+        description
+      )
+    `)
     .eq('pullRequestId', pullRequest.id)
     .single()
 
   if (reviewError || !overallReview) {
-    console.error('Error fetching overall review:', reviewError)
-    return notFound()
-  }
-
-  if (!overallReview) {
+    console.error('OverallReview error:', reviewError)
     return notFound()
   }
 
@@ -151,6 +154,55 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           <pre className={styles.reviewContent}>
             {overallReview.reviewComment}
           </pre>
+        </div>
+        <div className={styles.box}>
+          <h2 className={styles.h2}>Review Issues</h2>
+          <div className={styles.reviewIssues}>
+            {overallReview.reviewIssues.length > 0 ? (
+              [...overallReview.reviewIssues]
+                .sort((a, b) => {
+                  const severityOrder = {
+                    CRITICAL: 0,
+                    WARNING: 1,
+                    POSITIVE: 2,
+                  }
+                  return (
+                    severityOrder[a.severity as keyof typeof severityOrder] -
+                    severityOrder[b.severity as keyof typeof severityOrder]
+                  )
+                })
+                .map(
+                  (issue: {
+                    id: number
+                    category: string
+                    severity: string
+                    description: string
+                  }) => (
+                    <div
+                      key={issue.id}
+                      className={clsx(
+                        styles.reviewIssue,
+                        styles[`severity${issue.severity}`],
+                      )}
+                    >
+                      <div className={styles.issueHeader}>
+                        <span className={styles.issueCategory}>
+                          {issue.category}
+                        </span>
+                        <span className={styles.issueSeverity}>
+                          {issue.severity}
+                        </span>
+                      </div>
+                      <p className={styles.issueDescription}>
+                        {issue.description}
+                      </p>
+                    </div>
+                  ),
+                )
+            ) : (
+              <p className={styles.noIssues}>No review issues found.</p>
+            )}
+          </div>
         </div>
       </div>
 

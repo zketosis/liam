@@ -396,7 +396,6 @@ export type Database = {
           description: string
           id: number
           overallReviewId: number
-          overallScore: number
           severity: Database['public']['Enums']['SeverityEnum']
           updatedAt: string
         }
@@ -406,7 +405,6 @@ export type Database = {
           description: string
           id?: number
           overallReviewId: number
-          overallScore: number
           severity: Database['public']['Enums']['SeverityEnum']
           updatedAt: string
         }
@@ -416,7 +414,6 @@ export type Database = {
           description?: string
           id?: number
           overallReviewId?: number
-          overallScore?: number
           severity?: Database['public']['Enums']['SeverityEnum']
           updatedAt?: string
         }

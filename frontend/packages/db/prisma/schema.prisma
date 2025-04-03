@@ -104,7 +104,6 @@ model ReviewIssue {
   id              Int      @id @default(autoincrement())
   overallReviewId Int
   OverallReview   OverallReview @relation(fields: [overallReviewId], references: [id])
-  overallScore    Int
   category        CategoryEnum
   severity        SeverityEnum
   description     String

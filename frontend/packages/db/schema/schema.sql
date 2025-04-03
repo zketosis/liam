@@ -365,7 +365,6 @@ ALTER SEQUENCE "public"."Repository_id_seq" OWNED BY "public"."Repository"."id";
 CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
     "id" integer NOT NULL,
     "overallReviewId" integer NOT NULL,
-    "overallScore" integer NOT NULL,
     "category" "public"."CategoryEnum" NOT NULL,
     "severity" "public"."SeverityEnum" NOT NULL,
     "description" "text" NOT NULL,
