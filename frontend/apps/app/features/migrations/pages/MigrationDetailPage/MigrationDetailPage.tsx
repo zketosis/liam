@@ -1,13 +1,12 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
-import clsx from 'clsx'
-import { minimatch } from 'minimatch'
+import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { RadarChart } from '../../components/RadarChart/RadarChart'
-import type { CategoryEnum as RadarChartCategoryEnum } from '../../components/RadarChart/RadarChart'
+import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
@@ -23,10 +22,13 @@ async function getMigrationContents(migrationId: string) {
       id,
       title,
       createdAt,
-      pullRequest:PullRequest (
+      pullRequestId,
+      PullRequest:pullRequestId (
         id,
         pullNumber,
-        repository:Repository (
+        repositoryId,
+        Repository:repositoryId (
+          id,
           installationId,
           name,
           owner
@@ -37,12 +39,12 @@ async function getMigrationContents(migrationId: string) {
     .single()
 
   if (migrationError || !migration) {
-    console.error('Migration error:', migrationError)
+    console.error('Error fetching migration:', migrationError)
     return notFound()
   }
 
-  const pullRequest = migration.pullRequest
-  const { repository } = pullRequest
+  const pullRequest = migration.PullRequest
+  const repository = pullRequest.Repository
 
   const { data: overallReview, error: reviewError } = await supabase
     .from('OverallReview')
@@ -84,22 +86,20 @@ async function getMigrationContents(migrationId: string) {
     Number(pullRequest.pullNumber),
   )
 
-  const { data: patterns, error: patternsError } = await supabase
-    .from('WatchSchemaFilePattern')
-    .select('pattern')
-    .eq('projectId', Number(overallReview.projectId))
+  const { data: schemaPaths, error: pathsError } = await supabase
+    .from('GitHubSchemaFilePath')
+    .select('path')
+    .eq('projectId', overallReview.projectId || 0)
 
-  if (patternsError) {
-    console.error('Patterns error:', patternsError)
+  if (pathsError) {
+    console.error('Error fetching schema paths:', pathsError)
     return notFound()
   }
 
   const matchedFiles = files
     .map((file) => file.filename)
     .filter((filename) =>
-      patterns.some((pattern: { pattern: string }) =>
-        minimatch(filename, pattern.pattern),
-      ),
+      schemaPaths.some((schemaPath) => filename === schemaPath.path),
     )
 
   const erdLinks = matchedFiles.map((filename) => ({
@@ -127,9 +127,9 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
   const projectId = overallReview.projectId
 
-  const formattedReviewDate = overallReview.reviewedAt
-    ? new Date(overallReview.reviewedAt).toLocaleDateString('en-US')
-    : 'Not available'
+  const formattedReviewDate = new Date(
+    overallReview.reviewedAt,
+  ).toLocaleDateString('en-US')
 
   return (
     <main className={styles.wrapper}>
@@ -142,7 +142,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
       <div className={styles.heading}>
         <h1 className={styles.title}>{migration.title}</h1>
-        <p className={styles.subTitle}>#{migration.pullRequest.pullNumber}</p>
+        <p className={styles.subTitle}>#{migration.PullRequest.pullNumber}</p>
       </div>
       <div className={styles.twoColumns}>
         <div className={styles.box}>
@@ -154,7 +154,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                   id: score.id,
                   overallReviewId: score.overallReviewId,
                   overallScore: score.overallScore,
-                  category: score.category as RadarChartCategoryEnum,
+                  category: score.category as CategoryEnum,
                 }))}
               />
             </div>
