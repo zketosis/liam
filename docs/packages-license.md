@@ -1335,7 +1335,7 @@ Apache-2 manually approved
 
 
 <a name="@esbuild/linux-x64"></a>
-### @esbuild/linux-x64 v0.25.1
+### @esbuild/linux-x64 v0.25.2
 #### 
 
 ##### Paths
@@ -9076,7 +9076,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="esbuild"></a>
-### esbuild v0.25.1
+### esbuild v0.25.2
 #### 
 
 ##### Paths
