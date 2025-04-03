@@ -34,6 +34,7 @@ export default defineConfig({
         schema: '../../packages/db/prisma/schema.prisma',
       }),
     ],
+    external: ['uuid'],
   },
   dirs: ['./src/trigger'],
 })

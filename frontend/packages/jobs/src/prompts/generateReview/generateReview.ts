@@ -85,6 +85,7 @@ export const generateReview = async (
   prDescription: string,
   prComments: string,
   callbacks: Callbacks,
+  runId: string,
 ) => {
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', SYSTEM_PROMPT],
@@ -107,6 +108,7 @@ export const generateReview = async (
     },
     {
       callbacks,
+      runId,
     },
   )
   const parsedResponse = parse(reviewSchema, response)

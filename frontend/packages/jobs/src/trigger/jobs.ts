@@ -70,10 +70,11 @@ export const savePullRequestTask = task({
 export const generateReviewTask = task({
   id: 'generate-review',
   run: async (payload: GenerateReviewPayload) => {
-    const review = await processGenerateReview(payload)
+    const { review, traceId } = await processGenerateReview(payload)
     logger.log('Generated review:', { review })
     await saveReviewTask.trigger({
       review,
+      traceId,
       ...payload,
     })
     return { review }
@@ -101,6 +102,7 @@ export const saveReviewTask = task({
         pullRequestId: payload.pullRequestId,
         repositoryId: payload.repositoryId,
         branchName: payload.branchName,
+        traceId: payload.traceId,
       })
 
       // Trigger docs suggestion generation after review is saved
@@ -189,8 +191,13 @@ export const generateDocsSuggestionTask = task({
     type: 'DOCS'
     branchName: string
   }) => {
-    const suggestions = await processGenerateDocsSuggestion(payload)
-    logger.log('Generated docs suggestions:', { suggestions })
+    const { suggestions, traceId } = await processGenerateDocsSuggestion({
+      reviewComment: payload.reviewComment,
+      projectId: payload.projectId,
+      branchOrCommit: payload.branchName,
+    })
+
+    logger.log('Generated docs suggestions:', { suggestions, traceId })
 
     for (const key of DOC_FILES) {
       const content = suggestions[key]
@@ -206,10 +213,11 @@ export const generateDocsSuggestionTask = task({
         path: `docs/${key}`,
         content,
         branch: payload.branchName,
+        traceId,
       })
     }
 
-    return { suggestions }
+    return { suggestions, traceId }
   },
 })
 
@@ -228,6 +236,7 @@ export const generateSchemaMetaSuggestionTask = task({
       path: OVERRIDE_SCHEMA_FILE_PATH,
       content: JSON.stringify(result.overrides, null, 2),
       branch: result.branchName,
+      traceId: result.traceId,
     })
 
     return { result }
@@ -243,6 +252,7 @@ export const createKnowledgeSuggestionTask = task({
     path: string
     content: string
     branch: string
+    traceId?: string
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
