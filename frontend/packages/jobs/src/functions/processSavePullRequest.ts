@@ -35,21 +35,16 @@ export async function processSavePullRequest(
 ): Promise<SavePullRequestResult> {
   const supabase = createClient()
 
-  // Get repository
-  const { data: repository, error: repoError } = await supabase
+  // Find repository by owner and name
+  const { data: repository, error: repositoryError } = await supabase
     .from('Repository')
     .select('*')
     .eq('owner', payload.owner)
     .eq('name', payload.name)
     .single()
 
-  if (repoError || !repository) {
-    console.error('Error fetching repository:', repoError)
-    throw new Error('Repository not found')
-  }
-
-  if (!repository) {
-    throw new Error('Repository not found')
+  if (repositoryError || !repository) {
+    throw new Error(`Repository not found: ${JSON.stringify(repositoryError)}`)
   }
 
   const fileChanges = await getPullRequestFiles(
@@ -60,13 +55,14 @@ export async function processSavePullRequest(
     payload.prNumber,
   )
 
-  // Get project mappings with schema paths
+  // Get project mappings with nested project and schema file patterns
   const { data: projectMappings, error: mappingsError } = await supabase
     .from('ProjectRepositoryMapping')
     .select(`
-      projectId,
-      Project:projectId (
-        id
+      *,
+      project:Project(
+        *,
+        watchSchemaFilePatterns:WatchSchemaFilePattern(*)
       )
     `)
     .eq('repositoryId', repository.id)
@@ -147,61 +143,77 @@ export async function processSavePullRequest(
     .select('id')
     .eq('repositoryId', repository.id)
     .eq('pullNumber', payload.prNumber)
-    .single()
+    .maybeSingle()
 
-  let prId: number
-
+  let prRecord: { id: number }
   if (existingPR) {
-    // Update existing PR
-    prId = existingPR.id
+    // PR exists, no need to update anything in this case
+    prRecord = existingPR
   } else {
-    // Create new PR
+    // Create new PR record
+    const now = new Date().toISOString()
     const { data: newPR, error: createPRError } = await supabase
       .from('PullRequest')
       .insert({
         repositoryId: repository.id,
         pullNumber: payload.prNumber,
-        updatedAt: new Date().toISOString(),
+        updatedAt: now,
       })
-      .select('id')
+      .select()
       .single()
 
     if (createPRError || !newPR) {
-      console.error('Error creating pull request:', createPRError)
-      throw new Error('Failed to create pull request')
+      throw new Error(
+        `Failed to create PR record: ${JSON.stringify(createPRError)}`,
+      )
     }
 
-    prId = newPR.id
+    prRecord = newPR
   }
 
-  // Check if migration exists
+  // Check if migration record exists
   const { data: existingMigration } = await supabase
     .from('Migration')
     .select('id')
-    .eq('pullRequestId', prId)
-    .single()
+    .eq('pullRequestId', prRecord.id)
+    .maybeSingle()
 
   if (existingMigration) {
     // Update existing migration
-    await supabase
+    const { error: updateMigrationError } = await supabase
       .from('Migration')
       .update({
         title: payload.pullRequestTitle,
         updatedAt: new Date().toISOString(),
       })
       .eq('id', existingMigration.id)
+
+    if (updateMigrationError) {
+      throw new Error(
+        `Failed to update migration: ${JSON.stringify(updateMigrationError)}`,
+      )
+    }
   } else {
     // Create new migration
-    await supabase.from('Migration').insert({
-      pullRequestId: prId,
-      title: payload.pullRequestTitle,
-      updatedAt: new Date().toISOString(),
-    })
+    const now = new Date().toISOString()
+    const { error: createMigrationError } = await supabase
+      .from('Migration')
+      .insert({
+        pullRequestId: prRecord.id,
+        title: payload.pullRequestTitle,
+        updatedAt: now,
+      })
+
+    if (createMigrationError) {
+      throw new Error(
+        `Failed to create migration: ${JSON.stringify(createMigrationError)}`,
+      )
+    }
   }
 
   return {
     success: true,
-    prId,
+    prId: prRecord.id,
     schemaFiles,
     fileChanges: fileChangesData,
   }

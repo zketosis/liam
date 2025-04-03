@@ -1,4 +1,4 @@
-import { prisma } from '@liam-hq/db'
+import { createClient } from '../libs/supabase'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
 import type { GenerateSchemaMetaPayload, SchemaMetaResult } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
@@ -7,24 +7,24 @@ export const processGenerateSchemaMeta = async (
   payload: GenerateSchemaMetaPayload,
 ): Promise<SchemaMetaResult> => {
   try {
-    // Get the overall review from the database
-    const overallReview = await prisma.overallReview.findUnique({
-      where: {
-        id: payload.overallReviewId,
-      },
-      include: {
-        pullRequest: {
-          include: {
-            repository: true,
-          },
-        },
-        project: true, // Include project directly from overallReview
-      },
-    })
+    const supabase = createClient()
 
-    if (!overallReview) {
+    // Get the overall review from the database with nested relations
+    const { data: overallReview, error } = await supabase
+      .from('OverallReview')
+      .select(`
+        *,
+        pullRequest:PullRequest(*,
+          repository:Repository(*)
+        ),
+        project:Project(*)
+      `)
+      .eq('id', payload.overallReviewId)
+      .single()
+
+    if (error || !overallReview) {
       throw new Error(
-        `Overall review with ID ${payload.overallReviewId} not found`,
+        `Overall review with ID ${payload.overallReviewId} not found: ${JSON.stringify(error)}`,
       )
     }
 

@@ -1,9 +1,9 @@
-import { prisma } from '@liam-hq/db'
 import {
   getFileContent,
   getIssueComments,
   getPullRequestDetails,
 } from '@liam-hq/github'
+import { createClient } from '../libs/supabase'
 import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload, Review } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
@@ -12,27 +12,33 @@ export const processGenerateReview = async (
   payload: GenerateReviewPayload,
 ): Promise<Review> => {
   try {
-    // Get repository installationId
-    const repository = await prisma.repository.findUnique({
-      where: {
-        id: payload.repositoryId,
-      },
-      select: {
-        installationId: true,
-      },
-    })
+    const supabase = createClient()
 
-    if (!repository) {
-      throw new Error(`Repository with ID ${payload.repositoryId} not found`)
+    // Get repository installationId
+    const { data: repository, error: repositoryError } = await supabase
+      .from('Repository')
+      .select('installationId')
+      .eq('id', payload.repositoryId)
+      .single()
+
+    if (repositoryError || !repository) {
+      throw new Error(
+        `Repository with ID ${payload.repositoryId} not found: ${JSON.stringify(repositoryError)}`,
+      )
     }
 
     // Get review-enabled doc paths
-    const docPaths = await prisma.gitHubDocFilePath.findMany({
-      where: {
-        projectId: payload.projectId,
-        isReviewEnabled: true,
-      },
-    })
+    const { data: docPaths, error: docPathsError } = await supabase
+      .from('GitHubDocFilePath')
+      .select('*')
+      .eq('projectId', payload.projectId)
+      .eq('isReviewEnabled', true)
+
+    if (docPathsError) {
+      throw new Error(
+        `Error fetching doc paths: ${JSON.stringify(docPathsError)}`,
+      )
+    }
 
     // Fetch content for each doc path
     const docsContentArray = await Promise.all(
