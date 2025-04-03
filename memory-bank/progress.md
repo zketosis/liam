@@ -13,7 +13,7 @@
 - Supabase JS integration for database access in the document viewer page, with optimized queries using nested joins.
 - Dynamic branch name management for KnowledgeSuggestion operations, replacing hardcoded branch names.
 - Streamlined database schema with removal of unused Doc and DocVersion models, focusing on GitHub-integrated document management.
-- Schema metadata generation pipeline that creates and stores metadata suggestions based on PR reviews.
+- Schema metadata generation pipeline that creates and stores metadata suggestions based on PR reviews, with context-aware prompts that build upon existing metadata.
 - Type-safe implementation of Supabase queries with proper handling of bigint fields and nested relationships.
 - Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
 - Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
@@ -41,7 +41,7 @@ A documentation list page has been implemented at `/app/projects/[projectId]/ref
 
 The database schema has been optimized by removing the unused Doc and DocVersion models. Document management is now fully handled through the GitHubDocFilePath model, which provides a more direct integration with GitHub repositories. This change reflects the project's shift towards tighter GitHub integration and a more streamlined approach to document handling.
 
-A new schema metadata generation pipeline has been implemented that creates and stores metadata suggestions based on PR reviews. This pipeline includes a new task (`generateSchemaMetaSuggestionTask`) that is triggered after a review is saved, a processing function (`processGenerateSchemaMeta`) that fetches data from the database and generates schema metadata suggestions, and integration with the existing `createKnowledgeSuggestionTask` to store the generated metadata. The implementation includes proper type handling for Supabase queries, addressing challenges with bigint fields and nested relationships.
+A new schema metadata generation pipeline has been implemented that creates and stores metadata suggestions based on PR reviews. This pipeline includes a new task (`generateSchemaMetaSuggestionTask`) that is triggered after a review is saved, a processing function (`processGenerateSchemaMeta`) that fetches data from the database and generates schema metadata suggestions, and integration with the existing `createKnowledgeSuggestionTask` to store the generated metadata. The implementation includes proper type handling for Supabase queries, addressing challenges with bigint fields and nested relationships. Recent enhancements include fetching and passing the current schema metadata to the AI prompt, allowing for more informed and contextual suggestions that build upon existing metadata rather than generating from scratch. The implementation also includes type-safe validation of the existing schema metadata using Valibot's `safeParse` function.
 
 As part of the transition to Supabase JS, manual rollback processing has been removed from the `addProject.ts` server action. This change prepares the way for implementing more robust transaction management using Supabase RPC in the future, which will provide a more consistent approach to handling database transactions across the application.
 
@@ -52,7 +52,7 @@ The testing approach has been updated to use a direct testing strategy with Supa
 A standardized workflow has been established for database schema changes:
 
 1. **Schema Modification**: Update the schema.prisma file with the desired changes.
-2. **Migration Creation and Application**: 
+2. **Migration Creation and Application**:
    ```bash
    pnpm migrate:dev <migration_name>
    ```

@@ -1,7 +1,7 @@
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
-import { dbOverrideSchema } from '@liam-hq/db-structure'
+import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
 
@@ -23,6 +23,12 @@ Key Responsibilities:
 ## Review Comment for Analysis
 {reviewComment}
 
+## Current Schema Metadata
+<json>
+
+{currentSchemaMeta}
+
+</json>
 ## Expected Output Format
 Your response must strictly follow this JSON Schema:
 {dbOverrideJsonSchema}
@@ -33,6 +39,8 @@ Your response must strictly follow this JSON Schema:
 3. New relationships should capture implicit connections in the data model
 4. Added columns should support better data modeling without breaking existing functionality
 5. All suggestions must maintain backwards compatibility
+6. Build upon the current schema metadata when appropriate, don't duplicate existing metadata
+7. Focus on incremental improvements rather than wholesale replacement
 
 ## Validation Rules
 1. Only include sections that have actual changes
@@ -45,6 +53,7 @@ Your response must strictly follow this JSON Schema:
 export const generateSchemaMeta = async (
   reviewComment: string,
   callbacks: Callbacks,
+  currentSchemaMeta: DBOverride | null,
 ) => {
   const model = new ChatOpenAI({
     temperature: 0.7,
@@ -59,6 +68,9 @@ export const generateSchemaMeta = async (
     const response = await chain.invoke(
       {
         reviewComment,
+        currentSchemaMeta: currentSchemaMeta
+          ? JSON.stringify(currentSchemaMeta, null, 2)
+          : '{}',
         dbOverrideJsonSchema: JSON.stringify(dbOverrideJsonSchema, null, 2),
       },
       {
