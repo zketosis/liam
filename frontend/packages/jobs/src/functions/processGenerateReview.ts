@@ -1,4 +1,3 @@
-import { getFileContent } from '@liam-hq/github'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -110,7 +109,7 @@ export const processGenerateReview = async (
       predefinedRunId,
     )
 
-    return { review: review.bodyMarkdown, traceId: predefinedRunId }
+    return { review: review, traceId: predefinedRunId }
   } catch (error) {
     console.error('Error generating review:', error)
     throw error

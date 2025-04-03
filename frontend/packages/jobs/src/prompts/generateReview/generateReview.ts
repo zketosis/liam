@@ -74,7 +74,7 @@ export const generateReview = async (
   prComments: string,
   callbacks: Callbacks,
   runId: string,
-): Promise<{ bodyMarkdown: string }> => {
+) => {
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', SYSTEM_PROMPT],
     ['human', USER_PROMPT],
