@@ -1,5 +1,5 @@
-import { prisma } from '@liam-hq/db'
 import { logger, task } from '@trigger.dev/sdk/v3'
+import { createClient } from '../libs/supabase'
 
 // FIXME: This should be imported from the app package once we have proper package structure
 const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
@@ -114,17 +114,21 @@ export const saveReviewTask = task({
       })
 
       // Get the overall review ID from the database
-      const overallReview = await prisma.overallReview.findFirst({
-        where: {
+      const supabase = createClient()
+      const { data: overallReview, error: overallReviewError } = await supabase
+        .from('OverallReview')
+        .select('id')
+        .eq('pullRequestId', payload.pullRequestId)
+        .order('createdAt', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (overallReviewError) {
+        logger.error('Error fetching overall review', {
+          error: overallReviewError,
           pullRequestId: payload.pullRequestId,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        select: {
-          id: true,
-        },
-      })
+        })
+      }
 
       if (!overallReview) {
         logger.error('No overall review found for pull request', {
@@ -255,16 +259,18 @@ export const createKnowledgeSuggestionTask = task({
 export const savePullRequest = async (
   payload: SavePullRequestWithProjectPayload,
 ) => {
-  const projectMapping = await prisma.projectRepositoryMapping.findFirst({
-    where: {
-      projectId: payload.projectId,
-    },
-    include: {
-      repository: true,
-    },
-  })
+  const supabase = createClient()
+  const { data: projectMapping, error } = await supabase
+    .from('ProjectRepositoryMapping')
+    .select(`
+      *,
+      repository:Repository(*)
+    `)
+    .eq('projectId', payload.projectId)
+    .limit(1)
+    .maybeSingle()
 
-  if (!projectMapping) {
+  if (error || !projectMapping) {
     throw new Error(`No repository found for project ID: ${payload.projectId}`)
   }
 
