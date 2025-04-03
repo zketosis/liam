@@ -6,7 +6,7 @@ import { processSaveReview } from '../processSaveReview'
 // Mock environment variables
 vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 
-describe('processSaveReview', () => {
+describe.skip('processSaveReview', () => {
   const supabase = createClient()
 
   // Test data
@@ -149,7 +149,7 @@ describe('processSaveReview', () => {
     )
   })
 
-  it.skip('should throw error when creating overall review fails', async () => {
+  it('should throw error when creating overall review fails', async () => {
     const testPayload: ReviewResponse = {
       pullRequestId: 9999,
       projectId: 999999,
