@@ -34,6 +34,7 @@ export const processSaveReview = async (
         },
         reviewComment: payload.reviewComment,
         branchName: payload.branchName,
+        traceId: payload.traceId,
       } as any, // Using 'any' instead of Prisma.OverallReviewCreateInput due to type issues
     })
 

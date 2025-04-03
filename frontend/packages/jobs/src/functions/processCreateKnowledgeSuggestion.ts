@@ -10,12 +10,13 @@ type CreateKnowledgeSuggestionPayload = {
   path: string
   content: string
   branch: string
+  traceId?: string
 }
 
 export const processCreateKnowledgeSuggestion = async (
   payload: CreateKnowledgeSuggestionPayload,
 ) => {
-  const { projectId, type, title, path, content, branch } = payload
+  const { projectId, type, title, path, content, branch, traceId } = payload
 
   const project = await prisma.project.findUnique({
     where: { id: projectId },
@@ -55,7 +56,7 @@ export const processCreateKnowledgeSuggestion = async (
     fileSha = null
   }
 
-  // Create the knowledge suggestion with the file SHA
+  // Create the knowledge suggestion with the file SHA and traceId
   const knowledgeSuggestion = await prisma.knowledgeSuggestion.create({
     data: {
       type,
@@ -65,6 +66,7 @@ export const processCreateKnowledgeSuggestion = async (
       fileSha,
       projectId,
       branchName: branch,
+      traceId: traceId || null,
     },
   })
 

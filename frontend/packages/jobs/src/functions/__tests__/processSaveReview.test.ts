@@ -47,6 +47,7 @@ describe('processSaveReview', () => {
       projectId: 1,
       reviewComment: 'Test review comment',
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     const result = await processSaveReview(testPayload)
@@ -68,7 +69,7 @@ describe('processSaveReview', () => {
           reviewComment: testPayload.reviewComment,
           branchName: testPayload.branchName,
         }),
-      })
+      }),
     )
   })
 
@@ -84,6 +85,7 @@ describe('processSaveReview', () => {
       projectId: 1,
       reviewComment: 'Test review comment',
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     await expect(processSaveReview(testPayload)).rejects.toThrow(

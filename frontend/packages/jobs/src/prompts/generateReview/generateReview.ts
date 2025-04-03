@@ -49,7 +49,8 @@ export const generateReview = async (
   schemaFiles: GenerateReviewPayload['schemaFiles'],
   schemaChanges: GenerateReviewPayload['schemaChanges'],
   callbacks: Callbacks,
-) => {
+  runId: string,
+): Promise<{ bodyMarkdown: string }> => {
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', SYSTEM_PROMPT],
     ['human', USER_PROMPT],
@@ -69,6 +70,7 @@ export const generateReview = async (
     },
     {
       callbacks,
+      runId,
     },
   )
   const parsedResponse = parse(reviewSchema, response)

@@ -85,6 +85,7 @@ describe('postComment', () => {
       pullRequestId: testPullRequest.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     const result = await postComment(testPayload)
@@ -125,6 +126,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       pullRequestId: testPullRequest.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     const result = await postComment(testPayload)
@@ -147,6 +149,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       pullRequestId: testPullRequest.id,
       repositoryId: 999999, // Non-existent ID
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
@@ -161,6 +164,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       pullRequestId: 999999, // Non-existent ID
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
@@ -187,6 +191,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       pullRequestId: prWithoutMigration.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     try {

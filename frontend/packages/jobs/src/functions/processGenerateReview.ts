@@ -1,13 +1,14 @@
 import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
 import { Langfuse } from 'langfuse'
+import { v4 as uuidv4 } from 'uuid'
 import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
-): Promise<string> => {
+): Promise<{ reviewComment: string; traceId: string }> => {
   try {
     // Get repository installationId
     const repository = await prisma.repository.findUnique({
@@ -57,7 +58,9 @@ export const processGenerateReview = async (
 
     // Filter out null values and join content
     const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
-    
+
+    const predefinedRunId = uuidv4()
+
     const langfuse = new Langfuse({
       publicKey: process.env['LANGFUSE_PUBLIC_KEY'] ?? '',
       secretKey: process.env['LANGFUSE_SECRET_KEY'] ?? '',
@@ -67,19 +70,20 @@ export const processGenerateReview = async (
     const trace = langfuse.trace({
       name: 'overall-review-generation',
       userId: `project-${payload.projectId}`,
+      id: predefinedRunId,
     })
 
     const traceId = trace.id
-    console.log('Generated traceId for overall review:', traceId)
-    
+
     const callbacks = [langfuseLangchainHandler]
     const review = await generateReview(
       docsContent,
       payload.schemaFiles,
       payload.schemaChanges,
       callbacks,
+      predefinedRunId,
     )
-    
+
     await prisma.overallReview.updateMany({
       where: {
         pullRequestId: payload.pullRequestId,
@@ -89,8 +93,8 @@ export const processGenerateReview = async (
         traceId,
       },
     })
-    
-    return review.bodyMarkdown
+
+    return { reviewComment: review.bodyMarkdown, traceId }
   } catch (error) {
     console.error('Error generating review:', error)
     throw error

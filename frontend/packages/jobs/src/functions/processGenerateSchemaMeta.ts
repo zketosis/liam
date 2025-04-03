@@ -1,4 +1,5 @@
 import { prisma } from '@liam-hq/db'
+import { v4 as uuidv4 } from 'uuid'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
 import type { GenerateSchemaMetaPayload, SchemaMetaResult } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
@@ -46,11 +47,14 @@ export const processGenerateSchemaMeta = async (
       throw new Error(`Repository not found for pull request ${pullRequest.id}`)
     }
 
+    const predefinedRunId = uuidv4()
+
     const callbacks = [langfuseLangchainHandler]
 
     const schemaMeta = await generateSchemaMeta(
       overallReview.reviewComment || '',
       callbacks,
+      predefinedRunId,
     )
 
     // Return the schema meta along with information needed for createKnowledgeSuggestionTask
@@ -60,6 +64,7 @@ export const processGenerateSchemaMeta = async (
       pullRequestNumber: Number(pullRequest.pullNumber), // Convert bigint to number
       branchName: overallReview.branchName, // Get branchName from overallReview
       title: `Schema meta update from PR #${Number(pullRequest.pullNumber)}`,
+      traceId: predefinedRunId,
     }
   } catch (error) {
     console.error('Error generating schema meta:', error)
