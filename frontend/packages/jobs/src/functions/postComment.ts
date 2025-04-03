@@ -80,7 +80,8 @@ async function generateERDLinks({
 
     for (const [projectId, filenames] of filesByProject.entries()) {
       for (const filename of filenames) {
-        erdLinksText += `\n- View ERD for ${filename}: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${branchRef}/schema/${filename}`
+        const encodedBranchRef = encodeURIComponent(branchRef)
+        erdLinksText += `\n- View ERD for ${filename}: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodedBranchRef}/schema/${filename}`
       }
     }
   }
