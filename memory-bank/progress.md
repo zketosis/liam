@@ -15,6 +15,8 @@
 - Streamlined database schema with removal of unused Doc and DocVersion models, focusing on GitHub-integrated document management.
 - Schema metadata generation pipeline that creates and stores metadata suggestions based on PR reviews.
 - Type-safe implementation of Supabase queries with proper handling of bigint fields and nested relationships.
+- Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
+- Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
 
 ## What's Left to Build
 

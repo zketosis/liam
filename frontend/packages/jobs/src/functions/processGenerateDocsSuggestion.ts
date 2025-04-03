@@ -1,5 +1,5 @@
-import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
+import { createClient } from '../libs/supabase'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
@@ -17,17 +17,20 @@ export async function processGenerateDocsSuggestion(payload: {
   branchOrCommit?: string
 }): Promise<Record<string, string>> {
   try {
-    // Get repository information from prisma
-    const projectRepo = await prisma.projectRepositoryMapping.findFirst({
-      where: {
-        projectId: payload.projectId,
-      },
-      include: {
-        repository: true,
-      },
-    })
+    const supabase = createClient()
 
-    if (!projectRepo?.repository) {
+    // Get repository information from supabase
+    const { data: projectRepo, error } = await supabase
+      .from('ProjectRepositoryMapping')
+      .select(`
+        *,
+        repository:Repository(*)
+      `)
+      .eq('projectId', payload.projectId)
+      .limit(1)
+      .maybeSingle()
+
+    if (error || !projectRepo?.repository) {
       throw new Error('Repository information not found')
     }
 

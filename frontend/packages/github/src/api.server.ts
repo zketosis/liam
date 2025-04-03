@@ -116,6 +116,28 @@ export const updatePullRequestComment = async (
   return response.data
 }
 
+/**
+ * Gets comments from a GitHub issue or pull request
+ * @returns Array of issue comments
+ */
+export const getIssueComments = async (
+  installationId: number,
+  owner: string,
+  repo: string,
+  issueNumber: number,
+) => {
+  const octokit = await createOctokit(installationId)
+
+  const { data: comments } = await octokit.issues.listComments({
+    owner,
+    repo,
+    issue_number: issueNumber,
+    per_page: 100,
+  })
+
+  return comments
+}
+
 export const getRepository = async (
   projectId: string,
   installationId: number,
