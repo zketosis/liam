@@ -58,7 +58,7 @@ const tests = [
 ]
 
 async function main() {
-  const results = await promptfoo.evaluate(
+  await promptfoo.evaluate(
     {
       prompts: [promptFunction],
       defaultTest: {
@@ -81,7 +81,11 @@ async function main() {
         },
       ],
       tests,
+
+      // NOTE: if you set this to true, `~/.promptfoo/promptfoo.db` will be updated. That will be used when you run `promptfoo share`
+      // NOTE: if you set this to true, `promptfoo.evaluate` will returns empty array. So, check the results.json file.
       writeLatestResults: true,
+      outputPath: 'results.json',
     },
     {
       maxConcurrency: 4,
@@ -89,8 +93,6 @@ async function main() {
       // cache: false,
     },
   )
-  // exit with 0 if all results are successful
-  process.exit(results.results.every((r) => r.success) ? 0 : 1)
 }
 
 main().catch(console.error)
