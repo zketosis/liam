@@ -13,6 +13,7 @@ export type {
   Relationships,
   Index,
   Indexes,
+  Constraints,
   ForeignKeyConstraintReferenceOption,
   Cardinality,
   TableGroup,

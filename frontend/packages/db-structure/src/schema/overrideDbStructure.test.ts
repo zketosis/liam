@@ -43,7 +43,7 @@ describe('overrideDbStructure', () => {
           PRIMARY: {
             type: 'PRIMARY KEY',
             name: 'PRIMARY',
-            columnName: 'id',
+            columnNames: ['id'],
           },
         },
       },
@@ -185,7 +185,7 @@ describe('overrideDbStructure', () => {
                 username_UNIQUE: {
                   type: 'UNIQUE',
                   name: 'username_UNIQUE',
-                  columnName: 'username',
+                  columnNames: ['username'],
                 },
               },
             },
@@ -202,9 +202,9 @@ describe('overrideDbStructure', () => {
       expect(
         dbStructure.tables['users']?.constraints['username_UNIQUE'],
       ).toStrictEqual({
-        columnName: 'username',
-        name: 'username_UNIQUE',
         type: 'UNIQUE',
+        name: 'username_UNIQUE',
+        columnNames: ['username'],
       })
 
       // Original constraints should still be there
@@ -221,7 +221,7 @@ describe('overrideDbStructure', () => {
                 PRIMARY: {
                   type: 'PRIMARY KEY',
                   name: 'PRIMARY',
-                  columnName: 'id',
+                  columnNames: ['id'],
                 },
               },
             },
@@ -524,7 +524,7 @@ describe('overrideDbStructure', () => {
                 username_UNIQUE: {
                   type: 'UNIQUE',
                   name: 'username_UNIQUE',
-                  columnName: ['username'],
+                  columnNames: ['username'],
                 },
               },
             },
