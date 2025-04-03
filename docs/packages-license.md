@@ -891,7 +891,7 @@
 
 
 <a name="@biomejs/biome"></a>
-### @biomejs/biome v1.9.3
+### @biomejs/biome v1.9.4
 #### 
 
 ##### Paths
@@ -902,7 +902,7 @@ MIT OR Apache-2.0 permitted
 
 
 <a name="@biomejs/cli-linux-x64"></a>
-### @biomejs/cli-linux-x64 v1.9.3
+### @biomejs/cli-linux-x64 v1.9.4
 #### 
 
 ##### Paths
@@ -913,7 +913,7 @@ MIT OR Apache-2.0 permitted
 
 
 <a name="@biomejs/cli-linux-x64-musl"></a>
-### @biomejs/cli-linux-x64-musl v1.9.3
+### @biomejs/cli-linux-x64-musl v1.9.4
 #### 
 
 ##### Paths
