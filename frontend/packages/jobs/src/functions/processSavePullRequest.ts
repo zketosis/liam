@@ -3,7 +3,6 @@ import {
   getPullRequestDetails,
   getPullRequestFiles,
 } from '@liam-hq/github'
-import { minimatch } from 'minimatch'
 import { createClient } from '../libs/supabase'
 
 import type { SavePullRequestPayload } from '../types'
@@ -69,17 +68,31 @@ export async function processSavePullRequest(
     .eq('repositoryId', repository.id)
 
   if (mappingsError) {
-    throw new Error(
-      `Failed to get project mappings: ${JSON.stringify(mappingsError)}`,
-    )
+    console.error('Error fetching project mappings:', mappingsError)
+    throw new Error('Project mappings not found')
   }
 
-  const allPatterns = projectMappings.flatMap(
-    (mapping) => mapping.project.watchSchemaFilePatterns,
+  // Get schema paths for all projects
+  const projectIds = projectMappings.map(
+    (mapping: { projectId: number }) => mapping.projectId,
   )
 
+  const { data: schemaPaths, error: pathsError } = await supabase
+    .from('GitHubSchemaFilePath')
+    .select('path')
+    .in('projectId', projectIds)
+
+  if (pathsError) {
+    console.error('Error fetching schema paths:', pathsError)
+    throw new Error('Schema paths not found')
+  }
+
+  const allSchemaPaths = schemaPaths || []
+
   const matchedFiles = fileChanges.filter((file) =>
-    allPatterns.some((pattern) => minimatch(file.filename, pattern.pattern)),
+    allSchemaPaths.some(
+      (schemaPath: { path: string }) => file.filename === schemaPath.path,
+    ),
   )
 
   const prDetails = await getPullRequestDetails(
@@ -124,8 +137,7 @@ export async function processSavePullRequest(
     }
   })
 
-  // Save or update PR record using Supabase
-  // First check if PR record exists
+  // Check if PR exists
   const { data: existingPR } = await supabase
     .from('PullRequest')
     .select('id')
