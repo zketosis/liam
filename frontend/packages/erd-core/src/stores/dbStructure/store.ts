@@ -4,4 +4,5 @@ import { proxy } from 'valtio'
 export const dbStructureStore = proxy<DBStructure>({
   tables: {},
   relationships: {},
+  tableGroups: {},
 })

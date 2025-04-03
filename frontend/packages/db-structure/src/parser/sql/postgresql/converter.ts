@@ -15,6 +15,7 @@ import type {
   ForeignKeyConstraint,
   Relationship,
   Table,
+  TableGroup,
 } from '../../../schema/index.js'
 import { type ProcessError, UnexpectedTokenWarningError } from '../../errors.js'
 import type { ProcessResult } from '../../types.js'
@@ -101,6 +102,7 @@ const constraintToRelationship = (
 export const convertToDBStructure = (stmts: RawStmt[]): ProcessResult => {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
+  const tableGroups: Record<string, TableGroup> = {}
   const errors: ProcessError[] = []
 
   function isConstraintNode(node: Node): node is { Constraint: Constraint } {
@@ -377,6 +379,7 @@ export const convertToDBStructure = (stmts: RawStmt[]): ProcessResult => {
     value: {
       tables,
       relationships,
+      tableGroups,
     },
     errors,
   }

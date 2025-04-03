@@ -14,6 +14,7 @@ exports[`parse > should parse postgresql to JSON correctly 1`] = `
       "updateConstraint": "NO_ACTION",
     },
   },
+  "tableGroups": {},
   "tables": {
     "posts": {
       "columns": {
@@ -247,6 +248,7 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
       "updateConstraint": "RESTRICT",
     },
   },
+  "tableGroups": {},
   "tables": {
     "comments": {
       "columns": {

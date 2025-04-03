@@ -86,7 +86,7 @@ export default async function Page({
   const { projectId, branchOrCommit, schemaFilePath } = parsedParams.output
   const filePath = schemaFilePath.join('/')
 
-  const blankDbStructure = { tables: {}, relationships: {} }
+  const blankDbStructure = { tables: {}, relationships: {}, tableGroups: {} }
 
   try {
     const supabase = await createClient()
