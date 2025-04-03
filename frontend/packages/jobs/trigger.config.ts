@@ -54,8 +54,7 @@ export default defineConfig({
 
       debug: false,
 
-      environment:
-        process.env.NODE_ENV === 'production' ? 'production' : 'development',
+      environment: process.env.NEXT_PUBLIC_ENV_NAME,
     })
   },
   onFailure: async (payload, error, { ctx }) => {
