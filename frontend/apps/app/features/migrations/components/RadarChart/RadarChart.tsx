@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import styles from './RadarChart.module.css'
 
-export const CategoryEnum = {
+export const categoryEnum = {
   MIGRATION_SAFETY: 'MIGRATION_SAFETY',
   DATA_INTEGRITY: 'DATA_INTEGRITY',
   PERFORMANCE_IMPACT: 'PERFORMANCE_IMPACT',
@@ -11,27 +11,27 @@ export const CategoryEnum = {
   SECURITY_OR_SCALABILITY: 'SECURITY_OR_SCALABILITY',
 } as const
 
-export type CategoryEnumType = keyof typeof CategoryEnum
+export type CategoryEnum = (typeof categoryEnum)[keyof typeof categoryEnum]
 
 export type ReviewScore = {
   id: number
   overallReviewId: number
   overallScore: number
-  category: CategoryEnumType
+  category: CategoryEnum
 }
 
 type RadarChartProps = {
   scores: ReviewScore[]
 }
 
-const CATEGORIES = Object.keys(CategoryEnum) as CategoryEnumType[]
-const DEFAULT_SCORE = 0
+const CATEGORIES = Object.keys(categoryEnum) as (keyof typeof categoryEnum)[]
+const DEFAULT_SCORE = 10
 const MAX_SCORE = 10
 
 export const RadarChart = ({ scores }: RadarChartProps) => {
   // Prepare data with default values (using useMemo to prevent recalculation)
   const chartData = useMemo(() => {
-    const dataMap = new Map<CategoryEnumType, number>()
+    const dataMap = new Map<keyof typeof categoryEnum, number>()
 
     // Initialize all categories with default score
     for (const category of CATEGORIES) {
