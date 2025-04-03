@@ -58,13 +58,7 @@ export async function processSavePullRequest(
   // Get project mappings with nested project and schema file patterns
   const { data: projectMappings, error: mappingsError } = await supabase
     .from('ProjectRepositoryMapping')
-    .select(`
-      *,
-      project:Project(
-        *,
-        watchSchemaFilePatterns:WatchSchemaFilePattern(*)
-      )
-    `)
+    .select('projectId')
     .eq('repositoryId', repository.id)
 
   if (mappingsError) {
