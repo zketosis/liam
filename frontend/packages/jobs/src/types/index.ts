@@ -53,6 +53,7 @@ export type ReviewResponse = {
   pullRequestId: number
   repositoryId: number
   branchName: string
+  traceId: string
 }
 
 export type PostCommentPayload = {
