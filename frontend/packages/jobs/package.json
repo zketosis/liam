@@ -28,7 +28,7 @@
     "vitest": "3.0.8"
   },
   "scripts": {
-    "build": "tsc",
+    "deploy": "trigger deploy",
     "dev": "tsc --watch",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
@@ -37,6 +37,5 @@
     "lint:tsc": "tsc --noEmit",
     "test": "vitest --watch=false",
     "trigger:dev": "trigger dev"
-  },
-  "types": "./dist/index.d.ts"
+  }
 }
