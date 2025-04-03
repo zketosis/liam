@@ -564,6 +564,9 @@ importers:
       minimatch:
         specifier: 10.0.1
         version: 10.0.1
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
       valibot:
         specifier: ^1.0.0-beta.5
         version: 1.0.0-rc.3(typescript@5.8.2)
@@ -580,6 +583,9 @@ importers:
       '@types/node':
         specifier: 22.9.0
         version: 22.9.0
+      '@types/uuid':
+        specifier: 10.0.0
+        version: 10.0.0
       dotenv:
         specifier: 16.4.7
         version: 16.4.7
