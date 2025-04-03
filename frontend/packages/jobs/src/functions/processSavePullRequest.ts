@@ -1,10 +1,9 @@
-import { prisma } from '@liam-hq/db'
 import {
   getFileContent,
   getPullRequestDetails,
   getPullRequestFiles,
 } from '@liam-hq/github'
-import { minimatch } from 'minimatch'
+import { createClient } from '../libs/supabase'
 
 import type { SavePullRequestPayload } from '../types'
 
@@ -15,7 +14,7 @@ export type SavePullRequestResult = {
     filename: string
     content: string
   }>
-  schemaChanges: Array<{
+  fileChanges: Array<{
     filename: string
     status:
       | 'added'
@@ -34,17 +33,18 @@ export type SavePullRequestResult = {
 export async function processSavePullRequest(
   payload: SavePullRequestPayload,
 ): Promise<SavePullRequestResult> {
-  const repository = await prisma.repository.findUnique({
-    where: {
-      owner_name: {
-        owner: payload.owner,
-        name: payload.name,
-      },
-    },
-  })
+  const supabase = createClient()
 
-  if (!repository) {
-    throw new Error('Repository not found')
+  // Find repository by owner and name
+  const { data: repository, error: repositoryError } = await supabase
+    .from('Repository')
+    .select('*')
+    .eq('owner', payload.owner)
+    .eq('name', payload.name)
+    .single()
+
+  if (repositoryError || !repository) {
+    throw new Error(`Repository not found: ${JSON.stringify(repositoryError)}`)
   }
 
   const fileChanges = await getPullRequestFiles(
@@ -55,25 +55,38 @@ export async function processSavePullRequest(
     payload.prNumber,
   )
 
-  const projectMappings = await prisma.projectRepositoryMapping.findMany({
-    where: {
-      repositoryId: repository.id,
-    },
-    include: {
-      project: {
-        include: {
-          watchSchemaFilePatterns: true,
-        },
-      },
-    },
-  })
+  // Get project mappings with nested project and schema file patterns
+  const { data: projectMappings, error: mappingsError } = await supabase
+    .from('ProjectRepositoryMapping')
+    .select('projectId')
+    .eq('repositoryId', repository.id)
 
-  const allPatterns = projectMappings.flatMap(
-    (mapping) => mapping.project.watchSchemaFilePatterns,
+  if (mappingsError) {
+    console.error('Error fetching project mappings:', mappingsError)
+    throw new Error('Project mappings not found')
+  }
+
+  // Get schema paths for all projects
+  const projectIds = projectMappings.map(
+    (mapping: { projectId: number }) => mapping.projectId,
   )
 
+  const { data: schemaPaths, error: pathsError } = await supabase
+    .from('GitHubSchemaFilePath')
+    .select('path')
+    .in('projectId', projectIds)
+
+  if (pathsError) {
+    console.error('Error fetching schema paths:', pathsError)
+    throw new Error('Schema paths not found')
+  }
+
+  const allSchemaPaths = schemaPaths || []
+
   const matchedFiles = fileChanges.filter((file) =>
-    allPatterns.some((pattern) => minimatch(file.filename, pattern.pattern)),
+    allSchemaPaths.some(
+      (schemaPath: { path: string }) => file.filename === schemaPath.path,
+    ),
   )
 
   const prDetails = await getPullRequestDetails(
@@ -109,7 +122,7 @@ export async function processSavePullRequest(
     }),
   )
 
-  const schemaChanges = fileChanges.map((file) => {
+  const fileChangesData = fileChanges.map((file) => {
     return {
       filename: file.filename,
       status: file.status,
@@ -118,37 +131,84 @@ export async function processSavePullRequest(
     }
   })
 
-  // Save or update PR record
-  const prRecord = await prisma.pullRequest.upsert({
-    where: {
-      repositoryId_pullNumber: {
+  // Check if PR exists
+  const { data: existingPR } = await supabase
+    .from('PullRequest')
+    .select('id')
+    .eq('repositoryId', repository.id)
+    .eq('pullNumber', payload.prNumber)
+    .maybeSingle()
+
+  let prRecord: { id: number }
+  if (existingPR) {
+    // PR exists, no need to update anything in this case
+    prRecord = existingPR
+  } else {
+    // Create new PR record
+    const now = new Date().toISOString()
+    const { data: newPR, error: createPRError } = await supabase
+      .from('PullRequest')
+      .insert({
         repositoryId: repository.id,
-        pullNumber: BigInt(payload.prNumber),
-      },
-    },
-    update: {},
-    create: {
-      repositoryId: repository.id,
-      pullNumber: BigInt(payload.prNumber),
-    },
-  })
-  await prisma.migration.upsert({
-    where: {
-      pullRequestId: prRecord.id,
-    },
-    update: {
-      title: payload.pullRequestTitle,
-    },
-    create: {
-      pullRequestId: prRecord.id,
-      title: payload.pullRequestTitle,
-    },
-  })
+        pullNumber: payload.prNumber,
+        updatedAt: now,
+      })
+      .select()
+      .single()
+
+    if (createPRError || !newPR) {
+      throw new Error(
+        `Failed to create PR record: ${JSON.stringify(createPRError)}`,
+      )
+    }
+
+    prRecord = newPR
+  }
+
+  // Check if migration record exists
+  const { data: existingMigration } = await supabase
+    .from('Migration')
+    .select('id')
+    .eq('pullRequestId', prRecord.id)
+    .maybeSingle()
+
+  if (existingMigration) {
+    // Update existing migration
+    const { error: updateMigrationError } = await supabase
+      .from('Migration')
+      .update({
+        title: payload.pullRequestTitle,
+        updatedAt: new Date().toISOString(),
+      })
+      .eq('id', existingMigration.id)
+
+    if (updateMigrationError) {
+      throw new Error(
+        `Failed to update migration: ${JSON.stringify(updateMigrationError)}`,
+      )
+    }
+  } else {
+    // Create new migration
+    const now = new Date().toISOString()
+    const { error: createMigrationError } = await supabase
+      .from('Migration')
+      .insert({
+        pullRequestId: prRecord.id,
+        title: payload.pullRequestTitle,
+        updatedAt: now,
+      })
+
+    if (createMigrationError) {
+      throw new Error(
+        `Failed to create migration: ${JSON.stringify(createMigrationError)}`,
+      )
+    }
+  }
 
   return {
     success: true,
     prId: prRecord.id,
     schemaFiles,
-    schemaChanges,
+    fileChanges: fileChangesData,
   }
 }

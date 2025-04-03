@@ -14,6 +14,7 @@
   "scripts": {
     "build": "turbo build",
     "create-env-files": "([ -f .env ] || touch .env) && ([ -f .env.local ] || touch .env.local)",
+    "deploy:jobs": "turbo deploy --filter=@liam-hq/jobs",
     "dev": "turbo dev",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:syncpack-fix": "syncpack fix-mismatches",

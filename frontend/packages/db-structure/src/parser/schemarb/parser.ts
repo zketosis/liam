@@ -374,6 +374,7 @@ class DBStructureFinder extends Visitor {
         },
         {} as Record<string, Relationship>,
       ),
+      tableGroups: {},
     }
     handleOneToOneRelationships(dbStructure.tables, dbStructure.relationships)
     return dbStructure

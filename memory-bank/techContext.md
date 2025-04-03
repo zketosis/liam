@@ -5,7 +5,7 @@
 - **LangChain**: Framework for developing applications powered by language models, used for AI review generation and schema metadata suggestions.
 - **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions.
 - **Trigger.dev**: Task orchestration platform used for implementing the review pipeline and knowledge suggestion tasks.
-- **GitHub App**: Integrated to automate comments and review approvals on PRs.
+- **GitHub App**: Integrated to automate comments and review approvals on PRs, with enhanced API usage for fetching PR descriptions and comments.
 - **Prisma**: ORM for database access and management (currently being phased out).
 - **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins. Planned to replace Prisma across all components.
 - **Supabase RPC**: Remote Procedure Call functionality in Supabase, planned for future implementation of robust transaction management across the application.
@@ -27,6 +27,7 @@
 - **Task Pipeline**: A series of tasks are chained together using Trigger.dev to form a complete review workflow, including schema metadata generation.
 - **Function Separation**: Business logic is separated into dedicated function files that are called from task definitions.
 - **Type Safety**: When working with Supabase, type assertions are used to bridge the gap between Supabase's types and the application's expected types, particularly for nested queries and bigint fields.
+- **Enhanced Prompt Structure**: AI prompts are structured to incorporate multiple sources of context, including PR descriptions, comments, documentation, schema files, and code changes.
 - **Package Management**: pnpm for efficient dependency management.
 - **Monorepo Management**: pnpm workspaces.
 - **Build System**: Turborepo for optimized builds.
@@ -57,6 +58,7 @@
 - During the transition from Prisma to Supabase JS, both database access methods will coexist, requiring careful coordination to ensure consistent data access patterns.
 - Type compatibility issues between Prisma and Supabase require careful handling, particularly for bigint fields and nested relationships.
 - Schema metadata generation requires accurate analysis of database schema changes and proper integration with the knowledge suggestion system.
+- Supabase types need to be updated whenever database schema changes are made, to maintain type safety across the application.
 
 ## Dependencies
 - **AWS**: Used for deployment, with a focus on the us-east-1 region.

@@ -10,7 +10,11 @@ import { processSQLInChunks } from './processSQLInChunks.js'
  * Processes SQL statements and constructs a database structure.
  */
 export const processor: Processor = async (sql: string) => {
-  const dbSchema: DBStructure = { tables: {}, relationships: {} }
+  const dbSchema: DBStructure = {
+    tables: {},
+    relationships: {},
+    tableGroups: {},
+  }
 
   // Number of lines to process in a single chunk.
   // While a chunk size of around 1000 might work, running it on db/structure.sql

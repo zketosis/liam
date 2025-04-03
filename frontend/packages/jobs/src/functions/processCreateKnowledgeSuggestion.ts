@@ -1,5 +1,5 @@
-import { prisma } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
+import { createClient } from '../libs/supabase'
 
 type KnowledgeType = 'SCHEMA' | 'DOCS'
 
@@ -18,19 +18,22 @@ export const processCreateKnowledgeSuggestion = async (
 ) => {
   const { projectId, type, title, path, content, branch, traceId } = payload
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    include: {
-      repositoryMappings: {
-        include: {
-          repository: true,
-        },
-        take: 1,
-      },
-    },
-  })
+  const supabase = createClient()
 
-  if (!project || !project.repositoryMappings[0]?.repository) {
+  // Get project with repository mappings
+  const { data: project, error } = await supabase
+    .from('Project')
+    .select(`
+      *,
+      repositoryMappings:ProjectRepositoryMapping(
+        *,
+        repository:Repository(*)
+      )
+    `)
+    .eq('id', projectId)
+    .single()
+
+  if (error || !project || !project.repositoryMappings?.[0]?.repository) {
     throw new Error('Repository information not found for the project')
   }
 
@@ -56,9 +59,11 @@ export const processCreateKnowledgeSuggestion = async (
     fileSha = null
   }
 
-  // Create the knowledge suggestion with the file SHA and traceId
-  const knowledgeSuggestion = await prisma.knowledgeSuggestion.create({
-    data: {
+  // Create the knowledge suggestion with the file SHA
+  const now = new Date().toISOString()
+  const { data: knowledgeSuggestion, error: createError } = await supabase
+    .from('KnowledgeSuggestion')
+    .insert({
       type,
       title,
       path,
@@ -67,8 +72,16 @@ export const processCreateKnowledgeSuggestion = async (
       projectId,
       branchName: branch,
       traceId: traceId || null,
-    },
-  })
+      updatedAt: now,
+    })
+    .select()
+    .single()
+
+  if (createError || !knowledgeSuggestion) {
+    throw new Error(
+      `Failed to create knowledge suggestion: ${JSON.stringify(createError)}`,
+    )
+  }
 
   return {
     suggestionId: knowledgeSuggestion.id,

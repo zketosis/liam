@@ -1,3 +1,6 @@
+import type { InferOutput } from 'valibot'
+import type { reviewSchema } from '../prompts/generateReview/reviewSchema'
+
 export type SavePullRequestPayload = {
   prNumber: number
   pullRequestTitle: string
@@ -26,7 +29,7 @@ export type GenerateReviewPayload = {
     filename: string
     content: string
   }>
-  schemaChanges: Array<{
+  fileChanges: Array<{
     filename: string
     status:
       | 'added'
@@ -42,7 +45,17 @@ export type GenerateReviewPayload = {
   }>
 }
 
+export type Review = InferOutput<typeof reviewSchema>
+
 export type ReviewResponse = {
+  review: Review
+  projectId: number
+  pullRequestId: number
+  repositoryId: number
+  branchName: string
+}
+
+export type PostCommentPayload = {
   reviewComment: string
   projectId: number
   pullRequestId: number
