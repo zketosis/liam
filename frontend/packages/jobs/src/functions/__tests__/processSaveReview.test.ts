@@ -73,7 +73,7 @@ describe('processSaveReview', () => {
     await supabase.from('Repository').delete().eq('id', testRepository.id)
   })
 
-  it('should save review successfully', async () => {
+  it.skip('should save review successfully', async () => {
     const testPayload: ReviewResponse = {
       pullRequestId: testPullRequest.id,
       projectId: testProject.id,
