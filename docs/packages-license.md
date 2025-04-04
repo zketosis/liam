@@ -18207,7 +18207,7 @@ Unknown manually approved
 
 
 <a name="valtio"></a>
-### valtio v2.1.2
+### valtio v2.1.4
 #### 
 
 ##### Paths
