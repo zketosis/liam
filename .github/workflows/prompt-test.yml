@@ -60,7 +60,7 @@ jobs:
         id: share-result
         if: always()
         run: |
-          output=$(pnpm dlx promptfoo share)
+          output=$(pnpm dlx promptfoo@0.107.7 share --yes)
           echo "output=$output" >> $GITHUB_OUTPUT
 
       - name: Post result
