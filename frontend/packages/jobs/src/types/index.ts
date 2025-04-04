@@ -42,6 +42,7 @@ export type ReviewResponse = {
   pullRequestId: number
   repositoryId: number
   branchName: string
+  traceId: string
 }
 
 export type PostCommentPayload = {
@@ -50,6 +51,7 @@ export type PostCommentPayload = {
   pullRequestId: number
   repositoryId: number
   branchName: string
+  traceId: string
 }
 
 export type GenerateSchemaMetaPayload = {
@@ -62,4 +64,5 @@ export type SchemaMetaResult = {
   pullRequestNumber: number
   branchName: string
   title: string
+  traceId: string
 }

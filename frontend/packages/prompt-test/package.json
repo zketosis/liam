@@ -20,6 +20,7 @@
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "test": "tsx src/index.ts",
+    "test:prompt": "pnpm test",
     "view": "pnpm dlx promptfoo view"
   }
 }

@@ -28,6 +28,7 @@ export const processSaveReview = async (
         pullRequestId: pullRequest.id,
         reviewComment: payload.review.bodyMarkdown,
         branchName: payload.branchName,
+        traceId: payload.traceId,
         updatedAt: now,
       })
       .select()

@@ -173,7 +173,8 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
     "approvedAt" timestamp(3) without time zone,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "branchName" "text" NOT NULL
+    "branchName" "text" NOT NULL,
+    "traceId" "text"
 );
 
 
@@ -230,7 +231,8 @@ CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
     "reviewedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "branchName" "text" NOT NULL
+    "branchName" "text" NOT NULL,
+    "traceId" "text"
 );
 
 
