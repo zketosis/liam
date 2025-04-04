@@ -26,7 +26,12 @@ Your JSON-formatted response must contain:
     - Security or Scalability
   - "severity": For each issue, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem. Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design.
   - "description": A clear and precise explanation of the issue. If the issue is POSITIVE, describe what is improved and why it is beneficial.
-  - "suggestion": Actionable recommendations for addressing the issue. If the issue is POSITIVE, instead of setting "suggestion" to null, write a brief sentence indicating that no improvement is necessary (e.g., "No suggestions needed", "Nothing to improve", or "Keep up the good work").
+  - "suggestion": Provide actionable recommendations for resolving the issue.
+    - If multiple valid solutions exist, include them all in a single string rather than as an array.
+      - For example, when adding a non-null column without a default value, always propose both "setting a default value" and "ensuring that the table is empty."
+    - If the severity is "POSITIVE", do not set "suggestion" to null.
+      - Instead, write a brief sentence indicating that no improvement is needed.
+      - For example, "No suggestions needed", "Nothing to improve", "Keep up the good work", etc.
 - An array of scores for each issue kind in the "scores" field, each including:
   - "kind": One of the issue categories listed above.
   - "value": A numeric score from 0 to 10, using a deduction-based approach:
@@ -85,6 +90,7 @@ export const generateReview = async (
   prDescription: string,
   prComments: string,
   callbacks: Callbacks,
+  runId: string,
 ) => {
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', SYSTEM_PROMPT],
@@ -107,6 +113,7 @@ export const generateReview = async (
     },
     {
       callbacks,
+      runId,
     },
   )
   const parsedResponse = parse(reviewSchema, response)

@@ -1,0 +1,79 @@
+name: 'prompt-test'
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/prompt-test.yml'
+      - 'frontend/packages/jobs/**'
+      - 'frontend/packages/prompt-test/**'
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: ./.github/actions/pnpm-setup
+
+      - name: Set up promptfoo cache
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+        with:
+          path: ~/.promptfoo/cache
+          key: ${{ runner.os }}-promptfoo-v1
+          restore-keys: |
+            ${{ runner.os }}-promptfoo-
+
+      - name: Run promptfoo
+        env:
+          OPENAI_API_KEY: ${{ secrets.PROMPTFOO_OPENAI_API_KEY }}
+        id: promptfoo
+        shell: bash
+        run: |
+          echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env.local
+          pnpm test:prompt
+          rm -f .env.local
+          failures_count=$(cat frontend/packages/prompt-test/results.json | jq .results.stats.failures)
+          errors_count=$(cat frontend/packages/prompt-test/results.json | jq .results.stats.errors)
+          successes_count=$(cat frontend/packages/prompt-test/results.json | jq .results.stats.successes)
+          if [ $failures_count -eq 0 ]; then
+            if [ $errors_count -eq 0 ]; then
+              output="✅️ Promptfoo test succeeded"
+              exit_code=0
+            else
+              output="❌️ Promptfoo test failed"
+              exit_code=1
+            fi
+          else
+            output="❌️ Promptfoo test failed"
+            exit_code=1
+          fi
+          echo "output=$output" >> $GITHUB_OUTPUT
+          echo "successes_count=$successes_count" >> $GITHUB_OUTPUT
+          echo "failures_count=$failures_count" >> $GITHUB_OUTPUT
+          echo "errors_count=$errors_count" >> $GITHUB_OUTPUT
+          # NOTE: if you want treat failures as workflow error, uncomment the following line.
+          # exit $exit_code
+
+      - name: Share result
+        id: share-result
+        if: always()
+        run: |
+          output=$(pnpm dlx promptfoo share --yes)
+          echo "output=$output" >> $GITHUB_OUTPUT
+
+      - name: Post result
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 # v2.9.1
+        with:
+          message: |
+            frontend/packages/prompt-test result:
+
+            ${{steps.share-result.outputs.output}}
+
+            ${{steps.promptfoo.outputs.output}}
+
+            | ✅️ Successes | ❌️ Failures | ⚠️ Errors |
+            | --- | --- | --- |
+            | ${{steps.promptfoo.outputs.successes_count}} | ${{steps.promptfoo.outputs.failures_count}} | ${{steps.promptfoo.outputs.errors_count}} |

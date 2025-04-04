@@ -45,6 +45,7 @@ Your response must strictly follow this JSON Schema:
 export const generateSchemaMeta = async (
   reviewComment: string,
   callbacks: Callbacks,
+  runId: string,
 ) => {
   const model = new ChatOpenAI({
     temperature: 0.7,
@@ -63,6 +64,7 @@ export const generateSchemaMeta = async (
       },
       {
         callbacks,
+        runId,
       },
     )
 

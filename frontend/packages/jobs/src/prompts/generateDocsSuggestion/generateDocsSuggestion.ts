@@ -80,6 +80,7 @@ export const generateDocsSuggestion = async (
   reviewResult: string,
   docsArray: string,
   callbacks: Callbacks,
+  predefinedRunId: string,
 ) => {
   const prompt = PromptTemplate.fromTemplate(MIGRATION_DOCS_REVIEW_TEMPLATE)
   const model = new ChatOpenAI({
@@ -97,6 +98,7 @@ export const generateDocsSuggestion = async (
     },
     {
       callbacks,
+      runId: predefinedRunId,
     },
   )
 
