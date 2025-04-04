@@ -1,10 +1,10 @@
-name: 'prompt-test'
+name: "prompt-test"
 on:
   pull_request:
     paths:
-      - '.github/workflows/prompt-test.yml'
-      - 'frontend/packages/jobs/**'
-      - 'frontend/packages/prompt-test/**'
+      - ".github/workflows/prompt-test.yml"
+      - "frontend/packages/jobs/**"
+      - "frontend/packages/prompt-test/**"
 
 jobs:
   eval:
