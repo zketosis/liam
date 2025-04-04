@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1322 MIT
+* 1323 MIT
 * 207 Apache 2.0
 * 82 ISC
 * 32 New BSD
@@ -3864,6 +3864,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@sentry/esbuild-plugin"></a>
+### @sentry/esbuild-plugin v3.2.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@sentry/nextjs"></a>
 ### @sentry/nextjs v8.55.0
 #### 
@@ -5680,7 +5691,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vercel/build-utils"></a>
-### @vercel/build-utils v10.5.0
+### @vercel/build-utils v10.5.1
 #### 
 
 ##### Paths
@@ -5724,7 +5735,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@vercel/gatsby-plugin-vercel-builder"></a>
-### @vercel/gatsby-plugin-vercel-builder v2.0.79
+### @vercel/gatsby-plugin-vercel-builder v2.0.80
 #### 
 
 ##### Paths
@@ -5761,7 +5772,7 @@ Unknown manually approved
 
 
 <a name="@vercel/next"></a>
-### @vercel/next v4.7.3
+### @vercel/next v4.7.4
 #### 
 
 ##### Paths
@@ -5783,7 +5794,7 @@ Unknown manually approved
 
 
 <a name="@vercel/node"></a>
-### @vercel/node v5.1.13
+### @vercel/node v5.1.14
 #### 
 
 ##### Paths
@@ -5816,7 +5827,7 @@ Unknown manually approved
 
 
 <a name="@vercel/remix-builder"></a>
-### @vercel/remix-builder v5.4.2
+### @vercel/remix-builder v5.4.3
 #### 
 
 ##### Paths
@@ -5838,7 +5849,7 @@ Unknown manually approved
 
 
 <a name="@vercel/static-build"></a>
-### @vercel/static-build v2.7.5
+### @vercel/static-build v2.7.6
 #### 
 
 ##### Paths
@@ -18240,7 +18251,7 @@ Unknown manually approved
 
 
 <a name="vercel"></a>
-### vercel v41.4.0
+### vercel v41.4.1
 #### 
 
 ##### Paths

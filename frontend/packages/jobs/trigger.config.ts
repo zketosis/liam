@@ -1,3 +1,6 @@
+import { sentryEsbuildPlugin } from '@sentry/esbuild-plugin'
+import * as Sentry from '@sentry/node'
+import { esbuildPlugin } from '@trigger.dev/build/extensions'
 import { prismaExtension } from '@trigger.dev/build/extensions/prisma'
 import { defineConfig } from '@trigger.dev/sdk/v3'
 import * as dotenv from 'dotenv'
@@ -33,8 +36,35 @@ export default defineConfig({
       prismaExtension({
         schema: '../../packages/db/prisma/schema.prisma',
       }),
+      esbuildPlugin(
+        sentryEsbuildPlugin({
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+        }),
+        { placement: 'last', target: 'deploy' },
+      ),
     ],
     external: ['uuid'],
+  },
+  init: async () => {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+
+      tracesSampleRate: 1,
+
+      debug: false,
+
+      environment: process.env.NEXT_PUBLIC_ENV_NAME,
+    })
+  },
+  onFailure: async (payload, error, { ctx }) => {
+    Sentry.captureException(error, {
+      extra: {
+        payload,
+        ctx,
+      },
+    })
   },
   dirs: ['./src/trigger'],
 })
