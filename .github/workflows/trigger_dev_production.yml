@@ -4,10 +4,12 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/trigger_dev_production.yml
       - frontend/packages/jobs/**
       - frontend/packages/db-structure/**
       - frontend/packages/github/**
       - frontend/packages/db/**
+      - turbo.json
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,6 +28,11 @@ jobs:
         env:
           TRIGGER_ACCESS_TOKEN: ${{ secrets.TRIGGER_ACCESS_TOKEN }}
           TRIGGER_PROJECT_ID: ${{ vars.TRIGGER_PROJECT_ID }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          NEXT_PUBLIC_ENV_NAME: production
         run: pnpm deploy:jobs
 
       - name: Slack Notification on Failure
