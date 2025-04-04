@@ -51,7 +51,7 @@ export async function processGenerateDocsSuggestion(payload: {
 
       return {
         id: filename,
-        title: filename.replace('.md', ''),
+        title: filename,
         content: fileData.content || '',
       }
     })
@@ -72,9 +72,16 @@ export async function processGenerateDocsSuggestion(payload: {
       predefinedRunId,
     )
 
-    // Filter out undefined values
+    // Filter out undefined values and add .md extension to keys if not already present
+    // TODO: This is a hacky solution. Ideally, we should handle file extensions properly in the LangChain prompt
+    // to ensure consistent naming conventions between the input docs and output suggestions.
     const suggestions = Object.fromEntries(
-      Object.entries(result).filter(([_, value]) => value !== undefined),
+      Object.entries(result)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => {
+          const newKey = key.endsWith('.md') ? key : `${key}.md`
+          return [newKey, value]
+        }),
     ) as Record<string, string>
 
     // Return a properly structured object
