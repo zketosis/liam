@@ -25,6 +25,7 @@ import {
   NonRelatedTableGroupNode,
   RelationshipEdge,
   Spinner,
+  TableGroupNode,
   TableNode,
 } from './components'
 import { useInitialAutoLayout, usePopStateListener } from './hooks'
@@ -32,6 +33,7 @@ import { useInitialAutoLayout, usePopStateListener } from './hooks'
 const nodeTypes = {
   table: TableNode,
   nonRelatedTableGroup: NonRelatedTableGroupNode,
+  tableGroup: TableGroupNode,
 }
 
 const edgeTypes = {

@@ -1,12 +1,17 @@
+import type { TableGroup } from '@liam-hq/db-structure'
 import type { FC } from 'react'
 import { DesktopToolbar } from './DesktopToolbar'
 import { MobileToolbar } from './MobileToolbar'
 
-export const Toolbar: FC = () => {
+type ToolbarProps = {
+  onAddTableGroup: ((params: TableGroup) => void) | undefined
+}
+
+export const Toolbar: FC<ToolbarProps> = ({ onAddTableGroup }) => {
   return (
     <>
-      <MobileToolbar />
-      <DesktopToolbar />
+      <MobileToolbar onAddTableGroup={onAddTableGroup} />
+      <DesktopToolbar onAddTableGroup={onAddTableGroup} />
     </>
   )
 }

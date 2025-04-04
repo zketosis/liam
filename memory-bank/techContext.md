@@ -27,7 +27,7 @@
 - **Task Pipeline**: A series of tasks are chained together using Trigger.dev to form a complete review workflow, including schema metadata generation.
 - **Function Separation**: Business logic is separated into dedicated function files that are called from task definitions.
 - **Type Safety**: When working with Supabase, type assertions are used to bridge the gap between Supabase's types and the application's expected types, particularly for nested queries and bigint fields.
-- **Enhanced Prompt Structure**: AI prompts are structured to incorporate multiple sources of context, including PR descriptions, comments, documentation, schema files, and code changes.
+- **Enhanced Prompt Structure**: AI prompts are structured to incorporate multiple sources of context, including PR descriptions, comments, documentation, schema files, and code changes. For schema metadata generation, prompts include the current schema metadata file content to enable incremental improvements rather than generating from scratch.
 - **Package Management**: pnpm for efficient dependency management.
 - **Monorepo Management**: pnpm workspaces.
 - **Build System**: Turborepo for optimized builds.

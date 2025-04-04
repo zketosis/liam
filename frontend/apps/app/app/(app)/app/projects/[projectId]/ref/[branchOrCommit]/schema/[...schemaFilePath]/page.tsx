@@ -19,9 +19,8 @@ import * as Sentry from '@sentry/nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
+import { OVERRIDE_SCHEMA_FILE_PATH } from './constants'
 import ERDViewer from './erdViewer'
-
-const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
 
 const processOverrideFile = async (
   repositoryFullName: string,
@@ -216,6 +215,8 @@ export default async function Page({
           name: error.name,
           message: error.message,
         }))}
+        projectId={projectId}
+        branchOrCommit={branchOrCommit}
       />
     )
   } catch (_error) {

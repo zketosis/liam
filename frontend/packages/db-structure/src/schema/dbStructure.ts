@@ -88,7 +88,10 @@ export const tableGroupSchema = v.object({
 
 export type TableGroup = v.InferOutput<typeof tableGroupSchema>
 
-const tableGroupsSchema = v.record(tableGroupNameSchema, tableGroupSchema)
+export const tableGroupsSchema = v.record(
+  tableGroupNameSchema,
+  tableGroupSchema,
+)
 export type TableGroups = v.InferOutput<typeof tableGroupsSchema>
 
 export const dbStructureSchema = v.object({

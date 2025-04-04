@@ -67,6 +67,8 @@ async function getMigrationContents(migrationId: string) {
       )
     `)
     .eq('pullRequestId', pullRequest.id)
+    .order('createdAt', { ascending: false })
+    .limit(1)
     .single()
 
   if (reviewError || !overallReview) {
