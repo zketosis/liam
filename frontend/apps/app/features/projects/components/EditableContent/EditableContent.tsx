@@ -57,7 +57,7 @@ export const EditableContent = ({
           </button>
         )}
       </div>
-      
+
       {isEditing ? (
         <form action={handleSave} className={styles.form}>
           <input type="hidden" name="suggestionId" value={suggestionId} />
