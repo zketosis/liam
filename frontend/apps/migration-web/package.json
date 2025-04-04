@@ -9,7 +9,7 @@
     "@prisma/client": "6.2.2",
     "@supabase/supabase-js": "2.49.4",
     "html-to-text": "9.0.5",
-    "langchain": "0.3.19",
+    "langchain": "0.3.20",
     "langfuse-langchain": "3.36.0",
     "next": "15.2.4",
     "prisma": "6.2.2",
