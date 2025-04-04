@@ -83,6 +83,9 @@ importers:
       '@trigger.dev/sdk':
         specifier: 3.3.17
         version: 3.3.17(zod@3.23.8)
+      '@types/diff':
+        specifier: 7.0.2
+        version: 7.0.2
       cheerio:
         specifier: 1.0.0
         version: 1.0.0
@@ -92,6 +95,9 @@ importers:
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
+      diff:
+        specifier: 7.0.0
+        version: 7.0.0
       dotenv:
         specifier: 16.4.7
         version: 16.4.7
@@ -4475,6 +4481,9 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/diff@7.0.2':
+    resolution: {integrity: sha512-JSWRMozjFKsGlEjiiKajUjIJVKuKdE3oVy2DNtK+fUo8q82nhFZ2CPQwicAIkXrofahDXrWJ7mjelvZphMS98Q==}
+
   '@types/escodegen@0.0.6':
     resolution: {integrity: sha512-AjwI4MvWx3HAOaZqYsjKWyEObT9lcVV0Y0V8nXo6cXzN8ZiMxVhf6F3d/UNvXVGKrEzL/Dluc5p+y9GkzlTWig==}
 
@@ -5874,6 +5883,10 @@ packages:
 
   diff@4.0.2:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
+    engines: {node: '>=0.3.1'}
+
+  diff@7.0.0:
+    resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
     engines: {node: '>=0.3.1'}
 
   dir-glob@3.0.1:
@@ -15640,6 +15653,8 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
+  '@types/diff@7.0.2': {}
+
   '@types/escodegen@0.0.6': {}
 
   '@types/eslint-scope@3.7.7':
@@ -17186,6 +17201,8 @@ snapshots:
       wrappy: 1.0.2
 
   diff@4.0.2: {}
+
+  diff@7.0.0: {}
 
   dir-glob@3.0.1:
     dependencies:
