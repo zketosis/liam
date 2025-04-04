@@ -1,3 +1,4 @@
+import type { TableGroup } from '@liam-hq/db-structure'
 import { Ellipsis } from '@liam-hq/ui'
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import clsx from 'clsx'
@@ -7,7 +8,12 @@ import styles from './MobileToolbar.module.css'
 import { OpenedMobileToolbar } from './OpenedMobileToolbar'
 import { ShowModeMenu } from './ShowModeMenu'
 
-export const MobileToolbar: FC = () => {
+type MobileToolbarProps = {
+  isEnableTableGroup?: boolean
+  onAddTableGroup: ((props: TableGroup) => void) | undefined
+}
+
+export const MobileToolbar: FC<MobileToolbarProps> = ({ onAddTableGroup }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isShowModeMenu, setIsShowModeMenu] = useState(false)
   const toolbarRef = useRef<HTMLDivElement>(null)
@@ -86,6 +92,7 @@ export const MobileToolbar: FC = () => {
             <OpenedMobileToolbar
               toggleOpenClose={toggleOpenClose}
               toggleShowModeMenu={toggleShowModeMenu}
+              onAddTableGroup={onAddTableGroup}
             />
           </div>
 

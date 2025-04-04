@@ -1,4 +1,8 @@
-export { dbStructureSchema, tableGroupSchema } from './dbStructure.js'
+export {
+  dbStructureSchema,
+  tableGroupSchema,
+  tableGroupsSchema,
+} from './dbStructure.js'
 export type {
   Column,
   Columns,
