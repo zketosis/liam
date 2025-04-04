@@ -1,10 +1,12 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
+import * as diffLib from 'diff'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import type { FC } from 'react'
+import type { FC, ReactNode } from 'react'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
+import { getOriginalDocumentContent } from '../../utils/getOriginalDocumentContent'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
 
 type Props = {
@@ -101,7 +103,20 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
 
         <div className={styles.contentSection}>
           <h2 className={styles.sectionTitle}>Content</h2>
-          <pre className={styles.codeContent}>{suggestion.content}</pre>
+          {suggestion.approvedAt ? (
+            <pre className={styles.codeContent}>{suggestion.content}</pre>
+          ) : (
+            <DiffDisplay
+              originalContent={
+                await getOriginalDocumentContent(
+                  projectId,
+                  suggestion.branchName,
+                  suggestion.path,
+                )
+              }
+              newContent={suggestion.content}
+            />
+          )}
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>
             <UserFeedbackClient traceId={suggestion.traceId} />
@@ -134,6 +149,56 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+interface DiffDisplayProps {
+  originalContent: string | null
+  newContent: string
+}
+
+const DiffDisplay: FC<DiffDisplayProps> = ({ originalContent, newContent }) => {
+  if (!originalContent) {
+    return (
+      <div className={styles.diffContent}>
+        {newContent.split('\n').map((line) => (
+          <div key={`added-${line}`} className={styles.diffAdded}>
+            + {line}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const diff = diffLib.diffTrimmedLines(originalContent, newContent)
+
+  return (
+    <div className={styles.diffContent}>
+      {diff.map((part, index) => {
+        const className = part.added
+          ? styles.diffAdded
+          : part.removed
+            ? styles.diffRemoved
+            : styles.diffUnchanged
+
+        const prefix = part.added ? '+ ' : part.removed ? '- ' : '  '
+
+        return part.value.split('\n').map((line, lineIndex) => {
+          if (lineIndex === part.value.split('\n').length - 1 && line === '') {
+            return null
+          }
+          return (
+            <div
+              key={`${part.added ? 'added' : part.removed ? 'removed' : 'unchanged'}-${line}-${index}-${lineIndex}`}
+              className={className}
+            >
+              {prefix}
+              {line}
+            </div>
+          )
+        })
+      })}
     </div>
   )
 }

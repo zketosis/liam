@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1323 MIT
+* 1324 MIT
 * 207 Apache 2.0
 * 82 ISC
 * 32 New BSD
@@ -5142,6 +5142,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@types/debug"></a>
 ### @types/debug v4.1.12
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@types/diff"></a>
+### @types/diff v7.0.2
 #### 
 
 ##### Paths
