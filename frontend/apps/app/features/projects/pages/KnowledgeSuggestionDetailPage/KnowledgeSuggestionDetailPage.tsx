@@ -106,13 +106,13 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           <div className={styles.header}>
             <h2 className={styles.sectionTitle}>Content</h2>
           </div>
-          
+
           <EditableContent
             content={suggestion.content}
             suggestionId={suggestion.id}
             className={styles.codeContent}
           />
-          
+
           {!suggestion.approvedAt && (
             <DiffDisplay
               originalContent={
@@ -125,7 +125,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
               newContent={suggestion.content}
             />
           )}
-          
+
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>
             <UserFeedbackClient traceId={suggestion.traceId} />
