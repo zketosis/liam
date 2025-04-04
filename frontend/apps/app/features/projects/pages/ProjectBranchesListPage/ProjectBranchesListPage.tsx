@@ -10,24 +10,6 @@ type Props = {
   projectId: string
 }
 
-type RepositoryMapping = {
-  repository: {
-    id: number
-    name: string
-    owner: string
-    installationId: bigint
-  }
-}
-
-type RepoBranches = {
-  repositoryId: number
-  repositoryName: string
-  repositoryOwner: string
-  branches: Array<{
-    name: string
-  }>
-}
-
 async function getProjectAndBranches(projectId: string) {
   const project = await prisma.project.findUnique({
     where: {
@@ -56,7 +38,7 @@ async function getProjectAndBranches(projectId: string) {
   }
 
   const branchesByRepo = await Promise.all(
-    project.repositoryMappings.map(async (mapping: RepositoryMapping) => {
+    project.repositoryMappings.map(async (mapping) => {
       const { repository } = mapping
       const branches = await getRepositoryBranches(
         Number(repository.installationId),
@@ -102,7 +84,7 @@ export const ProjectBranchesListPage: FC<Props> = async ({ projectId }) => {
       </div>
 
       <div className={styles.content}>
-        {project.branchesByRepo.map((repo: RepoBranches) => (
+        {project.branchesByRepo.map((repo) => (
           <section key={repo.repositoryId} className={styles.repoSection}>
             <h2 className={styles.repoTitle}>
               {repo.repositoryOwner}/{repo.repositoryName}
