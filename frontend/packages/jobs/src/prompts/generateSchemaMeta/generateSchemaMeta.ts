@@ -54,6 +54,7 @@ export const generateSchemaMeta = async (
   reviewComment: string,
   callbacks: Callbacks,
   currentSchemaMeta: DBOverride | null,
+  runId: string,
 ) => {
   const model = new ChatOpenAI({
     temperature: 0.7,
@@ -75,6 +76,7 @@ export const generateSchemaMeta = async (
       },
       {
         callbacks,
+        runId,
       },
     )
 

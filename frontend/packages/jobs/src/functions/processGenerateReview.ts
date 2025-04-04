@@ -1,16 +1,19 @@
+import { v4 as uuidv4 } from 'uuid'
+
 import {
   getFileContent,
   getIssueComments,
   getPullRequestDetails,
 } from '@liam-hq/github'
 import { createClient } from '../libs/supabase'
+
 import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload, Review } from '../types'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
-): Promise<Review> => {
+): Promise<{ review: Review; traceId: string }> => {
   try {
     const supabase = createClient()
 
@@ -42,7 +45,7 @@ export const processGenerateReview = async (
 
     // Fetch content for each doc path
     const docsContentArray = await Promise.all(
-      docPaths.map(async (docPath) => {
+      docPaths.map(async (docPath: { path: string }) => {
         try {
           const fileData = await getFileContent(
             `${payload.owner}/${payload.name}`,
@@ -66,6 +69,8 @@ export const processGenerateReview = async (
 
     // Filter out null values and join content
     const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
+
+    const predefinedRunId = uuidv4()
 
     // Fetch PR details to get the description
     const prDetails = await getPullRequestDetails(
@@ -101,8 +106,10 @@ export const processGenerateReview = async (
       prDescription,
       formattedComments,
       callbacks,
+      predefinedRunId,
     )
-    return review
+
+    return { review: review, traceId: predefinedRunId }
   } catch (error) {
     console.error('Error generating review:', error)
     throw error

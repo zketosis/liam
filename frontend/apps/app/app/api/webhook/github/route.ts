@@ -2,7 +2,7 @@ import crypto from 'node:crypto'
 import { createClient } from '@/libs/db/server'
 import { supportedEvents } from '@liam-hq/github'
 import type { GitHubWebhookPayload } from '@liam-hq/github'
-import { savePullRequest } from '@liam-hq/jobs'
+import { savePullRequestTask } from '@liam-hq/jobs'
 import { type NextRequest, NextResponse } from 'next/server'
 import { checkSchemaChanges } from './utils/checkSchemaChanges'
 
@@ -106,12 +106,9 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
                 { status: 200 },
               )
             }
-            // Queue the savePullRequest task
-            await savePullRequest({
+            await savePullRequestTask.trigger({
               prNumber: pullRequest.number,
-              pullRequestTitle: pullRequest.title,
               projectId,
-              branchName: pullRequest.head.ref,
             })
 
             return NextResponse.json(

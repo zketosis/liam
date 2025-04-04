@@ -44,6 +44,7 @@ describe('overrideDbStructure', () => {
     relationships: {
       // Empty initially
     },
+    tableGroups: {},
   }
 
   describe('Overriding existing tables', () => {
@@ -211,6 +212,7 @@ describe('overrideDbStructure', () => {
         },
       },
       relationships: {},
+      tableGroups: {},
     }
 
     it('should add a new relationship', () => {
@@ -426,6 +428,7 @@ describe('overrideDbStructure', () => {
           },
         },
         relationships: {},
+        tableGroups: {},
       }
 
       const override: DBOverride = {

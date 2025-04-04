@@ -26,14 +26,37 @@ Your JSON-formatted response must contain:
     - Security or Scalability
   - "severity": For each issue, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem, and "POSITIVE" if it does not indicate an issue.
   - "description": A clear and precise explanation of the issue.
-  - "suggestion": Actionable recommendations for addressing the issue.
+  - "suggestion": Provide actionable recommendations for resolving the issue. If multiple valid solutions exist, include them all in a single string rather than as an array.
+    - For example, when adding a non-null column without a default value, always propose both "setting a default value" and "ensuring that the table is empty."
 - An array of scores for each issue kind in the "scores" field, each including:
   - "kind": One of the issue categories listed above.
-  - "value": A numeric score from 0 to 10, with 10 being the highest.
-  - "reason": An explanation justifying the score provided.
-- A brief summary of the review in the "summary" field.
+  - "value": A numeric score from 0 to 10, using a deduction-based approach:
+    - Start with a perfect score of 10 (indicating no issues)
+    - Deduct points based on the number and severity of issues identified:
+      - CRITICAL issues: Deduct 2-4 points each
+      - WARNING issues: Deduct 1-2 points each
+      - No deductions for POSITIVE observations
+    - Consider the cumulative impact of multiple issues
+    - A score of 0-3 indicates critical, unfixable problems
+    - A score of 4-6 indicates significant issues requiring attention
+    - A score of 7-9 indicates minor issues or concerns
+    - A score of 10 indicates perfect design with no issues
+  - "reason": An explanation justifying the score provided, including what deductions were made and why. If no issues were found in a category, explicitly state that a score of 10 was given because no issues were identified.
+- A concise summary in the "summary" field that:
+  - Describes the migration changes in about 1 line
+  - Highlights the most important issues or risks (if any exist); if no significant issues are found, highlight positive aspects of the migration instead
+  - Is about 3 lines in total length
 - A detailed and constructive overall review in the "bodyMarkdown" field.
   - The bodyMarkdown should be a markdown formatted string.
+
+Evaluation Criteria Details:
+- **Migration Safety:** Evaluates whether mechanisms are in place to ensure that all changes are atomically rolled back and system integrity is maintained even if migration operations (such as DDL operations and data migration) are interrupted or fail midway. This is a general safety indicator.
+- **Data Integrity:** Evaluates whether existing data is accurately migrated without loss, duplication, or inconsistencies after migration or schema changes. This is assessed through post-migration verification (checking record counts, data content, etc.) as a general data quality indicator.
+- **Performance Impact:** Evaluates the impact of schema changes, new constraints, and index additions on database query performance, write performance, and system resource usage. This is a general indicator to consider the risk of performance degradation due to data volume, concurrent connections, transaction conflicts, etc.
+- **Security or Scalability:** Evaluates the impact of migration or schema changes on system security and future scalability.
+  - **Security:** Includes risks such as storing sensitive information (passwords, etc.) in plain text or deficiencies in access control.
+  - **Scalability:** Evaluates the potential for performance degradation due to large-scale data processing, query delays, transaction conflicts, database locks, etc., as the system expands. This is a general perspective for evaluation.
+- **Project Rules Consistency:** This evaluation item represents project-specific requirements. Checks whether schema changes comply with project documents or existing schema rules (e.g., use of specific prefixes, naming conventions, etc.). If project-specific rules are not provided, this evaluation may be omitted.
 
 Ensure your response strictly adheres to the provided JSON schema.
 **Your output must be raw JSON only. Do not include any markdown code blocks or extraneous formatting.**
@@ -63,6 +86,7 @@ export const generateReview = async (
   prDescription: string,
   prComments: string,
   callbacks: Callbacks,
+  runId: string,
 ) => {
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', SYSTEM_PROMPT],
@@ -85,6 +109,7 @@ export const generateReview = async (
     },
     {
       callbacks,
+      runId,
     },
   )
   const parsedResponse = parse(reviewSchema, response)

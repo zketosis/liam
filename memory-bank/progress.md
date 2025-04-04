@@ -10,7 +10,11 @@
 - KnowledgeSuggestion database model for storing and managing AI-generated suggestions for Schema and Docs updates.
 - Text document viewer page that renders raw text content from GitHub repositories.
 - Documentation list page that displays all GitHubDocFilePath entries for a project with links to individual document pages.
-- Supabase JS integration for database access in the document viewer page, with optimized queries using nested joins.
+- Supabase JS integration for database access in multiple components, including:
+  - Document viewer page with optimized queries using nested joins
+  - ProjectBranchesListPage component for listing project branches
+  - KnowledgeSuggestionDetailPage component for displaying and approving suggestions
+  - ProjectDetailPage component for showing project details and related migrations
 - Dynamic branch name management for KnowledgeSuggestion operations, replacing hardcoded branch names.
 - Streamlined database schema with removal of unused Doc and DocVersion models, focusing on GitHub-integrated document management.
 - Schema metadata generation pipeline that creates and stores metadata suggestions based on PR reviews, with context-aware prompts that build upon existing metadata.
@@ -19,6 +23,7 @@
 - Standardized Supabase client usage across the codebase using a shared createClient function.
 - Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
 - Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
+- Completed migration from Prisma to Supabase for database migrations, with standardized workflow documented.
 
 ## What's Left to Build
 
@@ -27,12 +32,14 @@
 - Further refinement of AI components to enhance the accuracy and relevance of suggestions.
 - Development of Builder User features, planned for later phases, leveraging accumulated review data and feedback.
 - Exploration of multi-region deployment opportunities as user needs grow.
-- Complete migration from Prisma ORM to Supabase JS across all components to standardize database access patterns.
+- Complete migration from Prisma client to Supabase JS across all components to standardize database access patterns (migration workflow is already completed).
 - Ensure consistent Supabase type updates whenever database schema changes are made.
 
 ## Current Status
 
 The project is currently focused on enhancing the Reviewer User experience, with AI-driven analysis and suggestions integrated into the migration review process. The initial release prioritizes the Reviewer User, with Builder User features planned for future phases.
+
+The transition from Prisma to Supabase JS for database access is progressing well, with several key components now using Supabase. Recent migrations include the ProjectBranchesListPage, KnowledgeSuggestionDetailPage, and ProjectDetailPage components, which now use Supabase's optimized query capabilities with nested joins for efficient data retrieval. These migrations demonstrate the pattern for handling complex relationships and proper error handling with Supabase. The ProjectDetailPage migration also addressed a specific challenge with Supabase's array-based return format for nested relationships, providing a pattern for handling similar cases in future migrations.
 
 The core review pipeline is now operational, connecting GitHub webhooks to AI-powered review generation and PR comment posting. This enables automatic review of database schema changes when pull requests are opened or updated.
 
@@ -51,6 +58,8 @@ As part of the transition to Supabase JS, manual rollback processing has been re
 The testing approach has been updated to use a direct testing strategy with Supabase. Instead of mocking the Supabase client or creating mock implementations of functions (as was necessary with Prisma), we now create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This approach provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments. This approach differs significantly from the Prisma approach, which typically required extensive mocking.
 
 The schema file management has been improved by renaming the `WatchSchemaFilePattern` table to `GitHubSchemaFilePath` and changing from pattern matching to direct path comparison. This provides a more precise and efficient approach to schema file management, aligning with the existing `GitHubDocFilePath` model and providing a more consistent approach to file path handling across the application. The implementation includes a migration file that handles the table rename and data transfer, updates to all affected components to use the new table name and field names, and standardization of Supabase client usage across the codebase.
+
+The database migration workflow has been fully transitioned from Prisma to Supabase. The Prisma migration scripts and folders have been removed, and a standardized Supabase migration workflow has been documented. This transition simplifies the database schema management process and aligns with the project's goal of standardizing on Supabase across all components. While the Prisma client is still used in some parts of the application (hence the `gen:prisma` script is retained), all database schema migrations are now handled through Supabase, using commands like `supabase:migration:new` and `supabase:migration:up`.
 
 ## Known Issues
 

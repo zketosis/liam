@@ -1,5 +1,6 @@
 import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
 import { getFileContent } from '@liam-hq/github'
+import { v4 as uuidv4 } from 'uuid'
 import { safeParse } from 'valibot'
 import { createClient } from '../libs/supabase'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
@@ -51,6 +52,8 @@ export const processGenerateSchemaMeta = async (
       throw new Error(`Repository not found for pull request ${pullRequest.id}`)
     }
 
+    const predefinedRunId = uuidv4()
+
     const callbacks = [langfuseLangchainHandler]
 
     // Fetch the current schema metadata file from GitHub
@@ -77,6 +80,7 @@ export const processGenerateSchemaMeta = async (
       overallReview.reviewComment || '',
       callbacks,
       currentSchemaMeta,
+      predefinedRunId,
     )
 
     // Return the schema meta along with information needed for createKnowledgeSuggestionTask
@@ -86,6 +90,7 @@ export const processGenerateSchemaMeta = async (
       pullRequestNumber: Number(pullRequest.pullNumber), // Convert bigint to number
       branchName: overallReview.branchName, // Get branchName from overallReview
       title: `Schema meta update from PR #${Number(pullRequest.pullNumber)}`,
+      traceId: predefinedRunId,
     }
   } catch (error) {
     console.error('Error generating schema meta:', error)

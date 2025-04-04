@@ -10,6 +10,7 @@ import type { SavePullRequestPayload } from '../types'
 export type SavePullRequestResult = {
   success: boolean
   prId: number
+  repositoryId: number
   schemaFiles: Array<{
     filename: string
     content: string
@@ -28,6 +29,7 @@ export type SavePullRequestResult = {
     changes: number
     patch: string
   }>
+  branchName: string
 }
 
 export async function processSavePullRequest(
@@ -35,20 +37,24 @@ export async function processSavePullRequest(
 ): Promise<SavePullRequestResult> {
   const supabase = createClient()
 
-  // Find repository by owner and name
-  const { data: repository, error: repositoryError } = await supabase
-    .from('Repository')
-    .select('*')
-    .eq('owner', payload.owner)
-    .eq('name', payload.name)
-    .single()
+  // Find project repository mapping using projectId
+  const { data: projectMapping, error: mappingError } = await supabase
+    .from('ProjectRepositoryMapping')
+    .select(`
+      *,
+      repository:Repository(*)
+    `)
+    .eq('projectId', payload.projectId)
+    .limit(1)
+    .maybeSingle()
 
-  if (repositoryError || !repository) {
-    throw new Error(`Repository not found: ${JSON.stringify(repositoryError)}`)
+  if (mappingError || !projectMapping) {
+    throw new Error(`No repository found for project ID: ${payload.projectId}`)
   }
 
+  const repository = projectMapping.repository
+
   const fileChanges = await getPullRequestFiles(
-    // bigint to number
     Number(repository.installationId.toString()),
     repository.owner,
     repository.name,
@@ -58,13 +64,7 @@ export async function processSavePullRequest(
   // Get project mappings with nested project and schema file patterns
   const { data: projectMappings, error: mappingsError } = await supabase
     .from('ProjectRepositoryMapping')
-    .select(`
-      *,
-      project:Project(
-        *,
-        watchSchemaFilePatterns:WatchSchemaFilePattern(*)
-      )
-    `)
+    .select('projectId')
     .eq('repositoryId', repository.id)
 
   if (mappingsError) {
@@ -101,6 +101,9 @@ export async function processSavePullRequest(
     repository.name,
     payload.prNumber,
   )
+
+  const pullRequestTitle = prDetails.title
+  const branchName = prDetails.head.ref
 
   const schemaFiles: Array<{
     filename: string
@@ -183,7 +186,7 @@ export async function processSavePullRequest(
     const { error: updateMigrationError } = await supabase
       .from('Migration')
       .update({
-        title: payload.pullRequestTitle,
+        title: pullRequestTitle,
         updatedAt: new Date().toISOString(),
       })
       .eq('id', existingMigration.id)
@@ -200,7 +203,7 @@ export async function processSavePullRequest(
       .from('Migration')
       .insert({
         pullRequestId: prRecord.id,
-        title: payload.pullRequestTitle,
+        title: pullRequestTitle,
         updatedAt: now,
       })
 
@@ -214,7 +217,9 @@ export async function processSavePullRequest(
   return {
     success: true,
     prId: prRecord.id,
+    repositoryId: repository.id,
     schemaFiles,
     fileChanges: fileChangesData,
+    branchName,
   }
 }
