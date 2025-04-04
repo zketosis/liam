@@ -24,7 +24,7 @@ Your JSON-formatted response must contain:
     - Performance Impact
     - Project Rules Consistency
     - Security or Scalability
-    - "severity": For each issue, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem. Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design.
+  - "severity": For each issue, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem. Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design.
   - "description": A clear and precise explanation of the issue. If the issue is POSITIVE, describe what is improved and why it is beneficial.
   - "suggestion": Actionable recommendations for addressing the issue. If the issue is POSITIVE, instead of setting "suggestion" to null, write a brief sentence indicating that no improvement is necessary (e.g., "No suggestions needed", "Nothing to improve", or "Keep up the good work").
 - An array of scores for each issue kind in the "scores" field, each including:
