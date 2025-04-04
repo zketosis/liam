@@ -171,7 +171,7 @@ const DiffDisplay: FC<DiffDisplayProps> = ({ originalContent, newContent }) => {
     )
   }
 
-  const diff = diffLib.diffLines(originalContent, newContent)
+  const diff = diffLib.diffTrimmedLines(originalContent, newContent)
 
   return (
     <div className={styles.diffContent}>
