@@ -24,20 +24,17 @@ type Params = {
 export const usePopStateListener = ({ nodes, displayArea }: Params) => {
   const { getEdges, setNodes, setEdges, fitView } = useCustomReactflow()
 
+
   const handlePopState = useCallback(async () => {
+ 
+    const tableName = getActiveTableNameFromUrl()
+    const showMode = getShowModeFromUrl()
+    const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
+
     updateIsPopstateInProgress(true)
-
-    const [tableName, showMode, hiddenNodeIds] = await Promise.all([
-      getActiveTableNameFromUrl(),
-      getShowModeFromUrl(),
-      getHiddenNodeIdsFromUrl(),
-    ])
-
-    const updatedNodes = updateNodesHiddenState({
-      nodes,
-      hiddenNodeIds,
-      shouldHideGroupNodeId: !hasNonRelatedChildNodes(nodes),
-    })
+    
+    
+    
 
     await Promise.all([
       new Promise<void>((resolve) => {
@@ -50,6 +47,12 @@ export const usePopStateListener = ({ nodes, displayArea }: Params) => {
         setTimeout(resolve, 1)
       }),
     ])
+
+    const updatedNodes = updateNodesHiddenState({
+      nodes,
+      hiddenNodeIds,
+      shouldHideGroupNodeId: !hasNonRelatedChildNodes(nodes),
+    })
 
     const { nodes: highlightedNodes, edges: highlightedEdges } =
       highlightNodesAndEdges(updatedNodes, getEdges(), {
