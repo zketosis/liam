@@ -59,11 +59,7 @@ export const EditableContent = ({
       </div>
       
       {isEditing ? (
-        <form onSubmit={async (e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          await handleSave(formData);
-        }} className={styles.form}>
+        <form action={handleSave} className={styles.form}>
           <input type="hidden" name="suggestionId" value={suggestionId} />
           <textarea
             name="content"
