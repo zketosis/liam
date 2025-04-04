@@ -72,7 +72,7 @@ export const ERDContentInner: FC<Props> = ({
     nodes,
     displayArea,
   })
-  usePopStateListener()
+  usePopStateListener({ displayArea })
 
   const { version } = useVersion()
   const isTouchDevice = useIsTouchDevice()
