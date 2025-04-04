@@ -118,6 +118,7 @@ export const generateReview = async (
     {
       callbacks,
       runId,
+      tags: ['generateReview'],
     },
   )
   const parsedResponse = parse(reviewSchema, response)
