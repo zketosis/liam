@@ -18229,7 +18229,7 @@ Unknown manually approved
 
 
 <a name="vaul"></a>
-### vaul v1.1.1
+### vaul v1.1.2
 #### 
 
 ##### Paths
