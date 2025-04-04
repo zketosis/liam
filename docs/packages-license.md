@@ -4646,7 +4646,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@supabase/auth-js"></a>
-### @supabase/auth-js v2.68.0
+### @supabase/auth-js v2.69.1
 #### 
 
 ##### Paths
@@ -4679,7 +4679,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@supabase/postgrest-js"></a>
-### @supabase/postgrest-js v1.19.2
+### @supabase/postgrest-js v1.19.4
 #### 
 
 ##### Paths
@@ -4723,7 +4723,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@supabase/supabase-js"></a>
-### @supabase/supabase-js v2.49.1
+### @supabase/supabase-js v2.49.4
 #### 
 
 ##### Paths
