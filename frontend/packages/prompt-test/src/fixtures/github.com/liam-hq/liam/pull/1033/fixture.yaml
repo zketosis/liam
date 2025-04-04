@@ -9,7 +9,7 @@ assert:
   threshold: 0.008
 
 vars:
-  ref: github.com/liam-hq/liam/pull/1033
+  '# ref': github.com/liam-hq/liam/pull/1033
   docsContent: ''
   schemaFiles:
   - filename: frontend/packages/db/prisma/schema.prisma
