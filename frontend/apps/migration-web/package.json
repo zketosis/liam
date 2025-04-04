@@ -11,13 +11,13 @@
     "html-to-text": "9.0.5",
     "langchain": "0.3.19",
     "langfuse-langchain": "3.36.0",
-    "next": "15.2.3",
+    "next": "15.2.4",
     "prisma": "6.2.2",
     "react": "18.3.1",
     "react-dom": "18"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@types/node": "22.9.0",
     "@types/react": "18",
     "@types/react-dom": "18",

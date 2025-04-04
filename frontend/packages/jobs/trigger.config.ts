@@ -45,6 +45,7 @@ export default defineConfig({
         { placement: 'last', target: 'deploy' },
       ),
     ],
+    external: ['uuid'],
   },
   init: async () => {
     Sentry.init({

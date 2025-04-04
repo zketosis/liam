@@ -79,6 +79,7 @@ describe.skip('processSaveReview', () => {
       projectId: testProject.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review comment',
         summary: 'Test review summary',
@@ -136,6 +137,7 @@ describe.skip('processSaveReview', () => {
       projectId: 9999,
       repositoryId: 9999,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review',
         summary: 'summary',
@@ -155,6 +157,7 @@ describe.skip('processSaveReview', () => {
       projectId: 999999,
       repositoryId: 9999,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review',
         summary: 'summary',

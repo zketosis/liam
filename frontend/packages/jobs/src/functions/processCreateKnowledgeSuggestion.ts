@@ -10,12 +10,13 @@ type CreateKnowledgeSuggestionPayload = {
   path: string
   content: string
   branch: string
+  traceId?: string
 }
 
 export const processCreateKnowledgeSuggestion = async (
   payload: CreateKnowledgeSuggestionPayload,
 ) => {
-  const { projectId, type, title, path, content, branch } = payload
+  const { projectId, type, title, path, content, branch, traceId } = payload
 
   const supabase = createClient()
 
@@ -70,6 +71,7 @@ export const processCreateKnowledgeSuggestion = async (
       fileSha,
       projectId,
       branchName: branch,
+      traceId: traceId || null,
       updatedAt: now,
     })
     .select()

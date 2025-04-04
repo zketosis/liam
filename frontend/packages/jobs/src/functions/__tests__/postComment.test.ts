@@ -58,7 +58,6 @@ describe.skip('postComment', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    // Insert test data
     await supabase.from('Repository').insert(testRepository)
     await supabase.from('PullRequest').insert(testPullRequest)
     await supabase.from('Migration').insert(testMigration)
@@ -86,6 +85,7 @@ describe.skip('postComment', () => {
       pullRequestId: testPullRequest.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     const result = await postComment(testPayload)
@@ -96,7 +96,9 @@ describe.skip('postComment', () => {
       testRepository.owner,
       testRepository.name,
       testPullRequest.pullNumber,
-      expect.stringContaining('Test review comment'),
+      expect.stringContaining(`Test review comment
+
+Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigration.id}`),
     )
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
 
@@ -124,6 +126,7 @@ describe.skip('postComment', () => {
       pullRequestId: testPullRequest.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     const result = await postComment(testPayload)
@@ -146,6 +149,7 @@ describe.skip('postComment', () => {
       pullRequestId: testPullRequest.id,
       repositoryId: 999999, // Non-existent ID
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
@@ -160,6 +164,7 @@ describe.skip('postComment', () => {
       pullRequestId: 999999, // Non-existent ID
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     await expect(postComment(testPayload)).rejects.toThrow(
@@ -186,6 +191,7 @@ describe.skip('postComment', () => {
       pullRequestId: prWithoutMigration.id,
       repositoryId: testRepository.id,
       branchName: 'test-branch',
+      traceId: 'test-trace-id-123',
     }
 
     try {

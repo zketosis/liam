@@ -6,7 +6,7 @@
 - **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions.
 - **Trigger.dev**: Task orchestration platform used for implementing the review pipeline and knowledge suggestion tasks.
 - **GitHub App**: Integrated to automate comments and review approvals on PRs, with enhanced API usage for fetching PR descriptions and comments.
-- **Prisma**: ORM for database access and management (currently being phased out).
+- **Prisma**: ORM for database access and management (partially phased out; still used for client access but no longer used for migrations).
 - **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins. Planned to replace Prisma across all components.
 - **Supabase RPC**: Remote Procedure Call functionality in Supabase, planned for future implementation of robust transaction management across the application.
 - **AWS**: Deployed in the us-east-1 region for its high affinity with English-speaking markets and potential for future multi-region expansion.
@@ -27,13 +27,63 @@
 - **Task Pipeline**: A series of tasks are chained together using Trigger.dev to form a complete review workflow, including schema metadata generation.
 - **Function Separation**: Business logic is separated into dedicated function files that are called from task definitions.
 - **Type Safety**: When working with Supabase, type assertions are used to bridge the gap between Supabase's types and the application's expected types, particularly for nested queries and bigint fields.
-- **Enhanced Prompt Structure**: AI prompts are structured to incorporate multiple sources of context, including PR descriptions, comments, documentation, schema files, and code changes.
+- **Enhanced Prompt Structure**: AI prompts are structured to incorporate multiple sources of context, including PR descriptions, comments, documentation, schema files, and code changes. For schema metadata generation, prompts include the current schema metadata file content to enable incremental improvements rather than generating from scratch.
 - **Package Management**: pnpm for efficient dependency management.
 - **Monorepo Management**: pnpm workspaces.
 - **Build System**: Turborepo for optimized builds.
 - **Linting & Formatting**: Biome for code quality.
 - **Testing**: Vitest for unit testing, Playwright for e2e testing.
   - **Supabase Testing Approach**: A direct testing approach is used with Supabase. We create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments.
+
+## Database Migration Workflow
+
+### Migration from Prisma to Supabase
+
+The project has completed the transition from Prisma ORM to Supabase for database migrations. While some parts of the application still use the Prisma client (hence `gen:prisma` script is retained), all database schema migrations are now handled through Supabase.
+
+### Supabase Migration Workflow
+
+The migration workflow follows Supabase's recommended practices:
+
+1. **Creating a new migration**:
+   ```bash
+   pnpm supabase:migration:new <migration_name>
+   ```
+   This creates a new migration file in `supabase/migrations` directory.
+
+2. **Adding SQL to the migration file**:
+   Edit the generated migration file to include the necessary SQL statements for schema changes.
+
+3. **Applying migrations**:
+   ```bash
+   pnpm supabase:migration:up
+   ```
+   This applies any pending migrations to the database.
+
+4. **Diffing changes from the Dashboard**:
+   If changes are made through the Dashboard UI, they can be captured as migrations:
+   ```bash
+   pnpm supabase:migration -f <migration_name>
+   ```
+   This generates a migration file with the changes detected between the local database and the schema definition.
+
+5. **Resetting the database**:
+   ```bash
+   pnpm supabase:reset
+   ```
+   This resets the database to a clean state, reapplies all migrations, and seeds the database.
+
+### Seeding Data
+
+Seed data can be defined in `supabase/seed.sql`. This file is executed when resetting the database with `pnpm supabase:reset`.
+
+### Type Safety
+
+After schema changes, regenerate TypeScript types and SQL schema:
+```bash
+pnpm supabase:gen
+```
+This ensures type safety when working with Supabase queries, and generates the SQL schema for the database.
 
 ## Code Implementation Guidelines
 - Use TypeScript for all components and functions.

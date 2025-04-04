@@ -60,6 +60,10 @@
     },
     "test:e2e": {
       "dependsOn": ["^build"]
+    },
+    "test:prompt": {
+      "dependsOn": ["^build"],
+      "outputs": []
     }
   }
 }

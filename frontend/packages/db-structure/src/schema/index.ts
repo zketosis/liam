@@ -1,4 +1,8 @@
-export { dbStructureSchema } from './dbStructure.js'
+export {
+  dbStructureSchema,
+  tableGroupSchema,
+  tableGroupsSchema,
+} from './dbStructure.js'
 export type {
   Column,
   Columns,
@@ -11,6 +15,7 @@ export type {
   Indexes,
   ForeignKeyConstraint,
   Cardinality,
+  TableGroup,
 } from './dbStructure.js'
 export {
   aColumn,
@@ -22,7 +27,5 @@ export {
 export {
   applyOverrides,
   dbOverrideSchema,
-  tableGroupSchema,
-  tableGroupNameSchema,
 } from './overrideDbStructure.js'
-export type { TableGroup, DBOverride } from './overrideDbStructure.js'
+export type { DBOverride } from './overrideDbStructure.js'
