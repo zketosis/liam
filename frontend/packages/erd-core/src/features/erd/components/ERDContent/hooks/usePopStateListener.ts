@@ -17,23 +17,21 @@ import { useCallback, useEffect } from 'react'
 import { hasNonRelatedChildNodes, updateNodesHiddenState } from '../utils'
 
 type Params = {
-  
   displayArea: DisplayArea
 }
 
 export const usePopStateListener = ({ displayArea }: Params) => {
-  const { getEdges, setNodes, setEdges, fitView, getNodes } = useCustomReactflow()
-
+  const { getEdges, setNodes, setEdges, fitView, getNodes } =
+    useCustomReactflow()
 
   const handlePopState = useCallback(async () => {
     const nodes: Node[] = getNodes()
     const tableName = getActiveTableNameFromUrl()
     const showMode = getShowModeFromUrl()
     const hiddenNodeIds = await getHiddenNodeIdsFromUrl()
-    
 
     updateIsPopstateInProgress(true)
-    
+
     await Promise.all([
       new Promise<void>((resolve) => {
         updateActiveTableName(tableName ?? undefined)
