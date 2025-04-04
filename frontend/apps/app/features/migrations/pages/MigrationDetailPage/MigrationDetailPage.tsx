@@ -204,7 +204,7 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                     category: string
                     severity: string
                     description: string
-                    suggestion: string | null
+                    suggestion: string
                   }) => (
                     <div
                       key={issue.id}
