@@ -6,11 +6,13 @@
     "@langchain/community": "0.3.33",
     "@langchain/core": "0.3.42",
     "@langchain/openai": "0.4.4",
+    "@prisma/client": "6.2.2",
     "@supabase/supabase-js": "2.49.1",
     "html-to-text": "9.0.5",
     "langchain": "0.3.19",
     "langfuse-langchain": "3.36.0",
     "next": "15.2.4",
+    "prisma": "6.2.2",
     "react": "18.3.1",
     "react-dom": "18"
   },
