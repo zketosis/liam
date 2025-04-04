@@ -45,6 +45,7 @@ describe(extractDBStructureForTable, () => {
       userPosts,
       postComments,
     },
+    tableGroups: {},
   }
 
   it('should extract related tables and relationships for the given table (primary table)', () => {
@@ -52,6 +53,7 @@ describe(extractDBStructureForTable, () => {
     expect(result).toEqual({
       tables: { users, posts },
       relationships: { userPosts },
+      tableGroups: {},
     })
   })
 
@@ -60,6 +62,7 @@ describe(extractDBStructureForTable, () => {
     expect(result).toEqual({
       tables: { posts, comments },
       relationships: { postComments },
+      tableGroups: {},
     })
   })
 
@@ -67,11 +70,13 @@ describe(extractDBStructureForTable, () => {
     const emptyDBStructure: DBStructure = {
       tables: { users },
       relationships: {},
+      tableGroups: {},
     }
     const result = extractDBStructureForTable(users, emptyDBStructure)
     expect(result).toEqual({
       tables: { users },
       relationships: {},
+      tableGroups: {},
     })
   })
 })

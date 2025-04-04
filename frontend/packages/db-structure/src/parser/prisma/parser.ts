@@ -6,6 +6,7 @@ import type {
   Index,
   Relationship,
   Table,
+  TableGroup,
 } from '../../schema/index.js'
 import type { ProcessResult, Processor } from '../types.js'
 import { convertToPostgresColumnType } from './convertToPostgresColumnType.js'
@@ -54,6 +55,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   const dmmf = await getDMMF({ datamodel: schemaString })
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
+  const tableGroups: Record<string, TableGroup> = {}
   const errors: Error[] = []
 
   const tableFieldRenaming: Record<string, Record<string, string>> = {}
@@ -153,6 +155,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     value: {
       tables,
       relationships,
+      tableGroups,
     },
     errors: errors,
   }

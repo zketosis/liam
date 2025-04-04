@@ -23,6 +23,7 @@ export const extractDBStructureForTable = (
         [table.name]: table,
       },
       relationships: {},
+      tableGroups: {},
     }
   }
 
@@ -49,5 +50,6 @@ export const extractDBStructureForTable = (
   return {
     tables: relatedTables,
     relationships: relatedRelationships,
+    tableGroups: {},
   }
 }

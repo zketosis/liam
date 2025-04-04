@@ -1,19 +1,19 @@
-import { prisma } from '@liam-hq/db'
+import { createClient } from '../libs/supabase'
 
 export const getInstallationIdFromRepositoryId = async (
   repositoryId: number,
 ): Promise<number> => {
-  const repository = await prisma.repository.findUnique({
-    where: {
-      id: repositoryId,
-    },
-    select: {
-      installationId: true,
-    },
-  })
+  const supabase = createClient()
+  const { data: repository, error } = await supabase
+    .from('Repository')
+    .select('installationId')
+    .eq('id', repositoryId)
+    .single()
 
-  if (!repository) {
-    throw new Error(`Repository with ID ${repositoryId} not found`)
+  if (error || !repository) {
+    throw new Error(
+      `Repository with ID ${repositoryId} not found: ${JSON.stringify(error)}`,
+    )
   }
 
   return Number(repository.installationId)

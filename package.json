@@ -7,13 +7,14 @@
     "@changesets/get-github-info": "0.6.0",
     "@changesets/types": "6.0.0",
     "@turbo/gen": "2.1.2",
-    "syncpack": "13.0.0",
+    "syncpack": "13.0.3",
     "turbo": "2.1.2",
     "vercel": "41.4.0"
   },
   "scripts": {
     "build": "turbo build",
     "create-env-files": "([ -f .env ] || touch .env) && ([ -f .env.local ] || touch .env.local)",
+    "deploy:jobs": "turbo deploy --filter=@liam-hq/jobs",
     "dev": "turbo dev",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:syncpack-fix": "syncpack fix-mismatches",
@@ -27,6 +28,7 @@
     "prelint": "pnpm create-env-files",
     "release": "pnpm build && pnpm changeset publish",
     "test:e2e": "turbo test:e2e",
+    "test:prompt": "turbo test:prompt",
     "test:turbo": "turbo test",
     "vercel:env-pull": "vercel env pull .env",
     "vercel:link": "vercel link"
@@ -38,7 +40,7 @@
     }
   },
   "resolutions": {
-    "esbuild": "0.25.1",
+    "esbuild": "0.25.2",
     "path-to-regexp": "6.3.0",
     "undici": "5.28.5"
   }

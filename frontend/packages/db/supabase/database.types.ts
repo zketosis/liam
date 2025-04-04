@@ -102,6 +102,38 @@ export type Database = {
           },
         ]
       }
+      GitHubSchemaFilePath: {
+        Row: {
+          createdAt: string
+          id: number
+          path: string
+          projectId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          id?: number
+          path: string
+          projectId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          id?: number
+          path?: string
+          projectId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'GitHubSchemaFilePath_projectId_fkey'
+            columns: ['projectId']
+            isOneToOne: false
+            referencedRelation: 'Project'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       KnowledgeSuggestion: {
         Row: {
           approvedAt: string | null
@@ -113,6 +145,7 @@ export type Database = {
           path: string
           projectId: number
           title: string
+          traceId: string | null
           type: Database['public']['Enums']['KnowledgeType']
           updatedAt: string
         }
@@ -126,6 +159,7 @@ export type Database = {
           path: string
           projectId: number
           title: string
+          traceId?: string | null
           type: Database['public']['Enums']['KnowledgeType']
           updatedAt: string
         }
@@ -139,6 +173,7 @@ export type Database = {
           path?: string
           projectId?: number
           title?: string
+          traceId?: string | null
           type?: Database['public']['Enums']['KnowledgeType']
           updatedAt?: string
         }
@@ -193,6 +228,7 @@ export type Database = {
           pullRequestId: number
           reviewComment: string | null
           reviewedAt: string
+          traceId: string | null
           updatedAt: string
         }
         Insert: {
@@ -203,6 +239,7 @@ export type Database = {
           pullRequestId: number
           reviewComment?: string | null
           reviewedAt?: string
+          traceId?: string | null
           updatedAt: string
         }
         Update: {
@@ -213,6 +250,7 @@ export type Database = {
           pullRequestId?: number
           reviewComment?: string | null
           reviewedAt?: string
+          traceId?: string | null
           updatedAt?: string
         }
         Relationships: [
@@ -429,38 +467,6 @@ export type Database = {
             columns: ['overallReviewId']
             isOneToOne: false
             referencedRelation: 'OverallReview'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      WatchSchemaFilePattern: {
-        Row: {
-          createdAt: string
-          id: number
-          pattern: string
-          projectId: number
-          updatedAt: string
-        }
-        Insert: {
-          createdAt?: string
-          id?: number
-          pattern: string
-          projectId: number
-          updatedAt: string
-        }
-        Update: {
-          createdAt?: string
-          id?: number
-          pattern?: string
-          projectId?: number
-          updatedAt?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'WatchSchemaFilePattern_projectId_fkey'
-            columns: ['projectId']
-            isOneToOne: false
-            referencedRelation: 'Project'
             referencedColumns: ['id']
           },
         ]

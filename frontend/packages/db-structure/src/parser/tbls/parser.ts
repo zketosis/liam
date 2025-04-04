@@ -4,6 +4,7 @@ import type {
   ForeignKeyConstraint,
   Indexes,
   Relationship,
+  TableGroup,
   Tables,
 } from '../../schema/index.js'
 import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
@@ -80,6 +81,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
       value: {
         tables: {},
         relationships: {},
+        tableGroups: {},
       },
       errors: [new Error(`Invalid schema format: ${result.error}`)],
     }
@@ -87,6 +89,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
 
   const tables: Tables = {}
   const relationships: Record<string, Relationship> = {}
+  const tableGroups: Record<string, TableGroup> = {}
   const errors: Error[] = []
 
   for (const tblsTable of result.data.tables) {
@@ -174,6 +177,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     value: {
       tables,
       relationships,
+      tableGroups,
     },
     errors,
   }

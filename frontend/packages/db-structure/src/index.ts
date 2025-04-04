@@ -16,6 +16,8 @@ export {
   aRelationship,
   applyOverrides,
   dbOverrideSchema,
+  tableGroupSchema,
+  tableGroupsSchema,
 } from './schema/index.js'
 
 export type { ProcessError } from './parser.js'

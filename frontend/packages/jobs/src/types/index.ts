@@ -3,18 +3,7 @@ import type { reviewSchema } from '../prompts/generateReview/reviewSchema'
 
 export type SavePullRequestPayload = {
   prNumber: number
-  pullRequestTitle: string
-  owner: string
-  name: string
-  repositoryId: number
-  branchName: string
-}
-
-export type SavePullRequestWithProjectPayload = {
-  prNumber: number
-  pullRequestTitle: string
   projectId: number
-  branchName: string
 }
 
 export type GenerateReviewPayload = {
@@ -29,7 +18,7 @@ export type GenerateReviewPayload = {
     filename: string
     content: string
   }>
-  schemaChanges: Array<{
+  fileChanges: Array<{
     filename: string
     status:
       | 'added'
@@ -53,6 +42,7 @@ export type ReviewResponse = {
   pullRequestId: number
   repositoryId: number
   branchName: string
+  traceId: string
 }
 
 export type PostCommentPayload = {
@@ -61,6 +51,7 @@ export type PostCommentPayload = {
   pullRequestId: number
   repositoryId: number
   branchName: string
+  traceId: string
 }
 
 export type GenerateSchemaMetaPayload = {
@@ -73,4 +64,5 @@ export type SchemaMetaResult = {
   pullRequestNumber: number
   branchName: string
   title: string
+  traceId: string
 }

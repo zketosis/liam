@@ -1,5 +1,5 @@
+import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import { prisma } from '@liam-hq/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -10,62 +10,61 @@ type Props = {
 }
 
 async function getProject(projectId: string) {
-  const project = await prisma.project.findUnique({
-    where: {
-      id: Number(projectId),
-    },
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      repositoryMappings: {
-        select: {
-          repository: {
-            select: {
-              pullRequests: {
-                select: {
-                  id: true,
-                  pullNumber: true,
-                  migration: {
-                    select: {
-                      id: true,
-                      title: true,
-                    },
-                  },
-                },
-                where: {
-                  migration: {
-                    isNot: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  })
+  try {
+    const supabase = await createClient()
+    const { data: project, error } = await supabase
+      .from('Project')
+      .select(`
+        id,
+        name,
+        createdAt,
+        ProjectRepositoryMapping:ProjectRepositoryMapping(
+          repository:Repository(
+            pullRequests:PullRequest(
+              id,
+              pullNumber,
+              migration:Migration(
+                id,
+                title
+              )
+            )
+          )
+        )
+      `)
+      .eq('id', Number(projectId))
+      .single()
 
-  if (!project) {
+    if (error || !project) {
+      console.error('Error fetching project:', error)
+      notFound()
+    }
+
+    // Extract migrations from the nested structure
+    const migrations = project.ProjectRepositoryMapping.flatMap((mapping) =>
+      mapping.repository.pullRequests
+        .filter((pr) => pr.migration !== null)
+        .map((pr) => {
+          // Handle case where migration might be an array due to Supabase's return format
+          const migration = Array.isArray(pr.migration)
+            ? pr.migration[0]
+            : pr.migration
+          return {
+            id: migration.id,
+            title: migration.title,
+            pullNumber: pr.pullNumber,
+          }
+        }),
+    )
+
+    return {
+      id: project.id,
+      name: project.name,
+      createdAt: project.createdAt,
+      migrations,
+    }
+  } catch (error) {
+    console.error('Error in getProject:', error)
     notFound()
-  }
-
-  const migrations = project.repositoryMappings.flatMap((mapping) =>
-    mapping.repository.pullRequests
-      .filter((pr) => pr.migration !== null)
-      .map((pr) => {
-        const { id, title } = pr.migration as { id: number; title: string }
-        return {
-          id,
-          title,
-          pullNumber: pr.pullNumber,
-        }
-      }),
-  )
-
-  return {
-    ...project,
-    migrations,
   }
 }
 
@@ -113,7 +112,7 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
 
       <div className={styles.content}>
         <p className={styles.createdAt}>
-          Created: {project.createdAt.toLocaleDateString('en-US')}
+          Created: {new Date(project.createdAt).toLocaleDateString('en-US')}
         </p>
       </div>
       <section style={{ margin: '24px 0' }}>
