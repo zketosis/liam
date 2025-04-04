@@ -23,6 +23,9 @@ Key Responsibilities:
 ## Review Comment for Analysis
 {reviewComment}
 
+## Current Schema Files
+{schemaFiles}
+
 ## Current Schema Metadata
 <json>
 
@@ -55,6 +58,7 @@ export const generateSchemaMeta = async (
   callbacks: Callbacks,
   currentSchemaMeta: DBOverride | null,
   runId: string,
+  schemaFiles: string,
 ) => {
   const model = new ChatOpenAI({
     temperature: 0.7,
@@ -69,6 +73,7 @@ export const generateSchemaMeta = async (
     const response = await chain.invoke(
       {
         reviewComment,
+        schemaFiles,
         currentSchemaMeta: currentSchemaMeta
           ? JSON.stringify(currentSchemaMeta, null, 2)
           : '{}',

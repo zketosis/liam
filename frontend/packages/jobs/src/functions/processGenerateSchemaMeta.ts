@@ -5,6 +5,7 @@ import { safeParse } from 'valibot'
 import { createClient } from '../libs/supabase'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
 import type { GenerateSchemaMetaPayload, SchemaMetaResult } from '../types'
+import { fetchSchemaFilesContent } from '../utils/githubFileUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
@@ -76,11 +77,20 @@ export const processGenerateSchemaMeta = async (
       }
     }
 
+    // Enrich AI context with actual schema structure for more accurate metadata suggestions
+    const schemaFiles = await fetchSchemaFilesContent(
+      Number(project.id),
+      overallReview.branchName,
+      repositoryFullName,
+      Number(repository.installationId),
+    )
+
     const schemaMeta = await generateSchemaMeta(
       overallReview.reviewComment || '',
       callbacks,
       currentSchemaMeta,
       predefinedRunId,
+      schemaFiles, // Add schema files content
     )
 
     // Return the schema meta along with information needed for createKnowledgeSuggestionTask
