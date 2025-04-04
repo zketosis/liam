@@ -31,6 +31,12 @@ export const reviewSchema = object({
       severity: SeverityEnum,
       description: string(),
       suggestion: string(),
+      suggestionSnippets: array(
+        object({
+          filename: string(),
+          patch: string(),
+        }),
+      ),
     }),
   ),
   scores: array(

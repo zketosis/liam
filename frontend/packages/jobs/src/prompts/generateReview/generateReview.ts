@@ -32,6 +32,10 @@ Your JSON-formatted response must contain:
     - If the severity is "POSITIVE", do not set "suggestion" to null.
       - Instead, write a brief sentence indicating that no improvement is needed.
       - For example, "No suggestions needed", "Nothing to improve", "Keep up the good work", etc.
+  - "suggestionSnippets": An array of suggestion snippets for each issue kind in the "suggestions" field, each including:
+    - "filename": The filename of the file that needs to be applied.
+    - "snippet": The snippet of the file that needs to be applied.
+      - For example, if DEFAULT value is needed for a column, the snippet should include the statement with the DEFAULT value.
 - An array of scores for each issue kind in the "scores" field, each including:
   - "kind": One of the issue categories listed above.
   - "value": A numeric score from 0 to 10, using a deduction-based approach:
