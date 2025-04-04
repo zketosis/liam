@@ -99,6 +99,7 @@ export const generateDocsSuggestion = async (
     {
       callbacks,
       runId: predefinedRunId,
+      tags: ['generateDocsSuggestion'],
     },
   )
 

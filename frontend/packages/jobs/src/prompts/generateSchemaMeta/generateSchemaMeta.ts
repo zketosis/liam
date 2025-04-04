@@ -82,6 +82,7 @@ export const generateSchemaMeta = async (
       {
         callbacks,
         runId,
+        tags: ['generateSchemaMeta'],
       },
     )
 
