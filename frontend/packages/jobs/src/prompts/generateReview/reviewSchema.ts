@@ -34,7 +34,7 @@ export const reviewSchema = object({
       suggestionSnippets: array(
         object({
           filename: string(),
-          patch: string(),
+          snippet: string(),
         }),
       ),
     }),
