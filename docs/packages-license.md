@@ -18306,7 +18306,7 @@ Unknown manually approved
 
 
 <a name="vite-tsconfig-paths"></a>
-### vite-tsconfig-paths v5.1.3
+### vite-tsconfig-paths v5.1.4
 #### 
 
 ##### Paths
