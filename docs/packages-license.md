@@ -17059,7 +17059,7 @@ Unknown manually approved
 
 
 <a name="tailwind-merge"></a>
-### tailwind-merge v2.6.0
+### tailwind-merge v2.5.4
 #### 
 
 ##### Paths
@@ -17070,7 +17070,7 @@ Unknown manually approved
 
 
 <a name="tailwind-variants"></a>
-### tailwind-variants v0.3.0
+### tailwind-variants v0.3.1
 #### 
 
 ##### Paths
