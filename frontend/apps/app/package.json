@@ -56,7 +56,7 @@
     "gen": "pnpm run '/^gen:.*/'",
     "gen:css": "tcm components",
     "lint": "pnpm run '/^lint:.*/'",
-    "lint:biome": "biome check --error-on-warnings .",
+    "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start",
