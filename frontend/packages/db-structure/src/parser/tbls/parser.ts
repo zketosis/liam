@@ -164,7 +164,7 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
 
         if (
           constraint.type === 'UNIQUE' &&
-          constraint.columns?.length === 1 // not unidefined and equal to or greater than 1
+          constraint.columns?.length // not unidefined and equal to or greater than 1
         ) {
           constraints[constraint.name] = {
             type: 'UNIQUE',
