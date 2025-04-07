@@ -10154,7 +10154,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="fumadocs-mdx"></a>
-### fumadocs-mdx v11.5.7
+### fumadocs-mdx v11.5.8
 #### 
 
 ##### Paths
