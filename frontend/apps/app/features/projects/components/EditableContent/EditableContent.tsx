@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useState } from 'react'
+import React, { type ReactNode, useState } from 'react'
 import { updateKnowledgeSuggestionContent } from '../../actions/updateKnowledgeSuggestionContent'
 import styles from './EditableContent.module.css'
 
