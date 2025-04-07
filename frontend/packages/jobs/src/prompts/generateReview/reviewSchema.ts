@@ -46,5 +46,4 @@ export const reviewSchema = object({
       reason: string(),
     }),
   ),
-  summary: string(),
 })

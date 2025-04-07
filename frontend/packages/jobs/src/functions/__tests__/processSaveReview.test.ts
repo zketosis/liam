@@ -82,7 +82,6 @@ describe.skip('processSaveReview', () => {
       traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review comment',
-        summary: 'Test review summary',
         scores: [
           {
             kind: 'Migration Safety',
@@ -141,7 +140,6 @@ describe.skip('processSaveReview', () => {
       traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review',
-        summary: 'summary',
         scores: [],
         issues: [],
       },
@@ -161,7 +159,6 @@ describe.skip('processSaveReview', () => {
       traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review',
-        summary: 'summary',
         scores: [],
         issues: [],
       },
