@@ -1,0 +1,1 @@
+../.ai-agents/rules/general.md
