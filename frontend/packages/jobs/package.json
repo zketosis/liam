@@ -9,7 +9,6 @@
     "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/github": "workspace:*",
-    "@prisma/client": "6.4.1",
     "@sentry/node": "9.11.0",
     "@trigger.dev/build": "3.3.17",
     "@trigger.dev/sdk": "3.3.17",
@@ -18,7 +17,7 @@
     "langfuse-langchain": "3.36.0",
     "minimatch": "10.0.1",
     "uuid": "10.0.0",
-    "valibot": "^1.0.0-beta.5"
+    "valibot": "1.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

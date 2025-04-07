@@ -2,20 +2,20 @@
 
 
 ## Summary
-* 1324 MIT
+* 1307 MIT
 * 207 Apache 2.0
 * 82 ISC
 * 32 New BSD
-* 27 Simplified BSD
+* 26 Simplified BSD
 * 10 Mozilla Public License 2.0
 * 5 BlueOak-1.0.0
 * 3 MIT OR Apache-2.0
 * 3 The Unlicense
-* 2 Unknown
 * 2 LGPL-3.0-or-later
+* 2 Unknown
+* 1 BSD
 * 1 (MIT OR CC0-1.0)
 * 1 BSD Zero Clause License
-* 1 BSD
 * 1 (BSD-2-Clause OR MIT OR Apache-2.0)
 * 1 (WTFPL OR MIT)
 * 1 CC0 1.0 Universal
@@ -825,7 +825,7 @@
 
 
 <a name="@babel/runtime"></a>
-### @babel/runtime v7.26.9
+### @babel/runtime v7.27.0
 #### 
 
 ##### Paths
@@ -876,17 +876,6 @@
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@base2/pretty-print-object"></a>
-### @base2/pretty-print-object v1.0.1
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
 
 
 
@@ -1001,7 +990,7 @@ MIT OR Apache-2.0 permitted
 
 
 <a name="@changesets/cli"></a>
-### @changesets/cli v2.27.10
+### @changesets/cli v2.28.1
 #### 
 
 ##### Paths
@@ -1155,7 +1144,7 @@ MIT OR Apache-2.0 permitted
 
 
 <a name="@changesets/write"></a>
-### @changesets/write v0.3.2
+### @changesets/write v0.4.0
 #### 
 
 ##### Paths
@@ -4568,94 +4557,6 @@ LGPL-3.0-or-later permitted
 
 
 
-<a name="@storybook/components"></a>
-### @storybook/components v8.6.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/core"></a>
-### @storybook/core v8.6.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/global"></a>
-### @storybook/global v5.0.0
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/manager-api"></a>
-### @storybook/manager-api v8.6.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/preview-api"></a>
-### @storybook/preview-api v8.6.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/react"></a>
-### @storybook/react v8.3.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/react-dom-shim"></a>
-### @storybook/react-dom-shim v8.3.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@storybook/theming"></a>
-### @storybook/theming v8.6.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="@supabase/auth-js"></a>
 ### @supabase/auth-js v2.69.1
 #### 
@@ -5162,17 +5063,6 @@ LGPL-3.0-or-later permitted
 
 
 
-<a name="@types/escodegen"></a>
-### @types/escodegen v0.0.6
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="@types/eslint"></a>
 ### @types/eslint v9.6.1
 #### 
@@ -5196,7 +5086,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@types/estree"></a>
-### @types/estree v0.0.51
+### @types/estree v1.0.6
 #### 
 
 ##### Paths
@@ -6256,7 +6146,7 @@ Unknown manually approved
 
 
 <a name="acorn"></a>
-### acorn v7.4.1
+### acorn v8.14.1
 #### 
 
 ##### Paths
@@ -6289,7 +6179,7 @@ Unknown manually approved
 
 
 <a name="acorn-walk"></a>
-### acorn-walk v7.2.0
+### acorn-walk v8.3.4
 #### 
 
 ##### Paths
@@ -6853,17 +6743,6 @@ Python-2.0 manually approved
 
 
 
-<a name="better-opn"></a>
-### better-opn v3.0.2
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="better-path-resolve"></a>
 ### better-path-resolve v1.0.0
 #### 
@@ -6998,17 +6877,6 @@ Python-2.0 manually approved
 
 <a name="braces"></a>
 ### braces v3.0.3
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="browser-assert"></a>
-### browser-assert v1.2.1
 #### 
 
 ##### Paths
@@ -8427,7 +8295,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="define-lazy-prop"></a>
-### define-lazy-prop v2.0.0
+### define-lazy-prop v3.0.0
 #### 
 
 ##### Paths
@@ -10154,7 +10022,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="fumadocs-mdx"></a>
-### fumadocs-mdx v11.5.7
+### fumadocs-mdx v11.5.8
 #### 
 
 ##### Paths
@@ -10758,17 +10626,6 @@ BlueOak-1.0.0 permitted
 
 
 
-<a name="html-tags"></a>
-### html-tags v3.3.1
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="html-void-elements"></a>
 ### html-void-elements v3.0.0
 #### 
@@ -10847,7 +10704,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="human-id"></a>
-### human-id v1.0.2
+### human-id v4.1.1
 #### 
 
 ##### Paths
@@ -11893,17 +11750,6 @@ BlueOak-1.0.0 permitted
 
 <a name="jsbn"></a>
 ### jsbn v1.1.0
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="jsdoc-type-pratt-parser"></a>
-### jsdoc-type-pratt-parser v4.1.0
 #### 
 
 ##### Paths
@@ -15426,17 +15272,6 @@ BlueOak-1.0.0 permitted
 
 
 
-<a name="react-element-to-jsx-string"></a>
-### react-element-to-jsx-string v15.0.0
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="react-is"></a>
 ### react-is v16.13.1
 #### 
@@ -15560,17 +15395,6 @@ BlueOak-1.0.0 permitted
 
 <a name="readdirp"></a>
 ### readdirp v3.6.0
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="recast"></a>
-### recast v0.23.11
 #### 
 
 ##### Paths
@@ -16717,17 +16541,6 @@ Unknown manually approved
 
 
 
-<a name="storybook"></a>
-### storybook v8.6.4
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="stream"></a>
 ### stream v0.0.3
 #### 
@@ -17542,17 +17355,6 @@ Unknown manually approved
 
 
 
-<a name="ts-dedent"></a>
-### ts-dedent v2.2.0
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
 <a name="ts-morph"></a>
 ### ts-morph v12.0.0
 #### 
@@ -18207,7 +18009,7 @@ Unknown manually approved
 
 
 <a name="valibot"></a>
-### valibot v1.0.0-rc.3
+### valibot v1.0.0
 #### 
 
 ##### Paths

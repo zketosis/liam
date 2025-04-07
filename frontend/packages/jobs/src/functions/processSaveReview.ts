@@ -60,22 +60,61 @@ export const processSaveReview = async (
     }
 
     // create review issues
-    const reviewIssues = payload.review.issues.map((issue) => ({
+    const reviewIssues = payload.review.feedbacks.map((feedback) => ({
       overallReviewId: overallReview.id,
-      category: mapCategoryEnum(issue.kind),
-      severity: issue.severity,
-      description: issue.description,
-      suggestion: issue.suggestion,
+      category: mapCategoryEnum(feedback.kind),
+      severity: feedback.severity,
+      description: feedback.description,
+      suggestion: feedback.suggestion,
       updatedAt: now,
     }))
 
-    const { error: reviewIssuesError } = await supabase
+    const { data: insertedIssues, error: reviewIssuesError } = await supabase
       .from('ReviewIssue')
       .insert(reviewIssues)
+      .select('id')
 
-    if (reviewIssuesError) {
+    if (reviewIssuesError || !insertedIssues) {
       throw new Error(
         `Failed to create review issues: ${JSON.stringify(reviewIssuesError)}`,
+      )
+    }
+
+    // create suggestion snippet
+    const suggestionSnippet = payload.review.feedbacks
+      .flatMap(
+        (
+          feedback: {
+            suggestionSnippets: Array<{ filename: string; snippet: string }>
+          },
+          index: number,
+        ) =>
+          feedback.suggestionSnippets.map((snippet) =>
+            insertedIssues[index]
+              ? {
+                  ...snippet,
+                  reviewIssueId: insertedIssues[index].id,
+                  updatedAt: now,
+                }
+              : null,
+          ),
+      )
+      .filter(Boolean) as Array<{
+      filename: string
+      snippet: string
+      reviewIssueId: number
+      updatedAt: string
+    }>
+
+    const { data: insertedSuggestionSnippets, error: suggestionSnippetError } =
+      await supabase
+        .from('ReviewSuggestionSnippet')
+        .insert(suggestionSnippet)
+        .select('id')
+
+    if (suggestionSnippetError || !insertedSuggestionSnippets) {
+      throw new Error(
+        `Failed to create suggestion snippet: ${JSON.stringify(suggestionSnippetError)}`,
       )
     }
 
