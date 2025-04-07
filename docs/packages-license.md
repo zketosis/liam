@@ -825,7 +825,7 @@
 
 
 <a name="@babel/runtime"></a>
-### @babel/runtime v7.26.9
+### @babel/runtime v7.27.0
 #### 
 
 ##### Paths
@@ -1001,7 +1001,7 @@ MIT OR Apache-2.0 permitted
 
 
 <a name="@changesets/cli"></a>
-### @changesets/cli v2.27.10
+### @changesets/cli v2.28.1
 #### 
 
 ##### Paths
@@ -1155,7 +1155,7 @@ MIT OR Apache-2.0 permitted
 
 
 <a name="@changesets/write"></a>
-### @changesets/write v0.3.2
+### @changesets/write v0.4.0
 #### 
 
 ##### Paths
@@ -10847,7 +10847,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="human-id"></a>
-### human-id v1.0.2
+### human-id v4.1.1
 #### 
 
 ##### Paths
