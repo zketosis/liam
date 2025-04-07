@@ -59,14 +59,6 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
 }) => {
   const suggestion = await getKnowledgeSuggestionDetail(projectId, suggestionId)
   const repository = suggestion.project.repositoryMappings[0]?.repository
-  
-  const originalContent = !suggestion.approvedAt
-    ? await getOriginalDocumentContent(
-        projectId,
-        suggestion.branchName,
-        suggestion.path,
-      )
-    : null
 
   return (
     <div className={styles.container}>
@@ -119,20 +111,20 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
             content={suggestion.content}
             suggestionId={suggestion.id}
             className={styles.codeContent}
-          >
-            {(isEditing, content) => {
-              if (isEditing) {
-                return null
+          />
+
+          {!suggestion.approvedAt && (
+            <DiffDisplay
+              originalContent={
+                await getOriginalDocumentContent(
+                  projectId,
+                  suggestion.branchName,
+                  suggestion.path,
+                )
               }
-              
-              return !suggestion.approvedAt ? (
-                <DiffDisplay
-                  originalContent={originalContent}
-                  newContent={content}
-                />
-              ) : null
-            }}
-          </EditableContent>
+              newContent={suggestion.content}
+            />
+          )}
 
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>

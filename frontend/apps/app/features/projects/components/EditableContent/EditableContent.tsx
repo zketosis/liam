@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useState } from 'react'
+import React, { useState } from 'react'
 import { updateKnowledgeSuggestionContent } from '../../actions/updateKnowledgeSuggestionContent'
 import styles from './EditableContent.module.css'
 
@@ -8,14 +8,17 @@ type EditableContentProps = {
   content: string
   suggestionId: number
   className?: string
-  children: (isEditing: boolean, content: string) => ReactNode
 }
 
-export const useEditableContent = (initialContent: string) => {
+export const EditableContent = ({
+  content,
+  suggestionId,
+  className,
+}: EditableContentProps) => {
   const [isEditing, setIsEditing] = useState(false)
-  const [editedContent, setEditedContent] = useState(initialContent)
+  const [editedContent, setEditedContent] = useState(content)
   const [isSaving, setIsSaving] = useState(false)
-  const [savedContent, setSavedContent] = useState(initialContent)
+  const [savedContent, setSavedContent] = useState(content)
 
   const handleEditClick = () => {
     setIsEditing(true)
@@ -38,35 +41,6 @@ export const useEditableContent = (initialContent: string) => {
       setIsSaving(false)
     }
   }
-
-  return {
-    isEditing,
-    editedContent,
-    isSaving,
-    savedContent,
-    handleEditClick,
-    handleCancelClick,
-    handleSave,
-    setEditedContent,
-  }
-}
-
-export const EditableContent = ({
-  content,
-  suggestionId,
-  className,
-  children,
-}: EditableContentProps) => {
-  const {
-    isEditing,
-    editedContent,
-    isSaving,
-    savedContent,
-    handleEditClick,
-    handleCancelClick,
-    handleSave,
-    setEditedContent,
-  } = useEditableContent(content)
 
   return (
     <div className={styles.container}>
@@ -113,7 +87,7 @@ export const EditableContent = ({
           </div>
         </form>
       ) : (
-        children(isEditing, savedContent)
+        <pre className={className}>{savedContent}</pre>
       )}
     </div>
   )
