@@ -1,13 +1,4 @@
-import {
-  array,
-  enum as enumType,
-  maxValue,
-  minValue,
-  number,
-  object,
-  pipe,
-  string,
-} from 'valibot'
+import { array, enum as enumType, number, strictObject, string } from 'valibot'
 
 const KindEnum = enumType({
   'Migration Safety': 'Migration Safety',
@@ -23,16 +14,16 @@ const SeverityEnum = enumType({
   POSITIVE: 'POSITIVE',
 })
 
-export const reviewSchema = object({
+export const reviewSchema = strictObject({
   bodyMarkdown: string(),
   issues: array(
-    object({
+    strictObject({
       kind: KindEnum,
       severity: SeverityEnum,
       description: string(),
       suggestion: string(),
       suggestionSnippets: array(
-        object({
+        strictObject({
           filename: string(),
           snippet: string(),
         }),
@@ -40,9 +31,9 @@ export const reviewSchema = object({
     }),
   ),
   scores: array(
-    object({
+    strictObject({
       kind: KindEnum,
-      value: pipe(number(), minValue(0), maxValue(10)),
+      value: number(),
       reason: string(),
     }),
   ),
