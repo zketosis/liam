@@ -28,6 +28,9 @@
 - Implemented KnowledgeSuggestionDocMapping table to link KnowledgeSuggestion and GitHubDocFilePath tables, ensuring newly created Knowledge suggestions are properly included in reviews.
 - Enhanced processCreateKnowledgeSuggestion.ts to create mappings for existing docs when creating a Doc Suggestion.
 - Updated approveKnowledgeSuggestion.ts to create GitHubDocFilePath entries and mappings for new docs when approving a Doc Suggestion.
+- Optimized KnowledgeSuggestion creation to avoid duplicate suggestions by checking if content has changed before creating a new suggestion.
+- Refactored complex functions into smaller, focused helper functions to reduce cognitive complexity and improve maintainability.
+- Improved type safety with proper type definitions and return types for functions.
 
 ## What's Left to Build
 
@@ -47,7 +50,15 @@ The transition from Prisma to Supabase JS for database access is progressing wel
 
 The core review pipeline is now operational, connecting GitHub webhooks to AI-powered review generation and PR comment posting. This enables automatic review of database schema changes when pull requests are opened or updated.
 
-The KnowledgeSuggestion feature is being implemented to allow AI-generated suggestions for Schema and Docs updates. The database model has been created, which will store suggestions that can be approved and then committed to GitHub using the GitHub API. Recent improvements include adding a branchName column to the KnowledgeSuggestion table to replace hardcoded branch names with dynamic ones, making the system more flexible and maintainable.
+The KnowledgeSuggestion feature has been enhanced to be more efficient and maintainable. Recent improvements include:
+
+1. Optimizing the creation process to check if content has changed before creating a new suggestion, preventing duplicate suggestions
+2. Refactoring complex functions into smaller, focused helper functions to reduce cognitive complexity
+3. Improving type safety with proper type definitions and return types
+4. Optimizing database queries by caching results when they'll be reused
+5. Enhancing error handling with more specific error messages
+
+These improvements align with the project's focus on code quality, maintainability, and performance. The refactoring of the `processCreateKnowledgeSuggestion.ts` file demonstrates the pattern of breaking down complex functions into smaller, focused helper functions, which can be applied to other parts of the codebase.
 
 A new text document viewer page has been implemented at `/app/projects/[projectId]/docs/[branchOrCommit]/[...slug]` that fetches and displays raw text content from GitHub repositories. This page uses Supabase JS for database access instead of Prisma, demonstrating the flexibility of our data access layer. The implementation uses a single optimized query with nested joins to efficiently retrieve all necessary data. This serves as a prototype for the planned migration from Prisma to Supabase JS across the entire application.
 

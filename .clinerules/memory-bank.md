@@ -1,0 +1,1 @@
+../.ai-agents/.clinerules/memory-bank.md

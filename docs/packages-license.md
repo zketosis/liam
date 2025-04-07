@@ -17444,7 +17444,7 @@ Unknown manually approved
 
 
 <a name="tsx"></a>
-### tsx v4.7.1
+### tsx v4.19.3
 #### 
 
 ##### Paths
@@ -18009,7 +18009,7 @@ Unknown manually approved
 
 
 <a name="valibot"></a>
-### valibot v1.0.0-rc.3
+### valibot v1.0.0
 #### 
 
 ##### Paths

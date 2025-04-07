@@ -60,12 +60,12 @@ export const processSaveReview = async (
     }
 
     // create review issues
-    const reviewIssues = payload.review.issues.map((issue) => ({
+    const reviewIssues = payload.review.feedbacks.map((feedback) => ({
       overallReviewId: overallReview.id,
-      category: mapCategoryEnum(issue.kind),
-      severity: issue.severity,
-      description: issue.description,
-      suggestion: issue.suggestion,
+      category: mapCategoryEnum(feedback.kind),
+      severity: feedback.severity,
+      description: feedback.description,
+      suggestion: feedback.suggestion,
       updatedAt: now,
     }))
 
@@ -81,17 +81,23 @@ export const processSaveReview = async (
     }
 
     // create suggestion snippet
-    const suggestionSnippet = payload.review.issues
-      .flatMap((issue, index) =>
-        issue.suggestionSnippets.map((snippet) =>
-          insertedIssues[index]
-            ? {
-                ...snippet,
-                reviewIssueId: insertedIssues[index].id,
-                updatedAt: now,
-              }
-            : null,
-        ),
+    const suggestionSnippet = payload.review.feedbacks
+      .flatMap(
+        (
+          feedback: {
+            suggestionSnippets: Array<{ filename: string; snippet: string }>
+          },
+          index: number,
+        ) =>
+          feedback.suggestionSnippets.map((snippet) =>
+            insertedIssues[index]
+              ? {
+                  ...snippet,
+                  reviewIssueId: insertedIssues[index].id,
+                  updatedAt: now,
+                }
+              : null,
+          ),
       )
       .filter(Boolean) as Array<{
       filename: string

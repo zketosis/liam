@@ -89,7 +89,7 @@ describe.skip('processSaveReview', () => {
             reason: 'Good migration safety',
           },
         ],
-        issues: [
+        feedbacks: [
           {
             kind: 'Migration Safety',
             severity: 'CRITICAL',
@@ -141,7 +141,7 @@ describe.skip('processSaveReview', () => {
       review: {
         bodyMarkdown: 'Test review',
         scores: [],
-        issues: [],
+        feedbacks: [],
       },
     }
 
@@ -160,7 +160,7 @@ describe.skip('processSaveReview', () => {
       review: {
         bodyMarkdown: 'Test review',
         scores: [],
-        issues: [],
+        feedbacks: [],
       },
     }
 

@@ -1,7 +1,6 @@
 import { sentryEsbuildPlugin } from '@sentry/esbuild-plugin'
 import * as Sentry from '@sentry/node'
 import { esbuildPlugin } from '@trigger.dev/build/extensions'
-import { prismaExtension } from '@trigger.dev/build/extensions/prisma'
 import { defineConfig } from '@trigger.dev/sdk/v3'
 import * as dotenv from 'dotenv'
 
@@ -33,9 +32,6 @@ export default defineConfig({
   },
   build: {
     extensions: [
-      prismaExtension({
-        schema: '../../packages/db/prisma/schema.prisma',
-      }),
       esbuildPlugin(
         sentryEsbuildPlugin({
           org: process.env.SENTRY_ORG,
