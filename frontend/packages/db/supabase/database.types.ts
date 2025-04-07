@@ -474,6 +474,41 @@ export type Database = {
           },
         ]
       }
+      ReviewSuggestionSnippet: {
+        Row: {
+          createdAt: string
+          filename: string
+          id: number
+          reviewIssueId: number
+          snippet: string
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          filename: string
+          id?: number
+          reviewIssueId: number
+          snippet: string
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          filename?: string
+          id?: number
+          reviewIssueId?: number
+          snippet?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ReviewSuggestionSnippet_reviewIssueId_fkey'
+            columns: ['reviewIssueId']
+            isOneToOne: false
+            referencedRelation: 'ReviewIssue'
+            referencedColumns: ['id']
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

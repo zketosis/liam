@@ -423,6 +423,30 @@ ALTER SEQUENCE "public"."ReviewScore_id_seq" OWNED BY "public"."ReviewScore"."id
 
 
 
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewSuggestionSnippet_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewSuggestionSnippet_id_seq" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
+    "id" integer DEFAULT "nextval"('"public"."ReviewSuggestionSnippet_id_seq"'::"regclass") NOT NULL,
+    "reviewIssueId" integer NOT NULL,
+    "filename" "text" NOT NULL,
+    "snippet" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewSuggestionSnippet" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
     "id" character varying(36) NOT NULL,
     "checksum" character varying(64) NOT NULL,
@@ -542,6 +566,11 @@ ALTER TABLE ONLY "public"."ReviewScore"
 
 
 
+ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
+    ADD CONSTRAINT "ReviewSuggestionSnippet_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."_prisma_migrations"
     ADD CONSTRAINT "_prisma_migrations_pkey" PRIMARY KEY ("id");
 
@@ -619,6 +648,11 @@ ALTER TABLE ONLY "public"."ReviewIssue"
 
 ALTER TABLE ONLY "public"."ReviewScore"
     ADD CONSTRAINT "ReviewScore_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
+    ADD CONSTRAINT "ReviewSuggestionSnippet_reviewIssueId_fkey" FOREIGN KEY ("reviewIssueId") REFERENCES "public"."ReviewIssue"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -964,6 +998,18 @@ GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "service_role";
 
 
 
