@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { type ReactNode, useState } from 'react'
 import { updateKnowledgeSuggestionContent } from '../../actions/updateKnowledgeSuggestionContent'
 import styles from './EditableContent.module.css'
 
@@ -8,12 +8,14 @@ type EditableContentProps = {
   content: string
   suggestionId: number
   className?: string
+  placeholder?: ReactNode
 }
 
 export const EditableContent = ({
   content,
   suggestionId,
   className,
+  placeholder,
 }: EditableContentProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(content)
@@ -87,7 +89,7 @@ export const EditableContent = ({
           </div>
         </form>
       ) : (
-        <pre className={className}>{savedContent}</pre>
+        placeholder
       )}
     </div>
   )

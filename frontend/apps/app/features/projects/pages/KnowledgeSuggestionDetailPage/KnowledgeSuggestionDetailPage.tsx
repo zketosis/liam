@@ -111,20 +111,21 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
             content={suggestion.content}
             suggestionId={suggestion.id}
             className={styles.codeContent}
+            placeholder={
+              !suggestion.approvedAt ? (
+                <DiffDisplay
+                  originalContent={
+                    await getOriginalDocumentContent(
+                      projectId,
+                      suggestion.branchName,
+                      suggestion.path,
+                    )
+                  }
+                  newContent={suggestion.content}
+                />
+              ) : null
+            }
           />
-
-          {!suggestion.approvedAt && (
-            <DiffDisplay
-              originalContent={
-                await getOriginalDocumentContent(
-                  projectId,
-                  suggestion.branchName,
-                  suggestion.path,
-                )
-              }
-              newContent={suggestion.content}
-            />
-          )}
 
           {/* Client-side user feedback component */}
           <div className={styles.feedbackSection}>
