@@ -26,7 +26,9 @@
         "noConsoleLog": "error"
       },
       "complexity": {
-        "useLiteralKeys": "off"
+        "useLiteralKeys": "off",
+        // FIXME: Change to "error" once all cognitive complexity issues are resolved
+        "noExcessiveCognitiveComplexity": "warn"
       }
     },
     "ignore": []
