@@ -9,7 +9,6 @@
     "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/github": "workspace:*",
-    "@prisma/client": "6.4.1",
     "@sentry/node": "9.11.0",
     "@trigger.dev/build": "3.3.17",
     "@trigger.dev/sdk": "3.3.17",
