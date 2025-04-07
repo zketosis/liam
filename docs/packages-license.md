@@ -3865,7 +3865,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@sentry/esbuild-plugin"></a>
-### @sentry/esbuild-plugin v3.2.4
+### @sentry/esbuild-plugin v3.3.1
 #### 
 
 ##### Paths

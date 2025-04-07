@@ -23,7 +23,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
-    "@sentry/esbuild-plugin": "3.2.4",
+    "@sentry/esbuild-plugin": "3.3.1",
     "@types/json-schema": "7.0.15",
     "@types/node": "22.9.0",
     "@types/uuid": "10.0.0",
