@@ -26,24 +26,34 @@ jobs:
 
       - name: Check deployment conditions
         id: check
-        shell: bash
+        shell: ruby {0}
         working-directory: ${{ github.workspace }}
         run: |
-          EVENT_NAME="${{ github.event_name }}"
-          EVENT_STATE="${{ github.event.deployment_status.state }}"
-          ENVIRONMENT="${{ github.event.deployment.environment }}"
-          TARGET_URL="${{ github.event.deployment_status.target_url }}"
+          event_name      = ENV.fetch("GITHUB_EVENT_NAME", '')
+          event_state     = ENV.fetch("GITHUB_EVENT_DEPLOYMENT_STATUS_STATE", '')
+          environment_val = ENV.fetch("GITHUB_EVENT_DEPLOYMENT_ENVIRONMENT", '')
+          target_url      = ENV.fetch("GITHUB_EVENT_DEPLOYMENT_STATUS_TARGET_URL", '')
 
-          if [[ "$EVENT_NAME" == "deployment_status" && "$EVENT_STATE" == "success" ]]; then
-            if { [[ "$ENVIRONMENT" == *"Production"* && "$TARGET_URL" == *"liam-app-git-main"* ]]; } || \
-              { [[ "$ENVIRONMENT" == *"Preview"* && "$TARGET_URL" != *"liam-erd-sample"* && "$TARGET_URL" != *"liam-docs"* ]]; }; then
-              echo "should_run=true" >> $GITHUB_OUTPUT
+          result =
+            if event_name == "deployment_status" && event_state == "success"
+              # Production deployment
+              if (environment_val.include?("Production") && target_url.include?("liam-app-git-main"))
+                "should_run=true"
+              # Preview deployment
+              elsif environment_val.include?("Preview") && !target_url.include?("liam-erd-sample") && !target_url.include?("liam-docs")
+                "should_run=true"
+              else
+                "should_run=false"
+              end
             else
-              echo "should_run=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "should_run=false" >> $GITHUB_OUTPUT
-          fi
+              "should_run=false"
+            end
+
+          # Same as 'echo "should_run=xxxx" >> $GITHUB_OUTPUT'
+          output_file = ENV.fetch("GITHUB_OUTPUT")
+          File.open(output_file, "a") do |file|
+            file.puts result
+          end
 
       - name: Setup pnpm
         if: steps.check.outputs.should_run == 'true'
