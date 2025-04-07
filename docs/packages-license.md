@@ -5882,7 +5882,7 @@ Unknown manually approved
 
 
 <a name="@vitejs/plugin-react"></a>
-### @vitejs/plugin-react v4.3.3
+### @vitejs/plugin-react v4.3.4
 #### 
 
 ##### Paths
