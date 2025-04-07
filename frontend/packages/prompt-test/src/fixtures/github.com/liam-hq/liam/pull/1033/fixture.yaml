@@ -6,11 +6,11 @@ assert:
 - type: javascript
   # Test 1: Check if the snippet has the exact correct file path
   value: |
-    !!output.issues.flatMap(issue => issue.suggestionSnippets).find(snippet => snippet.filename === "frontend/packages/db/prisma/migrations/20250328105323_add_branch_name_to_knowledge_suggestion/migration.sql")
+    !!output.feedbacks.flatMap(feedback => feedback.suggestionSnippets).find(snippet => snippet.filename === "frontend/packages/db/prisma/migrations/20250328105323_add_branch_name_to_knowledge_suggestion/migration.sql")
 - type: javascript
   # Test 2: Check if the snippet suggests setting a DEFAULT value for the branchName column
   value: |
-    !!output.issues.flatMap(issue => issue.suggestionSnippets).find(snippet => snippet.snippet.includes("ALTER TABLE \"KnowledgeSuggestion\" ADD COLUMN \"branchName\" TEXT NOT NULL DEFAULT '"))
+    !!output.feedbacks.flatMap(feedback => feedback.suggestionSnippets).find(snippet => snippet.snippet.includes("ALTER TABLE \"KnowledgeSuggestion\" ADD COLUMN \"branchName\" TEXT NOT NULL DEFAULT '"))
 - type: javascript
   value: output.scores[0].value >= 1
 - type: cost
