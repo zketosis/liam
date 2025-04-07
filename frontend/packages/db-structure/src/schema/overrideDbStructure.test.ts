@@ -155,7 +155,9 @@ describe('overrideDbStructure', () => {
       expect(tableGroups['auth']).toBeDefined()
       expect(tableGroups['auth']?.name).toBe('Authentication')
       expect(tableGroups['auth']?.tables).toContain('users')
-      expect(tableGroups['auth']?.comment).toBe('Tables related to authentication')
+      expect(tableGroups['auth']?.comment).toBe(
+        'Tables related to authentication',
+      )
     })
   })
 
@@ -249,9 +251,7 @@ describe('overrideDbStructure', () => {
       expect(dbStructure.tables['users']?.comment).toBe(
         'User accounts with enhanced permissions',
       )
-      expect(dbStructure.tables['posts']?.comment).toBe(
-        'User blog posts',
-      )
+      expect(dbStructure.tables['posts']?.comment).toBe('User blog posts')
 
       expect(dbStructure.tables['users']?.columns['username']?.comment).toBe(
         'User login name',
