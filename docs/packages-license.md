@@ -18009,7 +18009,7 @@ Unknown manually approved
 
 
 <a name="valibot"></a>
-### valibot v1.0.0-rc.3
+### valibot v1.0.0
 #### 
 
 ##### Paths
