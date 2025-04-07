@@ -257,9 +257,12 @@ export const createKnowledgeSuggestionTask = task({
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
       const result = await processCreateKnowledgeSuggestion(payload)
-      logger.info('Successfully created knowledge suggestion:', {
-        suggestionId: result.suggestionId,
-      })
+      logger.info(
+        result.suggestionId === null
+          ? 'Knowledge suggestion creation skipped due to matching content'
+          : 'Successfully created knowledge suggestion:',
+        { suggestionId: result.suggestionId },
+      )
       return result
     } catch (error) {
       logger.error('Error in createKnowledgeSuggestion task:', { error })
