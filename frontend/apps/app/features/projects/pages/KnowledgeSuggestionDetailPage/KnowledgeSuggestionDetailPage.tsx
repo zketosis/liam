@@ -59,7 +59,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
 }) => {
   const suggestion = await getKnowledgeSuggestionDetail(projectId, suggestionId)
   const repository = suggestion.project.repositoryMappings[0]?.repository
-
+  
   const originalContent = !suggestion.approvedAt
     ? await getOriginalDocumentContent(
         projectId,
@@ -124,7 +124,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
               if (isEditing) {
                 return null
               }
-
+              
               return !suggestion.approvedAt ? (
                 <DiffDisplay
                   originalContent={originalContent}
