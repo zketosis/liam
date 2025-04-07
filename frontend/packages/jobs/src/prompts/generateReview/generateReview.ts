@@ -17,42 +17,42 @@ When analyzing the changes, consider:
 
 Your JSON-formatted response must contain:
 
-- An array of identified issues in the "issues" field, each including:
-  - "kind": The issue category, selected from:
+- An array of identified feedback in the "feedbacks" field, each including:
+  - "kind": The feedback category, selected from:
     - Migration Safety
     - Data Integrity
     - Performance Impact
     - Project Rules Consistency
     - Security or Scalability
-  - "severity": For each issue, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem. Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design.
-  - "description": A clear and precise explanation of the issue. If the issue is POSITIVE, describe what is improved and why it is beneficial.
-  - "suggestion": Provide actionable recommendations for resolving the issue.
+  - "severity": For each feedback item, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem. Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design.
+  - "description": A clear and precise explanation of the feedback. If the severity is POSITIVE, describe what is improved and why it is beneficial.
+  - "suggestion": Provide actionable recommendations for resolving the feedback item.
     - If multiple valid solutions exist, include them all in a single string rather than as an array.
       - For example, when adding a non-null column without a default value, always propose both "setting a default value" and "ensuring that the table is empty."
     - If the severity is "POSITIVE", do not set "suggestion" to null.
       - Instead, write a brief sentence indicating that no improvement is needed.
       - For example, "No suggestions needed", "Nothing to improve", "Keep up the good work", etc.
-  - "suggestionSnippets": An array of suggestion snippets for each issue kind in the "suggestions" field, each including:
+  - "suggestionSnippets": An array of suggestion snippets for each feedback kind in the "suggestions" field, each including:
     - "filename": The filename of the file that needs to be applied.
     - "snippet": The snippet of the file that needs to be applied.
       - For example, if DEFAULT value is needed for a column, the snippet should include the statement with the DEFAULT value.
-- An array of scores for each issue kind in the "scores" field, each including:
-  - "kind": One of the issue categories listed above.
+- An array of scores for each feedback kind in the "scores" field, each including:
+  - "kind": One of the feedback categories listed above.
   - "value": A numeric score from 0 to 10, using a deduction-based approach:
     - Start with a perfect score of 10 (indicating no issues)
-    - Deduct points based on the number and severity of issues identified:
-      - CRITICAL issues: Deduct 2-4 points each
-      - WARNING issues: Deduct 1-2 points each
+    - Deduct points based on the number and severity of feedback items identified:
+      - CRITICAL feedback: Deduct 2-4 points each
+      - WARNING feedback: Deduct 1-2 points each
       - No deductions for POSITIVE observations
-    - Consider the cumulative impact of multiple issues
+    - Consider the cumulative impact of multiple feedback items
     - A score of 0-3 indicates critical, unfixable problems
     - A score of 4-6 indicates significant issues requiring attention
     - A score of 7-9 indicates minor issues or concerns
     - A score of 10 indicates perfect design with no issues
-  - "reason": An explanation justifying the score provided, including what deductions were made and why. If no issues were found in a category, explicitly state that a score of 10 was given because no issues were identified.
+  - "reason": An explanation justifying the score provided, including what deductions were made and why. If no feedback items were found in a category, explicitly state that a score of 10 was given because no issues were identified.
 - A concise summary in the "summary" field that:
   - Describes the migration changes in about 1 line
-  - Highlights the most important issues or risks (if any exist); if no significant issues are found, highlight positive aspects of the migration instead
+  - Highlights the most important feedback or risks (if any exist); if no significant issues are found, highlight positive aspects of the migration instead
   - Is about 3 lines in total length
 - A detailed and constructive overall review in the "bodyMarkdown" field.
   - The bodyMarkdown should be a markdown formatted string.

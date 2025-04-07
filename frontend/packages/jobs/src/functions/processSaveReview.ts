@@ -60,12 +60,12 @@ export const processSaveReview = async (
     }
 
     // create review issues
-    const reviewIssues = payload.review.issues.map((issue) => ({
+    const reviewIssues = payload.review.feedbacks.map((feedback) => ({
       overallReviewId: overallReview.id,
-      category: mapCategoryEnum(issue.kind),
-      severity: issue.severity,
-      description: issue.description,
-      suggestion: issue.suggestion,
+      category: mapCategoryEnum(feedback.kind),
+      severity: feedback.severity,
+      description: feedback.description,
+      suggestion: feedback.suggestion,
       updatedAt: now,
     }))
 
