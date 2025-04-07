@@ -81,17 +81,23 @@ export const processSaveReview = async (
     }
 
     // create suggestion snippet
-    const suggestionSnippet = payload.review.issues
-      .flatMap((issue, index) =>
-        issue.suggestionSnippets.map((snippet) =>
-          insertedIssues[index]
-            ? {
-                ...snippet,
-                reviewIssueId: insertedIssues[index].id,
-                updatedAt: now,
-              }
-            : null,
-        ),
+    const suggestionSnippet = payload.review.feedbacks
+      .flatMap(
+        (
+          feedback: {
+            suggestionSnippets: Array<{ filename: string; snippet: string }>
+          },
+          index: number,
+        ) =>
+          feedback.suggestionSnippets.map((snippet) =>
+            insertedIssues[index]
+              ? {
+                  ...snippet,
+                  reviewIssueId: insertedIssues[index].id,
+                  updatedAt: now,
+                }
+              : null,
+          ),
       )
       .filter(Boolean) as Array<{
       filename: string
