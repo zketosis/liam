@@ -24,119 +24,201 @@ const verifyWebhookSignature = (
   }
 }
 
-export const POST = async (request: NextRequest): Promise<NextResponse> => {
-  try {
-    const payload = await request.text()
+// Verify webhook signature in production
+const verifySignature = (
+  payload: string,
+  request: NextRequest,
+): { isValid: boolean } => {
+  if (process.env.VERCEL !== '1') {
+    // Skip verification in local development
+    return { isValid: true }
+  }
 
-    // NOTE: Don't verify signature in local development
-    if (process.env.VERCEL === '1') {
-      const signature = request.headers.get('x-hub-signature-256') ?? ''
-      const isValid = verifyWebhookSignature(payload, signature)
-      if (!isValid) {
+  const signature = request.headers.get('x-hub-signature-256') ?? ''
+  return { isValid: verifyWebhookSignature(payload, signature) }
+}
+
+// Get repository and project information
+const getProjectInfo = async (
+  installationId: number,
+): Promise<{ projectId: number } | null> => {
+  const supabase = await createClient()
+
+  const { data: repository, error: repositoryError } = await supabase
+    .from('Repository')
+    .select('*')
+    .eq('installationId', installationId)
+    .limit(1)
+    .single()
+
+  if (repositoryError || !repository) {
+    return null
+  }
+
+  const { data: projectRepositoryMapping, error: mappingError } = await supabase
+    .from('ProjectRepositoryMapping')
+    .select('*')
+    .eq('repositoryId', repository.id)
+    .limit(1)
+    .single()
+
+  if (mappingError || !projectRepositoryMapping) {
+    return null
+  }
+
+  return { projectId: projectRepositoryMapping.projectId }
+}
+
+// Handle pull request events
+const handlePullRequest = async (
+  data: GitHubWebhookPayload,
+  action: string,
+): Promise<NextResponse> => {
+  // Validate pull request data
+  const pullRequest = data.pull_request
+  if (!pullRequest) {
+    return NextResponse.json(
+      { error: 'Pull request data is missing' },
+      { status: 400 },
+    )
+  }
+
+  // Ensure pull request number is a number
+  const prNumber =
+    typeof pullRequest.number === 'string'
+      ? Number.parseInt(pullRequest.number, 10)
+      : pullRequest.number
+
+  // Get project information
+  const projectInfo = await getProjectInfo(data.installation.id)
+  if (!projectInfo) {
+    return NextResponse.json(
+      { error: 'Repository or mapping not found' },
+      { status: 404 },
+    )
+  }
+
+  const { projectId } = projectInfo
+
+  // Handle supported actions
+  if (['opened', 'synchronize', 'reopened'].includes(action)) {
+    // Perform pre-check
+    try {
+      const checkResult = await checkSchemaChanges({
+        installationId: data.installation.id,
+        pullRequestNumber: prNumber,
+        pullRequestTitle: pullRequest.title,
+        projectId,
+        owner: data.repository.owner.login,
+        name: data.repository.name,
+      })
+
+      // Determine whether to continue processing based on the check results
+      if (!checkResult.shouldContinue) {
         return NextResponse.json(
-          { error: 'Invalid signature' },
-          { status: 401 },
+          { message: 'No schema changes to review' },
+          { status: 200 },
         )
       }
-    }
-
-    const data = JSON.parse(payload) as GitHubWebhookPayload
-    const event = request.headers.get('x-github-event') ?? ''
-    const action = data.action
-    const eventType = `${event}.${action}`
-
-    if (!supportedEvents.includes(eventType)) {
-      return NextResponse.json(
-        { message: `Event ${eventType} is not supported` },
-        { status: 200 },
-      )
-    }
-
-    try {
-      if (event === 'pull_request') {
-        const pullRequest = data.pull_request
-        if (!pullRequest) {
-          throw new Error('Pull request data is missing')
-        }
-
-        const supabase = await createClient()
-
-        const { data: repository, error: repositoryError } = await supabase
-          .from('Repository')
-          .select('*')
-          .eq('installationId', data.installation.id)
-          .limit(1)
-          .single()
-
-        if (repositoryError || !repository) {
-          throw new Error('Repository not found')
-        }
-
-        const { data: projectRepositoryMapping, error: mappingError } =
-          await supabase
-            .from('ProjectRepositoryMapping')
-            .select('*')
-            .eq('repositoryId', repository.id)
-            .limit(1)
-            .single()
-
-        if (mappingError || !projectRepositoryMapping) {
-          throw new Error('Mapping not found')
-        }
-        const projectId = projectRepositoryMapping.projectId
-
-        switch (action) {
-          case 'opened':
-          case 'synchronize':
-          case 'reopened': {
-            // Perform pre-check
-            const checkResult = await checkSchemaChanges({
-              installationId: data.installation.id,
-              pullRequestNumber: pullRequest.number,
-              pullRequestTitle: pullRequest.title,
-              projectId,
-              owner: data.repository.owner.login,
-              name: data.repository.name,
-            })
-
-            // Determine whether to continue processing based on the check results
-            if (!checkResult.shouldContinue) {
-              return NextResponse.json(
-                { message: 'No schema changes to review' },
-                { status: 200 },
-              )
-            }
-            await savePullRequestTask.trigger({
-              prNumber: pullRequest.number,
-              projectId,
-            })
-
-            return NextResponse.json(
-              { message: 'Pull request processing initiated' },
-              { status: 200 },
-            )
-          }
-          default:
-            throw new Error(`Unsupported pull request action: ${action}`)
-        }
-      }
-
-      return NextResponse.json(
-        { message: `Event ${eventType} is supported but no handler found` },
-        { status: 200 },
-      )
     } catch (error) {
-      console.error(`Error handling ${eventType} event:`, error)
+      console.error('Error checking schema changes:', error)
       return NextResponse.json(
-        { error: `Failed to process ${eventType} event` },
+        {
+          error: `Failed to check schema changes: ${(error as Error).message}`,
+        },
         { status: 500 },
       )
     }
+
+    // Trigger pull request task
+    try {
+      await savePullRequestTask.trigger({
+        prNumber,
+        projectId,
+      })
+
+      return NextResponse.json(
+        { message: 'Pull request processing initiated' },
+        { status: 200 },
+      )
+    } catch (error) {
+      console.error('Error triggering pull request task:', error)
+      return NextResponse.json(
+        {
+          error: `Failed to trigger pull request task: ${(error as Error).message}`,
+        },
+        { status: 500 },
+      )
+    }
+  }
+
+  return NextResponse.json(
+    { error: `Unsupported pull request action: ${action}` },
+    { status: 400 },
+  )
+}
+
+// Parse webhook payload
+const parsePayload = async (
+  request: NextRequest,
+): Promise<{ payload: string; data: GitHubWebhookPayload } | null> => {
+  try {
+    const payload = await request.text()
+    const data = JSON.parse(payload) as GitHubWebhookPayload
+    return { payload, data }
   } catch (error) {
-    console.error('Error processing webhook:', error)
+    console.error('Error parsing webhook payload:', error)
+    return null
+  }
+}
+
+export const POST = async (request: NextRequest): Promise<NextResponse> => {
+  // Parse the payload
+  const parsedData = await parsePayload(request)
+  if (!parsedData) {
     return NextResponse.json(
-      { error: 'Failed to process webhook' },
-      { status: 500 },
+      { error: 'Failed to parse webhook payload' },
+      { status: 400 },
     )
   }
+
+  const { payload, data } = parsedData
+
+  // Verify signature
+  const { isValid } = verifySignature(payload, request)
+  if (!isValid) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+  }
+
+  // Get event information
+  const event = request.headers.get('x-github-event') ?? ''
+  const action = data.action ?? '' // Ensure action is never undefined
+  const eventType = `${event}.${action}`
+
+  if (!supportedEvents.includes(eventType)) {
+    return NextResponse.json(
+      { message: `Event ${eventType} is not supported` },
+      { status: 200 },
+    )
+  }
+
+  // Route to appropriate event handler
+  if (event === 'pull_request') {
+    try {
+      return await handlePullRequest(data, action)
+    } catch (error) {
+      console.error('Error handling pull request event:', error)
+      return NextResponse.json(
+        {
+          error: `Failed to process pull request: ${(error as Error).message}`,
+        },
+        { status: 500 },
+      )
+    }
+  }
+
+  return NextResponse.json(
+    { message: `Event ${eventType} is supported but no handler found` },
+    { status: 200 },
+  )
 }

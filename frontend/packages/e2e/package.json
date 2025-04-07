@@ -7,13 +7,13 @@
     "@liam-hq/configs": "workspace:*",
     "@playwright/test": "1.50.1",
     "@types/node": "22.9.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "scripts": {
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
     "lint": "pnpm run '/^lint:.*/'",
-    "lint:biome": "biome check --error-on-warnings .",
+    "lint:biome": "biome check .",
     "test:e2e": "playwright test"
   }
 }

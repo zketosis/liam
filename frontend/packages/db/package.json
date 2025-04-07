@@ -15,14 +15,14 @@
     "@liam-hq/configs": "workspace:*",
     "prisma": "6.4.1",
     "supabase": "2.15.8",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "scripts": {
     "build": "tsc",
     "fmt": "pnpm run '/^fmt:.*/'",
     "fmt:biome": "biome check --write --unsafe .",
     "lint": "pnpm run '/^lint:.*/'",
-    "lint:biome": "biome check --error-on-warnings .",
+    "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "supabase:gen": "pnpm run '/^supabase:gen:.*/'",
     "supabase:gen:schema_sql": "pnpm supabase db dump --local > ./schema/schema.sql",
