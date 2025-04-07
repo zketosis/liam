@@ -83,6 +83,33 @@ export const processCreateKnowledgeSuggestion = async (
     )
   }
 
+  // If this is a DOCS type suggestion, check if there's a corresponding GitHubDocFilePath entry
+  if (type === 'DOCS') {
+    // Check if there's a GitHubDocFilePath entry for this path
+    const { data: docFilePath } = await supabase
+      .from('GitHubDocFilePath')
+      .select('id')
+      .eq('projectId', projectId)
+      .eq('path', path)
+      .maybeSingle()
+
+    // If a GitHubDocFilePath entry exists, create a mapping
+    if (docFilePath) {
+      const { error: mappingError } = await supabase
+        .from('KnowledgeSuggestionDocMapping')
+        .insert({
+          knowledgeSuggestionId: knowledgeSuggestion.id,
+          gitHubDocFilePathId: docFilePath.id,
+          updatedAt: now,
+        })
+
+      if (mappingError) {
+        console.error('Failed to create mapping:', mappingError)
+        // We don't throw an error here as the suggestion was created successfully
+      }
+    }
+  }
+
   return {
     suggestionId: knowledgeSuggestion.id,
     success: true,
