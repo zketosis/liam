@@ -25,6 +25,9 @@
 - Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
 - Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
 - Completed migration from Prisma to Supabase for database migrations, with standardized workflow documented.
+- Implemented KnowledgeSuggestionDocMapping table to link KnowledgeSuggestion and GitHubDocFilePath tables, ensuring newly created Knowledge suggestions are properly included in reviews.
+- Enhanced processCreateKnowledgeSuggestion.ts to create mappings for existing docs when creating a Doc Suggestion.
+- Updated approveKnowledgeSuggestion.ts to create GitHubDocFilePath entries and mappings for new docs when approving a Doc Suggestion.
 
 ## What's Left to Build
 
