@@ -16806,7 +16806,7 @@ Unknown manually approved
 
 
 <a name="supabase"></a>
-### supabase v2.15.8
+### supabase v2.20.5
 #### 
 
 ##### Paths
