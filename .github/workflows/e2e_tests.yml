@@ -34,9 +34,9 @@ jobs:
           ENVIRONMENT="${{ github.event.deployment.environment }}"
           TARGET_URL="${{ github.event.deployment_status.target_url }}"
 
-          if [ "$EVENT_NAME" = "deployment_status" ] && [ "$EVENT_STATE" = "success" ]; then
-            if { [ "$ENVIRONMENT" = *"Production"* ] && [ "$TARGET_URL" = *"liam-app-git-main"* ]; } || \
-               { [ "$ENVIRONMENT" = *"Preview"* ] && [ "$TARGET_URL" != *"liam-erd-sample"* ] && [ "$TARGET_URL" != *"liam-docs"* ]; }; then
+          if [[ "$EVENT_NAME" == "deployment_status" && "$EVENT_STATE" == "success" ]]; then
+            if { [[ "$ENVIRONMENT" == *"Production"* && "$TARGET_URL" == *"liam-app-git-main"* ]]; } || \
+              { [[ "$ENVIRONMENT" == *"Preview"* && "$TARGET_URL" != *"liam-erd-sample"* && "$TARGET_URL" != *"liam-docs"* ]]; }; then
               echo "should_run=true" >> $GITHUB_OUTPUT
             else
               echo "should_run=false" >> $GITHUB_OUTPUT
