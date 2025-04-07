@@ -29,10 +29,10 @@ jobs:
         shell: ruby {0}
         working-directory: ${{ github.workspace }}
         run: |
-          event_name      = ENV.fetch("GITHUB_EVENT_NAME", '')
-          event_state     = ENV.fetch("GITHUB_EVENT_DEPLOYMENT_STATUS_STATE", '')
-          environment_val = ENV.fetch("GITHUB_EVENT_DEPLOYMENT_ENVIRONMENT", '')
-          target_url      = ENV.fetch("GITHUB_EVENT_DEPLOYMENT_STATUS_TARGET_URL", '')
+          event_name      = "${{ github.event_name }}"
+          event_state     = "${{ github.event.deployment_status.state }}"
+          environment_val = "${{ github.event.deployment.environment }}"
+          target_url      = "${{ github.event.deployment_status.target_url }}"
 
           result =
             if event_name == "deployment_status" && event_state == "success"
