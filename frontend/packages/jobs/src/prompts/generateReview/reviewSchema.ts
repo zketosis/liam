@@ -16,7 +16,7 @@ const SeverityEnum = enumType({
 
 export const reviewSchema = strictObject({
   bodyMarkdown: string(),
-  issues: array(
+  feedbacks: array(
     strictObject({
       kind: KindEnum,
       severity: SeverityEnum,
