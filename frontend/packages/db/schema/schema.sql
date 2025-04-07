@@ -181,6 +181,33 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
 ALTER TABLE "public"."KnowledgeSuggestion" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestionDocMapping" (
+    "id" integer NOT NULL,
+    "knowledgeSuggestionId" integer NOT NULL,
+    "gitHubDocFilePathId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."KnowledgeSuggestionDocMapping" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."KnowledgeSuggestionDocMapping_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."KnowledgeSuggestionDocMapping_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" OWNED BY "public"."KnowledgeSuggestionDocMapping"."id";
+
+
+
 CREATE SEQUENCE IF NOT EXISTS "public"."KnowledgeSuggestion_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -450,6 +477,10 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion" ALTER COLUMN "id" SET DEFAULT "n
 
 
 
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."KnowledgeSuggestionDocMapping_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."Migration" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Migration_id_seq"'::"regclass");
 
 
@@ -494,6 +525,11 @@ ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
 
 ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
     ADD CONSTRAINT "GitHubSchemaFilePath_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping"
+    ADD CONSTRAINT "KnowledgeSuggestionDocMapping_pkey" PRIMARY KEY ("id");
 
 
 
@@ -551,6 +587,10 @@ CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDo
 
 
 
+CREATE UNIQUE INDEX "KnowledgeSuggestionDocMapping_unique_mapping" ON "public"."KnowledgeSuggestionDocMapping" USING "btree" ("knowledgeSuggestionId", "gitHubDocFilePathId");
+
+
+
 CREATE UNIQUE INDEX "Migration_pullRequestId_key" ON "public"."Migration" USING "btree" ("pullRequestId");
 
 
@@ -574,6 +614,16 @@ ALTER TABLE ONLY "public"."GitHubDocFilePath"
 
 ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
     ADD CONSTRAINT "GitHubSchemaFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping"
+    ADD CONSTRAINT "KnowledgeSuggestionDocMapping_gitHubDocFilePathId_fkey" FOREIGN KEY ("gitHubDocFilePathId") REFERENCES "public"."GitHubDocFilePath"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping"
+    ADD CONSTRAINT "KnowledgeSuggestionDocMapping_knowledgeSuggestionId_fkey" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -862,6 +912,18 @@ GRANT ALL ON SEQUENCE "public"."GitHubSchemaFilePath_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "anon";
 GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "authenticated";
 GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "anon";
+GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" TO "service_role";
 
 
 

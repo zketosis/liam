@@ -187,6 +187,45 @@ export type Database = {
           },
         ]
       }
+      KnowledgeSuggestionDocMapping: {
+        Row: {
+          createdAt: string
+          gitHubDocFilePathId: number
+          id: number
+          knowledgeSuggestionId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          gitHubDocFilePathId: number
+          id?: number
+          knowledgeSuggestionId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          gitHubDocFilePathId?: number
+          id?: number
+          knowledgeSuggestionId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'KnowledgeSuggestionDocMapping_gitHubDocFilePathId_fkey'
+            columns: ['gitHubDocFilePathId']
+            isOneToOne: false
+            referencedRelation: 'GitHubDocFilePath'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'KnowledgeSuggestionDocMapping_knowledgeSuggestionId_fkey'
+            columns: ['knowledgeSuggestionId']
+            isOneToOne: false
+            referencedRelation: 'KnowledgeSuggestion'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       Migration: {
         Row: {
           createdAt: string
