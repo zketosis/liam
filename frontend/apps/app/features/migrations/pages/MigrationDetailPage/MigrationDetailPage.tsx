@@ -56,7 +56,12 @@ async function getMigrationContents(migrationId: string) {
         category,
         severity,
         description,
-        suggestion
+        suggestion,
+        suggestionSnippets:ReviewSuggestionSnippet (
+          id,
+          filename,
+          snippet
+        )
       ),
       reviewScores:ReviewScore (
         id,
@@ -236,6 +241,11 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                     severity: string
                     description: string
                     suggestion: string
+                    suggestionSnippets: Array<{
+                      id: number
+                      filename: string
+                      snippet: string
+                    }>
                   }) => (
                     <div
                       key={issue.id}
@@ -263,6 +273,24 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                           <p>{issue.suggestion}</p>
                         </div>
                       )}
+                      {issue.suggestionSnippets.map((snippet) => (
+                        <div
+                          key={snippet.filename}
+                          className={styles.snippetContainer}
+                        >
+                          <div className={styles.snippetHeader}>
+                            <span className={styles.fileIcon}>📄</span>
+                            <span className={styles.fileName}>
+                              {snippet.filename}
+                            </span>
+                          </div>
+                          <div className={styles.codeContainer}>
+                            <pre className={styles.codeSnippet}>
+                              {snippet.snippet}
+                            </pre>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ),
                 )

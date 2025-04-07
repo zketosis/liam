@@ -69,13 +69,46 @@ export const processSaveReview = async (
       updatedAt: now,
     }))
 
-    const { error: reviewIssuesError } = await supabase
+    const { data: insertedIssues, error: reviewIssuesError } = await supabase
       .from('ReviewIssue')
       .insert(reviewIssues)
+      .select('id')
 
-    if (reviewIssuesError) {
+    if (reviewIssuesError || !insertedIssues) {
       throw new Error(
         `Failed to create review issues: ${JSON.stringify(reviewIssuesError)}`,
+      )
+    }
+
+    // create suggestion snippet
+    const suggestionSnippet = payload.review.issues
+      .flatMap((issue, index) =>
+        issue.suggestionSnippets.map((snippet) =>
+          insertedIssues[index]
+            ? {
+                ...snippet,
+                reviewIssueId: insertedIssues[index].id,
+                updatedAt: now,
+              }
+            : null,
+        ),
+      )
+      .filter(Boolean) as Array<{
+      filename: string
+      snippet: string
+      reviewIssueId: number
+      updatedAt: string
+    }>
+
+    const { data: insertedSuggestionSnippets, error: suggestionSnippetError } =
+      await supabase
+        .from('ReviewSuggestionSnippet')
+        .insert(suggestionSnippet)
+        .select('id')
+
+    if (suggestionSnippetError || !insertedSuggestionSnippets) {
+      throw new Error(
+        `Failed to create suggestion snippet: ${JSON.stringify(suggestionSnippetError)}`,
       )
     }
 
