@@ -21,8 +21,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0(encoding@0.1.13)
       '@changesets/types':
-        specifier: 6.0.0
-        version: 6.0.0
+        specifier: 6.1.0
+        version: 6.1.0
       '@turbo/gen':
         specifier: 2.1.2
         version: 2.1.2(@types/node@16.18.11)(typescript@4.9.5)
@@ -236,8 +236,8 @@ importers:
         specifier: 15.0.3
         version: 15.0.3(eslint@8.57.1)(typescript@5.8.3)
       postcss:
-        specifier: 8.4.49
-        version: 8.4.49
+        specifier: 8.5.3
+        version: 8.5.3
       tailwindcss:
         specifier: 4.0.11
         version: 4.0.11
@@ -1132,9 +1132,6 @@ packages:
 
   '@changesets/types@4.1.0':
     resolution: {integrity: sha512-LDQvVDv5Kb50ny2s25Fhm3d9QSZimsoUGBsUioj6MC3qbMUCuC8GPIvk/M6IvXx3lYhAs0lwWUQLb+VIEUCECw==}
-
-  '@changesets/types@6.0.0':
-    resolution: {integrity: sha512-b1UkfNulgKoWfqyHtzKS5fOZYSJO+77adgL7DLRDr+/7jhChN+QcHnbjiQVOz/U+Ts3PGNySq7diAItzDgugfQ==}
 
   '@changesets/types@6.1.0':
     resolution: {integrity: sha512-rKQcJ+o1nKNgeoYRHKOS07tAMNd3YSN0uHaJOZYjBAgxfV7TUE7JE+z4BzZdQwb5hKaYbayKN5KrYV7ODb2rAA==}
@@ -11340,8 +11337,6 @@ snapshots:
 
   '@changesets/types@4.1.0': {}
 
-  '@changesets/types@6.0.0': {}
-
   '@changesets/types@6.1.0': {}
 
   '@changesets/write@0.4.0':
@@ -14823,7 +14818,7 @@ snapshots:
       '@tailwindcss/node': 4.0.11
       '@tailwindcss/oxide': 4.0.11
       lightningcss: 1.29.2
-      postcss: 8.4.49
+      postcss: 8.5.3
       tailwindcss: 4.0.11
 
   '@tokenizer/token@0.3.0': {}
