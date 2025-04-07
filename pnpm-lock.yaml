@@ -543,9 +543,6 @@ importers:
       '@liam-hq/github':
         specifier: workspace:*
         version: link:../github
-      '@prisma/client':
-        specifier: 6.4.1
-        version: 6.4.1(prisma@6.4.1(typescript@5.8.3))(typescript@5.8.3)
       '@sentry/node':
         specifier: 9.11.0
         version: 9.11.0
