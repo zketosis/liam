@@ -7,7 +7,7 @@ settings:
 overrides:
   esbuild: 0.25.2
   path-to-regexp: 6.3.0
-  undici: 5.28.5
+  undici: 5.29.0
   node-gtts: workspace:*
 
 importers:
@@ -9821,8 +9821,8 @@ packages:
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
-  undici@5.28.5:
-    resolution: {integrity: sha512-zICwjrDrcrUE0pyyJc1I2QzBkLM8FINsgOrt6WjA+BgajVq9Nxu2PbFFXUrAggLfDXlZGZBVZYw7WNV5KiBiBA==}
+  undici@5.29.0:
+    resolution: {integrity: sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==}
     engines: {node: '>=14.0'}
 
   unicorn-magic@0.3.0:
@@ -15354,7 +15354,7 @@ snapshots:
       ts-morph: 12.0.0
       ts-node: 10.9.1(@types/node@16.18.11)(typescript@4.9.5)
       typescript: 4.9.5
-      undici: 5.28.5
+      undici: 5.29.0
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -16082,7 +16082,7 @@ snapshots:
       parse5: 7.2.1
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 5.28.5
+      undici: 5.29.0
       whatwg-mimetype: 4.0.0
 
   chokidar@3.6.0:
@@ -20217,7 +20217,7 @@ snapshots:
       sharp: 0.33.5
       socket.io: 4.8.1
       tsx: 4.19.3
-      undici: 5.28.5
+      undici: 5.29.0
       uuid: 10.0.0
       winston: 3.17.0
       ws: 8.18.1
@@ -21825,7 +21825,7 @@ snapshots:
   undici-types@6.20.0:
     optional: true
 
-  undici@5.28.5:
+  undici@5.29.0:
     dependencies:
       '@fastify/busboy': 2.1.1
 
