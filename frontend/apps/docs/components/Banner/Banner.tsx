@@ -10,14 +10,9 @@ import {
   useState,
 } from 'react'
 import { match } from 'ts-pattern'
+import { buttonStyle, linkStyle, textStyle, wrapperStyle } from './Banner.style'
 import { JackAnimationForDark } from './JackAnimationForDark'
 import { JackAnimationForLight } from './JackAnimationForLight'
-import {
-  wrapperStyle,
-  textStyle,
-  linkStyle,
-  buttonStyle
-} from "./Banner.style"
 
 const HEIGHT = '3rem'
 

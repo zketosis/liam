@@ -3,7 +3,7 @@
 import { AlertTriangle, Info, XCircle } from '@liam-hq/ui'
 import type { FC, PropsWithChildren } from 'react'
 import { match } from 'ts-pattern'
-import { wrapperStyle } from "./Callout.style"
+import { wrapperStyle } from './Callout.style'
 
 type Props = PropsWithChildren & {
   type?: 'info' | 'warn' | 'error'

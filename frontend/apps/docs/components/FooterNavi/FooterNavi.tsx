@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { FC } from 'react'
-import { linkStyle, itemLabelStyle } from "./FooterNavi.style"
+import { itemLabelStyle, linkStyle } from './FooterNavi.style'
 
 export const FooterNavi: FC = () => {
   const pathname = usePathname()
