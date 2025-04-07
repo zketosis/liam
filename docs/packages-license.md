@@ -4668,7 +4668,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@tailwindcss/node"></a>
-### @tailwindcss/node v4.0.11
+### @tailwindcss/node v4.1.3
 #### 
 
 ##### Paths
@@ -4679,7 +4679,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@tailwindcss/oxide"></a>
-### @tailwindcss/oxide v4.0.11
+### @tailwindcss/oxide v4.1.3
 #### 
 
 ##### Paths
@@ -4690,7 +4690,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@tailwindcss/oxide-linux-x64-gnu"></a>
-### @tailwindcss/oxide-linux-x64-gnu v4.0.11
+### @tailwindcss/oxide-linux-x64-gnu v4.1.3
 #### 
 
 ##### Paths
@@ -4701,7 +4701,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@tailwindcss/oxide-linux-x64-musl"></a>
-### @tailwindcss/oxide-linux-x64-musl v4.0.11
+### @tailwindcss/oxide-linux-x64-musl v4.1.3
 #### 
 
 ##### Paths
@@ -4712,7 +4712,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@tailwindcss/postcss"></a>
-### @tailwindcss/postcss v4.0.11
+### @tailwindcss/postcss v4.1.3
 #### 
 
 ##### Paths
@@ -16916,7 +16916,7 @@ Unknown manually approved
 
 
 <a name="tailwindcss"></a>
-### tailwindcss v4.0.11
+### tailwindcss v4.1.3
 #### 
 
 ##### Paths
