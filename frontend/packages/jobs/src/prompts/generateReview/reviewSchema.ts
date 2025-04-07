@@ -37,5 +37,4 @@ export const reviewSchema = strictObject({
       reason: string(),
     }),
   ),
-  summary: string(),
 })
