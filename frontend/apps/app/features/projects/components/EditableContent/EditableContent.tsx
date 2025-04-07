@@ -2,20 +2,23 @@
 
 import React, { type ReactNode, useState } from 'react'
 import { updateKnowledgeSuggestionContent } from '../../actions/updateKnowledgeSuggestionContent'
+import { DiffDisplay } from '../DiffDisplay/DiffDisplay'
 import styles from './EditableContent.module.css'
 
 type EditableContentProps = {
   content: string
   suggestionId: number
   className?: string
-  placeholder?: ReactNode
+  originalContent: string | null
+  isApproved: boolean
 }
 
 export const EditableContent = ({
   content,
   suggestionId,
   className,
-  placeholder,
+  originalContent,
+  isApproved,
 }: EditableContentProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(content)
@@ -88,8 +91,15 @@ export const EditableContent = ({
             </button>
           </div>
         </form>
+      ) : isApproved ? (
+        <div className={styles.content}>{editedContent}</div>
       ) : (
-        placeholder
+        <div className={styles.content}>
+          <DiffDisplay
+            originalContent={originalContent}
+            newContent={editedContent}
+          />
+        </div>
       )}
     </div>
   )

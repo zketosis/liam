@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import type { FC, ReactNode } from 'react'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
+import { DiffDisplay } from '../../components/DiffDisplay/DiffDisplay'
 import { EditableContent } from '../../components/EditableContent/EditableContent'
 import { getOriginalDocumentContent } from '../../utils/getOriginalDocumentContent'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
@@ -111,20 +112,16 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
             content={suggestion.content}
             suggestionId={suggestion.id}
             className={styles.codeContent}
-            placeholder={
-              !suggestion.approvedAt ? (
-                <DiffDisplay
-                  originalContent={
-                    await getOriginalDocumentContent(
-                      projectId,
-                      suggestion.branchName,
-                      suggestion.path,
-                    )
-                  }
-                  newContent={suggestion.content}
-                />
-              ) : null
+            originalContent={
+              !suggestion.approvedAt
+                ? await getOriginalDocumentContent(
+                    projectId,
+                    suggestion.branchName,
+                    suggestion.path,
+                  )
+                : null
             }
+            isApproved={!!suggestion.approvedAt}
           />
 
           {/* Client-side user feedback component */}
@@ -159,56 +156,6 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </div>
         )}
       </div>
-    </div>
-  )
-}
-
-interface DiffDisplayProps {
-  originalContent: string | null
-  newContent: string
-}
-
-const DiffDisplay: FC<DiffDisplayProps> = ({ originalContent, newContent }) => {
-  if (!originalContent) {
-    return (
-      <div className={styles.diffContent}>
-        {newContent.split('\n').map((line) => (
-          <div key={`added-${line}`} className={styles.diffAdded}>
-            + {line}
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  const diff = diffLib.diffTrimmedLines(originalContent, newContent)
-
-  return (
-    <div className={styles.diffContent}>
-      {diff.map((part, index) => {
-        const className = part.added
-          ? styles.diffAdded
-          : part.removed
-            ? styles.diffRemoved
-            : styles.diffUnchanged
-
-        const prefix = part.added ? '+ ' : part.removed ? '- ' : '  '
-
-        return part.value.split('\n').map((line, lineIndex) => {
-          if (lineIndex === part.value.split('\n').length - 1 && line === '') {
-            return null
-          }
-          return (
-            <div
-              key={`${part.added ? 'added' : part.removed ? 'removed' : 'unchanged'}-${line}-${index}-${lineIndex}`}
-              className={className}
-            >
-              {prefix}
-              {line}
-            </div>
-          )
-        })
-      })}
     </div>
   )
 }
