@@ -17,14 +17,29 @@ When analyzing the changes, consider:
 
 Your JSON-formatted response must contain:
 
-- An array of identified feedback in the "feedbacks" field, each including:
-  - "kind": The feedback category, selected from:
+- An array of scores for each feedback kind in the "scores" field, each including:
+  - "kind": One of the feedback categories listed below:
     - Migration Safety
     - Data Integrity
     - Performance Impact
     - Project Rules Consistency
     - Security or Scalability
-  - "severity": For each feedback item, assign a severity value. Use "CRITICAL" or "WARNING" if the item represents a problem. Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design.
+  - "value": A numeric score from 0 to 10, using a deduction-based approach:
+    - Start with a perfect score of 10 (indicating no issues)
+    - Deduct points based on the severity and number of issues identified in each category
+    - Consider the cumulative impact of multiple issues
+    - A score of 0-3 indicates critical, unfixable problems
+    - A score of 4-6 indicates significant issues requiring attention
+    - A score of 7-9 indicates minor issues or concerns
+    - A score of 10 indicates perfect design with no issues
+  - "reason": An explanation justifying the score provided, including what deductions were made and why. If no issues were found in a category, explicitly state that a score of 10 was given because no issues were identified.
+
+- Based on the scores you've assigned, create an array of identified feedback in the "feedbacks" field, each including:
+  - "kind": The feedback category, matching one of the categories used in the scores.
+  - "severity": For each feedback item, assign a severity value:
+    - Use "CRITICAL" for issues that caused major point deductions (2-4 points)
+    - Use "WARNING" for issues that caused minor point deductions (1-2 points)
+    - Use "POSITIVE" to highlight improvements, best practices, or beneficial changes in the schema design. When assigning a score of 10 in any category, at least one POSITIVE feedback must be included to justify the score.
   - "description": A clear and precise explanation of the feedback. If the severity is POSITIVE, describe what is improved and why it is beneficial.
   - "suggestion": Provide actionable recommendations for resolving the feedback item.
     - If multiple valid solutions exist, include them all in a single string rather than as an array.
@@ -36,20 +51,6 @@ Your JSON-formatted response must contain:
     - "filename": The filename of the file that needs to be applied.
     - "snippet": The snippet of the file that needs to be applied.
       - For example, if DEFAULT value is needed for a column, the snippet should include the statement with the DEFAULT value.
-- An array of scores for each feedback kind in the "scores" field, each including:
-  - "kind": One of the feedback categories listed above.
-  - "value": A numeric score from 0 to 10, using a deduction-based approach:
-    - Start with a perfect score of 10 (indicating no issues)
-    - Deduct points based on the number and severity of feedback items identified:
-      - CRITICAL feedback: Deduct 2-4 points each
-      - WARNING feedback: Deduct 1-2 points each
-      - No deductions for POSITIVE observations. However, when assigning a score of 10 in any category, at least one POSITIVE feedback must be included to justify the score.
-    - Consider the cumulative impact of multiple feedback items
-    - A score of 0-3 indicates critical, unfixable problems
-    - A score of 4-6 indicates significant issues requiring attention
-    - A score of 7-9 indicates minor issues or concerns
-    - A score of 10 indicates perfect design with no issues
-  - "reason": An explanation justifying the score provided, including what deductions were made and why. If no feedback items were found in a category, explicitly state that a score of 10 was given because no issues were identified.
 - A concise summary in the "summary" field that:
   - Describes the migration changes in about 1 line
   - Highlights the most important feedback or risks (if any exist); if no significant issues are found, highlight positive aspects of the migration instead
