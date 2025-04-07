@@ -27,7 +27,7 @@
     "@storybook/react": "8.3.4",
     "@types/react": "18",
     "typed-css-modules": "0.9.1",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "scripts": {
     "dev": "pnpm run '/^dev:.*/'",
