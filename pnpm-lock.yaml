@@ -21,8 +21,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0(encoding@0.1.13)
       '@changesets/types':
-        specifier: 6.0.0
-        version: 6.0.0
+        specifier: 6.1.0
+        version: 6.1.0
       '@turbo/gen':
         specifier: 2.1.2
         version: 2.1.2(@types/node@16.18.11)(typescript@4.9.5)
@@ -1132,9 +1132,6 @@ packages:
 
   '@changesets/types@4.1.0':
     resolution: {integrity: sha512-LDQvVDv5Kb50ny2s25Fhm3d9QSZimsoUGBsUioj6MC3qbMUCuC8GPIvk/M6IvXx3lYhAs0lwWUQLb+VIEUCECw==}
-
-  '@changesets/types@6.0.0':
-    resolution: {integrity: sha512-b1UkfNulgKoWfqyHtzKS5fOZYSJO+77adgL7DLRDr+/7jhChN+QcHnbjiQVOz/U+Ts3PGNySq7diAItzDgugfQ==}
 
   '@changesets/types@6.1.0':
     resolution: {integrity: sha512-rKQcJ+o1nKNgeoYRHKOS07tAMNd3YSN0uHaJOZYjBAgxfV7TUE7JE+z4BzZdQwb5hKaYbayKN5KrYV7ODb2rAA==}
@@ -11339,8 +11336,6 @@ snapshots:
       '@manypkg/get-packages': 1.1.3
 
   '@changesets/types@4.1.0': {}
-
-  '@changesets/types@6.0.0': {}
 
   '@changesets/types@6.1.0': {}
 
