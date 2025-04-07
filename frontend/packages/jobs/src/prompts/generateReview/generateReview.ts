@@ -43,7 +43,7 @@ Your JSON-formatted response must contain:
     - Deduct points based on the number and severity of feedback items identified:
       - CRITICAL feedback: Deduct 2-4 points each
       - WARNING feedback: Deduct 1-2 points each
-      - No deductions for POSITIVE observations
+      - No deductions for POSITIVE observations. However, when assigning a score of 10 in any category, at least one POSITIVE feedback must be included to justify the score.
     - Consider the cumulative impact of multiple feedback items
     - A score of 0-3 indicates critical, unfixable problems
     - A score of 4-6 indicates significant issues requiring attention
