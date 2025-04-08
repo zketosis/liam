@@ -10,9 +10,9 @@
     "typescript": "5.8.3"
   },
   "scripts": {
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
-    "lint": "pnpm run '/^lint:.*/'",
+    "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
     "test:e2e": "playwright test"
   }

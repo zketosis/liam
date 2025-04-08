@@ -32,12 +32,12 @@
   "scripts": {
     "build": "tsc && pnpm run cp:prism",
     "cp:prism": "cp node_modules/@ruby/prism/src/prism.wasm dist/parser/schemarb/",
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
-    "gen": "pnpm run '/^gen:.*/'",
+    "gen": "concurrently \"pnpm:gen:*\"",
     "gen:cp-prism": "cp node_modules/@ruby/prism/src/prism.wasm src/parser/schemarb/prism.wasm",
     "gen:gen-tbls-schema": "node scripts/tblsJsonSchemaToZod.mjs",
-    "lint": "pnpm run '/^lint:.*/'",
+    "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest --watch=false"

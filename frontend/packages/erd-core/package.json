@@ -28,13 +28,13 @@
     "vitest": "3.0.8"
   },
   "scripts": {
-    "dev": "pnpm run '/^dev:.*/'",
+    "dev": "concurrently \"pnpm:dev:*\"",
     "dev:css": "tcm src --watch",
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
-    "gen": "pnpm run '/^gen:.*/'",
+    "gen": "concurrently \"pnpm:gen:*\"",
     "gen:css": "tcm src",
-    "lint": "pnpm run '/^lint:.*/'",
+    "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest --watch=false"

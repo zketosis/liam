@@ -36,9 +36,9 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --port 3002",
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
-    "lint": "pnpm run '/^lint:.*/'",
+    "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
     "lint:next": "next lint",
     "lint:tsc": "tsc --noEmit",
