@@ -89,8 +89,11 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 ## Current Documentation
 
+<docs>
 
-{docsArray}
+{formattedDocsContent}
+
+</docs>
 
 ---
 
@@ -99,7 +102,9 @@ For each documentation file, determine if it needs to be updated based on the mi
 
 Return your analysis as a JSON object with the following structure:
 <json>
+
 {evaluationResponseExampleJson}
+
 </json>
 
 Guidelines:
@@ -122,14 +127,29 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 ---
 
-Migration Review:
+## Migration Review
+
+<text>
+
 {reviewResult}
 
-Current Documentation:
-{docsArray}
+</text>
 
-Evaluation Results:
+## Current Documentation
+
+<docs>
+
+{formattedDocsContent}
+
+</docs>
+
+## Evaluation Results
+
+<text>
+
 {evaluationResults}
+
+</text>
 
 ---
 
@@ -138,7 +158,9 @@ Generate updated content ONLY for the files that need changes according to the e
 
 Return your updates as a JSON object with the following structure:
 <json>
+
 {updateResponseExampleJson}
+
 </json>
 
 Guidelines:
@@ -152,7 +174,7 @@ Guidelines:
 
 export const generateDocsSuggestion = async (
   reviewResult: string,
-  docsArray: string,
+  formattedDocsContent: string,
   callbacks: Callbacks,
   predefinedRunId: string,
 ): Promise<DocsSuggestion> => {
@@ -190,7 +212,7 @@ export const generateDocsSuggestion = async (
   // Define input type for update step
   type UpdateInput = {
     reviewResult: string
-    docsArray: string
+    formattedDocsContent: string
     evaluationResults: string
     updateResponseExampleJson: string
   }
@@ -199,7 +221,7 @@ export const generateDocsSuggestion = async (
   const docsSuggestionRouter = async (
     inputs: {
       reviewResult: string
-      docsArray: string
+      formattedDocsContent: string
       evaluationResponseExampleJson: string
       updateResponseExampleJson: string
     },
@@ -209,7 +231,7 @@ export const generateDocsSuggestion = async (
     const evaluationResult: EvaluationResult = await evaluationChain.invoke(
       {
         reviewResult: inputs.reviewResult,
-        docsArray: inputs.docsArray,
+        formattedDocsContent: inputs.formattedDocsContent,
         evaluationResponseExampleJson: inputs.evaluationResponseExampleJson,
       },
       config,
@@ -233,7 +255,7 @@ export const generateDocsSuggestion = async (
       // Updates are needed, generate new content for files that need changes
       const updateInput: UpdateInput = {
         reviewResult: inputs.reviewResult,
-        docsArray: inputs.docsArray,
+        formattedDocsContent: inputs.formattedDocsContent,
         evaluationResults: JSON.stringify(suggestedChanges, null, 2),
         updateResponseExampleJson: inputs.updateResponseExampleJson,
       }
@@ -259,7 +281,7 @@ export const generateDocsSuggestion = async (
   // Prepare the inputs
   const inputs = {
     reviewResult,
-    docsArray,
+    formattedDocsContent,
     evaluationResponseExampleJson,
     updateResponseExampleJson,
   }

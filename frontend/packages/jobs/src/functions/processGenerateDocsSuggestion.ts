@@ -68,17 +68,24 @@ export async function processGenerateDocsSuggestion(payload: {
     })
 
     const docsArray = await Promise.all(docsPromises)
-    const docsArrayString =
-      docsArray.length > 0
-        ? JSON.stringify(docsArray)
-        : 'No existing docs found'
+
+    // Format docs array as structured markdown instead of raw JSON
+    let formattedDocsContent = 'No existing docs found'
+
+    if (docsArray.length > 0) {
+      formattedDocsContent = docsArray
+        .map((doc) => {
+          return `<text>\n\n## ${doc.title}\n\n${doc.content || '*(No content)*'}\n\n</text>\n\n---\n`
+        })
+        .join('\n')
+    }
 
     const predefinedRunId = uuidv4()
 
     const callbacks = [langfuseLangchainHandler]
     const result = await generateDocsSuggestion(
       payload.reviewComment,
-      docsArrayString,
+      formattedDocsContent,
       callbacks,
       predefinedRunId,
     )
