@@ -5783,7 +5783,7 @@ Unknown manually approved
 
 
 <a name="@vitest/expect"></a>
-### @vitest/expect v3.0.8
+### @vitest/expect v3.1.1
 #### 
 
 ##### Paths
@@ -5794,7 +5794,7 @@ Unknown manually approved
 
 
 <a name="@vitest/mocker"></a>
-### @vitest/mocker v3.0.8
+### @vitest/mocker v3.1.1
 #### 
 
 ##### Paths
@@ -5805,7 +5805,7 @@ Unknown manually approved
 
 
 <a name="@vitest/pretty-format"></a>
-### @vitest/pretty-format v3.0.8
+### @vitest/pretty-format v3.1.1
 #### 
 
 ##### Paths
@@ -5816,7 +5816,7 @@ Unknown manually approved
 
 
 <a name="@vitest/runner"></a>
-### @vitest/runner v3.0.8
+### @vitest/runner v3.1.1
 #### 
 
 ##### Paths
@@ -5827,7 +5827,7 @@ Unknown manually approved
 
 
 <a name="@vitest/snapshot"></a>
-### @vitest/snapshot v3.0.8
+### @vitest/snapshot v3.1.1
 #### 
 
 ##### Paths
@@ -5838,7 +5838,7 @@ Unknown manually approved
 
 
 <a name="@vitest/spy"></a>
-### @vitest/spy v3.0.8
+### @vitest/spy v3.1.1
 #### 
 
 ##### Paths
@@ -5849,7 +5849,7 @@ Unknown manually approved
 
 
 <a name="@vitest/utils"></a>
-### @vitest/utils v3.0.8
+### @vitest/utils v3.1.1
 #### 
 
 ##### Paths
@@ -9439,7 +9439,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="expect-type"></a>
-### expect-type v1.1.0
+### expect-type v1.2.1
 #### 
 
 ##### Paths
@@ -18119,7 +18119,7 @@ Unknown manually approved
 
 
 <a name="vite"></a>
-### vite v6.2.3
+### vite v6.2.5
 #### 
 
 ##### Paths
@@ -18130,7 +18130,7 @@ Unknown manually approved
 
 
 <a name="vite-node"></a>
-### vite-node v3.0.8
+### vite-node v3.1.1
 #### 
 
 ##### Paths
@@ -18152,7 +18152,7 @@ Unknown manually approved
 
 
 <a name="vitest"></a>
-### vitest v3.0.8
+### vitest v3.1.1
 #### 
 
 ##### Paths
