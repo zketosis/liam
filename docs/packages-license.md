@@ -8669,7 +8669,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="elkjs"></a>
-### elkjs v0.9.3
+### elkjs v0.10.0
 #### 
 
 ##### Paths
