@@ -23,11 +23,11 @@
     "@liam-hq/configs": "workspace:*",
     "@pgsql/types": "15.0.2",
     "@prisma/generator-helper": "6.2.1",
-    "@types/node": "22.9.0",
+    "@types/node": "22.14.0",
     "json-refs": "3.0.15",
     "json-schema-to-zod": "2.6.1",
     "typescript": "5.8.3",
-    "vitest": "3.0.8"
+    "vitest": "3.1.1"
   },
   "scripts": {
     "build": "tsc && pnpm run cp:prism",

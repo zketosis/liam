@@ -2908,7 +2908,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@playwright/test"></a>
-### @playwright/test v1.50.1
+### @playwright/test v1.51.1
 #### 
 
 ##### Paths
@@ -3623,7 +3623,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rive-app/canvas"></a>
-### @rive-app/canvas v2.25.4
+### @rive-app/canvas v2.26.7
 #### 
 
 ##### Paths
@@ -3634,7 +3634,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rive-app/react-canvas"></a>
-### @rive-app/react-canvas v4.17.6
+### @rive-app/react-canvas v4.18.6
 #### 
 
 ##### Paths
@@ -3689,7 +3689,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rollup/rollup-linux-x64-gnu"></a>
-### @rollup/rollup-linux-x64-gnu v4.27.3
+### @rollup/rollup-linux-x64-gnu v4.35.0
 #### 
 
 ##### Paths
@@ -3700,7 +3700,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rollup/rollup-linux-x64-musl"></a>
-### @rollup/rollup-linux-x64-musl v4.27.3
+### @rollup/rollup-linux-x64-musl v4.39.0
 #### 
 
 ##### Paths
@@ -4613,7 +4613,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@supabase/ssr"></a>
-### @supabase/ssr v0.5.2
+### @supabase/ssr v0.6.1
 #### 
 
 ##### Paths
@@ -4944,17 +4944,6 @@ LGPL-3.0-or-later permitted
 
 <a name="@types/connect"></a>
 ### @types/connect v3.4.36
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@types/cookie"></a>
-### @types/cookie v0.6.0
 #### 
 
 ##### Paths
@@ -5673,7 +5662,7 @@ Unknown manually approved
 
 
 <a name="@vercel/next"></a>
-### @vercel/next v4.7.4
+### @vercel/next v4.7.6
 #### 
 
 ##### Paths
@@ -5706,7 +5695,7 @@ Unknown manually approved
 
 
 <a name="@vercel/python"></a>
-### @vercel/python v4.7.1
+### @vercel/python v4.7.2
 #### 
 
 ##### Paths
@@ -5783,7 +5772,7 @@ Unknown manually approved
 
 
 <a name="@vitest/expect"></a>
-### @vitest/expect v3.0.8
+### @vitest/expect v3.1.1
 #### 
 
 ##### Paths
@@ -5794,7 +5783,7 @@ Unknown manually approved
 
 
 <a name="@vitest/mocker"></a>
-### @vitest/mocker v3.0.8
+### @vitest/mocker v3.1.1
 #### 
 
 ##### Paths
@@ -5805,7 +5794,7 @@ Unknown manually approved
 
 
 <a name="@vitest/pretty-format"></a>
-### @vitest/pretty-format v3.0.8
+### @vitest/pretty-format v3.1.1
 #### 
 
 ##### Paths
@@ -5816,7 +5805,7 @@ Unknown manually approved
 
 
 <a name="@vitest/runner"></a>
-### @vitest/runner v3.0.8
+### @vitest/runner v3.1.1
 #### 
 
 ##### Paths
@@ -5827,7 +5816,7 @@ Unknown manually approved
 
 
 <a name="@vitest/snapshot"></a>
-### @vitest/snapshot v3.0.8
+### @vitest/snapshot v3.1.1
 #### 
 
 ##### Paths
@@ -5838,7 +5827,7 @@ Unknown manually approved
 
 
 <a name="@vitest/spy"></a>
-### @vitest/spy v3.0.8
+### @vitest/spy v3.1.1
 #### 
 
 ##### Paths
@@ -5849,7 +5838,7 @@ Unknown manually approved
 
 
 <a name="@vitest/utils"></a>
-### @vitest/utils v3.0.8
+### @vitest/utils v3.1.1
 #### 
 
 ##### Paths
@@ -8680,7 +8669,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="elkjs"></a>
-### elkjs v0.9.3
+### elkjs v0.10.0
 #### 
 
 ##### Paths
@@ -9439,7 +9428,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="expect-type"></a>
-### expect-type v1.1.0
+### expect-type v1.2.1
 #### 
 
 ##### Paths
@@ -9769,7 +9758,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="flags"></a>
-### flags v3.1.1
+### flags v3.2.0
 #### 
 
 ##### Paths
@@ -13986,7 +13975,7 @@ Public Domain manually approved
 
 
 <a name="openai"></a>
-### openai v4.86.2
+### openai v4.91.1
 #### 
 
 ##### Paths
@@ -14712,7 +14701,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="playwright"></a>
-### playwright v1.50.1
+### playwright v1.51.1
 #### 
 
 ##### Paths
@@ -14723,7 +14712,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="playwright-core"></a>
-### playwright-core v1.50.1
+### playwright-core v1.51.1
 #### 
 
 ##### Paths
@@ -16828,7 +16817,7 @@ Unknown manually approved
 
 
 <a name="supabase"></a>
-### supabase v2.15.8
+### supabase v2.20.5
 #### 
 
 ##### Paths
@@ -17686,7 +17675,7 @@ Unknown manually approved
 
 
 <a name="undici"></a>
-### undici v5.28.5
+### undici v5.29.0
 #### 
 
 ##### Paths
@@ -18086,7 +18075,7 @@ Unknown manually approved
 
 
 <a name="vercel"></a>
-### vercel v41.4.1
+### vercel v41.5.0
 #### 
 
 ##### Paths
@@ -18119,7 +18108,7 @@ Unknown manually approved
 
 
 <a name="vite"></a>
-### vite v6.2.3
+### vite v6.2.5
 #### 
 
 ##### Paths
@@ -18130,7 +18119,7 @@ Unknown manually approved
 
 
 <a name="vite-node"></a>
-### vite-node v3.0.8
+### vite-node v3.1.1
 #### 
 
 ##### Paths
@@ -18152,7 +18141,7 @@ Unknown manually approved
 
 
 <a name="vitest"></a>
-### vitest v3.0.8
+### vitest v3.1.1
 #### 
 
 ##### Paths

@@ -7,13 +7,14 @@
   },
   "main": "src/index.ts",
   "dependencies": {
-    "@supabase/ssr": "0.5.2",
+    "@supabase/ssr": "0.6.1",
     "@supabase/supabase-js": "2.49.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
-    "supabase": "2.15.8",
+    "prisma": "6.4.1",
+    "supabase": "2.20.5",
     "typescript": "5.8.3"
   },
   "scripts": {
