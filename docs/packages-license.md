@@ -9758,7 +9758,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="flags"></a>
-### flags v3.1.1
+### flags v3.2.0
 #### 
 
 ##### Paths
