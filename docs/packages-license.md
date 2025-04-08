@@ -3623,7 +3623,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rive-app/canvas"></a>
-### @rive-app/canvas v2.25.4
+### @rive-app/canvas v2.26.7
 #### 
 
 ##### Paths
@@ -3634,7 +3634,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rive-app/react-canvas"></a>
-### @rive-app/react-canvas v4.17.6
+### @rive-app/react-canvas v4.18.6
 #### 
 
 ##### Paths
