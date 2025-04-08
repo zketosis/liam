@@ -33,6 +33,6 @@ jobs:
           anthropic-api-key: ${{ secrets.PROMPTFOO_ANTHROPIC_API_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           config: 'frontend/packages/migration/prompts/promptfooconfig.yaml'
-          prompts: 'frontend/packages/migration/prompts/prompt.yaml'
+          use-config-prompts: true
           cache-path: ~/.cache/promptfoo
           # no-share: true
