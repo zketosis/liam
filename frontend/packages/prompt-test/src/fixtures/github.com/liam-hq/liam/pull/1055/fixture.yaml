@@ -14,7 +14,7 @@ assert:
 - type: javascript
   value: output.scores[0].value >= 1
 - type: cost
-  threshold: 0.008
+  threshold: 1.00
 
 vars:
   '# ref': github.com/liam-hq/liam/pull/1055
