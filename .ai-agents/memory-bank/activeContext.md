@@ -139,7 +139,6 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Use trigger.dev CLI for deploying background jobs
    - Run `npx trigger.dev deploy --dry-run` to verify deployment without applying changes
    - Run `npx trigger.dev deploy` to deploy to production
-   - Ensure DATABASE_URL environment variable is properly set for prismaExtension
    - CI/CD pipelines use `pnpm deploy:jobs` command defined in the root package.json
 
 3. **Component Implementation**:
