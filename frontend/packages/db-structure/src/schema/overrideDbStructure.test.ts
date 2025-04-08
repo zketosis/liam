@@ -86,32 +86,18 @@ describe('overrideDbStructure', () => {
     })
   })
 
-  describe('Adding columns to existing tables', () => {
-    it('should add new columns to an existing table', () => {
+  describe('Overriding column comments', () => {
+    it('should override column comments in an existing table', () => {
       const override: DBOverride = {
         overrides: {
           tables: {
             users: {
-              addColumns: {
-                email: {
-                  name: 'email',
-                  type: 'varchar',
-                  default: null,
-                  check: null,
-                  primary: false,
-                  unique: true,
-                  notNull: true,
-                  comment: 'User email address',
+              columns: {
+                id: {
+                  comment: 'Updated primary key comment',
                 },
-                created_at: {
-                  name: 'created_at',
-                  type: 'timestamp',
-                  default: 'now()',
-                  check: null,
-                  primary: false,
-                  unique: false,
-                  notNull: true,
-                  comment: 'Creation timestamp',
+                username: {
+                  comment: 'Updated username comment',
                 },
               },
             },
@@ -121,40 +107,22 @@ describe('overrideDbStructure', () => {
 
       const { dbStructure } = applyOverrides(originalStructure, override)
 
-      // Check new columns were added
-      expect(dbStructure.tables['users']?.columns['email']).toBeDefined()
-      expect(dbStructure.tables['users']?.columns['email']?.type).toBe(
-        'varchar',
+      expect(dbStructure.tables['users']?.columns['id']?.comment).toBe(
+        'Updated primary key comment',
       )
-      expect(dbStructure.tables['users']?.columns['email']?.comment).toBe(
-        'User email address',
+      expect(dbStructure.tables['users']?.columns['username']?.comment).toBe(
+        'Updated username comment',
       )
-
-      expect(dbStructure.tables['users']?.columns['created_at']).toBeDefined()
-      expect(dbStructure.tables['users']?.columns['created_at']?.default).toBe(
-        'now()',
-      )
-
-      // Original columns should still be there
-      expect(dbStructure.tables['users']?.columns['id']).toBeDefined()
-      expect(dbStructure.tables['users']?.columns['username']).toBeDefined()
     })
 
-    it('should throw an error when adding a column that already exists', () => {
+    it('should throw an error when overriding a non-existent column', () => {
       const override: DBOverride = {
         overrides: {
           tables: {
             users: {
-              addColumns: {
-                username: {
-                  name: 'username',
-                  type: 'varchar',
-                  default: null,
-                  check: null,
-                  primary: false,
-                  unique: true,
-                  notNull: true,
-                  comment: 'Duplicate column',
+              columns: {
+                nonexistent: {
+                  comment: 'This column does not exist',
                 },
               },
             },
@@ -163,223 +131,32 @@ describe('overrideDbStructure', () => {
       }
 
       expect(() => applyOverrides(originalStructure, override)).toThrowError(
-        'Column username already exists in table users',
+        'Cannot override non-existent column nonexistent in table users',
       )
     })
   })
 
-  describe('Adding relationships', () => {
-    // For this test, we need a more complex DB structure with multiple tables
-    const structureWithPosts: DBStructure = {
-      tables: {
-        ...originalStructure.tables,
-        posts: {
-          name: 'posts',
-          comment: 'Blog posts',
-          columns: {
-            id: {
-              name: 'id',
-              type: 'uuid',
-              default: null,
-              check: null,
-              primary: true,
-              unique: true,
-              notNull: true,
-              comment: 'Primary key',
-            },
-            user_id: {
-              name: 'user_id',
-              type: 'uuid',
-              default: null,
-              check: null,
-              primary: false,
-              unique: false,
-              notNull: true,
-              comment: 'Foreign key to users',
-            },
-            title: {
-              name: 'title',
-              type: 'varchar',
-              default: null,
-              check: null,
-              primary: false,
-              unique: false,
-              notNull: true,
-              comment: 'Post title',
-            },
-          },
-          indexes: {},
-        },
-      },
-      relationships: {},
-      tableGroups: {},
-    }
-
-    it('should add a new relationship', () => {
+  describe('Table groups', () => {
+    it('should handle table groups', () => {
       const override: DBOverride = {
         overrides: {
-          addRelationships: {
-            posts_users_fk: {
-              name: 'posts_users_fk',
-              primaryTableName: 'users',
-              primaryColumnName: 'id',
-              foreignTableName: 'posts',
-              foreignColumnName: 'user_id',
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
+          tableGroups: {
+            auth: {
+              name: 'Authentication',
+              tables: ['users'],
+              comment: 'Tables related to authentication',
             },
           },
         },
       }
 
-      const { dbStructure } = applyOverrides(structureWithPosts, override)
+      const { tableGroups } = applyOverrides(originalStructure, override)
 
-      // Check if relationship was added
-      expect(dbStructure.relationships['posts_users_fk']).toBeDefined()
-      expect(dbStructure.relationships['posts_users_fk']?.cardinality).toBe(
-        'ONE_TO_MANY',
-      )
-      expect(
-        dbStructure.relationships['posts_users_fk']?.primaryTableName,
-      ).toBe('users')
-      expect(
-        dbStructure.relationships['posts_users_fk']?.foreignTableName,
-      ).toBe('posts')
-    })
-
-    it('should throw an error for duplicate relationship names', () => {
-      // First add a relationship
-      const structureWithRelationship: DBStructure = {
-        ...structureWithPosts,
-        relationships: {
-          posts_users_fk: {
-            name: 'posts_users_fk',
-            primaryTableName: 'users',
-            primaryColumnName: 'id',
-            foreignTableName: 'posts',
-            foreignColumnName: 'user_id',
-            cardinality: 'ONE_TO_MANY',
-            updateConstraint: 'CASCADE',
-            deleteConstraint: 'CASCADE',
-          },
-        },
-      }
-
-      // Try to add a relationship with the same name
-      const override: DBOverride = {
-        overrides: {
-          addRelationships: {
-            posts_users_fk: {
-              name: 'posts_users_fk',
-              primaryTableName: 'users',
-              primaryColumnName: 'id',
-              foreignTableName: 'posts',
-              foreignColumnName: 'user_id',
-              cardinality: 'ONE_TO_ONE',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
-            },
-          },
-        },
-      }
-
-      expect(() =>
-        applyOverrides(structureWithRelationship, override),
-      ).toThrowError(
-        'Relationship posts_users_fk already exists in the database structure',
-      )
-    })
-
-    it('should throw an error when primary table does not exist', () => {
-      const override: DBOverride = {
-        overrides: {
-          addRelationships: {
-            invalid_fk: {
-              name: 'invalid_fk',
-              primaryTableName: 'nonexistent',
-              primaryColumnName: 'id',
-              foreignTableName: 'posts',
-              foreignColumnName: 'user_id',
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
-            },
-          },
-        },
-      }
-
-      expect(() => applyOverrides(structureWithPosts, override)).toThrowError(
-        'Primary table nonexistent does not exist for relationship invalid_fk',
-      )
-    })
-
-    it('should throw an error when primary column does not exist', () => {
-      const override: DBOverride = {
-        overrides: {
-          addRelationships: {
-            invalid_fk: {
-              name: 'invalid_fk',
-              primaryTableName: 'users',
-              primaryColumnName: 'nonexistent',
-              foreignTableName: 'posts',
-              foreignColumnName: 'user_id',
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
-            },
-          },
-        },
-      }
-
-      expect(() => applyOverrides(structureWithPosts, override)).toThrowError(
-        'Primary column nonexistent does not exist in table users for relationship invalid_fk',
-      )
-    })
-
-    it('should throw an error when foreign table does not exist', () => {
-      const override: DBOverride = {
-        overrides: {
-          addRelationships: {
-            invalid_fk: {
-              name: 'invalid_fk',
-              primaryTableName: 'users',
-              primaryColumnName: 'id',
-              foreignTableName: 'nonexistent',
-              foreignColumnName: 'user_id',
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
-            },
-          },
-        },
-      }
-
-      expect(() => applyOverrides(structureWithPosts, override)).toThrowError(
-        'Foreign table nonexistent does not exist for relationship invalid_fk',
-      )
-    })
-
-    it('should throw an error when foreign column does not exist', () => {
-      const override: DBOverride = {
-        overrides: {
-          addRelationships: {
-            invalid_fk: {
-              name: 'invalid_fk',
-              primaryTableName: 'users',
-              primaryColumnName: 'id',
-              foreignTableName: 'posts',
-              foreignColumnName: 'nonexistent',
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
-            },
-          },
-        },
-      }
-
-      expect(() => applyOverrides(structureWithPosts, override)).toThrowError(
-        'Foreign column nonexistent does not exist in table posts for relationship invalid_fk',
+      expect(tableGroups['auth']).toBeDefined()
+      expect(tableGroups['auth']?.name).toBe('Authentication')
+      expect(tableGroups['auth']?.tables).toContain('users')
+      expect(tableGroups['auth']?.comment).toBe(
+        'Tables related to authentication',
       )
     })
   })
@@ -433,59 +210,60 @@ describe('overrideDbStructure', () => {
 
       const override: DBOverride = {
         overrides: {
-          // Override existing table
           tables: {
             users: {
               comment: 'User accounts with enhanced permissions',
-              // Add columns to existing table
-              addColumns: {
-                email: {
-                  name: 'email',
-                  type: 'varchar',
-                  default: null,
-                  check: null,
-                  primary: false,
-                  unique: true,
-                  notNull: true,
-                  comment: 'User email address',
+              columns: {
+                username: {
+                  comment: 'User login name',
+                },
+              },
+            },
+            posts: {
+              comment: 'User blog posts',
+              columns: {
+                title: {
+                  comment: 'Post headline',
                 },
               },
             },
           },
-          // Add relationship
-          addRelationships: {
-            posts_users_fk: {
-              name: 'posts_users_fk',
-              primaryTableName: 'users',
-              primaryColumnName: 'id',
-              foreignTableName: 'posts',
-              foreignColumnName: 'user_id',
-              cardinality: 'ONE_TO_MANY',
-              updateConstraint: 'CASCADE',
-              deleteConstraint: 'CASCADE',
+          tableGroups: {
+            content: {
+              name: 'Content',
+              tables: ['posts'],
+              comment: 'Content-related tables',
+            },
+            users: {
+              name: 'Users',
+              tables: ['users'],
+              comment: 'User-related tables',
             },
           },
         },
       }
 
-      const { dbStructure } = applyOverrides(
+      const { dbStructure, tableGroups } = applyOverrides(
         structureWithPostsForTest,
         override,
       )
 
-      // Check table comment was updated
       expect(dbStructure.tables['users']?.comment).toBe(
         'User accounts with enhanced permissions',
       )
+      expect(dbStructure.tables['posts']?.comment).toBe('User blog posts')
 
-      // Check new column was added
-      expect(dbStructure.tables['users']?.columns['email']).toBeDefined()
-
-      // Check relationship was added
-      expect(dbStructure.relationships['posts_users_fk']).toBeDefined()
-      expect(dbStructure.relationships['posts_users_fk']?.cardinality).toBe(
-        'ONE_TO_MANY',
+      expect(dbStructure.tables['users']?.columns['username']?.comment).toBe(
+        'User login name',
       )
+      expect(dbStructure.tables['posts']?.columns['title']?.comment).toBe(
+        'Post headline',
+      )
+
+      expect(tableGroups['content']).toBeDefined()
+      expect(tableGroups['users']).toBeDefined()
+      expect(tableGroups['content']?.tables).toContain('posts')
+      expect(tableGroups['users']?.tables).toContain('users')
     })
   })
 })

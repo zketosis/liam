@@ -7,6 +7,7 @@
     "@changesets/get-github-info": "0.6.0",
     "@changesets/types": "6.1.0",
     "@turbo/gen": "2.1.2",
+    "concurrently": "9.1.2",
     "syncpack": "13.0.3",
     "turbo": "2.1.2",
     "vercel": "41.4.1"
@@ -16,12 +17,12 @@
     "create-env-files": "([ -f .env ] || touch .env) && ([ -f .env.local ] || touch .env.local)",
     "deploy:jobs": "turbo deploy --filter=@liam-hq/jobs",
     "dev": "turbo dev",
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:syncpack-fix": "syncpack fix-mismatches",
     "fmt:syncpack-format": "syncpack format",
     "fmt:turbo": "turbo fmt",
     "gen:turbo": "turbo gen",
-    "lint": "pnpm run '/^lint:.*/'",
+    "lint": "concurrently \"pnpm:lint:*\"",
     "lint:syncpack": "syncpack lint",
     "lint:turbo": "turbo lint",
     "prebuild": "pnpm create-env-files",
@@ -33,7 +34,7 @@
     "vercel:env-pull": "vercel env pull .env",
     "vercel:link": "vercel link"
   },
-  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b",
+  "packageManager": "pnpm@9.15.9+sha512.68046141893c66fad01c079231128e9afb89ef87e2691d69e4d40eee228988295fd4682181bae55b58418c3a253bde65a505ec7c5f9403ece5cc3cd37dcf2531",
   "pnpm": {
     "overrides": {
       "node-gtts": "workspace:*"
