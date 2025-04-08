@@ -30,12 +30,12 @@
 #### Examples
 
 ```sql
-create table Book (
-  id bigint generated always as identity primary key,
-  title text not null,
-  authorId bigint references Author (id)
+create table "public"."Book" (
+  "id" bigint generated always as identity primary key,
+  "title" text not null,
+  "authorId" bigint references "public"."Author" (id)
 );
-comment on table Book is 'A list of all the books in the library.';
+comment on table "public"."Book" is 'A list of all the books in the library.';
 ```
 
 ## Structural Modeling Patterns
