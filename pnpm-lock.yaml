@@ -491,8 +491,8 @@ importers:
   frontend/packages/figma-to-css-variables:
     dependencies:
       style-dictionary:
-        specifier: 4.1.3
-        version: 4.1.3
+        specifier: 4.3.3
+        version: 4.3.3
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -4998,10 +4998,6 @@ packages:
     resolution: {integrity: sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==}
     engines: {node: '>= 6'}
 
-  commander@8.3.0:
-    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
-    engines: {node: '>= 12'}
-
   commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
@@ -8187,8 +8183,8 @@ packages:
     resolution: {integrity: sha512-Vj7sf++t5pBD637NSfkxpHSMfWaeig5+DKWLhcqIYx6mWQz5hdJTGDVMQiJcw1ZYkhs7AazKDGpRVji1LJCZUQ==}
     engines: {node: '>=18'}
 
-  path-unified@0.1.0:
-    resolution: {integrity: sha512-/Oaz9ZJforrkmFrwkR/AcvjVsCAwGSJHO0X6O6ISj8YeFbATjIEBXLDcZfnK3MO4uvCBrJTdVIxdOc79PMqSdg==}
+  path-unified@0.2.0:
+    resolution: {integrity: sha512-MNKqvrKbbbb5p7XHXV6ZAsf/1f/yJQa13S/fcX0uua8ew58Tgc6jXV+16JyAbnR/clgCH+euKDxrF2STxMHdrg==}
 
   path@0.12.7:
     resolution: {integrity: sha512-aXXC6s+1w7otVF9UletFkFcDsJeO7lSZBPUQhtb5O0xJe8LtYhj/GxldoL09bBj9+ZmE2hNoHqQSFMN5fikh4Q==}
@@ -8352,6 +8348,11 @@ packages:
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
+    hasBin: true
+
+  prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
+    engines: {node: '>=14'}
     hasBin: true
 
   pretty-ms@7.0.1:
@@ -9199,8 +9200,8 @@ packages:
     resolution: {integrity: sha512-fZtbhtvI9I48xDSywd/somNqgUHl2L2cstmXCCif0itOf96jeW18MBSyrLuNicYQVkvpOxkZtkzujiTJ9LW5Jw==}
     engines: {node: '>=10'}
 
-  style-dictionary@4.1.3:
-    resolution: {integrity: sha512-KJTkMaFbwSdSsDm6m5M6ki7oQo9vMKV37Vyj0cFpkYw6ucqQKORRQNZT0KXUubxNTtbjv2tmy9wvDSayxS0Zzg==}
+  style-dictionary@4.3.3:
+    resolution: {integrity: sha512-93ISASYmvGdKOvNHFaOZ+mVsCNQdoZzhSEq7JINE0BjMoE8zUzkwFyGDUBnfmXayHq/F4B4MCWmtjqjgHAYthw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -10090,11 +10091,6 @@ packages:
   yallist@5.0.0:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
-
-  yaml@2.7.0:
-    resolution: {integrity: sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==}
-    engines: {node: '>= 14'}
-    hasBin: true
 
   yaml@2.7.1:
     resolution: {integrity: sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ==}
@@ -15929,8 +15925,6 @@ snapshots:
 
   commander@5.1.0: {}
 
-  commander@8.3.0: {}
-
   commander@9.5.0: {}
 
   commondir@1.0.1: {}
@@ -19648,7 +19642,7 @@ snapshots:
       semver: 7.7.1
       slash: 2.0.0
       tmp: 0.0.33
-      yaml: 2.7.0
+      yaml: 2.7.1
 
   path-browserify@1.0.1: {}
 
@@ -19694,7 +19688,7 @@ snapshots:
 
   path-type@6.0.0: {}
 
-  path-unified@0.1.0: {}
+  path-unified@0.2.0: {}
 
   path@0.12.7:
     dependencies:
@@ -19845,6 +19839,8 @@ snapshots:
   prelude-ls@1.2.1: {}
 
   prettier@2.8.8: {}
+
+  prettier@3.5.3: {}
 
   pretty-ms@7.0.1:
     dependencies:
@@ -20971,7 +20967,7 @@ snapshots:
       '@tokenizer/token': 0.3.0
       peek-readable: 4.1.0
 
-  style-dictionary@4.1.3:
+  style-dictionary@4.3.3:
     dependencies:
       '@bundled-es-modules/deepmerge': 4.3.1
       '@bundled-es-modules/glob': 10.4.2
@@ -20979,11 +20975,12 @@ snapshots:
       '@zip.js/zip.js': 2.7.57
       chalk: 5.4.1
       change-case: 5.4.4
-      commander: 8.3.0
+      commander: 12.1.0
       is-plain-obj: 4.1.0
       json5: 2.2.3
       patch-package: 8.0.0
-      path-unified: 0.1.0
+      path-unified: 0.2.0
+      prettier: 3.5.3
       tinycolor2: 1.6.0
 
   style-to-js@1.1.16:
@@ -22018,8 +22015,6 @@ snapshots:
   yallist@4.0.0: {}
 
   yallist@5.0.0: {}
-
-  yaml@2.7.0: {}
 
   yaml@2.7.1: {}
 
