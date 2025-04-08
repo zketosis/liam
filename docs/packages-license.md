@@ -12083,7 +12083,7 @@ Public Domain manually approved
 
 
 <a name="langfuse-langchain"></a>
-### langfuse-langchain v3.36.0
+### langfuse-langchain v3.37.1
 #### 
 
 ##### Paths
