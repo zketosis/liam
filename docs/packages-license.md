@@ -5673,7 +5673,7 @@ Unknown manually approved
 
 
 <a name="@vercel/next"></a>
-### @vercel/next v4.7.4
+### @vercel/next v4.7.6
 #### 
 
 ##### Paths
@@ -5706,7 +5706,7 @@ Unknown manually approved
 
 
 <a name="@vercel/python"></a>
-### @vercel/python v4.7.1
+### @vercel/python v4.7.2
 #### 
 
 ##### Paths
@@ -18086,7 +18086,7 @@ Unknown manually approved
 
 
 <a name="vercel"></a>
-### vercel v41.4.1
+### vercel v41.5.0
 #### 
 
 ##### Paths
