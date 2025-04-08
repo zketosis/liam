@@ -55,6 +55,7 @@ const promptFunction = async ({ vars }: { vars: PromptVars }) => [
 const tests = [
   'file://src/fixtures/github.com/liam-hq/liam/pull/1033/fixture.yaml',
   'file://src/fixtures/github.com/liam-hq/liam/pull/1055/fixture.yaml',
+  'file://src/fixtures/github.com/liam-hq/liam/pull/1105/fixture.yaml',
 ]
 
 async function main() {
