@@ -214,6 +214,7 @@ export const generateDocsSuggestionTask = task({
         content,
         branch: payload.branchName,
         traceId,
+        reasoning: '',
       })
     }
 
@@ -228,17 +229,24 @@ export const generateSchemaMetaSuggestionTask = task({
     const result = await processGenerateSchemaMeta(payload)
     logger.info('Generated schema meta suggestion:', { result })
 
-    // Create a knowledge suggestion with the schema meta using the returned information
-    await createKnowledgeSuggestionTask.trigger({
-      projectId: result.projectId,
-      type: 'SCHEMA',
-      title: result.title,
-      path: OVERRIDE_SCHEMA_FILE_PATH,
-      content: JSON.stringify(result.overrides, null, 2),
-      branch: result.branchName,
-      traceId: result.traceId,
-      reasoning: result.reasoning || '',
-    })
+    if (result.createNeeded) {
+      // Create a knowledge suggestion with the schema meta using the returned information
+      await createKnowledgeSuggestionTask.trigger({
+        projectId: result.projectId,
+        type: 'SCHEMA',
+        title: result.title,
+        path: OVERRIDE_SCHEMA_FILE_PATH,
+        content: JSON.stringify(result.override, null, 2),
+        branch: result.branchName,
+        traceId: result.traceId,
+        reasoning: result.reasoning || '',
+      })
+      logger.info('Knowledge suggestion creation triggered')
+    } else {
+      logger.info(
+        'No schema meta update needed, skipping knowledge suggestion creation',
+      )
+    }
 
     return { result }
   },
