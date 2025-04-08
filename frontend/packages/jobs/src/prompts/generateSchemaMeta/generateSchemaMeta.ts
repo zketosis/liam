@@ -1,7 +1,7 @@
+import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
-import { ChatOpenAI } from '@langchain/openai'
 import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { type InferOutput, boolean, object, parse, string } from 'valibot'
@@ -177,13 +177,14 @@ export const generateSchemaMeta = async (
   runId: string,
   schemaFiles: string,
 ) => {
-  const evaluationModel = new ChatOpenAI({
-    model: 'o3-mini',
+  const evaluationModel = new ChatAnthropic({
+    temperature: 0.2,
+    model: 'claude-3-7-sonnet-latest',
   })
 
-  const updateModel = new ChatOpenAI({
+  const updateModel = new ChatAnthropic({
     temperature: 0.7,
-    model: 'gpt-4o-mini',
+    model: 'claude-3-7-sonnet-latest',
   })
 
   // Create evaluation chain
