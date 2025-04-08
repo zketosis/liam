@@ -22,8 +22,16 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1.12.0
+        id: app-token
+        with:
+          app-id: ${{ vars.LICENSE_CI_TRIGGER_APP_ID }}
+          private-key: ${{ secrets.LICENSE_CI_TRIGGER_APP_PRIVATE_KEY }}
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
       - uses: ./.github/actions/pnpm-setup
       - uses: ruby/setup-ruby@354a1ad156761f5ee2b7b13fa8e09943a5e8d252 # v1.229.0
         with:
@@ -55,4 +63,4 @@ jobs:
             --title "[$(date +'%Y/%m/%d')] License Report Update" \
             --body "This pull request automatically updates the license report."
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
