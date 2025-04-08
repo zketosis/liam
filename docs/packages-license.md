@@ -3689,7 +3689,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rollup/rollup-linux-x64-gnu"></a>
-### @rollup/rollup-linux-x64-gnu v4.27.3
+### @rollup/rollup-linux-x64-gnu v4.35.0
 #### 
 
 ##### Paths
@@ -3700,7 +3700,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@rollup/rollup-linux-x64-musl"></a>
-### @rollup/rollup-linux-x64-musl v4.27.3
+### @rollup/rollup-linux-x64-musl v4.39.0
 #### 
 
 ##### Paths
