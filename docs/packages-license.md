@@ -10033,7 +10033,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="fumadocs-ui"></a>
-### fumadocs-ui v15.0.15
+### fumadocs-ui v15.2.5
 #### 
 
 ##### Paths
@@ -13535,7 +13535,7 @@ Public Domain manually approved
 
 
 <a name="next-themes"></a>
-### next-themes v0.4.4
+### next-themes v0.4.6
 #### 
 
 ##### Paths
