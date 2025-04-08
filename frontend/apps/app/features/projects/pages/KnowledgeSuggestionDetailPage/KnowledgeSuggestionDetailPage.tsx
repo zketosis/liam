@@ -93,12 +93,24 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </span>
           <span className={styles.metaItem}>
             Created:{' '}
-            {new Date(suggestion.createdAt).toLocaleDateString('en-US')}
+            {new Date(
+              new Date(suggestion.createdAt).getTime() + 9 * 60 * 60 * 1000,
+            ).toLocaleString('ja-JP', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+              hour12: false,
+            })}
           </span>
           {suggestion.approvedAt && (
             <span className={styles.metaItem}>
               Approved:{' '}
-              {new Date(suggestion.approvedAt).toLocaleDateString('en-US')}
+              {new Date(
+                new Date(suggestion.createdAt).getTime() + 9 * 60 * 60 * 1000,
+              ).toLocaleString('ja-JP', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+                hour12: false,
+              })}
             </span>
           )}
         </div>

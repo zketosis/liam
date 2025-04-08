@@ -102,9 +102,14 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
                     </span>
                     <span className={styles.metaItem}>
                       Created:{' '}
-                      {new Date(suggestion.createdAt).toLocaleDateString(
-                        'en-US',
-                      )}
+                      {new Date(
+                        new Date(suggestion.createdAt).getTime() +
+                          9 * 60 * 60 * 1000,
+                      ).toLocaleString('ja-JP', {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                        hour12: false,
+                      })}
                     </span>
                   </div>
                 </Link>
