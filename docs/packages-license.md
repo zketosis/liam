@@ -12468,7 +12468,7 @@ Public Domain manually approved
 
 
 <a name="lucide-react"></a>
-### lucide-react v0.451.0
+### lucide-react v0.487.0
 #### 
 
 ##### Paths
