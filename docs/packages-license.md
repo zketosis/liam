@@ -17675,7 +17675,7 @@ Unknown manually approved
 
 
 <a name="undici"></a>
-### undici v5.28.5
+### undici v5.29.0
 #### 
 
 ##### Paths
