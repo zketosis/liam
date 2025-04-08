@@ -1,21 +1,19 @@
 import type { Callbacks } from '@langchain/core/callbacks/manager'
-import { PromptTemplate } from '@langchain/core/prompts'
+import { ChatPromptTemplate } from '@langchain/core/prompts'
+import { RunnableLambda } from '@langchain/core/runnables'
 import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
-import { docsSuggestionSchema } from './docsSuggestionSchema'
+import {
+  type DocsSuggestion,
+  type EvaluationResult,
+  docsSuggestionSchema,
+  evaluationSchema,
+} from './docsSuggestionSchema'
 
-const MIGRATION_DOCS_REVIEW_TEMPLATE = `
-You are Liam, an expert in schema design and migration strategy for this project.
-
-Your task is to analyze migration reviews and update the internal documentation files in docs/ to maintain accurate, structured, and reusable knowledge.
-
-🎯 Goal:
-Extract project-specific conventions, constraints, and patterns from the migration review that inform future schema design and migration practices.
-
-## 📁 Documentation Structure
-
-The following files need to be maintained:
+// Common documentation structure description
+const DOCS_STRUCTURE_DESCRIPTION = `
+The following files may need to be maintained:
 
 schemaPatterns.md:
 - Reusable patterns and rules for database schema design
@@ -40,6 +38,87 @@ migrationOpsContext.md:
 - Informal but recurring knowledge
 - Field/model specific patterns
 - One-time decisions that may inform future work
+`
+
+// Convert schemas to JSON format for LLM
+const evaluationJsonSchema = toJsonSchema(evaluationSchema)
+const docsSuggestionJsonSchema = toJsonSchema(docsSuggestionSchema)
+
+// Common evaluation response structure for a single file
+const fileEvaluationExample = {
+  updateNeeded: 'true/false',
+  reasoning: 'Detailed explanation of why this file needs to be updated or not',
+  suggestedChanges:
+    'If updates are needed, provide specific suggestions for what should be added or modified',
+}
+
+// Example evaluation response structure for the prompt
+const evaluationResponseExample = {
+  schemaPatterns: { ...fileEvaluationExample },
+  schemaContext: { ...fileEvaluationExample },
+  migrationPatterns: { ...fileEvaluationExample },
+  migrationOpsContext: { ...fileEvaluationExample },
+  liamrules: { ...fileEvaluationExample },
+}
+
+// Example update response structure for the prompt
+const updateResponseExample = {
+  schemaPatterns: 'Full updated content for schemaPatterns.md',
+  liamrules: 'Full updated content for .liamrules',
+}
+
+// Step 1: Evaluation template to determine which files need updates
+const EVALUATION_TEMPLATE = ChatPromptTemplate.fromTemplate(`
+You are Liam, an expert in schema design and migration strategy for this project.
+
+## Your Task
+Analyze the migration review and determine which documentation files need to be updated.
+
+## 📁 Documentation Structure
+${DOCS_STRUCTURE_DESCRIPTION}
+
+---
+
+## Migration Review
+
+<text>
+
+{reviewResult}
+
+</text>
+
+## Current Documentation
+
+
+{docsArray}
+
+---
+
+## Your Task
+For each documentation file, determine if it needs to be updated based on the migration review.
+
+Return your analysis as a JSON object with the following structure:
+<json>
+{evaluationResponseExampleJson}
+</json>
+
+Guidelines:
+- Be conservative - only mark a file for update if there's clear evidence it needs changes
+- Provide specific reasoning for each decision
+- For files that need updates, include detailed suggestedChanges with specific content to add or modify
+- Focus on project-specific insights that would improve documentation
+- Consider if the migration review contains new patterns or constraints not already documented
+`)
+
+// Step 2: Update template for generating content for files that need updates
+const UPDATE_TEMPLATE = ChatPromptTemplate.fromTemplate(`
+You are Liam, an expert in schema design and migration strategy for this project.
+
+## Your Task
+Update only the documentation files that need changes based on the evaluation results.
+
+## 📁 Documentation Structure
+${DOCS_STRUCTURE_DESCRIPTION}
 
 ---
 
@@ -49,60 +128,146 @@ Migration Review:
 Current Documentation:
 {docsArray}
 
+Evaluation Results:
+{evaluationResults}
+
 ---
 
-Please analyze the migration review and:
-1. Identify any new project-specific patterns or constraints
-2. Update relevant documentation files with new knowledge
-3. Add field/model specific insights to .liamrules
-4. Return the complete updated content for any modified files
+## Your Task
+Generate updated content ONLY for the files that need changes according to the evaluation results.
 
-Return your analysis as a JSON object with the following keys:
-// schemaPatterns
-// schemaContext
-// migrationPatterns
-// migrationOpsContext
-// liamrules
+Return your updates as a JSON object with the following structure:
+<json>
+{updateResponseExampleJson}
+</json>
 
-Each key should contain the full updated content for the respective file, or be left unchanged.
-
-Remember:
-- Only include project-specific insights
-- Be precise and intentional
+Guidelines:
+- Only include files marked as needing updates in the evaluation results
+- For each included file, provide the complete updated content
+- Omit files that don't need changes
+- Be precise and intentional in your updates
 - Focus on reusable knowledge
 - Maintain accuracy and clarity
-- Return valid JSON format
-`
-
-const docsSuggestionJsonSchema = toJsonSchema(docsSuggestionSchema)
+`)
 
 export const generateDocsSuggestion = async (
   reviewResult: string,
   docsArray: string,
   callbacks: Callbacks,
   predefinedRunId: string,
-) => {
-  const prompt = PromptTemplate.fromTemplate(MIGRATION_DOCS_REVIEW_TEMPLATE)
-  const model = new ChatOpenAI({
+): Promise<DocsSuggestion> => {
+  const evaluationModel = new ChatOpenAI({
+    model: 'o3-mini',
+  })
+
+  const updateModel = new ChatOpenAI({
     temperature: 0.7,
     model: 'gpt-4o-mini',
   })
 
-  const chain = prompt.pipe(
-    model.withStructuredOutput(docsSuggestionJsonSchema),
+  // Convert example objects to JSON strings for template use
+  const evaluationResponseExampleJson = JSON.stringify(
+    evaluationResponseExample,
+    null,
+    2,
   )
-  const response = await chain.invoke(
-    {
-      reviewResult,
-      docsArray,
-    },
-    {
-      callbacks,
-      runId: predefinedRunId,
-      tags: ['generateDocsSuggestion'],
-    },
+  const updateResponseExampleJson = JSON.stringify(
+    updateResponseExample,
+    null,
+    2,
   )
 
-  const parsedResponse = parse(docsSuggestionSchema, response)
-  return parsedResponse
+  // Create evaluation chain
+  const evaluationChain = EVALUATION_TEMPLATE.pipe(
+    evaluationModel.withStructuredOutput(evaluationJsonSchema),
+  )
+
+  // Create update chain
+  const updateChain = UPDATE_TEMPLATE.pipe(
+    updateModel.withStructuredOutput(docsSuggestionJsonSchema),
+  )
+
+  // Define input type for update step
+  type UpdateInput = {
+    reviewResult: string
+    docsArray: string
+    evaluationResults: string
+    updateResponseExampleJson: string
+  }
+
+  // Create a router function that returns different runnables based on evaluation
+  const docsSuggestionRouter = async (
+    inputs: {
+      reviewResult: string
+      docsArray: string
+      evaluationResponseExampleJson: string
+      updateResponseExampleJson: string
+    },
+    config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
+  ): Promise<DocsSuggestion> => {
+    // First, run the evaluation chain
+    const evaluationResult: EvaluationResult = await evaluationChain.invoke(
+      {
+        reviewResult: inputs.reviewResult,
+        docsArray: inputs.docsArray,
+        evaluationResponseExampleJson: inputs.evaluationResponseExampleJson,
+      },
+      config,
+    )
+
+    // Check if any files need updates
+    const needsUpdates = Object.values(evaluationResult).some(
+      (file) => file.updateNeeded,
+    )
+
+    if (needsUpdates) {
+      // Collect suggested changes for files that need updates
+      const suggestedChanges: Record<string, string> = {}
+
+      for (const [key, value] of Object.entries(evaluationResult)) {
+        if (value.updateNeeded) {
+          suggestedChanges[key] = value.suggestedChanges
+        }
+      }
+
+      // Updates are needed, generate new content for files that need changes
+      const updateInput: UpdateInput = {
+        reviewResult: inputs.reviewResult,
+        docsArray: inputs.docsArray,
+        evaluationResults: JSON.stringify(suggestedChanges, null, 2),
+        updateResponseExampleJson: inputs.updateResponseExampleJson,
+      }
+
+      const updateResult = await updateChain.invoke(updateInput, {
+        callbacks,
+        runId: predefinedRunId,
+        tags: ['generateDocsSuggestion'],
+      })
+
+      return parse(docsSuggestionSchema, updateResult)
+    }
+
+    // No updates needed, return empty object
+    return {}
+  }
+
+  // Create the router chain using RunnableLambda
+  const routerChain = new RunnableLambda({
+    func: docsSuggestionRouter,
+  })
+
+  // Prepare the inputs
+  const inputs = {
+    reviewResult,
+    docsArray,
+    evaluationResponseExampleJson,
+    updateResponseExampleJson,
+  }
+
+  // Execute the router chain
+  return await routerChain.invoke(inputs, {
+    callbacks,
+    runId: predefinedRunId,
+    tags: ['generateDocsSuggestion'],
+  })
 }
