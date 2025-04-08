@@ -33,11 +33,6 @@ migrationPatterns.md:
 migrationOpsContext.md:
 - Operational constraints on executing migrations
 - Timing, tooling, deployment risks, safety strategies
-
-.liamrules:
-- Informal but recurring knowledge
-- Field/model specific patterns
-- One-time decisions that may inform future work
 `
 
 // Convert schemas to JSON format for LLM
@@ -58,13 +53,12 @@ const evaluationResponseExample = {
   schemaContext: { ...fileEvaluationExample },
   migrationPatterns: { ...fileEvaluationExample },
   migrationOpsContext: { ...fileEvaluationExample },
-  liamrules: { ...fileEvaluationExample },
 }
 
 // Example update response structure for the prompt
 const updateResponseExample = {
   schemaPatterns: 'Full updated content for schemaPatterns.md',
-  liamrules: 'Full updated content for .liamrules',
+  migrationPatterns: 'Full updated content for migrationPatterns.md',
 }
 
 // Step 1: Evaluation template to determine which files need updates

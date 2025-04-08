@@ -13,7 +13,6 @@ export const evaluationSchema = object({
   schemaContext: fileEvaluationSchema,
   migrationPatterns: fileEvaluationSchema,
   migrationOpsContext: fileEvaluationSchema,
-  liamrules: fileEvaluationSchema,
 })
 
 // Updated schema with optional fields
@@ -22,7 +21,6 @@ export const docsSuggestionSchema = object({
   schemaContext: optional(string()),
   migrationPatterns: optional(string()),
   migrationOpsContext: optional(string()),
-  liamrules: optional(string()),
 })
 
 // Define types for easier usage

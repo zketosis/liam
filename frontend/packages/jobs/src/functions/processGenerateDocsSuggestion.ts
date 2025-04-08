@@ -9,7 +9,6 @@ export const DOC_FILES = [
   'schemaContext.md',
   'migrationPatterns.md',
   'migrationOpsContext.md',
-  '.liamrules',
 ] as const
 
 export type DocFile = (typeof DOC_FILES)[number]
