@@ -62,5 +62,6 @@ Write Postgres-compatible SQL code for Supabase migration files that:
 - Includes thorough comments explaining the purpose and expected behavior of each migration step.
 - Write all SQL in lowercase.
 - Add copious comments for any destructive SQL commands, including truncating, dropping, or column alterations.
+- **Follow the schema design patterns and rules documented in [`docs/schemaPatterns.md`](./schemaPatterns.md)** for consistent database design.
 
 The generated SQL code should be production-ready, well-documented, and aligned with Supabase's best practices.
