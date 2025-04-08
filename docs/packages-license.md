@@ -14536,7 +14536,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="path-unified"></a>
-### path-unified v0.1.0
+### path-unified v0.2.0
 #### 
 
 ##### Paths
@@ -16773,7 +16773,7 @@ Unknown manually approved
 
 
 <a name="style-dictionary"></a>
-### style-dictionary v4.1.3
+### style-dictionary v4.3.3
 #### 
 
 ##### Paths
@@ -18504,7 +18504,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="yaml"></a>
-### yaml v2.7.0
+### yaml v2.7.1
 #### 
 
 ##### Paths
