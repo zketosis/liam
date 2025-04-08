@@ -25,7 +25,7 @@ Your JSON-formatted response must contain:
     - Project Rules Consistency
     - Security or Scalability
   - "value": This field will be calculated by the system. Only provide the "kind" and "reason" fields.
-  - "reason": An explanation justifying the score provided, including an overview of identified issues. If no issues were found in a category, explicitly state that a score of 10 was given because no issues were identified.
+  - "reason": An explanation justifying the score provided, including an overview of identified issues.
 
 - Based on the findings, create an array of identified feedback in the "feedbacks" field. Each feedback item must include:
   - "kind": The feedback category, matching one of the categories used in the scores.
