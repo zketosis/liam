@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1309 MIT
+* 1308 MIT
 * 207 Apache 2.0
 * 82 ISC
 * 32 New BSD
@@ -4613,7 +4613,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@supabase/ssr"></a>
-### @supabase/ssr v0.5.2
+### @supabase/ssr v0.6.1
 #### 
 
 ##### Paths
@@ -4944,17 +4944,6 @@ LGPL-3.0-or-later permitted
 
 <a name="@types/connect"></a>
 ### @types/connect v3.4.36
-#### 
-
-##### Paths
-* /home/runner/work/liam/liam
-
-<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
-
-
-
-<a name="@types/cookie"></a>
-### @types/cookie v0.6.0
 #### 
 
 ##### Paths

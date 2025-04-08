@@ -7,7 +7,7 @@
   },
   "main": "src/index.ts",
   "dependencies": {
-    "@supabase/ssr": "0.5.2",
+    "@supabase/ssr": "0.6.1",
     "@supabase/supabase-js": "2.49.4"
   },
   "devDependencies": {
