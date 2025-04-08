@@ -4,12 +4,11 @@ description: "My eval"
 prompts:
   - prompt.yaml
 providers:
-  - openai:gpt-4o-mini
-  # - openai:chat:gpt-4o-mini
+  - anthropic:messages:claude-3-7-sonnet-latest
 
 defaultTest:
   options:
-    provider: openai:gpt-4o-mini
+    provider: anthropic:messages:claude-3-7-sonnet-latest
 
 tests:
   - vars:
@@ -18,7 +17,7 @@ tests:
       before_schema: 'file://test-files/langfuse/langfuse/pr-5672/before_schema.txt'
     assert:
       - type: cost
-        threshold: 0.008
+        threshold: 1
 
   - vars:
       # NOTE: Tokens: 12,274
@@ -28,4 +27,4 @@ tests:
       - type: llm-rubric
         value: 'The report evaluates the **risk of data loss**.'
       - type: cost
-        threshold: 0.008
+        threshold: 1

@@ -65,12 +65,12 @@ async function main() {
       defaultTest: {
         options: {
           // this is for llm-rubric
-          provider: 'openai:gpt-4o-mini',
+          provider: 'anthropic:messages:claude-3-7-sonnet-latest',
         },
       },
       providers: [
         {
-          id: 'openai:gpt-4o-mini',
+          id: 'anthropic:messages:claude-3-7-sonnet-latest',
           config: {
             response_format: {
               type: 'json_schema',
@@ -81,7 +81,6 @@ async function main() {
               },
             },
             temperature: 0.7,
-            max_tokens: 16384, // gpt-4o-mini max tokens
           },
         },
       ],

@@ -26,9 +26,11 @@ jobs:
             ${{ runner.os }}-promptfoo-
 
       - name: Run promptfoo evaluation
-        uses: promptfoo/promptfoo-action@831a73deccc6a4a0ce91e671a511a6e70fa52349 # v1.0.0
+        # FIXME: Commit supporting anthropic-api-key has not been released yet.
+        # https://github.com/promptfoo/promptfoo-action/pull/164
+        uses: promptfoo/promptfoo-action@6d53c416f2a4fae20a17ae9e300b1db968ad2ecd
         with:
-          openai-api-key: ${{ secrets.PROMPTFOO_OPENAI_API_KEY }}
+          anthropic-api-key: ${{ secrets.PROMPTFOO_ANTHROPIC_API_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           config: 'frontend/packages/migration/prompts/promptfooconfig.yaml'
           prompts: 'frontend/packages/migration/prompts/prompt.yaml'
