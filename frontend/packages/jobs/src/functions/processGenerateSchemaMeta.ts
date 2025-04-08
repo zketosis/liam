@@ -5,6 +5,10 @@ import { safeParse } from 'valibot'
 import { createClient } from '../libs/supabase'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
 import type { GenerateSchemaMetaPayload, SchemaMetaResult } from '../types'
+// Define a type that extends DBOverride with reasoning
+type DBOverrideWithReasoning = DBOverride & {
+  reasoning?: string
+}
 import { fetchSchemaFilesContent } from '../utils/githubFileUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
@@ -85,7 +89,7 @@ export const processGenerateSchemaMeta = async (
       Number(repository.installationId),
     )
 
-    const schemaMeta = await generateSchemaMeta(
+    const schemaMeta: DBOverrideWithReasoning = await generateSchemaMeta(
       overallReview.reviewComment || '',
       callbacks,
       currentSchemaMeta,
@@ -101,6 +105,7 @@ export const processGenerateSchemaMeta = async (
       branchName: overallReview.branchName, // Get branchName from overallReview
       title: `Schema meta update from PR #${Number(pullRequest.pullNumber)}`,
       traceId: predefinedRunId,
+      reasoning: schemaMeta.reasoning || '',
     }
   } catch (error) {
     console.error('Error generating schema meta:', error)
