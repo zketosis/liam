@@ -30,7 +30,7 @@
     "json-schema": "0.4.0",
     "trigger.dev": "3.3.17",
     "typescript": "5.8.3",
-    "vitest": "3.0.8"
+    "vitest": "3.1.1"
   },
   "scripts": {
     "deploy": "trigger deploy",

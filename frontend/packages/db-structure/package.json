@@ -27,7 +27,7 @@
     "json-refs": "3.0.15",
     "json-schema-to-zod": "2.6.1",
     "typescript": "5.8.3",
-    "vitest": "3.0.8"
+    "vitest": "3.1.1"
   },
   "scripts": {
     "build": "tsc && pnpm run cp:prism",
