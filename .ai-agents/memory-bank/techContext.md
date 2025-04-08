@@ -41,6 +41,12 @@
 
 The project has completed the transition from Prisma ORM to Supabase for database migrations. While some parts of the application still use the Prisma client (hence `gen:prisma` script is retained), all database schema migrations are now handled through Supabase.
 
+### Schema Enhancements
+
+Recent schema enhancements include:
+
+1. **KnowledgeSuggestion Reasoning Field**: Added a `reasoning` TEXT field to the KnowledgeSuggestion table to store the rationale behind schema metadata update suggestions. This helps users understand the context and reasoning behind suggestions, enabling more informed decisions when approving them.
+
 ### Supabase Migration Workflow
 
 The migration workflow follows Supabase's recommended practices:

@@ -11,7 +11,13 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 
 ## Recent Changes
 
-1. **Optimized KnowledgeSuggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
+1. **Added Reasoning Field to KnowledgeSuggestion**: Enhanced the KnowledgeSuggestion table to store the rationale behind schema metadata update suggestions:
+   - Created a migration to add a `reasoning` TEXT field with a default empty string value
+   - Updated the database.types.ts file to include the new field in the type definitions
+   - Modified the KnowledgeSuggestionDetailPage.tsx component to display the reasoning field when available
+   - This enhancement helps users understand the context and rationale behind schema metadata update suggestions, enabling more informed decisions when approving suggestions
+
+2. **Optimized KnowledgeSuggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
    - Implemented content comparison to check if document content has changed before creating a suggestion
    - Refactored the function into smaller, focused helper functions to reduce cognitive complexity
    - Improved type safety with proper type definitions and return types
