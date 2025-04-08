@@ -2,7 +2,7 @@
 
 
 ## Summary
-* 1307 MIT
+* 1309 MIT
 * 207 Apache 2.0
 * 82 ISC
 * 32 New BSD
@@ -7667,6 +7667,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="concurrently"></a>
+### concurrently v9.1.2
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="confbox"></a>
 ### confbox v0.1.8
 #### 
@@ -13975,7 +13986,7 @@ Public Domain manually approved
 
 
 <a name="openai"></a>
-### openai v4.86.2
+### openai v4.91.1
 #### 
 
 ##### Paths
@@ -16110,6 +16121,17 @@ BlueOak-1.0.0 permitted
 
 <a name="shebang-regex"></a>
 ### shebang-regex v3.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="shell-quote"></a>
+### shell-quote v1.8.2
 #### 
 
 ##### Paths
