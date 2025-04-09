@@ -7,7 +7,7 @@
 - The GitHub App integration is operational, automating comments and review approvals on PRs.
 - Complete review pipeline from GitHub webhook to AI review generation to PR comment posting.
 - Modular architecture with separate functions for review generation and comment posting.
-- KnowledgeSuggestion database model for storing and managing AI-generated suggestions for Schema and Docs updates.
+- KnowledgeSuggestion database model for storing and managing AI-generated suggestions for Schema and Docs updates, now with a reasoning field to provide context and rationale for suggestions.
 - Text document viewer page that renders raw text content from GitHub repositories.
 - Documentation list page that displays all GitHubDocFilePath entries for a project with links to individual document pages.
 - Supabase JS integration for database access in multiple components, including:

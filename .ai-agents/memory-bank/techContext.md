@@ -46,6 +46,12 @@ The project maintains two key documents for database migrations:
 
 These documents should be consulted when creating or reviewing database migrations to ensure adherence to project standards and best practices.
 
+### Schema Enhancements
+
+Recent schema enhancements include:
+
+1. **KnowledgeSuggestion Reasoning Field**: Added a `reasoning` TEXT field to the KnowledgeSuggestion table to store the rationale behind schema metadata update suggestions. This helps users understand the context and reasoning behind suggestions, enabling more informed decisions when approving them.
+
 ### Supabase Migration Workflow
 
 The migration workflow follows Supabase's recommended practices:

@@ -111,6 +111,17 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           )}
         </div>
 
+        {suggestion.reasoning && (
+          <div className={styles.reasoningSection}>
+            <div className={styles.header}>
+              <h2 className={styles.sectionTitle}>Reasoning</h2>
+            </div>
+            <div className={styles.reasoningContent}>
+              {suggestion.reasoning}
+            </div>
+          </div>
+        )}
+
         <div className={styles.contentSection}>
           <div className={styles.header}>
             <h2 className={styles.sectionTitle}>Content</h2>

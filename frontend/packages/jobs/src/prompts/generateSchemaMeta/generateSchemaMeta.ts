@@ -20,6 +20,17 @@ const dbOverrideJsonSchema = toJsonSchema(dbOverrideSchema)
 // Define type for evaluation result
 type EvaluationResult = InferOutput<typeof evaluationSchema>
 
+type GenerateSchemaMetaResult =
+  | {
+      updateNeeded: true
+      override: DBOverride
+      reasoning: string
+    }
+  | {
+      updateNeeded: false
+      reasoning: string
+    }
+
 // Step 1: Evaluation template to determine if updates are needed
 const EVALUATION_TEMPLATE = ChatPromptTemplate.fromTemplate(`
 You are Liam, an expert in database schema design and optimization.
@@ -176,7 +187,7 @@ export const generateSchemaMeta = async (
   currentSchemaMeta: DBOverride | null,
   runId: string,
   schemaFiles: string,
-) => {
+): Promise<GenerateSchemaMetaResult> => {
   const evaluationModel = new ChatAnthropic({
     temperature: 0.2,
     model: 'claude-3-7-sonnet-latest',
@@ -213,7 +224,7 @@ export const generateSchemaMeta = async (
   const schemaMetaRouter = async (
     inputs: EvaluationInput & { dbOverrideJsonSchema: string },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
-  ): Promise<DBOverride> => {
+  ): Promise<GenerateSchemaMetaResult> => {
     // First, run the evaluation chain
     const evaluationResult: EvaluationResult = await evaluationChain.invoke(
       {
@@ -241,20 +252,22 @@ export const generateSchemaMeta = async (
         tags: ['generateSchemaMeta'],
       })
 
-      return parse(dbOverrideSchema, updateResult)
+      // Parse the result and add the reasoning from the evaluation
+      const parsedResult = parse(dbOverrideSchema, updateResult)
+
+      // Return the result with the new structure
+      return {
+        updateNeeded: true,
+        override: parsedResult,
+        reasoning: evaluationResult.reasoning,
+      }
     }
 
-    // No update needed, return current schema metadata or create a valid empty DBOverride
-    if (currentSchemaMeta) {
-      return currentSchemaMeta
-    }
-
-    // Create a valid empty DBOverride object
     return {
-      overrides: {
-        tables: {},
-        tableGroups: {},
-      },
+      updateNeeded: false,
+      reasoning:
+        evaluationResult.reasoning ||
+        'No updates needed based on the review comments.',
     }
   }
 
