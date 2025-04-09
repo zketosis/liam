@@ -1,4 +1,10 @@
-import { clsx } from 'clsx'
+import {
+  TableDd,
+  TableDt,
+  TableHeader,
+  TableItem,
+  TableRoot,
+} from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './IndexesItem.module.css'
 
@@ -16,39 +22,37 @@ export const IndexesItem: FC<Props> = ({ index }) => {
 
   return (
     <div className={styles.wrapper}>
-      <dl className={styles.dl}>
-        <div className={styles.dlItem}>
-          <dt className={clsx(styles.dt, styles.dtOnly)}>{index.name}</dt>
-        </div>
+      <TableRoot>
+        <TableHeader>{index.name}</TableHeader>
         {index.type && index.type.toLowerCase() !== HIDE_INDEX_TYPE && (
-          <div className={styles.dlItem}>
-            <dt className={styles.dt}>Type</dt>
-            <dd className={styles.dd}>{index.type}</dd>
-          </div>
+          <TableItem>
+            <TableDt>Type</TableDt>
+            <TableDd>{index.type}</TableDd>
+          </TableItem>
         )}
         {!!index.columns.length && (
-          <div className={styles.dlItem}>
-            <dt className={styles.dt}>
+          <TableItem>
+            <TableDt>
               {index.columns.length === 1 ? 'Column' : 'Columns'}
-            </dt>
-            <dd className={styles.dd}>
+            </TableDt>
+            <TableDd>
               {index.columns.length === 1 ? (
                 index.columns[0]
               ) : (
-                <ol>
+                <ol className={styles.list}>
                   {index.columns.map((column) => (
                     <li key={column}>{column}</li>
                   ))}
                 </ol>
               )}
-            </dd>
-          </div>
+            </TableDd>
+          </TableItem>
         )}
-        <div className={styles.dlItem}>
-          <dt className={styles.dt}>Unique</dt>
-          <dd className={styles.dd}>{index.unique ? 'Yes' : 'No'}</dd>
-        </div>
-      </dl>
+        <TableItem>
+          <TableDt>Unique</TableDt>
+          <TableDd>{index.unique ? 'Yes' : 'No'}</TableDd>
+        </TableItem>
+      </TableRoot>
     </div>
   )
 }
