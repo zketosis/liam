@@ -179,20 +179,56 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
 
   // Process many-to-many relations
   for (const relation of manyToManyRelations) {
-    const joinTableName = createManyToManyJoinTableName(relation.model1, relation.model2);
+    const table_A = tables[relation.model1]
+    const table_B = tables[relation.model2]
 
-    // Create join table
-    tables[joinTableName] = createManyToManyJoinTable(joinTableName);
+    // Skip if both tables are undefined
+    if (table_A === undefined && table_B === undefined) continue
 
-    // Add relationships for the join table
-    const joinTableRelationships = createManyToManyRelationships(
-      joinTableName,
-      relation.model1,
-      relation.model2
-    );
+    // Get primary key info for model1 if table_A exists
+    const model1PrimaryKeyInfo = table_A
+      ? getPrimaryKeyInfo(table_A, dmmf.datamodel.models)
+      : null
 
-    // Add the relationships to the global relationships object
-    Object.assign(relationships, joinTableRelationships);
+    // Get primary key info for model2 if table_B exists
+    const model2PrimaryKeyInfo = table_B
+      ? getPrimaryKeyInfo(table_B, dmmf.datamodel.models)
+      : null
+    
+      if (model1PrimaryKeyInfo && model2PrimaryKeyInfo) {
+        const model1PrimaryKeyColumnType = convertToPostgresColumnType(
+          model1PrimaryKeyInfo.type,
+          null,
+          null,
+        )
+        const model2PrimaryKeyColumnType = convertToPostgresColumnType(
+          model2PrimaryKeyInfo.type,
+          null,
+          null,
+        )
+  
+        const joinTableName = createManyToManyJoinTableName(
+          relation.model1,
+          relation.model2,
+        )
+        // Create join table
+        tables[joinTableName] = createManyToManyJoinTable(
+          joinTableName,
+          model1PrimaryKeyColumnType,
+          model2PrimaryKeyColumnType,
+        )
+  
+        // Add relationships for the join table
+        const joinTableRelationships = createManyToManyRelationships(
+          joinTableName,
+          relation.model1,
+          model1PrimaryKeyInfo.name,
+          relation.model2,
+          model2PrimaryKeyInfo.name,
+        )
+        // Add the relationships to the global relationships object
+        Object.assign(relationships, joinTableRelationships)
+      }
   }   
 
   return {
@@ -285,13 +321,15 @@ function createManyToManyJoinTableName(model1: string, model2: string): string {
  */
 function createManyToManyJoinTable(
   joinTableName: string,
+  table_A_ColumnType: string,
+  table_B_ColumnType: string,
   ): Table {
   return {
     name: joinTableName,
     columns: {
       A: {
         name: 'A',
-        type: 'serial',
+        type: table_A_ColumnType,
         default: null,
         notNull: true,
         unique: false,
@@ -301,7 +339,7 @@ function createManyToManyJoinTable(
       },
       B: {
         name: 'B',
-        type: 'serial',
+        type: table_B_ColumnType,
         default: null,
         notNull: true,
         unique: false,
@@ -334,13 +372,15 @@ function createManyToManyJoinTable(
 function createManyToManyRelationships(
   joinTableName: string,
   model1: string,
+  primaryColumnNameOfA: string,
   model2: string,
+  primaryColumnNameOfB: string,
 ): Record<string, Relationship> {
   return {
     [`${joinTableName}_A_fkey`]: {
       name: `${joinTableName}_A_fkey`,
       primaryTableName: model1,
-      primaryColumnName: 'id',
+      primaryColumnName: primaryColumnNameOfA,
       foreignTableName: joinTableName,
       foreignColumnName: 'A',
       cardinality: 'ONE_TO_MANY',
@@ -350,7 +390,7 @@ function createManyToManyRelationships(
     [`${joinTableName}_B_fkey`]: {
       name: `${joinTableName}_B_fkey`,
       primaryTableName: model2,
-      primaryColumnName: 'id',
+      primaryColumnName: primaryColumnNameOfB,
       foreignTableName: joinTableName,
       foreignColumnName: 'B',
       cardinality: 'ONE_TO_MANY',
@@ -416,6 +456,32 @@ function detectAndStoreManyToManyRelation(
     }
   }
   return false // Not a many-to-many relation
+}
+
+function getPrimaryKeyInfo(table: Table, models: readonly DMMF.Model[]) {
+  const tableName = table?.name
+  const model = models.find((m) => m.name === tableName)
+
+  if (!model) {
+    return null // or throw an error if model is required
+  }
+
+  const tableIndexes = table?.indexes
+  const primaryKeyIndex = tableIndexes[`${tableName}_pkey`]
+  const primaryKeyColumnName = primaryKeyIndex?.columns[0]
+
+  if (!primaryKeyColumnName) {
+    return null // no primary key found
+  }
+
+  // Find the field in the model that matches the primary key column name
+  const primaryKeyField = model.fields.find(
+    (field) =>
+      field.name === primaryKeyColumnName ||
+      field.dbName === primaryKeyColumnName,
+  )
+
+  return primaryKeyField
 }
 
 export const processor: Processor = (str) => parsePrismaSchema(str)
