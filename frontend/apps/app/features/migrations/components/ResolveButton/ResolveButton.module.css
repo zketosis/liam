@@ -9,3 +9,8 @@
   font-size: var(--font-size-2, 0.6875rem);
   margin-bottom: var(--spacing-1, 4px);
 }
+
+.buttonWrapper {
+  position: relative;
+  display: inline-flex;
+}

@@ -61,6 +61,7 @@ async function getMigrationContents(migrationId: string) {
         description,
         suggestion,
         resolvedAt,
+        resolutionComment,
         suggestionSnippets:ReviewSuggestionSnippet (
           id,
           filename,

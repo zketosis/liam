@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { issueId } = await request.json()
+    const { issueId, resolutionComment } = await request.json()
 
     if (!issueId) {
       return NextResponse.json(
@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
       .from('ReviewIssue')
       .update({
         resolvedAt: new Date().toISOString(),
+        resolutionComment: resolutionComment || null,
         updatedAt: new Date().toISOString(),
       })
       .eq('id', issueId)

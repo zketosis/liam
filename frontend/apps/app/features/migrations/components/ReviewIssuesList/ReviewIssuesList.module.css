@@ -140,19 +140,41 @@
 
 .resolvedInfo {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   margin-top: var(--spacing-3, 12px);
   padding-top: var(--spacing-2, 8px);
   border-top: 1px solid var(--overlay-10, rgba(255, 255, 255, 0.1));
   font-size: var(--font-size-3, 0.75rem);
-  color: var(--color-success, #52c41a);
 }
 
 .resolvedIcon {
   margin-right: var(--spacing-1, 4px);
   font-weight: bold;
+  color: var(--color-success, #52c41a);
 }
 
 .resolvedText {
   color: var(--global-mute-text, #bebfc1);
+  display: flex;
+  align-items: center;
+}
+
+.resolutionComment {
+  margin-top: var(--spacing-2, 8px);
+  padding: var(--spacing-2, 8px);
+  background-color: var(--overlay-5, rgba(255, 255, 255, 0.05));
+  border-radius: var(--border-radius-sm, 4px);
+  border-left: 2px solid var(--color-success, #52c41a);
+}
+
+.resolutionCommentTitle {
+  font-weight: 600;
+  margin: 0 0 var(--spacing-1, 4px) 0;
+  color: var(--global-foreground, #fff);
+}
+
+.resolutionCommentText {
+  margin: 0;
+  color: var(--global-mute-text, #bebfc1);
+  white-space: pre-wrap;
 }

@@ -15,6 +15,7 @@ type ReviewIssue = {
   description: string
   suggestion: string
   resolvedAt?: string | null
+  resolutionComment?: string | null
   suggestionSnippets: Array<{
     id: number
     filename: string
@@ -33,11 +34,15 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
 }) => {
   const [issues, setIssues] = useState<ReviewIssue[]>(initialIssues)
 
-  const handleResolve = (issueId: number) => {
+  const handleResolve = (issueId: number, comment: string) => {
     setIssues((prevIssues) =>
       prevIssues.map((issue) =>
         issue.id === issueId
-          ? { ...issue, resolvedAt: new Date().toISOString() }
+          ? {
+              ...issue,
+              resolvedAt: new Date().toISOString(),
+              resolutionComment: comment,
+            }
           : issue,
       ),
     )
@@ -92,7 +97,8 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
                 <ResolveButton
                   issueId={issue.id}
                   isResolved={!!issue.resolvedAt}
-                  onResolve={() => handleResolve(issue.id)}
+                  resolutionComment={issue.resolutionComment}
+                  onResolve={(comment) => handleResolve(issue.id, comment)}
                 />
               </div>
             </div>
@@ -118,8 +124,23 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
               <div className={styles.resolvedInfo}>
                 <span className={styles.resolvedIcon}>✓</span>
                 <span className={styles.resolvedText}>
-                  Resolved on {new Date(issue.resolvedAt).toLocaleDateString()}
+                  Resolved on{' '}
+                  {new Date(issue.resolvedAt).toLocaleString('en-US', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                    hour12: false,
+                  })}
                 </span>
+                {issue.resolutionComment && (
+                  <div className={styles.resolutionComment}>
+                    <p className={styles.resolutionCommentTitle}>
+                      Resolution Comment:
+                    </p>
+                    <p className={styles.resolutionCommentText}>
+                      {issue.resolutionComment}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>
