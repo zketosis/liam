@@ -392,7 +392,9 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
     "description" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "suggestion" "text" NOT NULL
+    "suggestion" "text" NOT NULL,
+    "resolvedAt" timestamp(3) without time zone,
+    "resolutionComment" "text"
 );
 
 
