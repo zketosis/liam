@@ -27,14 +27,14 @@ jobs:
 
       - name: Run promptfoo
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.PROMPTFOO_ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.PROMPTFOO_OPENAI_API_KEY }}
           PROMPTFOO_EMAIL: ${{ secrets.PROMPTFOO_EMAIL }}
         id: promptfoo
         shell: bash
         run: |
           mkdir -p ~/.promptfoo
           echo "account:\n  email: ${PROMPTFOO_EMAIL}" > ~/.promptfoo/promptfoo.yaml
-          echo "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}" > .env.local
+          echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env.local
           pnpm test:prompt
           rm -f .env.local
           # check

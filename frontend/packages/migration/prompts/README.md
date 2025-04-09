@@ -2,7 +2,7 @@
 
 ### Getting Started  
 
-1. Set your `ANTHROPIC_API_KEY` environment variable, or configure the necessary keys for your chosen providers.  
+1. Set your `OPENAI_API_KEY` environment variable, or configure the necessary keys for your chosen providers.  
 
 2. Edit `promptfooconfig.yaml` to customize your setup.  
 
