@@ -1,10 +1,7 @@
+import { processOverrideContent } from '@/features/projects/actions/processOverrideContent'
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import {
-  type DBStructure,
-  applyOverrides,
-  dbOverrideSchema,
-} from '@liam-hq/db-structure'
+import type { DBStructure } from '@liam-hq/db-structure'
 import {
   type SupportedFormat,
   detectFormat,
@@ -14,37 +11,11 @@ import { getFileContent } from '@liam-hq/github'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
-import { safeParse } from 'valibot'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
-import { EditableContent } from '../../components/EditableContent/EditableContent'
 import { getOriginalDocumentContent } from '../../utils/getOriginalDocumentContent'
-import { ErdViewer } from './ErdViewer'
+import { KnowledgeContentSection } from './KnowledgeContentSection'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
-
-const processOverrideFile = async (
-  content: string,
-  dbStructure: DBStructure,
-) => {
-  const parsedOverrideContent = safeParse(dbOverrideSchema, JSON.parse(content))
-
-  if (!parsedOverrideContent.success) {
-    return {
-      result: null,
-      error: {
-        name: 'ValidationError',
-        message: 'Failed to validate schema override file.',
-        instruction:
-          'Please ensure the override file is in the correct format.',
-      },
-    }
-  }
-
-  return {
-    result: applyOverrides(dbStructure, parsedOverrideContent.output),
-    error: null,
-  }
-}
 
 type Props = {
   projectId: string
@@ -138,7 +109,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
       : { value: undefined, errors: [] }
 
   const { result } = dbStructure
-    ? await processOverrideFile(suggestion.content, dbStructure)
+    ? await processOverrideContent(suggestion.content, dbStructure)
     : { result: { dbStructure: undefined, tableGroups: {} } }
 
   return (
@@ -202,38 +173,25 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </div>
         )}
 
-        <div className={styles.columns}>
-          <div className={styles.contentSection}>
-            <div className={styles.header}>
-              <h2 className={styles.sectionTitle}>Content</h2>
-            </div>
-
-            <EditableContent
-              content={suggestion.content}
-              suggestionId={suggestion.id}
-              className={styles.codeContent}
-              originalContent={
-                !suggestion.approvedAt
-                  ? await getOriginalDocumentContent(
-                      projectId,
-                      suggestion.branchName,
-                      suggestion.path,
-                    )
-                  : null
-              }
-              isApproved={!!suggestion.approvedAt}
-            />
-          </div>
-
-          {content !== null && format !== undefined && dbStructure && (
-            <ErdViewer
-              dbStructure={dbStructure}
-              tableGroups={result?.tableGroups || {}}
-              errorObjects={errors || []}
-              defaultSidebarOpen={false}
-            />
-          )}
-        </div>
+        <KnowledgeContentSection
+          suggestionContent={suggestion.content}
+          suggestionId={suggestion.id}
+          originalContent={
+            !suggestion.approvedAt
+              ? await getOriginalDocumentContent(
+                  projectId,
+                  suggestion.branchName,
+                  suggestion.path,
+                )
+              : null
+          }
+          isApproved={!!suggestion.approvedAt}
+          dbStructure={dbStructure}
+          format={format as SupportedFormat | undefined}
+          content={content}
+          errors={errors || []}
+          tableGroups={result?.tableGroups || {}}
+        />
 
         {!suggestion.approvedAt && repository && (
           <div className={styles.actionSection}>
