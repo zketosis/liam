@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, type FC } from 'react'
 import { createClient } from '@/libs/db/client'
 import { urlgen } from '@/utils/routes'
 import { Button } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
+import { type FC, type FormEvent, useState } from 'react'
 import { Tab, Tabs } from '../../components/Tabs'
 import styles from './OrganizationDetailPage.module.css'
 
@@ -46,7 +46,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const router = useRouter()
 
-  const handleUpdate = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: FormEvent) => {
     e.preventDefault()
     if (!name) {
       setError('Organization name is required')
@@ -59,7 +59,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
 
     try {
       const supabase = await createClient()
-      
+
       const { error: updateError } = await supabase
         .from('Organization')
         .update({ name })
@@ -80,7 +80,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>{organization.name}</h1>
-      
+
       <Tabs
         tabs={[
           {

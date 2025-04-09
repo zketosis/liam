@@ -2,13 +2,13 @@ import { createClient } from '@/libs/db/server'
 
 export const getOrganizations = async () => {
   const supabase = await createClient()
-  
+
   const { data: userData, error: userError } = await supabase.auth.getUser()
   if (userError) {
     console.error('Error fetching user:', userError)
     return null
   }
-  
+
   const { data: organizations, error } = await supabase
     .from('OrganizationMember')
     .select(`
@@ -25,5 +25,5 @@ export const getOrganizations = async () => {
     return null
   }
 
-  return organizations.map(item => item.organization)
+  return organizations.map((item) => item.organization)
 }

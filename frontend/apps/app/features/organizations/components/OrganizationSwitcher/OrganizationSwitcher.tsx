@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { type FC, type MouseEvent, useEffect, useRef, useState } from 'react'
 import styles from './OrganizationSwitcher.module.css'
 
 interface Organization {
@@ -16,7 +16,7 @@ interface OrganizationSwitcherProps {
   organizations: Organization[]
 }
 
-export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
+export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
   currentOrganization,
   organizations,
 }) => {
@@ -25,8 +25,11 @@ export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
   const router = useRouter()
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event: globalThis.MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false)
       }
     }
@@ -39,7 +42,11 @@ export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
 
   return (
     <div className={styles.container} ref={dropdownRef}>
-      <div className={styles.currentOrg} onClick={() => setIsOpen(!isOpen)}>
+      <button
+        type="button"
+        className={styles.currentOrg}
+        onClick={() => setIsOpen(!isOpen)}
+      >
         <span>{currentOrganization.name}</span>
         <svg
           className={`${styles.arrow} ${isOpen ? styles.arrowUp : ''}`}
@@ -48,15 +55,23 @@ export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
           viewBox="0 0 12 6"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
         >
-          <path d="M1 1L6 5L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <title>Toggle dropdown</title>
+          <path
+            d="M1 1L6 5L11 1"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
-      </div>
-      
-      <Link 
-        href={urlgen('organizations/[organizationId]', { 
-          organizationId: `${currentOrganization.id}` 
-        })} 
+      </button>
+
+      <Link
+        href={urlgen('organizations/[organizationId]', {
+          organizationId: `${currentOrganization.id}`,
+        })}
         className={styles.settingsButton}
       >
         <svg
@@ -65,7 +80,9 @@ export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
         >
+          <title>Organization settings</title>
           <path
             d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
             stroke="currentColor"
@@ -86,7 +103,8 @@ export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
       {isOpen && (
         <div className={styles.dropdown}>
           {organizations.map((org) => (
-            <div
+            <button
+              type="button"
               key={org.id}
               className={`${styles.dropdownItem} ${
                 org.id === currentOrganization.id ? styles.active : ''
@@ -99,7 +117,7 @@ export const OrganizationSwitcher: React.FC<OrganizationSwitcherProps> = ({
               }}
             >
               {org.name}
-            </div>
+            </button>
           ))}
           <Link href={urlgen('organizations/new')} className={styles.createNew}>
             Create New Organization

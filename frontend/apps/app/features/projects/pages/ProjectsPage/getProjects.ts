@@ -7,7 +7,7 @@ export const getProjects = async (organizationId?: number) => {
     .from('Project')
     .select('id, name, createdAt, organizationId')
     .order('id', { ascending: false })
-  
+
   if (organizationId) {
     query = query.eq('organizationId', organizationId)
   }

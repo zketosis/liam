@@ -2,11 +2,11 @@ import { createClient } from '@/libs/db/server'
 
 export const getOrganizationDetails = async (organizationId: string) => {
   const supabase = await createClient()
-  
+
   const { data: organization, error } = await supabase
     .from('Organization')
     .select('*')
-    .eq('id', organizationId)
+    .eq('id', Number.parseInt(organizationId, 10))
     .single()
 
   if (error) {
@@ -19,7 +19,7 @@ export const getOrganizationDetails = async (organizationId: string) => {
 
 export const getOrganizationMembers = async (organizationId: string) => {
   const supabase = await createClient()
-  
+
   const { data: members, error } = await supabase
     .from('OrganizationMember')
     .select(`
@@ -32,7 +32,7 @@ export const getOrganizationMembers = async (organizationId: string) => {
         email
       )
     `)
-    .eq('organizationId', organizationId)
+    .eq('organizationId', Number.parseInt(organizationId, 10))
 
   if (error) {
     console.error('Error fetching organization members:', error)
@@ -44,7 +44,7 @@ export const getOrganizationMembers = async (organizationId: string) => {
 
 export const getOrganizationInvites = async (organizationId: string) => {
   const supabase = await createClient()
-  
+
   const { data: invites, error } = await supabase
     .from('MembershipInvites')
     .select(`
@@ -57,7 +57,7 @@ export const getOrganizationInvites = async (organizationId: string) => {
         email
       )
     `)
-    .eq('organizationId', organizationId)
+    .eq('organizationId', Number.parseInt(organizationId, 10))
 
   if (error) {
     console.error('Error fetching organization invites:', error)

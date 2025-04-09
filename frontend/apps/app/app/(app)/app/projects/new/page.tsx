@@ -24,11 +24,17 @@ export default async function Page() {
     console.error('Error fetching organization members:', orgError)
   }
 
-  const organizationId = organizationMembers && organizationMembers.length > 0 
-    ? organizationMembers[0].organizationId 
-    : undefined
+  const organizationId =
+    organizationMembers && organizationMembers.length > 0
+      ? organizationMembers[0].organizationId
+      : undefined
 
   const { installations } = await getInstallations(data.session)
 
-  return <ProjectNewPage installations={installations} organizationId={organizationId} />
+  return (
+    <ProjectNewPage
+      installations={installations}
+      organizationId={organizationId}
+    />
+  )
 }

@@ -6,8 +6,10 @@ export type RouteDefinitions = {
   'projects/[projectId]/migrations': (params: { projectId: string }) => string
   'projects/[projectId]/docs': (params: { projectId: string }) => string
   'organizations/new': string
-  'organizations': string
-  'organizations/[organizationId]': (params: { organizationId: string }) => string
+  organizations: string
+  'organizations/[organizationId]': (params: {
+    organizationId: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]': (params: {
     projectId: string
     branchOrCommit: string
@@ -39,7 +41,7 @@ export const routeDefinitions: RouteDefinitions = {
   projects: '/app/projects',
   'projects/new': '/app/projects/new',
   'organizations/new': '/app/organizations/new',
-  'organizations': '/app/organizations',
+  organizations: '/app/organizations',
   'organizations/[organizationId]': ({ organizationId }) => {
     return `/app/organizations/${organizationId}`
   },

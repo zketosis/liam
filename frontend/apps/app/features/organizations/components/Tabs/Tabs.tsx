@@ -26,6 +26,7 @@ export const Tabs: FC<TabsProps> = ({ tabs, defaultTab }) => {
       <div className={styles.tabList}>
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             className={`${styles.tabTrigger} ${activeTab === tab.id ? styles.active : ''}`}
             onClick={() => setActiveTab(tab.id)}

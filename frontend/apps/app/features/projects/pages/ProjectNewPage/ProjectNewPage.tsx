@@ -8,11 +8,17 @@ type Props = {
   organizationId?: number
 }
 
-export const ProjectNewPage: FC<Props> = ({ installations, organizationId }) => {
+export const ProjectNewPage: FC<Props> = ({
+  installations,
+  organizationId,
+}) => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Add a Project</h1>
-      <InstallationSelector installations={installations} organizationId={organizationId} />
+      <InstallationSelector
+        installations={installations}
+        organizationId={organizationId}
+      />
     </div>
   )
 }

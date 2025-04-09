@@ -1,10 +1,10 @@
 'use client'
 
-import { Button } from '@liam-hq/ui'
 import { createClient } from '@/libs/db/client'
 import { urlgen } from '@/utils/routes'
+import { Button } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
-import { type FC, useState } from 'react'
+import { type FC, type FormEvent, useState } from 'react'
 import styles from './OrganizationNewPage.module.css'
 
 export const OrganizationNewPage: FC = () => {
@@ -13,7 +13,41 @@ export const OrganizationNewPage: FC = () => {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const createOrg = async (supabase: any) => {
+    const { data, error } = await supabase
+      .from('Organization')
+      .insert({ name })
+      .select('id')
+      .single()
+    
+    if (error) throw error
+    return data
+  }
+
+  const addUserToOrg = async (supabase: any, userId: string, organizationId: number) => {
+    const { error } = await supabase
+      .from('OrganizationMember')
+      .insert({
+        userId,
+        organizationId,
+        status: 'ACTIVE',
+      })
+    
+    if (error) throw error
+  }
+
+  const checkProjects = async (supabase: any, organizationId: number) => {
+    const { data, error } = await supabase
+      .from('Project')
+      .select('id')
+      .eq('organizationId', organizationId)
+      .limit(1)
+    
+    if (error) throw error
+    return data
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!name) {
       setError('Organization name is required')
@@ -26,40 +60,18 @@ export const OrganizationNewPage: FC = () => {
     try {
       const supabase = await createClient()
       
-      const { data: organization, error: orgError } = await supabase
-        .from('Organization')
-        .insert({ name })
-        .select('id')
-        .single()
-
-      if (orgError) throw orgError
+      const organization = await createOrg(supabase)
 
       const { data: userData, error: userError } = await supabase.auth.getUser()
       if (userError) throw userError
 
-      const { error: memberError } = await supabase
-        .from('OrganizationMember')
-        .insert({
-          userId: userData.user.id,
-          organizationId: organization.id,
-          status: 'ACTIVE'
-        })
+      await addUserToOrg(supabase, userData.user.id, organization.id)
 
-      if (memberError) throw memberError
+      const projects = await checkProjects(supabase, organization.id)
 
-      const { data: projects, error: projectsError } = await supabase
-        .from('Project')
-        .select('id')
-        .eq('organizationId', organization.id)
-        .limit(1)
-
-      if (projectsError) throw projectsError
-
-      if (projects && projects.length > 0) {
-        router.push(urlgen('projects'))
-      } else {
-        router.push(urlgen('projects/new'))
-      }
+      router.push(projects && projects.length > 0 
+        ? urlgen('projects') 
+        : urlgen('projects/new'))
     } catch (err) {
       console.error('Error creating organization:', err)
       setError('Failed to create organization. Please try again.')

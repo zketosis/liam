@@ -1,10 +1,13 @@
+import { OrganizationSwitcher } from '@/features/organizations/components/OrganizationSwitcher'
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import type { FC } from 'react'
 import styles from './ProjectsPage.module.css'
+import {
+  getCurrentOrganization,
+  getUserOrganizations,
+} from './getCurrentOrganization'
 import { getProjects } from './getProjects'
-import { getCurrentOrganization, getUserOrganizations } from './getCurrentOrganization'
-import { OrganizationSwitcher } from '@/features/organizations/components/OrganizationSwitcher'
 
 interface Organization {
   id: number
@@ -22,7 +25,7 @@ export const ProjectsPage: FC = async () => {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Projects</h1>
           {currentOrganization && organizations && (
-            <OrganizationSwitcher 
+            <OrganizationSwitcher
               currentOrganization={currentOrganization as Organization}
               organizations={organizations as Organization[]}
             />

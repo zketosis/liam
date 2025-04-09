@@ -2,13 +2,13 @@ import { createClient } from '@/libs/db/server'
 
 export const getCurrentOrganization = async () => {
   const supabase = await createClient()
-  
+
   const { data: userData, error: userError } = await supabase.auth.getUser()
   if (userError) {
     console.error('Error fetching user:', userError)
     return null
   }
-  
+
   const { data: organizationMembers, error } = await supabase
     .from('OrganizationMember')
     .select(`
@@ -34,13 +34,13 @@ export const getCurrentOrganization = async () => {
 
 export const getUserOrganizations = async () => {
   const supabase = await createClient()
-  
+
   const { data: userData, error: userError } = await supabase.auth.getUser()
   if (userError) {
     console.error('Error fetching user:', userError)
     return null
   }
-  
+
   const { data: organizationMembers, error } = await supabase
     .from('OrganizationMember')
     .select(`
@@ -57,5 +57,5 @@ export const getUserOrganizations = async () => {
     return null
   }
 
-  return organizationMembers.map(item => item.organization)
+  return organizationMembers.map((item) => item.organization)
 }

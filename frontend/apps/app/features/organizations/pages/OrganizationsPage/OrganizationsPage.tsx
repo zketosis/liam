@@ -1,17 +1,22 @@
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
-import type { FC } from 'react'
+import type { FC, ReactNode } from 'react'
 import styles from './OrganizationsPage.module.css'
 import { getOrganizations } from './getOrganizations'
 
-export const OrganizationsPage: FC<{ children?: React.ReactNode }> = async () => {
+export const OrganizationsPage: FC<{
+  children?: ReactNode
+}> = async () => {
   const organizations = await getOrganizations()
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Organizations</h1>
-        <Link href={urlgen('organizations/new')} className={styles.createButton}>
+        <Link
+          href={urlgen('organizations/new')}
+          className={styles.createButton}
+        >
           Create New Organization
         </Link>
       </div>

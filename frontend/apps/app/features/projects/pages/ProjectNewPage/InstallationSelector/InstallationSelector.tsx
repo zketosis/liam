@@ -21,7 +21,10 @@ type Props = {
   organizationId?: number
 }
 
-export const InstallationSelector: FC<Props> = ({ installations, organizationId }) => {
+export const InstallationSelector: FC<Props> = ({
+  installations,
+  organizationId,
+}) => {
   const [selectedInstallation, setSelectedInstallation] =
     useState<Installation | null>(null)
   const [repositories, setRepositories] = useState<Repository[]>([])
@@ -77,7 +80,7 @@ export const InstallationSelector: FC<Props> = ({ installations, organizationId 
           'installationId',
           selectedInstallation?.id.toString() || '',
         )
-        
+
         if (organizationId) {
           formData.set('organizationId', organizationId.toString())
         }
