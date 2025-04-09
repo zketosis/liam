@@ -39,13 +39,6 @@ describe('overrideDbStructure', () => {
             type: '',
           },
         },
-        constraints: {
-          PRIMARY: {
-            type: 'PRIMARY KEY',
-            name: 'PRIMARY',
-            columnNames: ['id'],
-          },
-        },
       },
     },
     relationships: {
@@ -143,120 +136,8 @@ describe('overrideDbStructure', () => {
     })
   })
 
-<<<<<<< HEAD
-  describe('Adding constraints to existing tables', () => {
-    it('should add new columns to an existing table', () => {
-      const override: DBOverride = {
-        overrides: {
-          tables: {
-            users: {
-              addConstraints: {
-                username_UNIQUE: {
-                  type: 'UNIQUE',
-                  name: 'username_UNIQUE',
-                  columnNames: ['username'],
-                },
-              },
-            },
-          },
-        },
-      }
-
-      const { dbStructure } = applyOverrides(originalStructure, override)
-
-      // Check new constraints were added
-      expect(
-        dbStructure.tables['users']?.constraints['username_UNIQUE'],
-      ).toBeDefined()
-      expect(
-        dbStructure.tables['users']?.constraints['username_UNIQUE'],
-      ).toStrictEqual({
-        type: 'UNIQUE',
-        name: 'username_UNIQUE',
-        columnNames: ['username'],
-      })
-
-      // Original constraints should still be there
-      expect(dbStructure.tables['users']?.constraints['PRIMARY']).toBeDefined()
-    })
-
-    it('should throw an error when adding a constraint that already exists', () => {
-      const override: DBOverride = {
-        overrides: {
-          tables: {
-            users: {
-              comment: 'User account',
-              addConstraints: {
-                PRIMARY: {
-                  type: 'PRIMARY KEY',
-                  name: 'PRIMARY',
-                  columnNames: ['id'],
-                },
-              },
-            },
-          },
-        },
-      }
-
-      expect(() => applyOverrides(originalStructure, override)).toThrowError(
-        'Constraint PRIMARY already exists in the database structure',
-      )
-    })
-  })
-
-  describe('Adding relationships', () => {
-    // For this test, we need a more complex DB structure with multiple tables
-    const structureWithPosts: DBStructure = {
-      tables: {
-        ...originalStructure.tables,
-        posts: {
-          name: 'posts',
-          comment: 'Blog posts',
-          columns: {
-            id: {
-              name: 'id',
-              type: 'uuid',
-              default: null,
-              check: null,
-              primary: true,
-              unique: true,
-              notNull: true,
-              comment: 'Primary key',
-            },
-            user_id: {
-              name: 'user_id',
-              type: 'uuid',
-              default: null,
-              check: null,
-              primary: false,
-              unique: false,
-              notNull: true,
-              comment: 'Foreign key to users',
-            },
-            title: {
-              name: 'title',
-              type: 'varchar',
-              default: null,
-              check: null,
-              primary: false,
-              unique: false,
-              notNull: true,
-              comment: 'Post title',
-            },
-          },
-          indexes: {},
-          constraints: {},
-        },
-      },
-      relationships: {},
-      tableGroups: {},
-    }
-
-    it('should add a new relationship', () => {
-=======
   describe('Table groups', () => {
     it('should handle table groups', () => {
->>>>>>> main
       const override: DBOverride = {
         overrides: {
           tableGroups: {
@@ -321,7 +202,6 @@ describe('overrideDbStructure', () => {
               },
             },
             indexes: {},
-            constraints: {},
           },
         },
         relationships: {},
@@ -344,14 +224,6 @@ describe('overrideDbStructure', () => {
               columns: {
                 title: {
                   comment: 'Post headline',
-                },
-              },
-              // Add constraints to existing table
-              addConstraints: {
-                username_UNIQUE: {
-                  type: 'UNIQUE',
-                  name: 'username_UNIQUE',
-                  columnNames: ['username'],
                 },
               },
             },
@@ -381,23 +253,8 @@ describe('overrideDbStructure', () => {
       )
       expect(dbStructure.tables['posts']?.comment).toBe('User blog posts')
 
-<<<<<<< HEAD
-      // Check new column was added
-      expect(dbStructure.tables['users']?.columns['email']).toBeDefined()
-
-      // Check new constraint was added
-      expect(
-        dbStructure.tables['users']?.constraints['username_UNIQUE'],
-      ).toBeDefined()
-
-      // Check relationship was added
-      expect(dbStructure.relationships['posts_users_fk']).toBeDefined()
-      expect(dbStructure.relationships['posts_users_fk']?.cardinality).toBe(
-        'ONE_TO_MANY',
-=======
       expect(dbStructure.tables['users']?.columns['username']?.comment).toBe(
         'User login name',
->>>>>>> main
       )
       expect(dbStructure.tables['posts']?.columns['title']?.comment).toBe(
         'Post headline',

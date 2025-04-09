@@ -3,12 +3,6 @@ import {
   type DBStructure,
   type TableGroup,
   columnNameSchema,
-<<<<<<< HEAD
-  columnSchema,
-  constraintNameSchema,
-  constraintSchema,
-=======
->>>>>>> main
   dbStructureSchema,
   tableGroupNameSchema,
   tableGroupSchema,
@@ -20,21 +14,9 @@ const columnOverrideSchema = v.object({
 })
 export type ColumnOverride = v.InferOutput<typeof columnOverrideSchema>
 
-<<<<<<< HEAD
-// Schema for adding constraints to an existing table
-const addConstraintsSchema = v.record(constraintNameSchema, constraintSchema)
-export type AddConstraints = v.InferOutput<typeof addConstraintsSchema>
-
-// Schema for table overrides including the ability to add columns
-const tableOverrideSchema = v.object({
-  comment: v.optional(v.nullable(v.string())),
-  addColumns: v.optional(addColumnsSchema),
-  addConstraints: v.optional(addConstraintsSchema),
-=======
 const tableOverrideSchema = v.object({
   comment: v.optional(v.nullable(v.string())),
   columns: v.optional(v.record(columnNameSchema, columnOverrideSchema)),
->>>>>>> main
 })
 export type TableOverride = v.InferOutput<typeof tableOverrideSchema>
 
@@ -54,16 +36,8 @@ export type DBOverride = v.InferOutput<typeof dbOverrideSchema>
 /**
  * Applies override definitions to the existing DB structure.
  * This function will:
-<<<<<<< HEAD
- * 1. Apply overrides to existing tables
- * 1.1. Replace comments
- * 1.2. Add new columns
- * 1.3. Add new constraints
- * 2. Add new relationships
-=======
  * 1. Apply overrides to existing tables (e.g., replacing comments)
  * 2. Apply overrides to existing columns (e.g., replacing comments)
->>>>>>> main
  * 3. Process and merge table groups from both original structure and overrides
  * @param originalStructure The original DB structure
  * @param override The override definitions
@@ -111,20 +85,6 @@ export function applyOverrides(
             result.tables[tableName].columns[columnName].comment =
               columnOverride.comment
           }
-        }
-      }
-
-      // Add new constraints
-      if (tableOverride.addConstraints) {
-        for (const [constraintName, constraint] of Object.entries(
-          tableOverride.addConstraints,
-        )) {
-          if (result.tables[tableName].constraints[constraintName]) {
-            throw new Error(
-              `Constraint ${constraintName} already exists in the database structure`,
-            )
-          }
-          result.tables[tableName].constraints[constraintName] = constraint
         }
       }
     }
