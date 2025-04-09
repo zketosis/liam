@@ -177,6 +177,24 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     table.indexes[indexInfo.name] = indexInfo
   }
 
+  // Process many-to-many relations
+  for (const relation of manyToManyRelations) {
+    const joinTableName = createManyToManyJoinTableName(relation.model1, relation.model2);
+
+    // Create join table
+    tables[joinTableName] = createManyToManyJoinTable(joinTableName);
+
+    // Add relationships for the join table
+    const joinTableRelationships = createManyToManyRelationships(
+      joinTableName,
+      relation.model1,
+      relation.model2
+    );
+
+    // Add the relationships to the global relationships object
+    Object.assign(relationships, joinTableRelationships);
+  }   
+
   return {
     value: {
       tables,
@@ -252,6 +270,93 @@ function normalizeConstraintName(constraint: string): ForeignKeyConstraint {
       return 'SET_DEFAULT'
     default:
       return 'NO_ACTION'
+  }
+}
+
+/**
+ * Creates the name for a many-to-many join table
+ */
+function createManyToManyJoinTableName(model1: string, model2: string): string {
+  return `_${model1}To${model2}`
+}
+
+/**
+ * Creates a join table for a many-to-many relationship
+ */
+function createManyToManyJoinTable(
+  joinTableName: string,
+  ): Table {
+  return {
+    name: joinTableName,
+    columns: {
+      A: {
+        name: 'A',
+        type: 'serial',
+        default: null,
+        notNull: true,
+        unique: false,
+        primary: false,
+        comment: null,
+        check: null,
+      },
+      B: {
+        name: 'B',
+        type: 'serial',
+        default: null,
+        notNull: true,
+        unique: false,
+        primary: false,
+        comment: null,
+        check: null,
+      },
+    },
+    comment: null,
+    indexes: {
+      [`${joinTableName}_AB_pkey`]: {
+        name: `${joinTableName}_AB_pkey`,
+        unique: true,
+        columns: ['A', 'B'],
+        type: '',
+      },
+      [`${joinTableName}_B_index`]: {
+        name: `${joinTableName}_B_index`,
+        unique: false,
+        columns: ['B'],
+        type: '',
+      },
+    },
+  }
+}
+
+/**
+ * Creates relationships for a many-to-many join table
+ */
+function createManyToManyRelationships(
+  joinTableName: string,
+  model1: string,
+  model2: string,
+): Record<string, Relationship> {
+  return {
+    [`${joinTableName}_A_fkey`]: {
+      name: `${joinTableName}_A_fkey`,
+      primaryTableName: model1,
+      primaryColumnName: 'id',
+      foreignTableName: joinTableName,
+      foreignColumnName: 'A',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'CASCADE',
+      deleteConstraint: 'CASCADE',
+    },
+    [`${joinTableName}_B_fkey`]: {
+      name: `${joinTableName}_B_fkey`,
+      primaryTableName: model2,
+      primaryColumnName: 'id',
+      foreignTableName: joinTableName,
+      foreignColumnName: 'B',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'CASCADE',
+      deleteConstraint: 'CASCADE',
+    },
   }
 }
 
