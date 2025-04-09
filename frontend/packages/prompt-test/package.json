@@ -9,9 +9,11 @@
     "@liam-hq/configs": "workspace:*",
     "@liam-hq/jobs": "workspace:*",
     "dotenv": "16.4.7",
-    "promptfoo": "0.107.7",
+    "langfuse": "3.37.1",
+    "langfuse-langchain": "3.37.1",
     "tsx": "4.19.3",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "yaml": "2.7.1"
   },
   "scripts": {
     "fmt": "concurrently \"pnpm:fmt:*\"",
