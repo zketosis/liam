@@ -2,8 +2,8 @@
 
 ## Technologies Used
 - **AI Components**: Utilized for analyzing migration impacts and providing intelligent suggestions.
-- **LangChain**: Framework for developing applications powered by language models, used for AI review generation and schema metadata suggestions.
-- **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions.
+- **LangChain**: Framework for developing applications powered by language models, used for AI review generation and schema metadata suggestions. The project uses LangChain's ChatOpenAI integration for all prompt generators.
+- **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions. The project specifically uses the 'o3-mini-2025-01-31' model for all prompt generators.
 - **Trigger.dev**: Task orchestration platform used for implementing the review pipeline and knowledge suggestion tasks.
 - **GitHub App**: Integrated to automate comments and review approvals on PRs, with enhanced API usage for fetching PR descriptions and comments.
 - **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins.
@@ -45,6 +45,12 @@ The project maintains two key documents for database migrations:
 2. **Schema Patterns** (`docs/schemaPatterns.md`): Defines reusable patterns and rules for database schema design, including naming conventions, structural modeling patterns, and preferred types. This document ensures consistency in database design across the project.
 
 These documents should be consulted when creating or reviewing database migrations to ensure adherence to project standards and best practices.
+
+### Schema Enhancements
+
+Recent schema enhancements include:
+
+1. **KnowledgeSuggestion Reasoning Field**: Added a `reasoning` TEXT field to the KnowledgeSuggestion table to store the rationale behind schema metadata update suggestions. This helps users understand the context and reasoning behind suggestions, enabling more informed decisions when approving them.
 
 ### Supabase Migration Workflow
 

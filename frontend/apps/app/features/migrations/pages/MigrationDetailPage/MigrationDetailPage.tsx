@@ -17,6 +17,8 @@ import styles from './MigrationDetailPage.module.css'
 
 type Props = {
   migrationId: string
+  projectId: string
+  branchOrCommit: string
 }
 
 async function getMigrationContents(migrationId: string) {
@@ -151,11 +153,13 @@ async function getMigrationContents(migrationId: string) {
   }
 }
 
-export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
+export const MigrationDetailPage: FC<Props> = async ({
+  migrationId,
+  projectId,
+  branchOrCommit,
+}) => {
   const { migration, overallReview, erdLinks } =
     await getMigrationContents(migrationId)
-
-  const projectId = overallReview.projectId
 
   const formattedReviewDate = overallReview.reviewedAt
     ? new Date(overallReview.reviewedAt).toLocaleDateString('en-US')
@@ -163,14 +167,15 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
   return (
     <main className={styles.wrapper}>
-      {projectId && (
-        <Link
-          href={urlgen('projects/[projectId]', { projectId: `${projectId}` })}
-          className={styles.backLink}
-        >
-          ← Back to Project Detail
-        </Link>
-      )}
+      <Link
+        href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
+          projectId,
+          branchOrCommit,
+        })}
+        className={styles.backLink}
+      >
+        ← Back to Project Detail
+      </Link>
 
       <div className={styles.heading}>
         <h1 className={styles.title}>{migration.title}</h1>

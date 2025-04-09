@@ -11,6 +11,7 @@ type CreateKnowledgeSuggestionPayload = {
   content: string
   branch: string
   traceId?: string
+  reasoning?: string
 }
 
 type CreateKnowledgeSuggestionResult = {
@@ -171,6 +172,7 @@ export const processCreateKnowledgeSuggestion = async (
         projectId,
         branchName: branch,
         traceId: traceId || null,
+        reasoning: payload.reasoning || null,
         updatedAt: now,
       })
       .select()
