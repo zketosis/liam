@@ -13,7 +13,22 @@ export default async function Page() {
     return notFound()
   }
 
+  const { data: organizationMembers, error: orgError } = await supabase
+    .from('OrganizationMember')
+    .select('organizationId')
+    .eq('userId', data.session.user.id)
+    .eq('status', 'ACTIVE')
+    .limit(1)
+
+  if (orgError) {
+    console.error('Error fetching organization members:', orgError)
+  }
+
+  const organizationId = organizationMembers && organizationMembers.length > 0 
+    ? organizationMembers[0].organizationId 
+    : undefined
+
   const { installations } = await getInstallations(data.session)
 
-  return <ProjectNewPage installations={installations} />
+  return <ProjectNewPage installations={installations} organizationId={organizationId} />
 }

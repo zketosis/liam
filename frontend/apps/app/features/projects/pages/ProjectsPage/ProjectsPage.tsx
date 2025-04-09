@@ -3,14 +3,31 @@ import Link from 'next/link'
 import type { FC } from 'react'
 import styles from './ProjectsPage.module.css'
 import { getProjects } from './getProjects'
+import { getCurrentOrganization, getUserOrganizations } from './getCurrentOrganization'
+import { OrganizationSwitcher } from '@/features/organizations/components/OrganizationSwitcher'
+
+interface Organization {
+  id: number
+  name: string
+}
 
 export const ProjectsPage: FC = async () => {
-  const projects = await getProjects()
+  const currentOrganization = await getCurrentOrganization()
+  const organizations = await getUserOrganizations()
+  const projects = await getProjects(currentOrganization?.id)
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Projects</h1>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.title}>Projects</h1>
+          {currentOrganization && organizations && (
+            <OrganizationSwitcher 
+              currentOrganization={currentOrganization as Organization}
+              organizations={organizations as Organization[]}
+            />
+          )}
+        </div>
         <Link href={urlgen('projects/new')} className={styles.createButton}>
           Create New Project
         </Link>

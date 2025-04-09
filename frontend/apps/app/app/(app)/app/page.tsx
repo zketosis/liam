@@ -10,6 +10,21 @@ export default async function Page() {
     redirect(urlgen('login'))
   }
 
+  const { data: organizationMembers, error: orgError } = await supabase
+    .from('OrganizationMember')
+    .select('organizationId')
+    .eq('userId', data.user.id)
+    .eq('status', 'ACTIVE')
+    .limit(1)
+
+  if (orgError) {
+    console.error('Error fetching organization members:', orgError)
+  }
+
+  if (!organizationMembers || organizationMembers.length === 0) {
+    redirect(urlgen('organizations/new'))
+  }
+
   const { data: projects } = await supabase
     .from('Project')
     .select('id')
