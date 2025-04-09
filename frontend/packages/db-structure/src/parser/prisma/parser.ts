@@ -131,34 +131,34 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         (field.relationToFields?.length ?? 0) > 0 &&
         field.relationFromFields?.[0] &&
         (field.relationFromFields?.length ?? 0) > 0
-      
+
       // Get the column names with fallback to empty string
       const primaryColumnName = field.relationToFields?.[0] ?? ''
       const foreignColumnName = field.relationFromFields?.[0] ?? ''
 
       const relationship: Relationship = isTargetField
-      ? {
-          name: field.relationName,
-          primaryTableName: field.type,
-          primaryColumnName,
-          foreignTableName: model.name,
-          foreignColumnName,
-          cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: normalizeConstraintName(
-            field.relationOnDelete ?? '',
-          ),
-        }
-      : {
-          name: field.relationName,
-          primaryTableName: existingRelationship?.primaryTableName ?? '',
-          primaryColumnName: existingRelationship?.primaryColumnName ?? '',
-          foreignTableName: existingRelationship?.foreignTableName ?? '',
-          foreignColumnName: existingRelationship?.foreignColumnName ?? '',
-          cardinality: field.isList ? 'ONE_TO_MANY' : 'ONE_TO_ONE',
-          updateConstraint: 'NO_ACTION',
-          deleteConstraint: 'NO_ACTION',
-        }
+        ? {
+            name: field.relationName,
+            primaryTableName: field.type,
+            primaryColumnName,
+            foreignTableName: model.name,
+            foreignColumnName,
+            cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
+            updateConstraint: 'NO_ACTION',
+            deleteConstraint: normalizeConstraintName(
+              field.relationOnDelete ?? '',
+            ),
+          }
+        : {
+            name: field.relationName,
+            primaryTableName: existingRelationship?.primaryTableName ?? '',
+            primaryColumnName: existingRelationship?.primaryColumnName ?? '',
+            foreignTableName: existingRelationship?.foreignTableName ?? '',
+            foreignColumnName: existingRelationship?.foreignColumnName ?? '',
+            cardinality: field.isList ? 'ONE_TO_MANY' : 'ONE_TO_ONE',
+            updateConstraint: 'NO_ACTION',
+            deleteConstraint: 'NO_ACTION',
+          }
 
       relationships[relationship.name] = getFieldRenamedRelationship(
         relationship,
@@ -194,42 +194,42 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     const model2PrimaryKeyInfo = table_B
       ? getPrimaryKeyInfo(table_B, dmmf.datamodel.models)
       : null
-    
-      if (model1PrimaryKeyInfo && model2PrimaryKeyInfo) {
-        const model1PrimaryKeyColumnType = convertToPostgresColumnType(
-          model1PrimaryKeyInfo.type,
-          null,
-          null,
-        )
-        const model2PrimaryKeyColumnType = convertToPostgresColumnType(
-          model2PrimaryKeyInfo.type,
-          null,
-          null,
-        )
-  
-        const joinTableName = createManyToManyJoinTableName(
-          relation.model1,
-          relation.model2,
-        )
-        // Create join table
-        tables[joinTableName] = createManyToManyJoinTable(
-          joinTableName,
-          model1PrimaryKeyColumnType,
-          model2PrimaryKeyColumnType,
-        )
-  
-        // Add relationships for the join table
-        const joinTableRelationships = createManyToManyRelationships(
-          joinTableName,
-          relation.model1,
-          model1PrimaryKeyInfo.name,
-          relation.model2,
-          model2PrimaryKeyInfo.name,
-        )
-        // Add the relationships to the global relationships object
-        Object.assign(relationships, joinTableRelationships)
-      }
-  }   
+
+    if (model1PrimaryKeyInfo && model2PrimaryKeyInfo) {
+      const model1PrimaryKeyColumnType = convertToPostgresColumnType(
+        model1PrimaryKeyInfo.type,
+        null,
+        null,
+      )
+      const model2PrimaryKeyColumnType = convertToPostgresColumnType(
+        model2PrimaryKeyInfo.type,
+        null,
+        null,
+      )
+
+      const joinTableName = createManyToManyJoinTableName(
+        relation.model1,
+        relation.model2,
+      )
+      // Create join table
+      tables[joinTableName] = createManyToManyJoinTable(
+        joinTableName,
+        model1PrimaryKeyColumnType,
+        model2PrimaryKeyColumnType,
+      )
+
+      // Add relationships for the join table
+      const joinTableRelationships = createManyToManyRelationships(
+        joinTableName,
+        relation.model1,
+        model1PrimaryKeyInfo.name,
+        relation.model2,
+        model2PrimaryKeyInfo.name,
+      )
+      // Add the relationships to the global relationships object
+      Object.assign(relationships, joinTableRelationships)
+    }
+  }
 
   return {
     value: {
@@ -323,7 +323,7 @@ function createManyToManyJoinTable(
   joinTableName: string,
   table_A_ColumnType: string,
   table_B_ColumnType: string,
-  ): Table {
+): Table {
   return {
     name: joinTableName,
     columns: {
