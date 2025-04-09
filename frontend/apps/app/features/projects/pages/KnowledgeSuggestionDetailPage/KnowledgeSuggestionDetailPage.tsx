@@ -1,19 +1,77 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import * as diffLib from 'diff'
+import {
+  type DBStructure,
+  applyOverrides,
+  dbOverrideSchema,
+} from '@liam-hq/db-structure'
+import {
+  type SupportedFormat,
+  detectFormat,
+  parse,
+} from '@liam-hq/db-structure/parser'
+import { getFileContent } from '@liam-hq/github'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
+import { safeParse } from 'valibot'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
-import { DiffDisplay } from '../../components/DiffDisplay/DiffDisplay'
 import { EditableContent } from '../../components/EditableContent/EditableContent'
 import { getOriginalDocumentContent } from '../../utils/getOriginalDocumentContent'
+import { ErdViewer } from './ErdViewer'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
+
+const processOverrideFile = async (
+  content: string,
+  dbStructure: DBStructure,
+) => {
+  const parsedOverrideContent = safeParse(dbOverrideSchema, JSON.parse(content))
+
+  if (!parsedOverrideContent.success) {
+    return {
+      result: null,
+      error: {
+        name: 'ValidationError',
+        message: 'Failed to validate schema override file.',
+        instruction:
+          'Please ensure the override file is in the correct format.',
+      },
+    }
+  }
+
+  return {
+    result: applyOverrides(dbStructure, parsedOverrideContent.output),
+    error: null,
+  }
+}
 
 type Props = {
   projectId: string
   suggestionId: string
+  branchOrCommit: string
+}
+
+async function getGithubSchemaFilePath(projectId: string) {
+  try {
+    const projectId_num = Number(projectId)
+    const supabase = await createClient()
+    const { data: gitHubSchemaFilePath, error } = await supabase
+      .from('GitHubSchemaFilePath')
+      .select('*')
+      .eq('projectId', projectId_num)
+      .single()
+
+    if (error || !gitHubSchemaFilePath) {
+      console.error('Error fetching github schema file path:', error)
+      notFound()
+    }
+
+    return gitHubSchemaFilePath
+  } catch (error) {
+    console.error('Error fetching github schema file path:', error)
+    notFound()
+  }
 }
 
 async function getKnowledgeSuggestionDetail(
@@ -57,9 +115,31 @@ async function getKnowledgeSuggestionDetail(
 export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
   projectId,
   suggestionId,
+  branchOrCommit,
 }) => {
   const suggestion = await getKnowledgeSuggestionDetail(projectId, suggestionId)
   const repository = suggestion.project.repositoryMappings[0]?.repository
+
+  const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)
+  const filePath = githubSchemaFilePath.path
+
+  const repositoryFullName = `${repository.owner}/${repository.name}`
+  const { content } = await getFileContent(
+    repositoryFullName,
+    filePath,
+    branchOrCommit,
+    Number(repository.installationId),
+  )
+
+  const format = detectFormat(filePath)
+  const { value: dbStructure, errors } =
+    content !== null && format !== undefined
+      ? await parse(content, format as SupportedFormat)
+      : { value: undefined, errors: [] }
+
+  const { result } = dbStructure
+    ? await processOverrideFile(suggestion.content, dbStructure)
+    : { result: { dbStructure: undefined, tableGroups: {} } }
 
   return (
     <div className={styles.container}>
@@ -122,31 +202,37 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </div>
         )}
 
-        <div className={styles.contentSection}>
-          <div className={styles.header}>
-            <h2 className={styles.sectionTitle}>Content</h2>
+        <div className={styles.columns}>
+          <div className={styles.contentSection}>
+            <div className={styles.header}>
+              <h2 className={styles.sectionTitle}>Content</h2>
+            </div>
+
+            <EditableContent
+              content={suggestion.content}
+              suggestionId={suggestion.id}
+              className={styles.codeContent}
+              originalContent={
+                !suggestion.approvedAt
+                  ? await getOriginalDocumentContent(
+                      projectId,
+                      suggestion.branchName,
+                      suggestion.path,
+                    )
+                  : null
+              }
+              isApproved={!!suggestion.approvedAt}
+            />
           </div>
 
-          <EditableContent
-            content={suggestion.content}
-            suggestionId={suggestion.id}
-            className={styles.codeContent}
-            originalContent={
-              !suggestion.approvedAt
-                ? await getOriginalDocumentContent(
-                    projectId,
-                    suggestion.branchName,
-                    suggestion.path,
-                  )
-                : null
-            }
-            isApproved={!!suggestion.approvedAt}
-          />
-
-          {/* Client-side user feedback component */}
-          <div className={styles.feedbackSection}>
-            <UserFeedbackClient traceId={suggestion.traceId} />
-          </div>
+          {content !== null && format !== undefined && dbStructure && (
+            <ErdViewer
+              dbStructure={dbStructure}
+              tableGroups={result?.tableGroups || {}}
+              errorObjects={errors || []}
+              defaultSidebarOpen={false}
+            />
+          )}
         </div>
 
         {!suggestion.approvedAt && repository && (
