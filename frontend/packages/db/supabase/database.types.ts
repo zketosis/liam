@@ -441,6 +441,8 @@ export type Database = {
           description: string
           id: number
           overallReviewId: number
+          resolutionComment: string | null
+          resolvedAt: string | null
           severity: Database['public']['Enums']['SeverityEnum']
           suggestion: string
           updatedAt: string
@@ -451,6 +453,8 @@ export type Database = {
           description: string
           id?: number
           overallReviewId: number
+          resolutionComment?: string | null
+          resolvedAt?: string | null
           severity: Database['public']['Enums']['SeverityEnum']
           suggestion: string
           updatedAt: string
@@ -461,6 +465,8 @@ export type Database = {
           description?: string
           id?: number
           overallReviewId?: number
+          resolutionComment?: string | null
+          resolvedAt?: string | null
           severity?: Database['public']['Enums']['SeverityEnum']
           suggestion?: string
           updatedAt?: string
