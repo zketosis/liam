@@ -1,6 +1,6 @@
-import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { PromptTemplate } from '@langchain/core/prompts'
+import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
 import { docsSuggestionSchema } from './docsSuggestionSchema'
@@ -83,9 +83,8 @@ export const generateDocsSuggestion = async (
   predefinedRunId: string,
 ) => {
   const prompt = PromptTemplate.fromTemplate(MIGRATION_DOCS_REVIEW_TEMPLATE)
-  const model = new ChatAnthropic({
-    temperature: 0.7,
-    model: 'claude-3-7-sonnet-latest',
+  const model = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
   const chain = prompt.pipe(
