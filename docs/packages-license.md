@@ -4855,7 +4855,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@turbo/gen"></a>
-### @turbo/gen v2.1.2
+### @turbo/gen v2.5.0
 #### 
 
 ##### Paths
@@ -4866,7 +4866,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@turbo/workspaces"></a>
-### @turbo/workspaces v2.1.2
+### @turbo/workspaces v2.5.0
 #### 
 
 ##### Paths
@@ -10033,7 +10033,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="fumadocs-ui"></a>
-### fumadocs-ui v15.0.15
+### fumadocs-ui v15.2.5
 #### 
 
 ##### Paths
@@ -12083,7 +12083,7 @@ Public Domain manually approved
 
 
 <a name="langfuse-langchain"></a>
-### langfuse-langchain v3.36.0
+### langfuse-langchain v3.37.1
 #### 
 
 ##### Paths
@@ -12468,7 +12468,7 @@ Public Domain manually approved
 
 
 <a name="lucide-react"></a>
-### lucide-react v0.451.0
+### lucide-react v0.487.0
 #### 
 
 ##### Paths
@@ -13535,7 +13535,7 @@ Public Domain manually approved
 
 
 <a name="next-themes"></a>
-### next-themes v0.4.4
+### next-themes v0.4.6
 #### 
 
 ##### Paths
@@ -14536,7 +14536,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="path-unified"></a>
-### path-unified v0.1.0
+### path-unified v0.2.0
 #### 
 
 ##### Paths
@@ -16773,7 +16773,7 @@ Unknown manually approved
 
 
 <a name="style-dictionary"></a>
-### style-dictionary v4.1.3
+### style-dictionary v4.3.3
 #### 
 
 ##### Paths
@@ -17477,7 +17477,7 @@ Unknown manually approved
 
 
 <a name="turbo"></a>
-### turbo v2.1.2
+### turbo v2.5.0
 #### 
 
 ##### Paths
@@ -17488,7 +17488,7 @@ Unknown manually approved
 
 
 <a name="turbo-linux-64"></a>
-### turbo-linux-64 v2.1.2
+### turbo-linux-64 v2.5.0
 #### 
 
 ##### Paths
@@ -18504,7 +18504,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="yaml"></a>
-### yaml v2.7.0
+### yaml v2.7.1
 #### 
 
 ##### Paths

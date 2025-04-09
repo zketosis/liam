@@ -5,9 +5,14 @@ import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
+import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { RadarChart } from '../../components/RadarChart/RadarChart'
 import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
+import {
+  formatAllReviewIssues,
+  formatReviewIssue,
+} from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
@@ -219,7 +224,15 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
           )}
         </div>
         <div className={styles.box}>
-          <h2 className={styles.h2}>Review Issues</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.h2}>Review Issues</h2>
+            {overallReview.reviewIssues.length > 0 && (
+              <CopyButton
+                text={formatAllReviewIssues(overallReview.reviewIssues)}
+                className={styles.headerCopyButton}
+              />
+            )}
+          </div>
           <div className={styles.reviewIssues}>
             {overallReview.reviewIssues.length > 0 ? (
               [...overallReview.reviewIssues]
@@ -258,9 +271,26 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                         <span className={styles.issueCategory}>
                           {issue.category}
                         </span>
-                        <span className={styles.issueSeverity}>
-                          {issue.severity}
-                        </span>
+                        <div className={styles.issueActions}>
+                          <span className={styles.issueSeverity}>
+                            {issue.severity}
+                          </span>
+                          <CopyButton
+                            text={formatReviewIssue({
+                              category: issue.category,
+                              severity: issue.severity,
+                              description: issue.description,
+                              suggestion: issue.suggestion,
+                              snippets: issue.suggestionSnippets.map(
+                                (snippet) => ({
+                                  filename: snippet.filename,
+                                  snippet: snippet.snippet,
+                                }),
+                              ),
+                            })}
+                            className={styles.issueCopyButton}
+                          />
+                        </div>
                       </div>
                       <p className={styles.issueDescription}>
                         {issue.description}

@@ -5,9 +5,8 @@
 The current focus is on enhancing the Reviewer User experience with AI-driven analysis and suggestions integrated into the migration review process. Key areas of active development include:
 
 1. **Schema Metadata Generation Pipeline**: Improving the pipeline that creates and stores metadata suggestions based on PR reviews.
-2. **Supabase JS Integration**: Continuing the transition from Prisma client to Supabase JS across all components to standardize database access patterns (migration workflow is already completed).
-3. **Schema Change Detection**: Enhancing the detection system to better identify and analyze database migrations.
-4. **Review Prompt Template**: Refining the template to provide more detailed and contextual analysis.
+2. **Schema Change Detection**: Enhancing the detection system to better identify and analyze database migrations.
+3. **Review Prompt Template**: Refining the template to provide more detailed and contextual analysis.
 
 ## Recent Changes
 
@@ -32,16 +31,15 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Refactored code to reduce cognitive complexity and improve type safety
    - This ensures that newly created Knowledge suggestions are properly included in reviews
 
-3. **Database Migration Workflow Transition**: Completed the migration from Prisma to Supabase for database migrations:
-   - Removed Prisma migration scripts and folders
-   - Added new Supabase migration commands to package.json
-   - Documented the standardized Supabase migration workflow
-   - Retained Prisma client generation for components still using Prisma
+3. **Database Migration Documentation**: Created comprehensive documentation for the Supabase migration workflow:
+   - Added detailed migration guidelines in `docs/migrationOpsContext.md`
+   - Documented schema design patterns in `docs/schemaPatterns.md`
+   - Added Supabase migration commands to package.json
 
-4. **Continued Prisma to Supabase Migration**: Refactored additional components to use Supabase instead of Prisma:
-   - Migrated ProjectBranchesListPage component to use Supabase for database access
-   - Migrated KnowledgeSuggestionDetailPage component to use Supabase for database access
-   - Migrated ProjectDetailPage component to use Supabase for database access
+4. **Supabase Component Implementation**: Implemented Supabase for database access in key components:
+   - ProjectBranchesListPage component
+   - KnowledgeSuggestionDetailPage component
+   - ProjectDetailPage component
    - Implemented proper handling of date fields by converting string dates to Date objects
    - Used nested select syntax for complex relationships between tables
    - Added comprehensive error handling for Supabase queries
@@ -82,10 +80,9 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 
 ## Next Steps
 
-1. **Complete Prisma Client to Supabase JS Migration**:
+1. **Enhance Supabase Implementation**:
    - Implement Supabase RPC for robust transaction management
    - Ensure consistent Supabase type updates with database schema changes
-   - Update remaining components to use Supabase JS for data access (migration workflow is already completed)
 
 2. **Enhance AI Components**:
    - Improve review prompt template for more detailed analysis
@@ -104,8 +101,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 ## Active Decisions and Considerations
 
 1. **Database Access Strategy**:
-   - Completed transition from Prisma to Supabase for database migrations
-   - Continuing transition from Prisma client to Supabase JS for database access
+   - Using Supabase for database migrations and access
    - Leveraging Supabase's optimized query capabilities
    - Standardizing the data access layer
    - Handling type compatibility issues, particularly with bigint fields and nested relationships
@@ -149,7 +145,6 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Use trigger.dev CLI for deploying background jobs
    - Run `npx trigger.dev deploy --dry-run` to verify deployment without applying changes
    - Run `npx trigger.dev deploy` to deploy to production
-   - Ensure DATABASE_URL environment variable is properly set for prismaExtension
    - CI/CD pipelines use `pnpm deploy:jobs` command defined in the root package.json
 
 3. **Component Implementation**:
@@ -164,6 +159,8 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Properly type nested relationship data
    - Use optimized queries with nested joins
    - Cache query results when they'll be reused
+   - Follow migration guidelines in `docs/migrationOpsContext.md` when creating database migrations
+   - Adhere to schema design patterns in `docs/schemaPatterns.md` for consistent database design
 
 5. **Function Organization**:
    - Separate business logic into dedicated function files
@@ -174,10 +171,10 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 ## Learnings and Project Insights
 
 1. **Supabase Integration**:
-   - Supabase migration workflow is more straightforward than Prisma's for schema changes
-   - Supabase JS provides more efficient queries with nested joins
+   - Supabase provides an efficient migration workflow for schema changes
+   - Supabase JS provides optimized queries with nested joins
    - Type compatibility requires careful handling
-   - Direct testing approach is more realistic than mocking
+   - Direct testing approach with real database interactions
    - Proper type validation is essential for data integrity
 
 2. **AI Prompt Engineering**:

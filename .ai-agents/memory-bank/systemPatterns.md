@@ -11,7 +11,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **OSS and Paid Plan Coexistence**: The product is designed to coexist with its OSS version, offering high-value features in paid plans to ensure a sustainable business model.
 - **Monorepo Structure**: The decision to use a monorepo structure with pnpm workspaces enables efficient code sharing and dependency management.
 - **TypeScript-First**: All components and functions are written in TypeScript to ensure type safety and improve developer experience.
-- **Database Access Strategy**: Transitioning from Prisma ORM to Supabase JS for database access to leverage Supabase's optimized query capabilities and standardize the data access layer. This transition requires careful handling of type compatibility issues, particularly with bigint fields and nested relationships.
+- **Database Access Strategy**: Using Supabase JS for database access to leverage Supabase's optimized query capabilities and standardize the data access layer. This requires careful handling of type compatibility issues, particularly with bigint fields and nested relationships.
 - **Type Safety Approach**: When working with Supabase, we use type assertions carefully to bridge the gap between the Supabase types and our application's expected types, particularly for nested queries and bigint fields.
 - **Schema File Management Strategy**: Using direct path comparison instead of pattern matching for schema file detection, with the GitHubSchemaFilePath table (renamed from WatchSchemaFilePattern) to store exact file paths.
 - **Standardized Supabase Client Usage**: Using a shared createClient function across the codebase to ensure consistent Supabase client creation and usage.
@@ -23,7 +23,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Continuous Learning**: The AI components are designed to continuously learn from past reviews to improve accuracy and relevance over time.
 - **Component-Based UI**: The UI is built using a component-based approach with React, promoting reusability and maintainability.
 - **Server-Client Separation**: Clear separation of server and client components in Next.js, with appropriate data fetching responsibilities.
-- **Flexible Data Access**: The system currently supports multiple database access methods (Prisma ORM and Supabase JS) to provide flexibility in how data is retrieved and manipulated. Supabase JS implementation uses optimized queries with nested joins for efficient data retrieval. The long-term plan is to standardize on Supabase JS across all components.
+- **Efficient Data Access**: The system uses Supabase JS for database access with optimized queries using nested joins for efficient data retrieval.
 - **Type-Safe Database Access**: When using Supabase, we implement type-safe queries by using type assertions to bridge the gap between Supabase's types and our application's expected types. This includes handling bigint to number conversions and properly typing nested relationship data.
 - **Transaction Management**: Moving away from manual rollback processing in server actions to a more robust approach using Supabase RPC for transaction management. This will provide a consistent and reliable way to handle database transactions across the application.
 - **Direct Path Comparison**: Using direct path comparison instead of pattern matching for schema file detection, providing a more precise and efficient approach to schema file management.

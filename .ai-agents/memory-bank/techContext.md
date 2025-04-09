@@ -6,8 +6,7 @@
 - **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions.
 - **Trigger.dev**: Task orchestration platform used for implementing the review pipeline and knowledge suggestion tasks.
 - **GitHub App**: Integrated to automate comments and review approvals on PRs, with enhanced API usage for fetching PR descriptions and comments.
-- **Prisma**: ORM for database access and management (partially phased out; still used for client access but no longer used for migrations).
-- **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins. Planned to replace Prisma across all components.
+- **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins.
 - **Supabase RPC**: Remote Procedure Call functionality in Supabase, planned for future implementation of robust transaction management across the application.
 - **AWS**: Deployed in the us-east-1 region for its high affinity with English-speaking markets and potential for future multi-region expansion.
 - **TypeScript**: Strongly-typed programming language that builds on JavaScript.
@@ -37,9 +36,15 @@
 
 ## Database Migration Workflow
 
-### Migration from Prisma to Supabase
+### Migration Documentation
 
-The project has completed the transition from Prisma ORM to Supabase for database migrations. While some parts of the application still use the Prisma client (hence `gen:prisma` script is retained), all database schema migrations are now handled through Supabase.
+The project maintains two key documents for database migrations:
+
+1. **Migration Operations Context** (`docs/migrationOpsContext.md`): Provides detailed guidance on the migration workflow, deployment system, key constraints, and SQL guidelines for creating migrations. This document explains how our project uses Supabase Branching for database migration management and outlines important safety practices.
+
+2. **Schema Patterns** (`docs/schemaPatterns.md`): Defines reusable patterns and rules for database schema design, including naming conventions, structural modeling patterns, and preferred types. This document ensures consistency in database design across the project.
+
+These documents should be consulted when creating or reviewing database migrations to ensure adherence to project standards and best practices.
 
 ### Schema Enhancements
 
@@ -111,8 +116,7 @@ This ensures type safety when working with Supabase queries, and generates the S
 ## Technical Constraints
 - The product must coexist with its OSS version, offering high-value features in paid plans to ensure a sustainable business model.
 - The AI components require continuous learning from past reviews to improve accuracy and relevance over time.
-- During the transition from Prisma to Supabase JS, both database access methods will coexist, requiring careful coordination to ensure consistent data access patterns.
-- Type compatibility issues between Prisma and Supabase require careful handling, particularly for bigint fields and nested relationships.
+- Type compatibility issues with Supabase require careful handling, particularly for bigint fields and nested relationships.
 - Schema metadata generation requires accurate analysis of database schema changes and proper integration with the knowledge suggestion system.
 - Supabase types need to be updated whenever database schema changes are made, to maintain type safety across the application.
 
