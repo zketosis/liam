@@ -229,6 +229,45 @@ export type Database = {
           },
         ]
       }
+      MembershipInvites: {
+        Row: {
+          email: string
+          id: number
+          inviteByUserId: string
+          inviteOn: string | null
+          organizationId: number
+        }
+        Insert: {
+          email: string
+          id?: never
+          inviteByUserId: string
+          inviteOn?: string | null
+          organizationId: number
+        }
+        Update: {
+          email?: string
+          id?: never
+          inviteByUserId?: string
+          inviteOn?: string | null
+          organizationId?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'MembershipInvites_inviteByUserId_fkey'
+            columns: ['inviteByUserId']
+            isOneToOne: false
+            referencedRelation: 'User'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'MembershipInvites_organizationId_fkey'
+            columns: ['organizationId']
+            isOneToOne: false
+            referencedRelation: 'Organization'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       Migration: {
         Row: {
           createdAt: string
@@ -257,6 +296,60 @@ export type Database = {
             columns: ['pullRequestId']
             isOneToOne: false
             referencedRelation: 'PullRequest'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      Organization: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id?: never
+          name: string
+        }
+        Update: {
+          id?: never
+          name?: string
+        }
+        Relationships: []
+      }
+      OrganizationMember: {
+        Row: {
+          id: number
+          joinedAt: string | null
+          organizationId: number
+          status: string
+          userId: string
+        }
+        Insert: {
+          id?: never
+          joinedAt?: string | null
+          organizationId: number
+          status: string
+          userId: string
+        }
+        Update: {
+          id?: never
+          joinedAt?: string | null
+          organizationId?: number
+          status?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'OrganizationMember_organizationId_fkey'
+            columns: ['organizationId']
+            isOneToOne: false
+            referencedRelation: 'Organization'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'OrganizationMember_userId_fkey'
+            columns: ['userId']
+            isOneToOne: false
+            referencedRelation: 'User'
             referencedColumns: ['id']
           },
         ]
@@ -317,21 +410,73 @@ export type Database = {
           createdAt: string
           id: number
           name: string
+          organizationId: number | null
           updatedAt: string
         }
         Insert: {
           createdAt?: string
           id?: number
           name: string
+          organizationId?: number | null
           updatedAt: string
         }
         Update: {
           createdAt?: string
           id?: number
           name?: string
+          organizationId?: number | null
           updatedAt?: string
         }
         Relationships: []
+      }
+      ProjectMember: {
+        Row: {
+          id: number
+          joinedAt: string | null
+          organizationMemberId: number | null
+          projectId: number
+          status: string
+          userId: string
+        }
+        Insert: {
+          id?: never
+          joinedAt?: string | null
+          organizationMemberId?: number | null
+          projectId: number
+          status: string
+          userId: string
+        }
+        Update: {
+          id?: never
+          joinedAt?: string | null
+          organizationMemberId?: number | null
+          projectId?: number
+          status?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ProjectMember_organizationMemberId_fkey'
+            columns: ['organizationMemberId']
+            isOneToOne: false
+            referencedRelation: 'OrganizationMember'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ProjectMember_projectId_fkey'
+            columns: ['projectId']
+            isOneToOne: false
+            referencedRelation: 'Project'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ProjectMember_userId_fkey'
+            columns: ['userId']
+            isOneToOne: false
+            referencedRelation: 'User'
+            referencedColumns: ['id']
+          },
+        ]
       }
       ProjectRepositoryMapping: {
         Row: {
@@ -551,12 +696,33 @@ export type Database = {
           },
         ]
       }
+      User: {
+        Row: {
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          email: string
+          id: string
+          name: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      sync_existing_users: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       CategoryEnum:
