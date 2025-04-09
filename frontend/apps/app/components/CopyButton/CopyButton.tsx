@@ -1,25 +1,16 @@
 'use client'
 
+import clsx from 'clsx'
 import type React from 'react'
 import { useState } from 'react'
 import styles from './CopyButton.module.css'
-
-// Define the CSS module types
-type Styles = {
-  copyButton: string
-  icon: string
-  text: string
-}
-
-// Cast the imported styles to the defined type
-const typedStyles = styles as Styles
 
 interface CopyButtonProps {
   text: string
   className?: string
 }
 
-export const CopyButton: React.FC<CopyButtonProps> = ({ text, className }) => {
+export const CopyButton = ({ text, className }: CopyButtonProps) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -40,19 +31,19 @@ export const CopyButton: React.FC<CopyButtonProps> = ({ text, className }) => {
     <button
       type="button"
       onClick={handleCopy}
-      className={`${typedStyles.copyButton} ${className || ''}`}
+      className={clsx(styles.copyButton, className)}
       aria-label="Copy to clipboard"
       title="Copy to clipboard"
     >
       {copied ? (
         <>
-          <span className={typedStyles.icon}>✓</span>
-          <span className={typedStyles.text}>Copied!</span>
+          <span className={styles.icon}>✓</span>
+          <span className={styles.text}>Copied!</span>
         </>
       ) : (
         <>
-          <span className={typedStyles.icon}>📋</span>
-          <span className={typedStyles.text}>Copy</span>
+          <span className={styles.icon}>📋</span>
+          <span className={styles.text}>Copy</span>
         </>
       )}
     </button>
