@@ -1,6 +1,7 @@
 'use client'
 
 import { processOverrideContent } from '@/features/projects/actions/processOverrideContent'
+import { updateKnowledgeSuggestionContent } from '@/features/projects/actions/updateKnowledgeSuggestionContent'
 import { EditableContent } from '@/features/projects/components/EditableContent'
 import type { DBStructure, TableGroup } from '@liam-hq/db-structure'
 import type { SupportedFormat } from '@liam-hq/db-structure/parser'
@@ -55,6 +56,43 @@ export const KnowledgeContentSection: FC<Props> = ({
     }
   }
 
+  const handleTableGroupAdded = async (newTableGroup: TableGroup) => {
+    try {
+      // Parse current content as JSON
+      const contentObj = JSON.parse(currentContent)
+
+      // Add the new table group to the content
+      if (!contentObj.overrides.tableGroups) {
+        contentObj.overrides.tableGroups = {}
+      }
+
+      contentObj.overrides.tableGroups[newTableGroup.name] = newTableGroup
+
+      // Update the content
+      const updatedContent = JSON.stringify(contentObj, null, 2)
+      setCurrentContent(updatedContent)
+
+      // Create FormData for server action
+      const formData = new FormData()
+      formData.append('suggestionId', suggestionId.toString())
+      formData.append('content', updatedContent)
+
+      // Save content to the database using server action
+      await updateKnowledgeSuggestionContent(formData)
+
+      // Update ErdViewer data
+      if (dbStructure) {
+        const { result } = await processOverrideContent(
+          updatedContent,
+          dbStructure,
+        )
+        setProcessedResult(result)
+      }
+    } catch (error) {
+      console.error('Failed to update content with new table group:', error)
+    }
+  }
+
   return (
     <div className={styles.columns}>
       <div className={styles.contentSection}>
@@ -63,6 +101,7 @@ export const KnowledgeContentSection: FC<Props> = ({
         </div>
 
         <EditableContent
+          key={currentContent}
           content={currentContent}
           suggestionId={suggestionId}
           className={styles.codeContent}
@@ -81,6 +120,7 @@ export const KnowledgeContentSection: FC<Props> = ({
           tableGroups={processedResult?.tableGroups || initialTableGroups || {}}
           errorObjects={errors || []}
           defaultSidebarOpen={false}
+          onAddTableGroup={handleTableGroupAdded}
         />
       )}
     </div>

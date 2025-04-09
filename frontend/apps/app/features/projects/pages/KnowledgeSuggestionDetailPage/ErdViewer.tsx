@@ -22,6 +22,7 @@ export type Props = {
   errorObjects: ErrorObject[]
   defaultSidebarOpen: boolean
   defaultPanelSizes?: number[]
+  onAddTableGroup?: (tableGroup: TableGroup) => void
 }
 
 export const ErdViewer: FC<Props> = ({
@@ -30,6 +31,7 @@ export const ErdViewer: FC<Props> = ({
   errorObjects,
   defaultSidebarOpen,
   defaultPanelSizes = [20, 80],
+  onAddTableGroup,
 }) => {
   const [isShowCookieConsent, setShowCookieConsent] = useState(false)
   const { tableGroups, addTableGroup } = useTableGroups(initialTableGroups)
@@ -48,6 +50,14 @@ export const ErdViewer: FC<Props> = ({
   }
   const version = parse(versionSchema, versionData)
 
+  const handleAddTableGroup = (tableGroup: TableGroup) => {
+    addTableGroup(tableGroup)
+
+    if (onAddTableGroup) {
+      onAddTableGroup(tableGroup)
+    }
+  }
+
   return (
     <div style={{ height: '100%', maxHeight: '600px', position: 'relative' }}>
       <VersionProvider version={version}>
@@ -56,7 +66,7 @@ export const ErdViewer: FC<Props> = ({
           defaultPanelSizes={defaultPanelSizes}
           errorObjects={errorObjects}
           tableGroups={tableGroups}
-          onAddTableGroup={addTableGroup}
+          onAddTableGroup={handleAddTableGroup}
         />
       </VersionProvider>
       {isShowCookieConsent && <CookieConsent />}
