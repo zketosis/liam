@@ -1,9 +1,9 @@
 import {
-  TableDd,
-  TableDt,
-  TableHeader,
-  TableItem,
-  TableRoot,
+  GridTableDd,
+  GridTableDt,
+  GridTableHeader,
+  GridTableItem,
+  GridTableRoot,
 } from '@liam-hq/ui'
 import type { FC } from 'react'
 import styles from './IndexesItem.module.css'
@@ -22,20 +22,20 @@ export const IndexesItem: FC<Props> = ({ index }) => {
 
   return (
     <div className={styles.wrapper}>
-      <TableRoot>
-        <TableHeader>{index.name}</TableHeader>
+      <GridTableRoot>
+        <GridTableHeader>{index.name}</GridTableHeader>
         {index.type && index.type.toLowerCase() !== HIDE_INDEX_TYPE && (
-          <TableItem>
-            <TableDt>Type</TableDt>
-            <TableDd>{index.type}</TableDd>
-          </TableItem>
+          <GridTableItem>
+            <GridTableDt>Type</GridTableDt>
+            <GridTableDd>{index.type}</GridTableDd>
+          </GridTableItem>
         )}
         {!!index.columns.length && (
-          <TableItem>
-            <TableDt>
+          <GridTableItem>
+            <GridTableDt>
               {index.columns.length === 1 ? 'Column' : 'Columns'}
-            </TableDt>
-            <TableDd>
+            </GridTableDt>
+            <GridTableDd>
               {index.columns.length === 1 ? (
                 index.columns[0]
               ) : (
@@ -45,14 +45,14 @@ export const IndexesItem: FC<Props> = ({ index }) => {
                   ))}
                 </ol>
               )}
-            </TableDd>
-          </TableItem>
+            </GridTableDd>
+          </GridTableItem>
         )}
-        <TableItem>
-          <TableDt>Unique</TableDt>
-          <TableDd>{index.unique ? 'Yes' : 'No'}</TableDd>
-        </TableItem>
-      </TableRoot>
+        <GridTableItem>
+          <GridTableDt>Unique</GridTableDt>
+          <GridTableDd>{index.unique ? 'Yes' : 'No'}</GridTableDd>
+        </GridTableItem>
+      </GridTableRoot>
     </div>
   )
 }
