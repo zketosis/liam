@@ -1,6 +1,6 @@
+import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
-import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import type { JSONSchema7 } from 'json-schema'
 import { parse } from 'valibot'
@@ -110,9 +110,9 @@ export const generateReview = async (
     ['human', USER_PROMPT],
   ])
 
-  const model = new ChatOpenAI({
+  const model = new ChatAnthropic({
     temperature: 0.7,
-    model: 'gpt-4o-mini',
+    model: 'claude-3-7-sonnet-latest',
   })
 
   const chain = chatPrompt.pipe(model.withStructuredOutput(reviewJsonSchema))

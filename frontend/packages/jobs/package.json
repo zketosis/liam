@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "main": "src/index.ts",
   "dependencies": {
+    "@langchain/anthropic": "0.3.16",
     "@langchain/core": "0.3.43",
-    "@langchain/openai": "0.5.4",
     "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/github": "workspace:*",
