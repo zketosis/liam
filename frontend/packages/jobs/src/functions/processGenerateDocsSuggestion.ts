@@ -52,7 +52,15 @@ export async function processGenerateDocsSuggestion(payload: {
       return {
         id: filename,
         title: filename,
-        content: fileData.content || '',
+        content: fileData.content
+          ? Buffer.from(fileData.content, 'base64')
+              .toString('utf-8')
+              .replace(/\\/g, '\\\\')
+              .replace(/\n/g, '\\n')
+              .replace(/\r/g, '\\r')
+              .replace(/\t/g, '\\t')
+              .replace(/"/g, '\\"')
+          : '',
       }
     })
 
