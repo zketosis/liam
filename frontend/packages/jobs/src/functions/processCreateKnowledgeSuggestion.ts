@@ -11,16 +11,20 @@ type CreateKnowledgeSuggestionPayload = {
   content: string
   branch: string
   traceId?: string
+  reasoning?: string
 }
 
-export const processCreateKnowledgeSuggestion = async (
-  payload: CreateKnowledgeSuggestionPayload,
-) => {
-  const { projectId, type, title, path, content, branch, traceId } = payload
+type CreateKnowledgeSuggestionResult = {
+  suggestionId: number | null
+  success: boolean
+}
 
+/**
+ * Get repository information for a project
+ */
+const getRepositoryInfo = async (projectId: number) => {
   const supabase = createClient()
 
-  // Get project with repository mappings
   const { data: project, error } = await supabase
     .from('Project')
     .select(`
@@ -38,53 +42,159 @@ export const processCreateKnowledgeSuggestion = async (
   }
 
   const repository = project.repositoryMappings[0].repository
-  const repositoryOwner = repository.owner
-  const repositoryName = repository.name
-  const installationId = Number(repository.installationId)
+  return {
+    owner: repository.owner,
+    name: repository.name,
+    installationId: Number(repository.installationId),
+  }
+}
 
-  const repositoryFullName = `${repositoryOwner}/${repositoryName}`
-  let fileSha: string | null = null
+type ContentCheckResult = {
+  hasChanged: boolean
+  docFilePath: { id: number } | null
+}
 
-  // First, try to get the SHA of the existing file
-  const existingFile = await getFileContent(
-    repositoryFullName,
-    path,
-    branch,
-    installationId,
-  )
+/**
+ * Check if content has changed for a DOCS type suggestion
+ */
+const hasContentChanged = async (
+  projectId: number,
+  path: string,
+  existingContent: string | null,
+  newContent: string,
+): Promise<ContentCheckResult> => {
+  const supabase = createClient()
+  const { data: docFilePath } = await supabase
+    .from('GitHubDocFilePath')
+    .select('id')
+    .eq('projectId', projectId)
+    .eq('path', path)
+    .maybeSingle()
 
-  if (existingFile.sha) {
-    fileSha = existingFile.sha
-  } else {
-    fileSha = null
+  // If no existing content or no docFilePath, content is considered changed
+  if (!existingContent || !docFilePath) {
+    return {
+      hasChanged: true,
+      docFilePath,
+    }
   }
 
-  // Create the knowledge suggestion with the file SHA
-  const now = new Date().toISOString()
-  const { data: knowledgeSuggestion, error: createError } = await supabase
-    .from('KnowledgeSuggestion')
-    .insert({
-      type,
-      title,
-      path,
-      content,
-      fileSha,
-      projectId,
-      branchName: branch,
-      traceId: traceId || null,
-      updatedAt: now,
-    })
-    .select()
-    .single()
-
-  if (createError || !knowledgeSuggestion) {
-    throw new Error(
-      `Failed to create knowledge suggestion: ${JSON.stringify(createError)}`,
-    )
-  }
+  // Check if content is different
+  const contentChanged =
+    existingContent.length !== newContent.length ||
+    existingContent !== newContent
 
   return {
-    suggestionId: knowledgeSuggestion.id,
-    success: true,
+    hasChanged: contentChanged,
+    docFilePath,
+  }
+}
+
+/**
+ * Create a knowledge suggestion mapping
+ */
+const createMapping = async (
+  knowledgeSuggestionId: number,
+  docFilePathId: number,
+  timestamp: string,
+) => {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('KnowledgeSuggestionDocMapping')
+    .insert({
+      knowledgeSuggestionId,
+      gitHubDocFilePathId: docFilePathId,
+      updatedAt: timestamp,
+    })
+
+  if (error) {
+    console.error('Failed to create mapping:', error.message)
+  }
+}
+
+/**
+ * Process the creation of a knowledge suggestion
+ * For DOCS type, checks if there's a corresponding GitHubDocFilePath entry and if content has changed
+ */
+export const processCreateKnowledgeSuggestion = async (
+  payload: CreateKnowledgeSuggestionPayload,
+): Promise<CreateKnowledgeSuggestionResult> => {
+  const { projectId, type, title, path, content, branch, traceId } = payload
+
+  try {
+    // Get repository information
+    const repo = await getRepositoryInfo(projectId)
+    const repositoryFullName = `${repo.owner}/${repo.name}`
+
+    // Get the existing file content and SHA
+    const existingFile = await getFileContent(
+      repositoryFullName,
+      path,
+      branch,
+      repo.installationId,
+    )
+
+    // Default to no docFilePath
+    let docFilePath: { id: number } | null = null
+
+    // For DOCS type, check if content has changed
+    if (type === 'DOCS') {
+      const contentCheck = await hasContentChanged(
+        projectId,
+        path,
+        existingFile.content,
+        content,
+      )
+
+      // Save docFilePath for later use
+      docFilePath = contentCheck.docFilePath
+
+      // If content hasn't changed, return early
+      if (!contentCheck.hasChanged) {
+        return {
+          suggestionId: null,
+          success: true,
+        }
+      }
+    }
+
+    // Create the knowledge suggestion
+    const supabase = createClient()
+    const now = new Date().toISOString()
+    const { data: knowledgeSuggestion, error: createError } = await supabase
+      .from('KnowledgeSuggestion')
+      .insert({
+        type,
+        title,
+        path,
+        content,
+        fileSha: existingFile.sha,
+        projectId,
+        branchName: branch,
+        traceId: traceId || null,
+        reasoning: payload.reasoning || null,
+        updatedAt: now,
+      })
+      .select()
+      .single()
+
+    if (createError || !knowledgeSuggestion) {
+      throw new Error(
+        `Failed to create knowledge suggestion: ${createError?.message || 'Unknown error'}`,
+      )
+    }
+
+    // Create mapping if needed
+    if (type === 'DOCS' && docFilePath) {
+      await createMapping(knowledgeSuggestion.id, docFilePath.id, now)
+    }
+
+    return {
+      suggestionId: knowledgeSuggestion.id,
+      success: true,
+    }
+  } catch (error) {
+    console.error('Error in processCreateKnowledgeSuggestion:', error)
+    throw error
   }
 }

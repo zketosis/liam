@@ -84,8 +84,7 @@ export const generateDocsSuggestion = async (
 ) => {
   const prompt = PromptTemplate.fromTemplate(MIGRATION_DOCS_REVIEW_TEMPLATE)
   const model = new ChatOpenAI({
-    temperature: 0.7,
-    model: 'gpt-4o-mini',
+    model: 'o3-mini-2025-01-31',
   })
 
   const chain = prompt.pipe(

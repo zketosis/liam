@@ -4,15 +4,21 @@ assert:
   value: The report mentions about ensuring that this table is empty before the migration
 - type: is-json
 - type: javascript
-  # Test 1: Check if the snippet has the exact correct file path
+  # `feedbacks` Test 1: Check if the snippet has the exact correct file path
   value: |
-    JSON.parse(output).issues.find(issue => issue.kind === "Migration Safety").suggestionSnippets[0].filename === "frontend/packages/db/prisma/migrations/20250328105323_add_branch_name_to_knowledge_suggestion/migration.sql"
+    !!output.feedbacks.flatMap(feedback => feedback.suggestionSnippets).find(snippet => snippet.filename === "frontend/packages/db/prisma/migrations/20250328105323_add_branch_name_to_knowledge_suggestion/migration.sql")
 - type: javascript
-  # Test 2: Check if the snippet suggests setting a DEFAULT value for the branchName column
+  # `feedbacks` Test 2: Check if the snippet suggests setting a DEFAULT value for the branchName column
   value: |
-    JSON.parse(output).issues.find(issue => issue.kind === "Migration Safety").suggestionSnippets[0].snippet.includes("ALTER TABLE \"KnowledgeSuggestion\" ADD COLUMN \"branchName\" TEXT NOT NULL DEFAULT '")
+    !!output.feedbacks.flatMap(feedback => feedback.suggestionSnippets).find(snippet => snippet.snippet.includes("ALTER TABLE \"KnowledgeSuggestion\" ADD COLUMN \"branchName\" TEXT NOT NULL DEFAULT '"))
 - type: javascript
-  value: JSON.parse(output).scores[0].value >= 1
+  # `bodyMarkdown` Test 1: Check if the bodyMarkdown sentence is less than or equal to 3
+  value: |
+    output.bodyMarkdown.split(". ").length <= 3
+- type: javascript
+  # `bodyMarkdown` Test 2: Check if the bodyMarkdown word count is approximately less than or equal to 80
+  value: |
+    output.bodyMarkdown.split(" ").length <= 80
 - type: cost
   threshold: 0.008
 

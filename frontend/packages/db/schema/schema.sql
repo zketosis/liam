@@ -19,13 +19,6 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
 
-CREATE EXTENSION IF NOT EXISTS "pgsodium";
-
-
-
-
-
-
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
@@ -174,11 +167,39 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
     "branchName" "text" NOT NULL,
-    "traceId" "text"
+    "traceId" "text",
+    "reasoning" "text" DEFAULT ''::"text"
 );
 
 
 ALTER TABLE "public"."KnowledgeSuggestion" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestionDocMapping" (
+    "id" integer NOT NULL,
+    "knowledgeSuggestionId" integer NOT NULL,
+    "gitHubDocFilePathId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."KnowledgeSuggestionDocMapping" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."KnowledgeSuggestionDocMapping_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."KnowledgeSuggestionDocMapping_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" OWNED BY "public"."KnowledgeSuggestionDocMapping"."id";
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."KnowledgeSuggestion_id_seq"
@@ -423,6 +444,30 @@ ALTER SEQUENCE "public"."ReviewScore_id_seq" OWNED BY "public"."ReviewScore"."id
 
 
 
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewSuggestionSnippet_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewSuggestionSnippet_id_seq" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
+    "id" integer DEFAULT "nextval"('"public"."ReviewSuggestionSnippet_id_seq"'::"regclass") NOT NULL,
+    "reviewIssueId" integer NOT NULL,
+    "filename" "text" NOT NULL,
+    "snippet" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewSuggestionSnippet" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
     "id" character varying(36) NOT NULL,
     "checksum" character varying(64) NOT NULL,
@@ -447,6 +492,10 @@ ALTER TABLE ONLY "public"."GitHubSchemaFilePath" ALTER COLUMN "id" SET DEFAULT "
 
 
 ALTER TABLE ONLY "public"."KnowledgeSuggestion" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."KnowledgeSuggestion_id_seq"'::"regclass");
+
+
+
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."KnowledgeSuggestionDocMapping_id_seq"'::"regclass");
 
 
 
@@ -497,6 +546,11 @@ ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
 
 
 
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping"
+    ADD CONSTRAINT "KnowledgeSuggestionDocMapping_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."KnowledgeSuggestion"
     ADD CONSTRAINT "KnowledgeSuggestion_pkey" PRIMARY KEY ("id");
 
@@ -542,12 +596,21 @@ ALTER TABLE ONLY "public"."ReviewScore"
 
 
 
+ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
+    ADD CONSTRAINT "ReviewSuggestionSnippet_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."_prisma_migrations"
     ADD CONSTRAINT "_prisma_migrations_pkey" PRIMARY KEY ("id");
 
 
 
 CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDocFilePath" USING "btree" ("path", "projectId");
+
+
+
+CREATE UNIQUE INDEX "KnowledgeSuggestionDocMapping_unique_mapping" ON "public"."KnowledgeSuggestionDocMapping" USING "btree" ("knowledgeSuggestionId", "gitHubDocFilePathId");
 
 
 
@@ -574,6 +637,16 @@ ALTER TABLE ONLY "public"."GitHubDocFilePath"
 
 ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
     ADD CONSTRAINT "GitHubSchemaFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping"
+    ADD CONSTRAINT "KnowledgeSuggestionDocMapping_gitHubDocFilePathId_fkey" FOREIGN KEY ("gitHubDocFilePathId") REFERENCES "public"."GitHubDocFilePath"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."KnowledgeSuggestionDocMapping"
+    ADD CONSTRAINT "KnowledgeSuggestionDocMapping_knowledgeSuggestionId_fkey" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -622,6 +695,11 @@ ALTER TABLE ONLY "public"."ReviewScore"
 
 
 
+ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
+    ADD CONSTRAINT "ReviewSuggestionSnippet_reviewIssueId_fkey" FOREIGN KEY ("reviewIssueId") REFERENCES "public"."ReviewIssue"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 
 
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
@@ -634,15 +712,6 @@ GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
 
 
 
@@ -865,6 +934,18 @@ GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "anon";
+GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestionDocMapping_id_seq" TO "service_role";
+
+
+
 GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "service_role";
@@ -964,6 +1045,24 @@ GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "service_role";
+
+
+
+
+
+
 
 
 

@@ -7,24 +7,23 @@
   },
   "main": "src/index.ts",
   "dependencies": {
-    "@supabase/ssr": "0.5.2",
+    "@supabase/ssr": "0.6.1",
     "@supabase/supabase-js": "2.49.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
-    "prisma": "6.4.1",
-    "supabase": "2.15.8",
-    "typescript": "5.8.2"
+    "supabase": "2.20.12",
+    "typescript": "5.8.3"
   },
   "scripts": {
     "build": "tsc",
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
-    "lint": "pnpm run '/^lint:.*/'",
-    "lint:biome": "biome check --error-on-warnings .",
+    "lint": "concurrently \"pnpm:lint:*\"",
+    "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
-    "supabase:gen": "pnpm run '/^supabase:gen:.*/'",
+    "supabase:gen": "concurrently \"pnpm:supabase:gen:*\"",
     "supabase:gen:schema_sql": "pnpm supabase db dump --local > ./schema/schema.sql",
     "supabase:gen:types": "supabase gen types typescript --local > supabase/database.types.ts && biome check --write --unsafe supabase/database.types.ts",
     "supabase:migration": "supabase db diff -f",

@@ -13,9 +13,9 @@
   "dependencies": {
     "@prisma/internals": "6.2.1",
     "@ruby/prism": "1.2.0",
-    "neverthrow": "8.1.1",
+    "neverthrow": "8.2.0",
     "pg-query-emscripten": "5.1.0",
-    "valibot": "^1.0.0-beta.5",
+    "valibot": "1.0.0",
     "zod": "3.24.2"
   },
   "devDependencies": {
@@ -23,22 +23,22 @@
     "@liam-hq/configs": "workspace:*",
     "@pgsql/types": "15.0.2",
     "@prisma/generator-helper": "6.2.1",
-    "@types/node": "22.9.0",
+    "@types/node": "22.14.0",
     "json-refs": "3.0.15",
-    "json-schema-to-zod": "2.6.0",
-    "typescript": "5.8.2",
-    "vitest": "3.0.8"
+    "json-schema-to-zod": "2.6.1",
+    "typescript": "5.8.3",
+    "vitest": "3.1.1"
   },
   "scripts": {
     "build": "tsc && pnpm run cp:prism",
     "cp:prism": "cp node_modules/@ruby/prism/src/prism.wasm dist/parser/schemarb/",
-    "fmt": "pnpm run '/^fmt:.*/'",
+    "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
-    "gen": "pnpm run '/^gen:.*/'",
+    "gen": "concurrently \"pnpm:gen:*\"",
     "gen:cp-prism": "cp node_modules/@ruby/prism/src/prism.wasm src/parser/schemarb/prism.wasm",
     "gen:gen-tbls-schema": "node scripts/tblsJsonSchemaToZod.mjs",
-    "lint": "pnpm run '/^lint:.*/'",
-    "lint:biome": "biome check --error-on-warnings .",
+    "lint": "concurrently \"pnpm:lint:*\"",
+    "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest --watch=false"
   },

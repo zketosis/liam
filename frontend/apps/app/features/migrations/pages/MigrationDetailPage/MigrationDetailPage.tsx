@@ -5,13 +5,20 @@ import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
+import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { RadarChart } from '../../components/RadarChart/RadarChart'
 import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
+import {
+  formatAllReviewIssues,
+  formatReviewIssue,
+} from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
   migrationId: string
+  projectId: string
+  branchOrCommit: string
 }
 
 async function getMigrationContents(migrationId: string) {
@@ -56,7 +63,12 @@ async function getMigrationContents(migrationId: string) {
         category,
         severity,
         description,
-        suggestion
+        suggestion,
+        suggestionSnippets:ReviewSuggestionSnippet (
+          id,
+          filename,
+          snippet
+        )
       ),
       reviewScores:ReviewScore (
         id,
@@ -70,11 +82,6 @@ async function getMigrationContents(migrationId: string) {
     .order('createdAt', { ascending: false })
     .limit(1)
     .single()
-
-  if (reviewError || !overallReview) {
-    console.error('OverallReview error:', reviewError)
-    return notFound()
-  }
 
   const prDetails = await getPullRequestDetails(
     Number(repository.installationId),
@@ -90,6 +97,23 @@ async function getMigrationContents(migrationId: string) {
     Number(pullRequest.pullNumber),
   )
 
+  // If there's no overallReview, return with empty review data
+  if (reviewError || !overallReview) {
+    console.info('No OverallReview found for migration:', migrationId)
+    return {
+      migration,
+      overallReview: {
+        id: null,
+        projectId: null,
+        reviewComment: null,
+        reviewedAt: null,
+        reviewIssues: [],
+        reviewScores: [],
+      },
+      erdLinks: [],
+    }
+  }
+
   const { data: schemaPaths, error: pathsError } = await supabase
     .from('GitHubSchemaFilePath')
     .select('path')
@@ -97,7 +121,11 @@ async function getMigrationContents(migrationId: string) {
 
   if (pathsError) {
     console.error('Error fetching schema paths:', pathsError)
-    return notFound()
+    return {
+      migration,
+      overallReview,
+      erdLinks: [],
+    }
   }
 
   const matchedFiles = files
@@ -125,20 +153,25 @@ async function getMigrationContents(migrationId: string) {
   }
 }
 
-export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
+export const MigrationDetailPage: FC<Props> = async ({
+  migrationId,
+  projectId,
+  branchOrCommit,
+}) => {
   const { migration, overallReview, erdLinks } =
     await getMigrationContents(migrationId)
 
-  const projectId = overallReview.projectId
-
-  const formattedReviewDate = new Date(
-    overallReview.reviewedAt,
-  ).toLocaleDateString('en-US')
+  const formattedReviewDate = overallReview.reviewedAt
+    ? new Date(overallReview.reviewedAt).toLocaleDateString('en-US')
+    : 'Not reviewed yet'
 
   return (
     <main className={styles.wrapper}>
       <Link
-        href={urlgen('projects/[projectId]', { projectId: `${projectId}` })}
+        href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
+          projectId,
+          branchOrCommit,
+        })}
         className={styles.backLink}
       >
         ← Back to Project Detail
@@ -152,16 +185,20 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
         <div className={styles.box}>
           <h2 className={styles.h2}>Migration Health</h2>
           <div className={styles.healthContent}>
-            <div className={styles.radarChartContainer}>
-              <RadarChart
-                scores={overallReview.reviewScores.map((score) => ({
-                  id: score.id,
-                  overallReviewId: score.overallReviewId,
-                  overallScore: score.overallScore,
-                  category: score.category as CategoryEnum,
-                }))}
-              />
-            </div>
+            {overallReview.reviewScores.length > 0 ? (
+              <div className={styles.radarChartContainer}>
+                <RadarChart
+                  scores={overallReview.reviewScores.map((score) => ({
+                    id: score.id,
+                    overallReviewId: score.overallReviewId,
+                    overallScore: score.overallScore,
+                    category: score.category as CategoryEnum,
+                  }))}
+                />
+              </div>
+            ) : (
+              <p className={styles.noScores}>No review scores found.</p>
+            )}
             <div className={styles.erdLinks}>
               {erdLinks.map(({ path, filename }) => (
                 <Link key={path} href={path} className={styles.erdLink}>
@@ -176,16 +213,31 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
         </div>
         <div className={styles.box}>
           <h2 className={styles.h2}>Review Content</h2>
-          <pre className={styles.reviewContent}>
-            {overallReview.reviewComment}
-          </pre>
-          {/* Client-side user feedback component */}
-          <div className={styles.feedbackSection}>
-            <UserFeedbackClient traceId={overallReview.traceId} />
-          </div>
+          {overallReview.reviewComment ? (
+            <>
+              <pre className={styles.reviewContent}>
+                {overallReview.reviewComment}
+              </pre>
+              {overallReview.traceId && (
+                <div className={styles.feedbackSection}>
+                  <UserFeedbackClient traceId={overallReview.traceId} />
+                </div>
+              )}
+            </>
+          ) : (
+            <p className={styles.noContent}>No review content found.</p>
+          )}
         </div>
         <div className={styles.box}>
-          <h2 className={styles.h2}>Review Issues</h2>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.h2}>Review Issues</h2>
+            {overallReview.reviewIssues.length > 0 && (
+              <CopyButton
+                text={formatAllReviewIssues(overallReview.reviewIssues)}
+                className={styles.headerCopyButton}
+              />
+            )}
+          </div>
           <div className={styles.reviewIssues}>
             {overallReview.reviewIssues.length > 0 ? (
               [...overallReview.reviewIssues]
@@ -207,6 +259,11 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                     severity: string
                     description: string
                     suggestion: string
+                    suggestionSnippets: Array<{
+                      id: number
+                      filename: string
+                      snippet: string
+                    }>
                   }) => (
                     <div
                       key={issue.id}
@@ -219,9 +276,26 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                         <span className={styles.issueCategory}>
                           {issue.category}
                         </span>
-                        <span className={styles.issueSeverity}>
-                          {issue.severity}
-                        </span>
+                        <div className={styles.issueActions}>
+                          <span className={styles.issueSeverity}>
+                            {issue.severity}
+                          </span>
+                          <CopyButton
+                            text={formatReviewIssue({
+                              category: issue.category,
+                              severity: issue.severity,
+                              description: issue.description,
+                              suggestion: issue.suggestion,
+                              snippets: issue.suggestionSnippets.map(
+                                (snippet) => ({
+                                  filename: snippet.filename,
+                                  snippet: snippet.snippet,
+                                }),
+                              ),
+                            })}
+                            className={styles.issueCopyButton}
+                          />
+                        </div>
                       </div>
                       <p className={styles.issueDescription}>
                         {issue.description}
@@ -234,6 +308,24 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
                           <p>{issue.suggestion}</p>
                         </div>
                       )}
+                      {issue.suggestionSnippets.map((snippet) => (
+                        <div
+                          key={snippet.filename}
+                          className={styles.snippetContainer}
+                        >
+                          <div className={styles.snippetHeader}>
+                            <span className={styles.fileIcon}>📄</span>
+                            <span className={styles.fileName}>
+                              {snippet.filename}
+                            </span>
+                          </div>
+                          <div className={styles.codeContainer}>
+                            <pre className={styles.codeSnippet}>
+                              {snippet.snippet}
+                            </pre>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ),
                 )

@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/libs/db/server'
+import type { SupabaseClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { createOrUpdateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
@@ -19,6 +20,84 @@ const formDataSchema = v.object({
     v.transform((value) => Number(value)),
   ),
 })
+
+/**
+ * Creates a mapping between a KnowledgeSuggestion and a GitHubDocFilePath
+ */
+const createMapping = async (
+  supabase: SupabaseClient,
+  knowledgeSuggestionId: number,
+  gitHubDocFilePathId: number,
+  updatedAt: string,
+) => {
+  const { error: mappingError } = await supabase
+    .from('KnowledgeSuggestionDocMapping')
+    .insert({
+      knowledgeSuggestionId,
+      gitHubDocFilePathId,
+      updatedAt,
+    })
+
+  if (mappingError) {
+    console.error('Failed to create mapping:', mappingError)
+  }
+}
+
+/**
+ * Handles the GitHubDocFilePath creation and mapping for a Doc Suggestion
+ */
+const handleDocFilePath = async (
+  supabase: SupabaseClient,
+  suggestion: { projectId: number; path: string; type: string },
+  suggestionId: number,
+) => {
+  // Check if there's a GitHubDocFilePath entry for this path
+  const { data: docFilePath } = await supabase
+    .from('GitHubDocFilePath')
+    .select('id')
+    .eq('projectId', suggestion.projectId)
+    .eq('path', suggestion.path)
+    .maybeSingle()
+
+  if (!docFilePath) {
+    // Create a new GitHubDocFilePath entry
+    const now = new Date().toISOString()
+    const { data: newDocFilePath, error: createDocError } = await supabase
+      .from('GitHubDocFilePath')
+      .insert({
+        path: suggestion.path,
+        isReviewEnabled: true,
+        projectId: suggestion.projectId,
+        updatedAt: now,
+      })
+      .select()
+      .single()
+
+    if (createDocError || !newDocFilePath) {
+      console.error('Failed to create GitHubDocFilePath entry:', createDocError)
+    } else {
+      // Create a mapping
+      await createMapping(supabase, suggestionId, newDocFilePath.id, now)
+    }
+  } else {
+    // Create a mapping if it doesn't exist
+    const { data: existingMapping } = await supabase
+      .from('KnowledgeSuggestionDocMapping')
+      .select('id')
+      .eq('knowledgeSuggestionId', suggestionId)
+      .eq('gitHubDocFilePathId', docFilePath.id)
+      .maybeSingle()
+
+    if (!existingMapping) {
+      await createMapping(
+        supabase,
+        suggestionId,
+        docFilePath.id,
+        new Date().toISOString(),
+      )
+    }
+  }
+}
 
 export const approveKnowledgeSuggestion = async (formData: FormData) => {
   // Parse and validate form data
@@ -76,6 +155,11 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     if (updateError) {
       throw new Error('Failed to update knowledge suggestion')
+    }
+
+    // If this is a DOCS type suggestion, handle GitHubDocFilePath creation and mapping
+    if (suggestion.type === 'DOCS') {
+      await handleDocFilePath(supabase, suggestion, suggestionId)
     }
 
     // Redirect back to the knowledge suggestion detail page

@@ -1,6 +1,8 @@
 import { createServerClient } from '@liam-hq/db'
 import { cookies } from 'next/headers'
 
+export type SupabaseClient = Awaited<ReturnType<typeof createClient>>
+
 export async function createClient() {
   const cookieStore = await cookies()
 

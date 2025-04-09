@@ -55,6 +55,7 @@ const promptFunction = async ({ vars }: { vars: PromptVars }) => [
 const tests = [
   'file://src/fixtures/github.com/liam-hq/liam/pull/1033/fixture.yaml',
   'file://src/fixtures/github.com/liam-hq/liam/pull/1055/fixture.yaml',
+  'file://src/fixtures/github.com/liam-hq/liam/pull/1105/fixture.yaml',
 ]
 
 async function main() {
@@ -71,12 +72,16 @@ async function main() {
         {
           id: 'openai:gpt-4o-mini',
           config: {
-            responseFormat: {
+            response_format: {
               type: 'json_schema',
-              schema: reviewJsonSchema,
-              strict: true,
+              json_schema: {
+                name: 'review',
+                schema: reviewJsonSchema,
+                strict: true,
+              },
             },
             temperature: 0.7,
+            max_tokens: 16384, // gpt-4o-mini max tokens
           },
         },
       ],

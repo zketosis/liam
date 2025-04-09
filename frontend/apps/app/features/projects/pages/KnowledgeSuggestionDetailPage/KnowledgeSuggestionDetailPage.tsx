@@ -1,17 +1,77 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import * as diffLib from 'diff'
+import {
+  type DBStructure,
+  applyOverrides,
+  dbOverrideSchema,
+} from '@liam-hq/db-structure'
+import {
+  type SupportedFormat,
+  detectFormat,
+  parse,
+} from '@liam-hq/db-structure/parser'
+import { getFileContent } from '@liam-hq/github'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
+import { safeParse } from 'valibot'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
+import { EditableContent } from '../../components/EditableContent/EditableContent'
 import { getOriginalDocumentContent } from '../../utils/getOriginalDocumentContent'
+import { ErdViewer } from './ErdViewer'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
+
+const processOverrideFile = async (
+  content: string,
+  dbStructure: DBStructure,
+) => {
+  const parsedOverrideContent = safeParse(dbOverrideSchema, JSON.parse(content))
+
+  if (!parsedOverrideContent.success) {
+    return {
+      result: null,
+      error: {
+        name: 'ValidationError',
+        message: 'Failed to validate schema override file.',
+        instruction:
+          'Please ensure the override file is in the correct format.',
+      },
+    }
+  }
+
+  return {
+    result: applyOverrides(dbStructure, parsedOverrideContent.output),
+    error: null,
+  }
+}
 
 type Props = {
   projectId: string
   suggestionId: string
+  branchOrCommit: string
+}
+
+async function getGithubSchemaFilePath(projectId: string) {
+  try {
+    const projectId_num = Number(projectId)
+    const supabase = await createClient()
+    const { data: gitHubSchemaFilePath, error } = await supabase
+      .from('GitHubSchemaFilePath')
+      .select('*')
+      .eq('projectId', projectId_num)
+      .single()
+
+    if (error || !gitHubSchemaFilePath) {
+      console.error('Error fetching github schema file path:', error)
+      notFound()
+    }
+
+    return gitHubSchemaFilePath
+  } catch (error) {
+    console.error('Error fetching github schema file path:', error)
+    notFound()
+  }
 }
 
 async function getKnowledgeSuggestionDetail(
@@ -55,9 +115,31 @@ async function getKnowledgeSuggestionDetail(
 export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
   projectId,
   suggestionId,
+  branchOrCommit,
 }) => {
   const suggestion = await getKnowledgeSuggestionDetail(projectId, suggestionId)
   const repository = suggestion.project.repositoryMappings[0]?.repository
+
+  const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)
+  const filePath = githubSchemaFilePath.path
+
+  const repositoryFullName = `${repository.owner}/${repository.name}`
+  const { content } = await getFileContent(
+    repositoryFullName,
+    filePath,
+    branchOrCommit,
+    Number(repository.installationId),
+  )
+
+  const format = detectFormat(filePath)
+  const { value: dbStructure, errors } =
+    content !== null && format !== undefined
+      ? await parse(content, format as SupportedFormat)
+      : { value: undefined, errors: [] }
+
+  const { result } = dbStructure
+    ? await processOverrideFile(suggestion.content, dbStructure)
+    : { result: { dbStructure: undefined, tableGroups: {} } }
 
   return (
     <div className={styles.container}>
@@ -91,36 +173,66 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </span>
           <span className={styles.metaItem}>
             Created:{' '}
-            {new Date(suggestion.createdAt).toLocaleDateString('en-US')}
+            {new Date(suggestion.createdAt).toLocaleString('en-US', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+              hour12: false,
+            })}
           </span>
           {suggestion.approvedAt && (
             <span className={styles.metaItem}>
               Approved:{' '}
-              {new Date(suggestion.approvedAt).toLocaleDateString('en-US')}
+              {new Date(suggestion.createdAt).toLocaleString('en-US', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+                hour12: false,
+              })}
             </span>
           )}
         </div>
 
-        <div className={styles.contentSection}>
-          <h2 className={styles.sectionTitle}>Content</h2>
-          {suggestion.approvedAt ? (
-            <pre className={styles.codeContent}>{suggestion.content}</pre>
-          ) : (
-            <DiffDisplay
+        {suggestion.reasoning && (
+          <div className={styles.reasoningSection}>
+            <div className={styles.header}>
+              <h2 className={styles.sectionTitle}>Reasoning</h2>
+            </div>
+            <div className={styles.reasoningContent}>
+              {suggestion.reasoning}
+            </div>
+          </div>
+        )}
+
+        <div className={styles.columns}>
+          <div className={styles.contentSection}>
+            <div className={styles.header}>
+              <h2 className={styles.sectionTitle}>Content</h2>
+            </div>
+
+            <EditableContent
+              content={suggestion.content}
+              suggestionId={suggestion.id}
+              className={styles.codeContent}
               originalContent={
-                await getOriginalDocumentContent(
-                  projectId,
-                  suggestion.branchName,
-                  suggestion.path,
-                )
+                !suggestion.approvedAt
+                  ? await getOriginalDocumentContent(
+                      projectId,
+                      suggestion.branchName,
+                      suggestion.path,
+                    )
+                  : null
               }
-              newContent={suggestion.content}
+              isApproved={!!suggestion.approvedAt}
+            />
+          </div>
+
+          {content !== null && format !== undefined && dbStructure && (
+            <ErdViewer
+              dbStructure={dbStructure}
+              tableGroups={result?.tableGroups || {}}
+              errorObjects={errors || []}
+              defaultSidebarOpen={false}
             />
           )}
-          {/* Client-side user feedback component */}
-          <div className={styles.feedbackSection}>
-            <UserFeedbackClient traceId={suggestion.traceId} />
-          </div>
         </div>
 
         {!suggestion.approvedAt && repository && (
@@ -149,56 +261,6 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           </div>
         )}
       </div>
-    </div>
-  )
-}
-
-interface DiffDisplayProps {
-  originalContent: string | null
-  newContent: string
-}
-
-const DiffDisplay: FC<DiffDisplayProps> = ({ originalContent, newContent }) => {
-  if (!originalContent) {
-    return (
-      <div className={styles.diffContent}>
-        {newContent.split('\n').map((line) => (
-          <div key={`added-${line}`} className={styles.diffAdded}>
-            + {line}
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  const diff = diffLib.diffTrimmedLines(originalContent, newContent)
-
-  return (
-    <div className={styles.diffContent}>
-      {diff.map((part, index) => {
-        const className = part.added
-          ? styles.diffAdded
-          : part.removed
-            ? styles.diffRemoved
-            : styles.diffUnchanged
-
-        const prefix = part.added ? '+ ' : part.removed ? '- ' : '  '
-
-        return part.value.split('\n').map((line, lineIndex) => {
-          if (lineIndex === part.value.split('\n').length - 1 && line === '') {
-            return null
-          }
-          return (
-            <div
-              key={`${part.added ? 'added' : part.removed ? 'removed' : 'unchanged'}-${line}-${index}-${lineIndex}`}
-              className={className}
-            >
-              {prefix}
-              {line}
-            </div>
-          )
-        })
-      })}
     </div>
   )
 }

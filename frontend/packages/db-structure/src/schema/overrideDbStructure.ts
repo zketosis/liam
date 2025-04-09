@@ -3,21 +3,24 @@ import {
   type DBStructure,
   type TableGroup,
   columnNameSchema,
+<<<<<<< HEAD
   columnSchema,
   constraintNameSchema,
   constraintSchema,
+=======
+>>>>>>> main
   dbStructureSchema,
-  relationshipNameSchema,
-  relationshipSchema,
   tableGroupNameSchema,
   tableGroupSchema,
   tableNameSchema,
 } from './dbStructure.js'
 
-// Schema for adding columns to an existing table
-const addColumnsSchema = v.record(columnNameSchema, columnSchema)
-export type AddColumns = v.InferOutput<typeof addColumnsSchema>
+const columnOverrideSchema = v.object({
+  comment: v.optional(v.nullable(v.string())),
+})
+export type ColumnOverride = v.InferOutput<typeof columnOverrideSchema>
 
+<<<<<<< HEAD
 // Schema for adding constraints to an existing table
 const addConstraintsSchema = v.record(constraintNameSchema, constraintSchema)
 export type AddConstraints = v.InferOutput<typeof addConstraintsSchema>
@@ -27,6 +30,11 @@ const tableOverrideSchema = v.object({
   comment: v.optional(v.nullable(v.string())),
   addColumns: v.optional(addColumnsSchema),
   addConstraints: v.optional(addConstraintsSchema),
+=======
+const tableOverrideSchema = v.object({
+  comment: v.optional(v.nullable(v.string())),
+  columns: v.optional(v.record(columnNameSchema, columnOverrideSchema)),
+>>>>>>> main
 })
 export type TableOverride = v.InferOutput<typeof tableOverrideSchema>
 
@@ -35,11 +43,6 @@ export const dbOverrideSchema = v.object({
   overrides: v.object({
     // For overriding properties of existing tables
     tables: v.optional(v.record(tableNameSchema, tableOverrideSchema)),
-
-    // For adding new relationships
-    addRelationships: v.optional(
-      v.record(relationshipNameSchema, relationshipSchema),
-    ),
 
     // For grouping tables
     tableGroups: v.optional(v.record(tableGroupNameSchema, tableGroupSchema)),
@@ -51,11 +54,16 @@ export type DBOverride = v.InferOutput<typeof dbOverrideSchema>
 /**
  * Applies override definitions to the existing DB structure.
  * This function will:
+<<<<<<< HEAD
  * 1. Apply overrides to existing tables
  * 1.1. Replace comments
  * 1.2. Add new columns
  * 1.3. Add new constraints
  * 2. Add new relationships
+=======
+ * 1. Apply overrides to existing tables (e.g., replacing comments)
+ * 2. Apply overrides to existing columns (e.g., replacing comments)
+>>>>>>> main
  * 3. Process and merge table groups from both original structure and overrides
  * @param originalStructure The original DB structure
  * @param override The override definitions
@@ -89,17 +97,20 @@ export function applyOverrides(
         result.tables[tableName].comment = tableOverride.comment
       }
 
-      // Add new columns
-      if (tableOverride.addColumns) {
-        for (const [columnName, columnDefinition] of Object.entries(
-          tableOverride.addColumns,
+      if (tableOverride.columns) {
+        for (const [columnName, columnOverride] of Object.entries(
+          tableOverride.columns,
         )) {
-          if (result.tables[tableName].columns[columnName]) {
+          if (!result.tables[tableName].columns[columnName]) {
             throw new Error(
-              `Column ${columnName} already exists in table ${tableName}`,
+              `Cannot override non-existent column ${columnName} in table ${tableName}`,
             )
           }
-          result.tables[tableName].columns[columnName] = columnDefinition
+
+          if (columnOverride.comment !== undefined) {
+            result.tables[tableName].columns[columnName].comment =
+              columnOverride.comment
+          }
         }
       }
 
@@ -116,53 +127,6 @@ export function applyOverrides(
           result.tables[tableName].constraints[constraintName] = constraint
         }
       }
-    }
-  }
-
-  // Add new relationships
-  if (overrides.addRelationships) {
-    for (const [relationshipName, relationshipDefinition] of Object.entries(
-      overrides.addRelationships,
-    )) {
-      if (result.relationships[relationshipName]) {
-        throw new Error(
-          `Relationship ${relationshipName} already exists in the database structure`,
-        )
-      }
-
-      // Validate that referenced tables and columns exist
-      const {
-        primaryTableName,
-        primaryColumnName,
-        foreignTableName,
-        foreignColumnName,
-      } = relationshipDefinition
-
-      if (!result.tables[primaryTableName]) {
-        throw new Error(
-          `Primary table ${primaryTableName} does not exist for relationship ${relationshipName}`,
-        )
-      }
-
-      if (!result.tables[primaryTableName].columns[primaryColumnName]) {
-        throw new Error(
-          `Primary column ${primaryColumnName} does not exist in table ${primaryTableName} for relationship ${relationshipName}`,
-        )
-      }
-
-      if (!result.tables[foreignTableName]) {
-        throw new Error(
-          `Foreign table ${foreignTableName} does not exist for relationship ${relationshipName}`,
-        )
-      }
-
-      if (!result.tables[foreignTableName].columns[foreignColumnName]) {
-        throw new Error(
-          `Foreign column ${foreignColumnName} does not exist in table ${foreignTableName} for relationship ${relationshipName}`,
-        )
-      }
-
-      result.relationships[relationshipName] = relationshipDefinition
     }
   }
 
