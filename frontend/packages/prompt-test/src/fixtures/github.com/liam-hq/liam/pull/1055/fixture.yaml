@@ -1,8 +1,8 @@
 ---
+name: 'github.com/liam-hq/liam/pull/1055'
 assert:
 - type: llm-rubric
   value: The report evaluates the **risk of data loss**.
-- type: is-json
 - type: javascript
   # `bodyMarkdown` Test 1: Check if the bodyMarkdown sentence is less than or equal to 3
   value: |
@@ -11,11 +11,10 @@ assert:
   # `bodyMarkdown` Test 2: Check if the bodyMarkdown word count is approximately less than or equal to 80
   value: |
     output.bodyMarkdown.split(" ").length <= 80
-- type: cost
-  threshold: 0.008
 
 vars:
-  '# ref': github.com/liam-hq/liam/pull/1055
+  prDescription: ''
+  prComments: ''
   docsContent: ''
   schemaFiles:
   - filename: frontend/packages/db/prisma/schema.prisma

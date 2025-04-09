@@ -17,57 +17,31 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: ./.github/actions/pnpm-setup
 
-      - name: Set up promptfoo cache
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: ~/.promptfoo/cache
-          key: ${{ runner.os }}-promptfoo-v1
-          restore-keys: |
-            ${{ runner.os }}-promptfoo-
-
-      - name: Run promptfoo
+      - name: Run pnpm test:prompt
         env:
-          OPENAI_API_KEY: ${{ secrets.PROMPTFOO_OPENAI_API_KEY }}
-          PROMPTFOO_EMAIL: ${{ secrets.PROMPTFOO_EMAIL }}
-        id: promptfoo
+          OPENAI_API_KEY: ${{ secrets.PROMPT_TEST_OPENAI_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.PROMPT_TEST_LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.PROMPT_TEST_LANGFUSE_SECRET_KEY }}
+        id: pnpm-test-prompt
         shell: bash
+        # TODO: fail when there are errors or failures
+        # TODO: Consider using turborepo passthrough variables.
         run: |
-          mkdir -p ~/.promptfoo
-          echo "account:\n  email: ${PROMPTFOO_EMAIL}" > ~/.promptfoo/promptfoo.yaml
+          # see https://turbo.build/docs/crafting-your-repository/using-environment-variables#passthrough-variables
           echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env.local
-          pnpm test:prompt
-          rm -f .env.local
-          # check
-          ls -alF ~/.promptfoo
-          failures_count=$(cat frontend/packages/prompt-test/results.json | jq .results.stats.failures)
-          errors_count=$(cat frontend/packages/prompt-test/results.json | jq .results.stats.errors)
-          successes_count=$(cat frontend/packages/prompt-test/results.json | jq .results.stats.successes)
-          if [ $failures_count -eq 0 ]; then
-            if [ $errors_count -eq 0 ]; then
-              output="✅️ Promptfoo test succeeded"
-              exit_code=0
-            else
-              output="❌️ Promptfoo test failed"
-              exit_code=1
-            fi
-          else
-            output="❌️ Promptfoo test failed"
-            exit_code=1
-          fi
-          echo "output=$output" >> $GITHUB_OUTPUT
-          echo "successes_count=$successes_count" >> $GITHUB_OUTPUT
-          echo "failures_count=$failures_count" >> $GITHUB_OUTPUT
-          echo "errors_count=$errors_count" >> $GITHUB_OUTPUT
-          # NOTE: if you want treat failures as workflow error, uncomment the following line.
-          # exit $exit_code
+          echo "LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}" >> .env
+          echo "LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}" >> .env
 
-      - name: Share result
-        id: share-result
-        if: always()
-        shell: bash
-        run: |
-          output=$(pnpm dlx promptfoo@0.107.7 share --yes | tail -1)
-          echo "output=$output" >> $GITHUB_OUTPUT
+          # TODO: fail when there are errors or failures
+          pnpm test:prompt
+
+          rm -f .env .env.local
+
+          url=$(cat frontend/packages/prompt-test/result.json | jq -r .url)
+          echo "url=$url" >> $GITHUB_OUTPUT
+
+          datasetRunItemsLength=$(cat frontend/packages/prompt-test/result.json | jq -r .datasetRunItemsLength)
+          echo "datasetRunItemsLength=$datasetRunItemsLength" >> $GITHUB_OUTPUT
 
       - name: Post result
         if: always()
@@ -76,10 +50,8 @@ jobs:
           message: |
             frontend/packages/prompt-test result:
 
-            ${{steps.share-result.outputs.output}}
+            visit: ${{steps.pnpm-test-prompt.outputs.url}}
 
-            ${{steps.promptfoo.outputs.output}}
-
-            | ✅️ Successes | ❌️ Failures | ⚠️ Errors |
-            | --- | --- | --- |
-            | ${{steps.promptfoo.outputs.successes_count}} | ${{steps.promptfoo.outputs.failures_count}} | ${{steps.promptfoo.outputs.errors_count}} |
+            | run items length |
+            | --- |
+            | ${{steps.pnpm-test-prompt.outputs.datasetRunItemsLength}} |
