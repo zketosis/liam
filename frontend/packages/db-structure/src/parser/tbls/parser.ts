@@ -133,20 +133,22 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
       for (const constraint of tblsTable.constraints) {
         if (
           constraint.type === 'PRIMARY KEY' &&
-          constraint.columns?.length // not unidefined and equal to or greater than 1
+          constraint.columns?.length === 1 &&
+          constraint.columns?.[0]
         ) {
           constraints[constraint.name] = {
             type: 'PRIMARY KEY',
             name: constraint.name,
-            columnNames: constraint.columns,
+            columnName: constraint.columns[0],
           }
         }
 
         if (
           constraint.type === 'FOREIGN KEY' &&
-          constraint.columns?.length && // not unidefined and equal to or greater than 1
-          constraint.referenced_columns?.length ===
-            constraint.columns?.length &&
+          constraint.columns?.length === 1 &&
+          constraint.columns[0] &&
+          constraint.referenced_columns?.length === 1 &&
+          constraint.referenced_columns[0] &&
           constraint.referenced_table
         ) {
           const { updateConstraint, deleteConstraint } =
@@ -154,9 +156,9 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
           constraints[constraint.name] = {
             type: 'FOREIGN KEY',
             name: constraint.name,
-            columnNames: constraint.columns,
+            columnName: constraint.columns[0],
             targetTableName: constraint.referenced_table,
-            targetColumnNames: constraint.referenced_columns,
+            targetColumnName: constraint.referenced_columns[0],
             updateConstraint,
             deleteConstraint,
           }
@@ -164,12 +166,13 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
 
         if (
           constraint.type === 'UNIQUE' &&
-          constraint.columns?.length // not unidefined and equal to or greater than 1
+          constraint.columns?.length === 1 &&
+          constraint.columns[0]
         ) {
           constraints[constraint.name] = {
             type: 'UNIQUE',
             name: constraint.name,
-            columnNames: constraint.columns,
+            columnName: constraint.columns[0],
           }
         }
 

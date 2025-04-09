@@ -168,7 +168,7 @@ describe(processor, () => {
           users_email_key: {
             type: 'UNIQUE',
             name: 'users_email_key',
-            columnNames: ['email'],
+            columnName: 'email',
           },
         },
       })
@@ -326,7 +326,7 @@ describe(processor, () => {
           users_pkey: {
             type: 'PRIMARY KEY',
             name: 'users_pkey',
-            columnNames: ['id'],
+            columnName: 'id',
           },
         },
       })
@@ -568,7 +568,7 @@ describe(processor, () => {
           PRIMARY: {
             type: 'PRIMARY KEY',
             name: 'PRIMARY',
-            columnNames: ['id'],
+            columnName: 'id',
           },
         }
 
@@ -612,9 +612,9 @@ describe(processor, () => {
           post_user_id_fk: {
             type: 'FOREIGN KEY',
             name: 'post_user_id_fk',
-            columnNames: ['user_id'],
+            columnName: 'user_id',
             targetTableName: 'users',
-            targetColumnNames: ['id'],
+            targetColumnName: 'id',
             updateConstraint: 'RESTRICT',
             deleteConstraint: 'CASCADE',
           },
@@ -650,7 +650,7 @@ describe(processor, () => {
           user_id: {
             type: 'UNIQUE',
             name: 'user_id',
-            columnNames: ['id'],
+            columnName: 'id',
           },
         }
 

@@ -53,7 +53,7 @@ export type ForeignKeyConstraintReferenceOption = v.InferOutput<
 const primaryKeyConstraintSchema = v.object({
   type: v.literal('PRIMARY KEY'),
   name: constraintNameSchema,
-  columnNames: v.array(columnNameSchema),
+  columnName: columnNameSchema,
 })
 export type PrimaryKeyConstraint = v.InferOutput<
   typeof primaryKeyConstraintSchema
@@ -62,9 +62,9 @@ export type PrimaryKeyConstraint = v.InferOutput<
 const foreignKeyConstraintSchema = v.object({
   type: v.literal('FOREIGN KEY'),
   name: constraintNameSchema,
-  columnNames: v.array(columnNameSchema),
+  columnName: columnNameSchema,
   targetTableName: tableNameSchema,
-  targetColumnNames: v.array(columnNameSchema),
+  targetColumnName: columnNameSchema,
   updateConstraint: foreignKeyConstraintReferenceOptionSchema,
   deleteConstraint: foreignKeyConstraintReferenceOptionSchema,
 })
@@ -75,7 +75,7 @@ export type ForeignKeyConstraint = v.InferOutput<
 const uniqueConstraintSchema = v.object({
   type: v.literal('UNIQUE'),
   name: constraintNameSchema,
-  columnNames: v.array(columnNameSchema),
+  columnName: columnNameSchema,
 })
 export type UniqueConstraint = v.InferOutput<typeof uniqueConstraintSchema>
 
