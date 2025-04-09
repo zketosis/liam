@@ -949,24 +949,6 @@ ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
 
 
 
-ALTER TABLE "public"."MembershipInvites" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."Organization" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."OrganizationMember" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."Project" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."ProjectMember" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."User" ENABLE ROW LEVEL SECURITY;
-
-
 
 
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";

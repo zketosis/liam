@@ -50,14 +50,6 @@ CREATE INDEX IF NOT EXISTS "project_member_org_memberId_idx" ON "public"."Projec
 CREATE INDEX IF NOT EXISTS "membership_invites_email_idx" ON "public"."MembershipInvites" ("email");
 CREATE INDEX IF NOT EXISTS "membership_invites_orgId_idx" ON "public"."MembershipInvites" ("organizationId");
 
--- Set up Row Level Security (RLS) policies
-ALTER TABLE "public"."User" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "public"."Organization" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "public"."OrganizationMember" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "public"."ProjectMember" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "public"."MembershipInvites" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "public"."Project" ENABLE ROW LEVEL SECURITY;
-
 
 -- Grant permissions
 GRANT ALL ON TABLE "public"."User" TO "anon", "authenticated", "service_role";
