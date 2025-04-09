@@ -1,6 +1,7 @@
 'use client'
 
 import { createClient } from '@/libs/db/client'
+import type { SupabaseClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { Button } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
@@ -13,36 +14,41 @@ export const OrganizationNewPage: FC = () => {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
-  const createOrg = async (supabase: any) => {
+  const createOrg = async (supabase: SupabaseClient) => {
     const { data, error } = await supabase
       .from('Organization')
       .insert({ name })
       .select('id')
       .single()
-    
+
     if (error) throw error
     return data
   }
 
-  const addUserToOrg = async (supabase: any, userId: string, organizationId: number) => {
-    const { error } = await supabase
-      .from('OrganizationMember')
-      .insert({
-        userId,
-        organizationId,
-        status: 'ACTIVE',
-      })
-    
+  const addUserToOrg = async (
+    supabase: SupabaseClient,
+    userId: string,
+    organizationId: number,
+  ) => {
+    const { error } = await supabase.from('OrganizationMember').insert({
+      userId,
+      organizationId,
+      status: 'ACTIVE',
+    })
+
     if (error) throw error
   }
 
-  const checkProjects = async (supabase: any, organizationId: number) => {
+  const checkProjects = async (
+    supabase: SupabaseClient,
+    organizationId: number,
+  ) => {
     const { data, error } = await supabase
       .from('Project')
       .select('id')
       .eq('organizationId', organizationId)
       .limit(1)
-    
+
     if (error) throw error
     return data
   }
@@ -59,7 +65,7 @@ export const OrganizationNewPage: FC = () => {
 
     try {
       const supabase = await createClient()
-      
+
       const organization = await createOrg(supabase)
 
       const { data: userData, error: userError } = await supabase.auth.getUser()
@@ -69,9 +75,11 @@ export const OrganizationNewPage: FC = () => {
 
       const projects = await checkProjects(supabase, organization.id)
 
-      router.push(projects && projects.length > 0 
-        ? urlgen('projects') 
-        : urlgen('projects/new'))
+      router.push(
+        projects && projects.length > 0
+          ? urlgen('projects')
+          : urlgen('projects/new'),
+      )
     } catch (err) {
       console.error('Error creating organization:', err)
       setError('Failed to create organization. Please try again.')
