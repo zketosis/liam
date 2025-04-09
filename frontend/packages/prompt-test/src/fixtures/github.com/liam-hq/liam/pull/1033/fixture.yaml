@@ -22,7 +22,7 @@ assert:
   value: |
     output.bodyMarkdown.split(" ").length <= 80
 - type: cost
-  threshold: 1.00
+  threshold: 0.008
 
 vars:
   '# ref': github.com/liam-hq/liam/pull/1033
