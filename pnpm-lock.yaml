@@ -378,8 +378,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       neverthrow:
-        specifier: 8.1.1
-        version: 8.1.1
+        specifier: 8.2.0
+        version: 8.2.0
       pg-query-emscripten:
         specifier: 5.1.0
         version: 5.1.0
@@ -3258,11 +3258,6 @@ packages:
   '@rollup/rollup-linux-s390x-gnu@4.39.0':
     resolution: {integrity: sha512-iRDJd2ebMunnk2rsSBYlsptCyuINvxUfGwOUldjv5M4tpa93K8tFMeYGpNk2+Nxl+OBJnBzy2/JCscGeO507kA==}
     cpu: [s390x]
-    os: [linux]
-
-  '@rollup/rollup-linux-x64-gnu@4.35.0':
-    resolution: {integrity: sha512-Pim1T8rXOri+0HmV4CdKSGrqcBWX0d1HoPnQ0uw0bdp1aP5SdQVNBy8LjYncvnLgu3fnnCt17xjWGd4cqh8/hA==}
-    cpu: [x64]
     os: [linux]
 
   '@rollup/rollup-linux-x64-gnu@4.39.0':
@@ -7715,8 +7710,8 @@ packages:
     resolution: {integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==}
     engines: {node: '>= 0.4.0'}
 
-  neverthrow@8.1.1:
-    resolution: {integrity: sha512-DpbZ/UDI0B+TxJB1JysXSfi1++3YK2xLBqQLTlRN0b4zxlZ2MoiB+dKKV8dMRzt1fAFjRKDknXOVJgpl+a4Amw==}
+  neverthrow@8.2.0:
+    resolution: {integrity: sha512-kOCT/1MCPAxY5iUV3wytNFUMUolzuwd/VF/1KCx7kf6CutrOsTie+84zTGTpgQycjvfLdBBdvBvFLqFD2c0wkQ==}
     engines: {node: '>=18'}
 
   next-themes@0.4.6:
@@ -13584,9 +13579,6 @@ snapshots:
   '@rollup/rollup-linux-s390x-gnu@4.39.0':
     optional: true
 
-  '@rollup/rollup-linux-x64-gnu@4.35.0':
-    optional: true
-
   '@rollup/rollup-linux-x64-gnu@4.39.0':
     optional: true
 
@@ -19121,9 +19113,9 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  neverthrow@8.1.1:
+  neverthrow@8.2.0:
     optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.35.0
+      '@rollup/rollup-linux-x64-gnu': 4.39.0
 
   next-themes@0.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
