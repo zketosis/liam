@@ -13,7 +13,7 @@
   "dependencies": {
     "@prisma/internals": "6.2.1",
     "@ruby/prism": "1.2.0",
-    "neverthrow": "8.1.1",
+    "neverthrow": "8.2.0",
     "pg-query-emscripten": "5.1.0",
     "valibot": "1.0.0",
     "zod": "3.24.2"
