@@ -7,7 +7,7 @@ settings:
 overrides:
   esbuild: 0.25.2
   path-to-regexp: 8.2.0
-  undici: 5.29.0
+  undici: 7.7.0
   node-gtts: workspace:*
 
 importers:
@@ -1396,10 +1396,6 @@ packages:
   '@fal-ai/serverless-client@0.14.3':
     resolution: {integrity: sha512-xroGr51Xi5XlOs+cWKrEY8NvD7VngCGJDIJmBLQ7WLa/HRiPWmarHz00noSQ3Go/508RsdPcstDZnEFLBL3mgw==}
     engines: {node: '>=18.0.0'}
-
-  '@fastify/busboy@2.1.1':
-    resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
-    engines: {node: '>=14'}
 
   '@floating-ui/core@1.6.9':
     resolution: {integrity: sha512-uMXCuQ3BItDUbAMhIXw7UPXRfAlOAvZzdK9BWpE60MCn+Svt3aLn9jsPTi/WNGlRUu2uI0v5S7JiIUsbsvh3fw==}
@@ -9221,9 +9217,9 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici@5.29.0:
-    resolution: {integrity: sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==}
-    engines: {node: '>=14.0'}
+  undici@7.7.0:
+    resolution: {integrity: sha512-tZ6+5NBq4KH35rr46XJ2JPFKxfcBlYNaqLF/wyWIO9RMHqqU/gx/CLB1Y2qMcgB8lWw/bKHa7qzspqCN7mUHvA==}
+    engines: {node: '>=20.18.1'}
 
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
@@ -10865,8 +10861,6 @@ snapshots:
       '@msgpack/msgpack': 3.1.1
       eventsource-parser: 1.1.2
       robot3: 0.4.1
-
-  '@fastify/busboy@2.1.1': {}
 
   '@floating-ui/core@1.6.9':
     dependencies:
@@ -14606,7 +14600,7 @@ snapshots:
       ts-morph: 12.0.0
       ts-node: 10.9.1(@types/node@16.18.11)(typescript@4.9.5)
       typescript: 4.9.5
-      undici: 5.29.0
+      undici: 7.7.0
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -15245,7 +15239,7 @@ snapshots:
       parse5: 7.2.1
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 5.29.0
+      undici: 7.7.0
       whatwg-mimetype: 4.0.0
 
   chokidar@3.6.0:
@@ -16792,7 +16786,7 @@ snapshots:
       isstream: 0.1.2
       jsonwebtoken: 9.0.2
       mime-types: 2.1.35
-      retry-axios: 2.6.0(axios@1.8.4(debug@4.4.0))
+      retry-axios: 2.6.0(axios@1.8.4)
       tough-cookie: 4.1.4
     transitivePeerDependencies:
       - supports-color
@@ -18857,7 +18851,7 @@ snapshots:
       sharp: 0.33.5
       socket.io: 4.8.1
       tsx: 4.19.3
-      undici: 5.29.0
+      undici: 7.7.0
       uuid: 10.0.0
       winston: 3.17.0
       ws: 8.18.1
@@ -19292,7 +19286,7 @@ snapshots:
       onetime: 7.0.0
       signal-exit: 4.1.0
 
-  retry-axios@2.6.0(axios@1.8.4(debug@4.4.0)):
+  retry-axios@2.6.0(axios@1.8.4):
     dependencies:
       axios: 1.8.4(debug@4.4.0)
 
@@ -20228,9 +20222,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici@5.29.0:
-    dependencies:
-      '@fastify/busboy': 2.1.1
+  undici@7.7.0: {}
 
   unicorn-magic@0.3.0: {}
 
