@@ -30,7 +30,8 @@ export const ResolutionCommentModal: React.FC<ResolutionCommentModalProps> = ({
     const handleClickOutside = (e: MouseEvent) => {
       if (
         modalRef.current &&
-        !modalRef.current.contains(e.target as Node) &&
+        e.target instanceof Node &&
+        !modalRef.current.contains(e.target) &&
         isOpen
       ) {
         onClose()
