@@ -115,7 +115,7 @@ export const saveReviewTask = task({
         installationId,
         type: 'DOCS',
         branchName: payload.branchName,
-        ...(overallReviewId ? { overallReviewId } : {}),
+        overallReviewId,
       })
 
       // Trigger schema meta suggestion generation after review is saved
@@ -200,9 +200,7 @@ export const generateDocsSuggestionTask = task({
         branch: payload.branchName,
         traceId,
         reasoning: suggestion.reasoning || '',
-        ...(payload.overallReviewId
-          ? { overallReviewId: payload.overallReviewId }
-          : {}),
+        ...(payload.overallReviewId ? { overallReviewId: payload.overallReviewId } : {}),
       })
     }
 
