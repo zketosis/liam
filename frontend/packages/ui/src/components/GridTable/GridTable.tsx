@@ -1,3 +1,4 @@
+import { clsx } from 'clsx'
 import type React from 'react'
 import type { ComponentProps } from 'react'
 import styles from './GridTable.module.css'
@@ -27,4 +28,9 @@ export const GridTableDt: React.FC<GridTableDtProps> = (props) => (
 type GridTableDdProps = ComponentProps<'dd'>
 export const GridTableDd: React.FC<GridTableDdProps> = (props) => (
   <dd className={styles.dd} {...props} />
+)
+
+type GridTableRowProps = ComponentProps<'dt'>
+export const GridTableRow: React.FC<GridTableRowProps> = (props) => (
+  <dt className={clsx(styles.dt, styles.row)} {...props} />
 )
