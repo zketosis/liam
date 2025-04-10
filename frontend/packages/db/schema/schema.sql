@@ -24,8 +24,66 @@ USING (
   )
 );
 
+CREATE POLICY "authenticated_users_can_insert_org_projects" ON "public"."Project"
+FOR INSERT
+TO authenticated
+WITH CHECK (
+  "organizationId" IN (
+    SELECT "organizationId" 
+    FROM "public"."OrganizationMember" 
+    WHERE "userId" = auth.uid()
+  )
+);
+
+CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project"
+FOR UPDATE
+TO authenticated
+USING (
+  "organizationId" IN (
+    SELECT "organizationId" 
+    FROM "public"."OrganizationMember" 
+    WHERE "userId" = auth.uid()
+  )
+)
+WITH CHECK (
+  "organizationId" IN (
+    SELECT "organizationId" 
+    FROM "public"."OrganizationMember" 
+    WHERE "userId" = auth.uid()
+  )
+);
+
+CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project"
+FOR DELETE
+TO authenticated
+USING (
+  "organizationId" IN (
+    SELECT "organizationId" 
+    FROM "public"."OrganizationMember" 
+    WHERE "userId" = auth.uid()
+  )
+);
+
 CREATE POLICY "service_role_can_select_all_projects" ON "public"."Project"
 FOR SELECT
+TO service_role
+USING (true);
+
+CREATE POLICY "service_role_can_insert_all_projects" ON "public"."Project"
+FOR INSERT
+TO service_role
+WITH CHECK (true);
+
+CREATE POLICY "service_role_can_update_all_projects" ON "public"."Project"
+FOR UPDATE
+TO service_role
+USING (true)
+WITH CHECK (true);
+
+CREATE POLICY "service_role_can_delete_all_projects" ON "public"."Project"
+FOR DELETE
+TO service_role
+USING (true)
 TO service_role
 USING (true);
 
