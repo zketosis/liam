@@ -36,7 +36,7 @@ export const ColumnsItem: FC<Props> = ({ column }) => {
           <GridTableItem>
             <GridTableRow>
               <KeyRound className={styles.primaryKeyIcon} />
-              <span>Primary Key</span>
+              Primary Key
             </GridTableRow>
           </GridTableItem>
         )}
@@ -44,14 +44,14 @@ export const ColumnsItem: FC<Props> = ({ column }) => {
           <GridTableItem>
             <GridTableRow>
               <DiamondFillIcon className={styles.diamondIcon} />
-              <span>Not-null</span>
+              Not-null
             </GridTableRow>
           </GridTableItem>
         ) : (
           <GridTableItem>
             <GridTableRow>
               <DiamondIcon className={styles.diamondIcon} />
-              <span>Nullable</span>
+              Nullable
             </GridTableRow>
           </GridTableItem>
         )}
