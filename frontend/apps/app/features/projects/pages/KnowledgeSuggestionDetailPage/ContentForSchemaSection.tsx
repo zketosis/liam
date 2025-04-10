@@ -31,7 +31,7 @@ type Props = {
   tableGroups: Record<string, TableGroup>
 }
 
-export const KnowledgeContentSection: FC<Props> = ({
+export const ContentForSchemaSection: FC<Props> = ({
   suggestionContent,
   suggestionId,
   originalContent,
