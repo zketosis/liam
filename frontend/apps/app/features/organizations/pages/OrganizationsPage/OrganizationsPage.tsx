@@ -27,21 +27,22 @@ export const OrganizationsPage: FC<{
           <p>Create a new organization to get started.</p>
         </div>
       ) : (
-        <ul className={styles.organizationGrid}>
+        <div className={styles.organizationGrid} role="list">
           {organizations.map((organization) => (
-            <li key={organization.id}>
-              <Link
-                href={urlgen('organizations/[organizationId]', {
-                  organizationId: `${organization.id}`,
-                })}
-                className={styles.organizationCard}
-                aria-label={`${organization.name || 'Untitled Organization'} organization`}
-              >
-                <h2>{organization.name || 'Untitled Organization'}</h2>
-              </Link>
-            </li>
+            <Link
+              key={organization.id}
+              href={urlgen('organizations/[organizationId]', {
+                organizationId: `${organization.id}`,
+              })}
+              className={styles.organizationCard}
+              role="listitem"
+              aria-label={`${organization.name || 'Untitled Organization'} organization`}
+              tabIndex={0}
+            >
+              <h2>{organization.name || 'Untitled Organization'}</h2>
+            </Link>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )
