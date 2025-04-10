@@ -17,17 +17,13 @@ When analyzing the changes, consider:
 
 Your JSON-formatted response must contain:
 
-- An array of scores for each feedback kind in the "scores" field, each including:
-  - "kind": One of the feedback categories listed below:
+- An array of identified feedback in the "feedbacks" field. Each feedback item must include:
+  - "kind": The feedback category, which must be one of the following:
     - Migration Safety
     - Data Integrity
     - Performance Impact
     - Project Rules Consistency
     - Security or Scalability
-  - "reason": An explanation justifying the score provided, including an overview of identified issues.
-
-- Based on the findings, create an array of identified feedback in the "feedbacks" field. Each feedback item must include:
-  - "kind": The feedback category, matching one of the categories used in the scores.
   - "severity": Assign a severity value:
     - Use "CRITICAL" for major issues.
     - Use "WARNING" for minor issues.
