@@ -83,8 +83,6 @@ WITH CHECK (true);
 CREATE POLICY "service_role_can_delete_all_projects" ON "public"."Project"
 FOR DELETE
 TO service_role
-USING (true)
-TO service_role
 USING (true);
 
 
