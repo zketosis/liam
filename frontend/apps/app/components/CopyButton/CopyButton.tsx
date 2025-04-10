@@ -43,7 +43,7 @@ export const CopyButton = ({ text, className }: CopyButtonProps) => {
       ) : (
         <>
           <span className={styles.icon}>📋</span>
-          <span className={styles.text}>Copy</span>
+          <span className={styles.text}>Copy Prompt</span>
         </>
       )}
     </button>
