@@ -86,7 +86,7 @@ export const saveReviewTask = task({
   run: async (payload: ReviewResponse & GenerateReviewPayload) => {
     logger.log('Executing review save task:', { payload })
     try {
-      await processSaveReview(payload)
+      const { overallReviewId } = await processSaveReview(payload)
 
       logger.log('Creating knowledge suggestions for docs:', {
         count: payload.schemaFiles.length,
@@ -105,16 +105,6 @@ export const saveReviewTask = task({
         traceId: payload.traceId,
       })
 
-      // Get the overall review ID from the database
-      const supabase = createClient()
-      const { data: overallReview, error: overallReviewError } = await supabase
-        .from('OverallReview')
-        .select('id')
-        .eq('pullRequestId', payload.pullRequestId)
-        .order('createdAt', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-
       // Trigger docs suggestion generation after review is saved
       await generateDocsSuggestionTask.trigger({
         reviewComment: payload.review.bodyMarkdown,
@@ -125,24 +115,17 @@ export const saveReviewTask = task({
         installationId,
         type: 'DOCS',
         branchName: payload.branchName,
-        ...(overallReview?.id ? { overallReviewId: overallReview.id } : {}),
+        ...(overallReviewId ? { overallReviewId } : {}),
       })
 
-      if (overallReviewError) {
-        logger.error('Error fetching overall review', {
-          error: overallReviewError,
-          pullRequestId: payload.pullRequestId,
-        })
-      }
-
-      if (!overallReview) {
-        logger.error('No overall review found for pull request', {
-          pullRequestId: payload.pullRequestId,
+      // Trigger schema meta suggestion generation after review is saved
+      if (overallReviewId) {
+        await generateSchemaMetaSuggestionTask.trigger({
+          overallReviewId,
         })
       } else {
-        // Trigger schema meta suggestion generation after review is saved
-        await generateSchemaMetaSuggestionTask.trigger({
-          overallReviewId: overallReview.id,
+        logger.error('No overall review ID found for pull request', {
+          pullRequestId: payload.pullRequestId,
         })
       }
 
