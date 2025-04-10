@@ -98,9 +98,15 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
             label: 'General',
             children: (
               <div className={styles.generalTab}>
-                <form className={styles.form} onSubmit={handleUpdate} aria-label="Update organization form">
+                <form
+                  className={styles.form}
+                  onSubmit={handleUpdate}
+                  aria-label="Update organization form"
+                >
                   <div className={styles.formGroup}>
-                    <label htmlFor="name" id="name-label">Organization Name</label>
+                    <label htmlFor="name" id="name-label">
+                      Organization Name
+                    </label>
                     <input
                       id="name"
                       type="text"
@@ -114,9 +120,19 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                       aria-describedby={error ? 'name-error' : undefined}
                     />
                   </div>
-                  {error && <p id="name-error" className={styles.error} role="alert">{error}</p>}
+                  {error && (
+                    <p id="name-error" className={styles.error} role="alert">
+                      {error}
+                    </p>
+                  )}
                   {successMessage && (
-                    <p id="name-success" className={styles.success} role="status">{successMessage}</p>
+                    <output
+                      id="name-success"
+                      className={styles.success}
+                      htmlFor="name"
+                    >
+                      {successMessage}
+                    </output>
                   )}
                   <Button type="submit" disabled={loading}>
                     {loading ? 'Updating...' : 'Update Organization'}
@@ -133,7 +149,9 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                 <h2 className={styles.sectionTitle}>Members</h2>
                 <div className={styles.table}>
                   <table aria-label="Organization members">
-                    <caption className={styles.visuallyHidden}>Organization Members</caption>
+                    <caption className={styles.visuallyHidden}>
+                      Organization Members
+                    </caption>
                     <thead>
                       <tr>
                         <th scope="col">Name</th>
@@ -164,7 +182,9 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                 <h2 className={styles.sectionTitle}>Invites</h2>
                 <div className={styles.table}>
                   <table aria-label="Organization invites">
-                    <caption className={styles.visuallyHidden}>Organization Invites</caption>
+                    <caption className={styles.visuallyHidden}>
+                      Organization Invites
+                    </caption>
                     <thead>
                       <tr>
                         <th scope="col">Email</th>

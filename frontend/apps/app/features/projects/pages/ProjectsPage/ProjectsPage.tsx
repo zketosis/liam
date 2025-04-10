@@ -59,23 +59,22 @@ export const ProjectsPage: FC<ProjectsPageProps> = async ({
           <p>Create a new project to get started.</p>
         </div>
       ) : (
-        <div className={styles.projectGrid} role="list">
+        <ul className={styles.projectGrid}>
           {projects.map((project) => (
-            <Link
-              key={project.id}
-              href={urlgen('projects/[projectId]', {
-                projectId: `${project.id}`,
-              })}
-              className={styles.projectCard}
-              role="listitem"
-              aria-label={`${project.name || 'Untitled Project'} project`}
-              tabIndex={0}
-            >
-              <h2>{project.name || 'Untitled Project'}</h2>
-              <p className={styles.createdAt}>Created: {project.createdAt}</p>
-            </Link>
+            <li key={project.id}>
+              <Link
+                href={urlgen('projects/[projectId]', {
+                  projectId: `${project.id}`,
+                })}
+                className={styles.projectCard}
+                aria-label={`${project.name || 'Untitled Project'} project`}
+              >
+                <h2>{project.name || 'Untitled Project'}</h2>
+                <p className={styles.createdAt}>Created: {project.createdAt}</p>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   )

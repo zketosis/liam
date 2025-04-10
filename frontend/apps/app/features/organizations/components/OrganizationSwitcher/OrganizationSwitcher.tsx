@@ -3,7 +3,7 @@
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { type FC, useEffect, useRef, useState } from 'react'
+import { type FC, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import styles from './OrganizationSwitcher.module.css'
 
 interface Organization {
@@ -28,7 +28,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
     setIsOpen(!isOpen)
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       setIsOpen(!isOpen)
@@ -141,13 +141,15 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
                 }
               }}
               role="menuitem"
-              aria-current={org.id === currentOrganization.id ? 'true' : 'false'}
+              aria-current={
+                org.id === currentOrganization.id ? 'true' : 'false'
+              }
             >
               {org.name}
             </button>
           ))}
-          <Link 
-            href={urlgen('organizations/new')} 
+          <Link
+            href={urlgen('organizations/new')}
             className={styles.createNew}
             role="menuitem"
             tabIndex={0}
