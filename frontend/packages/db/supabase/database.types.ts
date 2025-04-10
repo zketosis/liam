@@ -144,6 +144,7 @@ export type Database = {
           id: number
           path: string
           projectId: number
+          reasoning: string | null
           title: string
           traceId: string | null
           type: Database['public']['Enums']['KnowledgeType']
@@ -158,6 +159,7 @@ export type Database = {
           id?: number
           path: string
           projectId: number
+          reasoning?: string | null
           title: string
           traceId?: string | null
           type: Database['public']['Enums']['KnowledgeType']
@@ -172,6 +174,7 @@ export type Database = {
           id?: number
           path?: string
           projectId?: number
+          reasoning?: string | null
           title?: string
           traceId?: string | null
           type?: Database['public']['Enums']['KnowledgeType']

@@ -1,7 +1,7 @@
-import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
+import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
 import {
@@ -172,14 +172,12 @@ export const generateDocsSuggestion = async (
   callbacks: Callbacks,
   predefinedRunId: string,
 ): Promise<DocsSuggestion> => {
-  const evaluationModel = new ChatAnthropic({
-    temperature: 0.2,
-    model: 'claude-3-7-sonnet-latest',
+  const evaluationModel = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
-  const updateModel = new ChatAnthropic({
-    temperature: 0.7,
-    model: 'claude-3-7-sonnet-latest',
+  const updateModel = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
   // Convert example objects to JSON strings for template use
