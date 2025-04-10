@@ -78,7 +78,9 @@ export const OrganizationNewPage: FC = () => {
       router.push(
         projects && projects.length > 0
           ? urlgen('projects')
-          : urlgen('projects/new'),
+          : urlgen('organizations/[organizationId]/projects/new', {
+              organizationId: organization.id.toString(),
+            }),
       )
     } catch (err) {
       console.error('Error creating organization:', err)

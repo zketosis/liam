@@ -79,7 +79,20 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>{organization.name}</h1>
+      <div className={styles.header}>
+        <h1 className={styles.title}>{organization.name}</h1>
+        <Button
+          onClick={() => 
+            router.push(
+              urlgen('organizations/[organizationId]/projects/new', {
+                organizationId: organization.id.toString(),
+              })
+            )
+          }
+        >
+          Create Project
+        </Button>
+      </div>
 
       <Tabs
         tabs={[
