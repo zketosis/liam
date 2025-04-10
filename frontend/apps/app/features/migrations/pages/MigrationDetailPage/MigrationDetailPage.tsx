@@ -6,63 +6,11 @@ import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
-import { RadarChart } from '../../components/RadarChart/RadarChart'
-import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
+import { MigrationHealthClient } from '../../components/MigrationHealthClient/MigrationHealthClient'
 import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssuesList'
+import { ReviewIssuesProvider } from '../../contexts/ReviewIssuesContext'
 import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
-
-// Function to calculate scores from review issues
-const calculateScoresFromIssues = (
-  issues: Array<{
-    id: number
-    category: string
-    severity: string
-    resolvedAt?: string | null
-  }>,
-) => {
-  // Group issues by category
-  const issuesByCategory = issues.reduce<
-    Record<string, Array<{ severity: string; resolvedAt?: string | null }>>
-  >((acc, issue) => {
-    if (!acc[issue.category]) {
-      acc[issue.category] = []
-    }
-    acc[issue.category].push({
-      severity: issue.severity,
-      resolvedAt: issue.resolvedAt,
-    })
-    return acc
-  }, {})
-
-  // Calculate scores for each category
-  return Object.entries(issuesByCategory).map(([category, categoryIssues]) => {
-    // Start with 10 points
-    let score = 10
-
-    // Calculate deductions based on issue severity (only for unresolved issues)
-    for (const issue of categoryIssues) {
-      if (issue.resolvedAt) continue // Skip resolved issues
-
-      if (issue.severity === 'CRITICAL') {
-        score -= 3
-      } else if (issue.severity === 'WARNING') {
-        score -= 1
-      }
-      // No deduction for POSITIVE feedback
-    }
-
-    // Ensure minimum score is 0
-    score = Math.max(0, score)
-
-    return {
-      id: Number.parseInt(category, 10), // Use category as ID
-      overallReviewId: 0, // Not needed anymore
-      overallScore: score,
-      category: category as CategoryEnum,
-    }
-  })
-}
 
 type Props = {
   migrationId: string
@@ -263,62 +211,55 @@ export const MigrationDetailPage: FC<Props> = async ({
         <p className={styles.subTitle}>#{migration.PullRequest.pullNumber}</p>
       </div>
       <div className={styles.twoColumns}>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Migration Health</h2>
-          <div className={styles.healthContent}>
-            {overallReview.reviewIssues &&
-            overallReview.reviewIssues.length > 0 ? (
-              <div className={styles.radarChartContainer}>
-                <RadarChart
-                  scores={calculateScoresFromIssues(overallReview.reviewIssues)}
-                />
+        <ReviewIssuesProvider initialIssues={overallReview.reviewIssues}>
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Migration Health</h2>
+            <div className={styles.healthContent}>
+              <MigrationHealthClient className={styles.radarChartContainer} />
+              <div className={styles.erdLinks}>
+                {erdLinks.map(({ path, filename }) => (
+                  <Link key={path} href={path} className={styles.erdLink}>
+                    View ERD Diagram: {filename} →
+                  </Link>
+                ))}
               </div>
-            ) : (
-              <p className={styles.noScores}>No review issues found.</p>
-            )}
-            <div className={styles.erdLinks}>
-              {erdLinks.map(({ path, filename }) => (
-                <Link key={path} href={path} className={styles.erdLink}>
-                  View ERD Diagram: {filename} →
-                </Link>
-              ))}
             </div>
           </div>
-        </div>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Summary</h2>
-        </div>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Review Content</h2>
-          {overallReview.reviewComment ? (
-            <>
-              <pre className={styles.reviewContent}>
-                {overallReview.reviewComment}
-              </pre>
-              {overallReview.traceId && (
-                <div className={styles.feedbackSection}>
-                  <UserFeedbackClient traceId={overallReview.traceId} />
-                </div>
-              )}
-            </>
-          ) : (
-            <p className={styles.noContent}>No review content found.</p>
-          )}
-        </div>
-        <div className={styles.box}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.h2}>Review Issues</h2>
-            {overallReview.reviewIssues.filter(
-              (issue) => issue.severity === 'CRITICAL' && !issue.resolvedAt,
-            ).length > 0 && (
-              <CopyButton
-                text={formatAllReviewIssues(overallReview.reviewIssues)}
-                className={styles.headerCopyButton}
-              />
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Summary</h2>
+          </div>
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Review Content</h2>
+            {overallReview.reviewComment ? (
+              <>
+                <pre className={styles.reviewContent}>
+                  {overallReview.reviewComment}
+                </pre>
+                {overallReview.traceId && (
+                  <div className={styles.feedbackSection}>
+                    <UserFeedbackClient traceId={overallReview.traceId} />
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className={styles.noContent}>No review content found.</p>
             )}
           </div>
-          <ReviewIssuesList issues={overallReview.reviewIssues} />
-        </div>
+          <div className={styles.box}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.h2}>Review Issues</h2>
+              {overallReview.reviewIssues.filter(
+                (issue) => issue.severity === 'CRITICAL' && !issue.resolvedAt,
+              ).length > 0 && (
+                <CopyButton
+                  text={formatAllReviewIssues(overallReview.reviewIssues)}
+                  className={styles.headerCopyButton}
+                />
+              )}
+            </div>
+            <ReviewIssuesList />
+          </div>
+        </ReviewIssuesProvider>
 
         {/* Knowledge Suggestions Section */}
         <div className={styles.box}>

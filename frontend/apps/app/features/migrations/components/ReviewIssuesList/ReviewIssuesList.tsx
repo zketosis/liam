@@ -1,45 +1,40 @@
 'use client'
 
-import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { clsx } from 'clsx'
 import type React from 'react'
-import { useState } from 'react'
 import { CopyButton } from '../../../../components/CopyButton/CopyButton'
+import { resolveReviewIssue } from '../../actions/resolveReviewIssue'
+import { useReviewIssues } from '../../contexts/ReviewIssuesContext'
 import { formatReviewIssue } from '../../utils/formatReviewIssue'
 import { ResolveButton } from '../ResolveButton/ResolveButton'
 import styles from './ReviewIssuesList.module.css'
 
-type ReviewIssue = Tables<'ReviewIssue'> & {
-  suggestionSnippets: Array<{
-    id: number
-    filename: string
-    snippet: string
-  }>
-}
-
 interface ReviewIssuesListProps {
-  issues: ReviewIssue[]
   containerClassName?: string
 }
 
 export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
-  issues: initialIssues,
   containerClassName,
 }) => {
-  const [issues, setIssues] = useState<ReviewIssue[]>(initialIssues)
+  // Use the shared context instead of local state
+  const { issues, updateIssue } = useReviewIssues()
 
-  const handleResolve = (issueId: number, comment: string) => {
-    setIssues((prevIssues) =>
-      prevIssues.map((issue) =>
-        issue.id === issueId
-          ? {
-              ...issue,
-              resolvedAt: new Date().toISOString(),
-              resolutionComment: comment,
-            }
-          : issue,
-      ),
-    )
+  const handleResolve = async (issueId: number, comment: string) => {
+    try {
+      // Call the server action to update the database
+      await resolveReviewIssue({
+        issueId,
+        resolutionComment: comment,
+      })
+
+      // Update the issue in the shared context for immediate UI update
+      updateIssue(issueId, {
+        resolvedAt: new Date().toISOString(),
+        resolutionComment: comment,
+      })
+    } catch (err) {
+      console.error('Error resolving issue:', err)
+    }
   }
 
   const sortedIssues = [...issues].sort((a, b) => {
@@ -79,14 +74,15 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
                   text={formatReviewIssue({
                     category: issue.category,
                     severity: issue.severity,
-                    description: issue.description,
-                    suggestion: issue.suggestion,
-                    snippets: issue.suggestionSnippets.map(
-                      (snippet: { filename: string; snippet: string }) => ({
-                        filename: snippet.filename,
-                        snippet: snippet.snippet,
-                      }),
-                    ),
+                    description: issue.description || '',
+                    suggestion: issue.suggestion || '',
+                    snippets:
+                      issue.suggestionSnippets?.map(
+                        (snippet: { filename: string; snippet: string }) => ({
+                          filename: snippet.filename,
+                          snippet: snippet.snippet,
+                        }),
+                      ) || [],
                   })}
                   className={styles.issueCopyButton}
                 />
@@ -105,7 +101,7 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
                 <p>{issue.suggestion}</p>
               </div>
             )}
-            {issue.suggestionSnippets.map(
+            {issue.suggestionSnippets?.map(
               (snippet: { filename: string; snippet: string; id: number }) => (
                 <div key={snippet.filename} className={styles.snippetContainer}>
                   <div className={styles.snippetHeader}>
