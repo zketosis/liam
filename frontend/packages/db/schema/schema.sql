@@ -260,6 +260,33 @@ CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
 ALTER TABLE "public"."OverallReview" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping" (
+    "id" integer NOT NULL,
+    "overallReviewId" integer NOT NULL,
+    "knowledgeSuggestionId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" OWNED BY "public"."OverallReviewKnowledgeSuggestionMapping"."id";
+
+
+
 CREATE SEQUENCE IF NOT EXISTS "public"."OverallReview_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -509,6 +536,10 @@ ALTER TABLE ONLY "public"."OverallReview" ALTER COLUMN "id" SET DEFAULT "nextval
 
 
 
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."OverallReviewKnowledgeSuggestionMapping_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."Project" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Project_id_seq"'::"regclass");
 
 
@@ -560,6 +591,11 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion"
 
 ALTER TABLE ONLY "public"."Migration"
     ADD CONSTRAINT "Migration_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_pkey" PRIMARY KEY ("id");
 
 
 
@@ -620,6 +656,10 @@ CREATE UNIQUE INDEX "Migration_pullRequestId_key" ON "public"."Migration" USING 
 
 
 
+CREATE UNIQUE INDEX "OverallReviewKnowledgeSuggestionMapping_unique_mapping" ON "public"."OverallReviewKnowledgeSuggestionMapping" USING "btree" ("overallReviewId", "knowledgeSuggestionId");
+
+
+
 CREATE UNIQUE INDEX "ProjectRepositoryMapping_projectId_repositoryId_key" ON "public"."ProjectRepositoryMapping" USING "btree" ("projectId", "repositoryId");
 
 
@@ -659,6 +699,16 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion"
 
 ALTER TABLE ONLY "public"."Migration"
     ADD CONSTRAINT "Migration_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_knowledgeSuggestionId_f" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -969,6 +1019,18 @@ GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."OverallReview" TO "anon";
 GRANT ALL ON TABLE "public"."OverallReview" TO "authenticated";
 GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "anon";
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "service_role";
 
 
 
