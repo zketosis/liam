@@ -52,7 +52,11 @@ export async function processGenerateDocsSuggestion(payload: {
       return {
         id: filename,
         title: filename,
-        content: fileData.content || '',
+        content: fileData.content
+          ? JSON.stringify(
+              Buffer.from(fileData.content, 'base64').toString('utf-8'),
+            ).slice(1, -1)
+          : '',
       }
     })
 
