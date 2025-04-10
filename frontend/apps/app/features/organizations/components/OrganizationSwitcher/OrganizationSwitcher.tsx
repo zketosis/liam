@@ -3,7 +3,7 @@
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { type FC, useEffect, useRef, useState } from 'react'
+import { type FC, type MouseEvent, useEffect, useRef, useState } from 'react'
 import styles from './OrganizationSwitcher.module.css'
 
 interface Organization {
@@ -24,30 +24,8 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  const handleToggleDropdown = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
-      setIsOpen(!isOpen)
-    }
-  }
-
-  const handleOrganizationSelect = (orgId: number) => {
-    if (orgId !== currentOrganization.id) {
-      router.push(
-        urlgen('organizations/[organizationId]/projects', {
-          organizationId: orgId.toString(),
-        }),
-      )
-    }
-    setIsOpen(false)
-  }
-
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: globalThis.MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
@@ -67,10 +45,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
       <button
         type="button"
         className={styles.currentOrg}
-        onClick={handleToggleDropdown}
-        onKeyDown={handleKeyDown}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
+        onClick={() => setIsOpen(!isOpen)}
       >
         <span>{currentOrganization.name}</span>
         <svg
@@ -82,6 +57,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
+          <title>Toggle dropdown</title>
           <path
             d="M1 1L6 5L11 1"
             stroke="currentColor"
@@ -94,10 +70,9 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
 
       <Link
         href={urlgen('organizations/[organizationId]', {
-          organizationId: currentOrganization.id.toString(),
+          organizationId: `${currentOrganization.id}`,
         })}
         className={styles.settingsButton}
-        aria-label="Organization settings"
       >
         <svg
           width="16"
@@ -107,6 +82,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
+          <title>Organization settings</title>
           <path
             d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
             stroke="currentColor"
@@ -125,7 +101,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
       </Link>
 
       {isOpen && (
-        <div className={styles.dropdown} role="menu">
+        <div className={styles.dropdown}>
           {organizations.map((org) => (
             <button
               type="button"
@@ -133,24 +109,21 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
               className={`${styles.dropdownItem} ${
                 org.id === currentOrganization.id ? styles.active : ''
               }`}
-              onClick={() => handleOrganizationSelect(org.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleOrganizationSelect(org.id)
+              onClick={() => {
+                if (org.id !== currentOrganization.id) {
+                  router.push(
+                    urlgen('organizations/[organizationId]/projects', {
+                      organizationId: org.id.toString(),
+                    }),
+                  )
                 }
+                setIsOpen(false)
               }}
-              role="menuitem"
-              aria-current={org.id === currentOrganization.id ? 'true' : 'false'}
             >
               {org.name}
             </button>
           ))}
-          <Link 
-            href={urlgen('organizations/new')} 
-            className={styles.createNew}
-            role="menuitem"
-          >
+          <Link href={urlgen('organizations/new')} className={styles.createNew}>
             Create New Organization
           </Link>
         </div>
