@@ -75,6 +75,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
         className={styles.settingsButton}
       >
         <svg
+          className={styles.icon}
           width="16"
           height="16"
           viewBox="0 0 24 24"
