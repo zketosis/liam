@@ -53,13 +53,9 @@ export async function processGenerateDocsSuggestion(payload: {
         id: filename,
         title: filename,
         content: fileData.content
-          ? Buffer.from(fileData.content, 'base64')
-              .toString('utf-8')
-              .replace(/\\/g, '\\\\')
-              .replace(/\n/g, '\\n')
-              .replace(/\r/g, '\\r')
-              .replace(/\t/g, '\\t')
-              .replace(/"/g, '\\"')
+          ? JSON.stringify(
+              Buffer.from(fileData.content, 'base64').toString('utf-8'),
+            ).slice(1, -1)
           : '',
       }
     })
