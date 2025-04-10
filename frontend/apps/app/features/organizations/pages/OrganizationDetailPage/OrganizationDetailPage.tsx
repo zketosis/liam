@@ -98,9 +98,9 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
             label: 'General',
             children: (
               <div className={styles.generalTab}>
-                <form className={styles.form} onSubmit={handleUpdate} aria-label="Update organization form">
+                <form className={styles.form} onSubmit={handleUpdate}>
                   <div className={styles.formGroup}>
-                    <label htmlFor="name" id="name-label">Organization Name</label>
+                    <label htmlFor="name">Organization Name</label>
                     <input
                       id="name"
                       type="text"
@@ -108,15 +108,11 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                       onChange={(e) => setName(e.target.value)}
                       className={styles.input}
                       disabled={loading}
-                      aria-labelledby="name-label"
-                      aria-required="true"
-                      aria-invalid={error ? 'true' : 'false'}
-                      aria-describedby={error ? 'name-error' : undefined}
                     />
                   </div>
-                  {error && <p id="name-error" className={styles.error} role="alert">{error}</p>}
+                  {error && <p className={styles.error}>{error}</p>}
                   {successMessage && (
-                    <p id="name-success" className={styles.success} role="status">{successMessage}</p>
+                    <p className={styles.success}>{successMessage}</p>
                   )}
                   <Button type="submit" disabled={loading}>
                     {loading ? 'Updating...' : 'Update Organization'}
