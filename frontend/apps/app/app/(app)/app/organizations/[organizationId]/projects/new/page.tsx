@@ -1,12 +1,20 @@
+import type { PageProps } from '@/app/types'
 import { ProjectNewPage } from '@/features/projects/pages'
 import { createClient } from '@/libs/db/server'
 import { getInstallations } from '@liam-hq/github'
 import { notFound } from 'next/navigation'
 import React from 'react'
+import * as v from 'valibot'
 
-export default async function Page({
-  params,
-}: { params: { organizationId: string } }) {
+const paramsSchema = v.object({
+  organizationId: v.string(),
+})
+
+export default async function NewProjectPage({ params }: PageProps) {
+  const parsedParams = v.safeParse(paramsSchema, await params)
+  if (!parsedParams.success) return notFound()
+
+  const { organizationId } = parsedParams.output
   const supabase = await createClient()
   const { data } = await supabase.auth.getSession()
 
@@ -14,13 +22,11 @@ export default async function Page({
     return notFound()
   }
 
-  const organizationId = Number.parseInt(params.organizationId, 10)
-
   const { data: organizationMembers, error: orgError } = await supabase
     .from('OrganizationMember')
     .select('id')
     .eq('userId', data.session.user.id)
-    .eq('organizationId', organizationId)
+    .eq('organizationId', Number.parseInt(organizationId, 10))
     .eq('status', 'ACTIVE')
     .limit(1)
 
@@ -37,7 +43,7 @@ export default async function Page({
   return (
     <ProjectNewPage
       installations={installations}
-      organizationId={organizationId}
+      organizationId={Number.parseInt(organizationId, 10)}
     />
   )
 }

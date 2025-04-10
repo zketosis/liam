@@ -1,12 +1,20 @@
+import type { PageProps } from '@/app/types'
 import { ProjectsPage } from '@/features/projects/pages'
 import { migrationFlag } from '@/libs'
 import { createClient } from '@/libs/db/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
+import * as v from 'valibot'
 
-export default async function Page({
-  params,
-}: { params: { organizationId: string } }) {
+const paramsSchema = v.object({
+  organizationId: v.string(),
+})
+
+export default async function Page({ params }: PageProps) {
+  const parsedParams = v.safeParse(paramsSchema, await params)
+  if (!parsedParams.success) return notFound()
+  const { organizationId } = parsedParams.output
+
   const migrationEnabled = await migrationFlag()
 
   if (!migrationEnabled) {
@@ -20,13 +28,11 @@ export default async function Page({
     return notFound()
   }
 
-  const organizationId = Number.parseInt(params.organizationId, 10)
-
   const { data: organizationMembers, error: orgError } = await supabase
     .from('OrganizationMember')
     .select('id')
     .eq('userId', data.session.user.id)
-    .eq('organizationId', organizationId)
+    .eq('organizationId', Number.parseInt(organizationId, 10))
     .eq('status', 'ACTIVE')
     .limit(1)
 
@@ -38,5 +44,5 @@ export default async function Page({
     return notFound()
   }
 
-  return <ProjectsPage organizationId={organizationId} />
+  return <ProjectsPage organizationId={Number.parseInt(organizationId, 10)} />
 }

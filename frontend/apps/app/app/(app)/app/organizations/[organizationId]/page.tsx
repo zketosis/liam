@@ -1,3 +1,4 @@
+import type { PageProps } from '@/app/types'
 import { OrganizationDetailPage } from '@/features/organizations/pages/OrganizationDetailPage'
 import {
   getOrganizationDetails,
@@ -6,18 +7,24 @@ import {
 } from '@/features/organizations/pages/OrganizationDetailPage/getOrganizationDetails'
 import { notFound } from 'next/navigation'
 import React from 'react'
+import * as v from 'valibot'
 
-export default async function Page({
-  params,
-}: { params: { organizationId: string } }) {
-  const organization = await getOrganizationDetails(params.organizationId)
+const paramsSchema = v.object({
+  organizationId: v.string(),
+})
+
+export default async function OrganizationPage({ params }: PageProps) {
+  const parsedParams = v.safeParse(paramsSchema, await params)
+  if (!parsedParams.success) return notFound()
+  const { organizationId } = parsedParams.output
+  const organization = await getOrganizationDetails(organizationId)
 
   if (!organization) {
     return notFound()
   }
 
-  const members = await getOrganizationMembers(params.organizationId)
-  const invites = await getOrganizationInvites(params.organizationId)
+  const members = await getOrganizationMembers(organizationId)
+  const invites = await getOrganizationInvites(organizationId)
 
   return (
     <OrganizationDetailPage
