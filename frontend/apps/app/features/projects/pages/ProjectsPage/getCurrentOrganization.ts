@@ -1,6 +1,6 @@
 import { createClient } from '@/libs/db/server'
 
-export const getCurrentOrganization = async () => {
+export const getCurrentOrganization = async (specificOrganizationId?: number) => {
   const supabase = await createClient()
 
   const { data: userData, error: userError } = await supabase.auth.getUser()
@@ -9,7 +9,7 @@ export const getCurrentOrganization = async () => {
     return null
   }
 
-  const { data: organizationMembers, error } = await supabase
+  let query = supabase
     .from('OrganizationMember')
     .select(`
       organization:organizationId(
@@ -19,6 +19,12 @@ export const getCurrentOrganization = async () => {
     `)
     .eq('userId', userData.user.id)
     .eq('status', 'ACTIVE')
+  
+  if (specificOrganizationId) {
+    query = query.eq('organizationId', specificOrganizationId)
+  }
+
+  const { data: organizationMembers, error } = await query
 
   if (error) {
     console.error('Error fetching organizations:', error)

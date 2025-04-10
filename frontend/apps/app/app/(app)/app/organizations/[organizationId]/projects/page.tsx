@@ -1,10 +1,10 @@
+import { ProjectsPage } from '@/features/projects/pages'
 import { createClient } from '@/libs/db/server'
 import { migrationFlag } from '@/libs'
-import { urlgen } from '@/utils/routes'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import React from 'react'
 
-export default async function Page() {
+export default async function Page({ params }: { params: { organizationId: string } }) {
   const migrationEnabled = await migrationFlag()
 
   if (!migrationEnabled) {
@@ -18,10 +18,13 @@ export default async function Page() {
     return notFound()
   }
 
+  const organizationId = parseInt(params.organizationId, 10)
+  
   const { data: organizationMembers, error: orgError } = await supabase
     .from('OrganizationMember')
-    .select('organizationId')
+    .select('id')
     .eq('userId', data.session.user.id)
+    .eq('organizationId', organizationId)
     .eq('status', 'ACTIVE')
     .limit(1)
 
@@ -30,14 +33,8 @@ export default async function Page() {
   }
 
   if (!organizationMembers || organizationMembers.length === 0) {
-    redirect(urlgen('organizations/new'))
+    return notFound()
   }
 
-  const organizationId = organizationMembers[0].organizationId
-  
-  redirect(
-    urlgen('organizations/[organizationId]/projects', {
-      organizationId: organizationId.toString(),
-    })
-  )
+  return <ProjectsPage organizationId={organizationId} />
 }

@@ -14,8 +14,14 @@ interface Organization {
   name: string
 }
 
-export const ProjectsPage: FC = async () => {
-  const currentOrganization = await getCurrentOrganization()
+interface ProjectsPageProps {
+  organizationId?: number
+}
+
+export const ProjectsPage: FC<ProjectsPageProps> = async ({ organizationId }) => {
+  const currentOrganization = organizationId 
+    ? await getCurrentOrganization(organizationId) 
+    : await getCurrentOrganization()
   const organizations = await getUserOrganizations()
   const projects = await getProjects(currentOrganization?.id)
 
