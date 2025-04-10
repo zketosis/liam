@@ -18,19 +18,8 @@ CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
   "id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   "userId" uuid NOT NULL REFERENCES "public"."User"("id") ON DELETE CASCADE,
   "organizationId" integer NOT NULL REFERENCES "public"."Organization"("id") ON DELETE CASCADE,
-  "status" text NOT NULL,
   "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   UNIQUE("userId", "organizationId")
-);
-
-CREATE TABLE IF NOT EXISTS "public"."ProjectMember" (
-  "id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  "userId" uuid NOT NULL REFERENCES "public"."User"("id") ON DELETE CASCADE,
-  "projectId" integer NOT NULL REFERENCES "public"."Project"("id") ON DELETE CASCADE,
-  "organizationMemberId" integer REFERENCES "public"."OrganizationMember"("id") ON DELETE CASCADE,
-  "status" text NOT NULL,
-  "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE("userId", "projectId")
 );
 
 CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
@@ -44,9 +33,6 @@ CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
 -- Create indexes
 CREATE INDEX IF NOT EXISTS "organization_member_userId_idx" ON "public"."OrganizationMember" ("userId");
 CREATE INDEX IF NOT EXISTS "organization_member_organizationId_idx" ON "public"."OrganizationMember" ("organizationId");
-CREATE INDEX IF NOT EXISTS "project_member_userId_idx" ON "public"."ProjectMember" ("userId");
-CREATE INDEX IF NOT EXISTS "project_member_projectId_idx" ON "public"."ProjectMember" ("projectId");
-CREATE INDEX IF NOT EXISTS "project_member_org_memberId_idx" ON "public"."ProjectMember" ("organizationMemberId");
 CREATE INDEX IF NOT EXISTS "membership_invites_email_idx" ON "public"."MembershipInvites" ("email");
 CREATE INDEX IF NOT EXISTS "membership_invites_orgId_idx" ON "public"."MembershipInvites" ("organizationId");
 
@@ -55,6 +41,5 @@ CREATE INDEX IF NOT EXISTS "membership_invites_orgId_idx" ON "public"."Membershi
 GRANT ALL ON TABLE "public"."User" TO "anon", "authenticated", "service_role";
 GRANT ALL ON TABLE "public"."Organization" TO "anon", "authenticated", "service_role";
 GRANT ALL ON TABLE "public"."OrganizationMember" TO "anon", "authenticated", "service_role";
-GRANT ALL ON TABLE "public"."ProjectMember" TO "anon", "authenticated", "service_role";
 GRANT ALL ON TABLE "public"."MembershipInvites" TO "anon", "authenticated", "service_role";
 GRANT ALL ON TABLE "public"."Project" TO "anon", "authenticated", "service_role";

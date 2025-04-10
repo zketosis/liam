@@ -318,7 +318,6 @@ CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
     "id" integer NOT NULL,
     "userId" "uuid" NOT NULL,
     "organizationId" integer NOT NULL,
-    "status" "text" NOT NULL,
     "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -389,30 +388,6 @@ CREATE TABLE IF NOT EXISTS "public"."Project" (
 
 
 ALTER TABLE "public"."Project" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."ProjectMember" (
-    "id" integer NOT NULL,
-    "userId" "uuid" NOT NULL,
-    "projectId" integer NOT NULL,
-    "organizationMemberId" integer,
-    "status" "text" NOT NULL,
-    "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE "public"."ProjectMember" OWNER TO "postgres";
-
-
-ALTER TABLE "public"."ProjectMember" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME "public"."ProjectMember_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
 
 
 CREATE TABLE IF NOT EXISTS "public"."ProjectRepositoryMapping" (
@@ -725,16 +700,6 @@ ALTER TABLE ONLY "public"."OverallReview"
 
 
 
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_userId_projectId_key" UNIQUE ("userId", "projectId");
-
-
-
 ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
     ADD CONSTRAINT "ProjectRepositoryMapping_pkey" PRIMARY KEY ("id");
 
@@ -825,18 +790,6 @@ CREATE INDEX "organization_member_userId_idx" ON "public"."OrganizationMember" U
 
 
 
-CREATE INDEX "project_member_org_memberId_idx" ON "public"."ProjectMember" USING "btree" ("organizationMemberId");
-
-
-
-CREATE INDEX "project_member_projectId_idx" ON "public"."ProjectMember" USING "btree" ("projectId");
-
-
-
-CREATE INDEX "project_member_userId_idx" ON "public"."ProjectMember" USING "btree" ("userId");
-
-
-
 ALTER TABLE ONLY "public"."GitHubDocFilePath"
     ADD CONSTRAINT "GitHubDocFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -894,21 +847,6 @@ ALTER TABLE ONLY "public"."OverallReview"
 
 ALTER TABLE ONLY "public"."OverallReview"
     ADD CONSTRAINT "OverallReview_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_organizationMemberId_fkey" FOREIGN KEY ("organizationMemberId") REFERENCES "public"."OrganizationMember"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE;
 
 
 
@@ -1269,18 +1207,6 @@ GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."Project" TO "anon";
 GRANT ALL ON TABLE "public"."Project" TO "authenticated";
 GRANT ALL ON TABLE "public"."Project" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."ProjectMember" TO "anon";
-GRANT ALL ON TABLE "public"."ProjectMember" TO "authenticated";
-GRANT ALL ON TABLE "public"."ProjectMember" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."ProjectMember_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."ProjectMember_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."ProjectMember_id_seq" TO "service_role";
 
 
 

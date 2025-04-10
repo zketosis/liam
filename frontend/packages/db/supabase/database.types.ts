@@ -320,21 +320,18 @@ export type Database = {
           id: number
           joinedAt: string | null
           organizationId: number
-          status: string
           userId: string
         }
         Insert: {
           id?: never
           joinedAt?: string | null
           organizationId: number
-          status: string
           userId: string
         }
         Update: {
           id?: never
           joinedAt?: string | null
           organizationId?: number
-          status?: string
           userId?: string
         }
         Relationships: [
@@ -428,55 +425,6 @@ export type Database = {
           updatedAt?: string
         }
         Relationships: []
-      }
-      ProjectMember: {
-        Row: {
-          id: number
-          joinedAt: string | null
-          organizationMemberId: number | null
-          projectId: number
-          status: string
-          userId: string
-        }
-        Insert: {
-          id?: never
-          joinedAt?: string | null
-          organizationMemberId?: number | null
-          projectId: number
-          status: string
-          userId: string
-        }
-        Update: {
-          id?: never
-          joinedAt?: string | null
-          organizationMemberId?: number | null
-          projectId?: number
-          status?: string
-          userId?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'ProjectMember_organizationMemberId_fkey'
-            columns: ['organizationMemberId']
-            isOneToOne: false
-            referencedRelation: 'OrganizationMember'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'ProjectMember_projectId_fkey'
-            columns: ['projectId']
-            isOneToOne: false
-            referencedRelation: 'Project'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'ProjectMember_userId_fkey'
-            columns: ['userId']
-            isOneToOne: false
-            referencedRelation: 'User'
-            referencedColumns: ['id']
-          },
-        ]
       }
       ProjectRepositoryMapping: {
         Row: {
