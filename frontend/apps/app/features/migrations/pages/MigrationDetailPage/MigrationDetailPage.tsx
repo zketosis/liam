@@ -1,5 +1,6 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
 import { clsx } from 'clsx'
 import Link from 'next/link'
@@ -12,6 +13,14 @@ import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
 import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssuesList'
 import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
+
+type ReviewIssueWithSnippets = Tables<'ReviewIssue'> & {
+  suggestionSnippets: Array<{
+    id: number
+    filename: string
+    snippet: string
+  }>
+}
 
 type Props = {
   migrationId: string
@@ -273,7 +282,11 @@ export const MigrationDetailPage: FC<Props> = async ({
               />
             )}
           </div>
-          <ReviewIssuesList issues={overallReview.reviewIssues} />
+          <ReviewIssuesList
+            issues={
+              overallReview.reviewIssues as unknown as ReviewIssueWithSnippets[]
+            }
+          />
         </div>
 
         {/* Knowledge Suggestions Section */}

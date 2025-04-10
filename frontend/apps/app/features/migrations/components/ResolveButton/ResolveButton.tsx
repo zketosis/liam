@@ -3,6 +3,7 @@
 import { Button } from '@liam-hq/ui'
 import type React from 'react'
 import { useState } from 'react'
+import { resolveReviewIssue } from '../../actions/resolveReviewIssue'
 import { ResolutionCommentModal } from '../ResolutionCommentModal/ResolutionCommentModal'
 import styles from './ResolveButton.module.css'
 
@@ -36,24 +37,20 @@ export const ResolveButton: React.FC<ResolveButtonProps> = ({
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch('/api/review-issues/resolve', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      try {
+        await resolveReviewIssue({
           issueId,
           resolutionComment: comment,
-        }),
-      })
+        })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to resolve issue')
+        onResolve(comment)
+        setIsModalOpen(false)
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error
+        }
+        throw new Error('Failed to resolve issue')
       }
-
-      onResolve(comment)
-      setIsModalOpen(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       console.error('Error resolving issue:', err)
