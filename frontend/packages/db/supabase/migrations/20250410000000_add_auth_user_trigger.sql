@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -35,4 +37,6 @@ BEGIN
 END;
 $$;
 
-SELECT public.sync_existing_users();   
+SELECT public.sync_existing_users();
+
+COMMIT; 

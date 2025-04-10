@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Add new columns to existing tables
 ALTER TABLE "public"."Project" 
   ADD COLUMN IF NOT EXISTS "organizationId" integer;
@@ -43,3 +45,5 @@ GRANT ALL ON TABLE "public"."Organization" TO "anon", "authenticated", "service_
 GRANT ALL ON TABLE "public"."OrganizationMember" TO "anon", "authenticated", "service_role";
 GRANT ALL ON TABLE "public"."MembershipInvites" TO "anon", "authenticated", "service_role";
 GRANT ALL ON TABLE "public"."Project" TO "anon", "authenticated", "service_role";
+
+COMMIT;
