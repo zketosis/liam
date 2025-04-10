@@ -9,10 +9,8 @@ import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
 import { RadarChart } from '../../components/RadarChart/RadarChart'
 import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
-import {
-  formatAllReviewIssues,
-  formatReviewIssue,
-} from '../../utils/formatReviewIssue'
+import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssuesList'
+import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
@@ -64,6 +62,8 @@ async function getMigrationContents(migrationId: string) {
         severity,
         description,
         suggestion,
+        resolvedAt,
+        resolutionComment,
         suggestionSnippets:ReviewSuggestionSnippet (
           id,
           filename,
@@ -238,101 +238,7 @@ export const MigrationDetailPage: FC<Props> = async ({
               />
             )}
           </div>
-          <div className={styles.reviewIssues}>
-            {overallReview.reviewIssues.length > 0 ? (
-              [...overallReview.reviewIssues]
-                .sort((a, b) => {
-                  const severityOrder = {
-                    CRITICAL: 0,
-                    WARNING: 1,
-                    POSITIVE: 2,
-                  }
-                  return (
-                    severityOrder[a.severity as keyof typeof severityOrder] -
-                    severityOrder[b.severity as keyof typeof severityOrder]
-                  )
-                })
-                .map(
-                  (issue: {
-                    id: number
-                    category: string
-                    severity: string
-                    description: string
-                    suggestion: string
-                    suggestionSnippets: Array<{
-                      id: number
-                      filename: string
-                      snippet: string
-                    }>
-                  }) => (
-                    <div
-                      key={issue.id}
-                      className={clsx(
-                        styles.reviewIssue,
-                        styles[`severity${issue.severity}`],
-                      )}
-                    >
-                      <div className={styles.issueHeader}>
-                        <span className={styles.issueCategory}>
-                          {issue.category}
-                        </span>
-                        <div className={styles.issueActions}>
-                          <span className={styles.issueSeverity}>
-                            {issue.severity}
-                          </span>
-                          <CopyButton
-                            text={formatReviewIssue({
-                              category: issue.category,
-                              severity: issue.severity,
-                              description: issue.description,
-                              suggestion: issue.suggestion,
-                              snippets: issue.suggestionSnippets.map(
-                                (snippet) => ({
-                                  filename: snippet.filename,
-                                  snippet: snippet.snippet,
-                                }),
-                              ),
-                            })}
-                            className={styles.issueCopyButton}
-                          />
-                        </div>
-                      </div>
-                      <p className={styles.issueDescription}>
-                        {issue.description}
-                      </p>
-                      {issue.suggestion && (
-                        <div className={styles.issueSuggestion}>
-                          <h4 className={styles.suggestionTitle}>
-                            💡 Suggestion:
-                          </h4>
-                          <p>{issue.suggestion}</p>
-                        </div>
-                      )}
-                      {issue.suggestionSnippets.map((snippet) => (
-                        <div
-                          key={snippet.filename}
-                          className={styles.snippetContainer}
-                        >
-                          <div className={styles.snippetHeader}>
-                            <span className={styles.fileIcon}>📄</span>
-                            <span className={styles.fileName}>
-                              {snippet.filename}
-                            </span>
-                          </div>
-                          <div className={styles.codeContainer}>
-                            <pre className={styles.codeSnippet}>
-                              {snippet.snippet}
-                            </pre>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ),
-                )
-            ) : (
-              <p className={styles.noIssues}>No review issues found.</p>
-            )}
-          </div>
+          <ReviewIssuesList issues={overallReview.reviewIssues} />
         </div>
       </div>
 
