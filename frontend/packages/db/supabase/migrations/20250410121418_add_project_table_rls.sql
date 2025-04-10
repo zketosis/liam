@@ -4,6 +4,7 @@ CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."Project
 FOR SELECT
 TO authenticated
 USING (
+  "organizationId" IS NULL OR
   "organizationId" IN (
     SELECT "organizationId" 
     FROM "public"."OrganizationMember" 
@@ -20,6 +21,7 @@ CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project
 FOR UPDATE
 TO authenticated
 USING (
+  "organizationId" IS NULL OR
   "organizationId" IN (
     SELECT "organizationId" 
     FROM "public"."OrganizationMember" 
@@ -27,6 +29,7 @@ USING (
   )
 )
 WITH CHECK (
+  "organizationId" IS NULL OR
   "organizationId" IN (
     SELECT "organizationId" 
     FROM "public"."OrganizationMember" 
@@ -38,6 +41,7 @@ CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project
 FOR DELETE
 TO authenticated
 USING (
+  "organizationId" IS NULL OR
   "organizationId" IN (
     SELECT "organizationId" 
     FROM "public"."OrganizationMember" 
