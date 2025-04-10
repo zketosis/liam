@@ -105,6 +105,7 @@ export type Database = {
       GitHubSchemaFilePath: {
         Row: {
           createdAt: string
+          format: Database['public']['Enums']['SchemaFormatEnum']
           id: number
           path: string
           projectId: number
@@ -112,6 +113,7 @@ export type Database = {
         }
         Insert: {
           createdAt?: string
+          format: Database['public']['Enums']['SchemaFormatEnum']
           id?: number
           path: string
           projectId: number
@@ -119,6 +121,7 @@ export type Database = {
         }
         Update: {
           createdAt?: string
+          format?: Database['public']['Enums']['SchemaFormatEnum']
           id?: number
           path?: string
           projectId?: number
@@ -725,6 +728,7 @@ export type Database = {
         | 'PROJECT_RULES_CONSISTENCY'
         | 'SECURITY_OR_SCALABILITY'
       KnowledgeType: 'SCHEMA' | 'DOCS'
+      SchemaFormatEnum: 'schemarb' | 'postgres' | 'prisma' | 'tbls'
       SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE'
     }
     CompositeTypes: {
@@ -852,6 +856,7 @@ export const Constants = {
         'SECURITY_OR_SCALABILITY',
       ],
       KnowledgeType: ['SCHEMA', 'DOCS'],
+      SchemaFormatEnum: ['schemarb', 'postgres', 'prisma', 'tbls'],
       SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE'],
     },
   },

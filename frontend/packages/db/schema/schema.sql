@@ -86,6 +86,17 @@ CREATE TYPE "public"."KnowledgeType" AS ENUM (
 ALTER TYPE "public"."KnowledgeType" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."SchemaFormatEnum" AS ENUM (
+    'schemarb',
+    'postgres',
+    'prisma',
+    'tbls'
+);
+
+
+ALTER TYPE "public"."SchemaFormatEnum" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."SeverityEnum" AS ENUM (
     'CRITICAL',
     'WARNING',
@@ -171,7 +182,8 @@ CREATE TABLE IF NOT EXISTS "public"."GitHubSchemaFilePath" (
     "path" "text" NOT NULL,
     "projectId" integer NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "format" "public"."SchemaFormatEnum" NOT NULL
 );
 
 
