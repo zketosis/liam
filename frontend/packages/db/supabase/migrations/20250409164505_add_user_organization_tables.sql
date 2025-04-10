@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
   "email" text NOT NULL,
   "inviteByUserId" uuid NOT NULL REFERENCES "public"."User"("id") ON DELETE CASCADE,
   "organizationId" integer NOT NULL REFERENCES "public"."Organization"("id") ON DELETE CASCADE,
-  "inviteOn" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+  "invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create indexes

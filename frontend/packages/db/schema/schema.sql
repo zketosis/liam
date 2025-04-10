@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
     "email" "text" NOT NULL,
     "inviteByUserId" "uuid" NOT NULL,
     "organizationId" integer NOT NULL,
-    "inviteOn" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    "invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 

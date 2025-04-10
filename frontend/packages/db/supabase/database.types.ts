@@ -234,21 +234,21 @@ export type Database = {
           email: string
           id: number
           inviteByUserId: string
-          inviteOn: string | null
+          invitedAt: string | null
           organizationId: number
         }
         Insert: {
           email: string
           id?: never
           inviteByUserId: string
-          inviteOn?: string | null
+          invitedAt?: string | null
           organizationId: number
         }
         Update: {
           email?: string
           id?: never
           inviteByUserId?: string
-          inviteOn?: string | null
+          invitedAt?: string | null
           organizationId?: number
         }
         Relationships: [
