@@ -1,6 +1,8 @@
 import { createClient } from '@/libs/db/server'
 
-export const getCurrentOrganization = async (specificOrganizationId?: number) => {
+export const getCurrentOrganization = async (
+  specificOrganizationId?: number,
+) => {
   const supabase = await createClient()
 
   const { data: userData, error: userError } = await supabase.auth.getUser()
@@ -19,7 +21,7 @@ export const getCurrentOrganization = async (specificOrganizationId?: number) =>
     `)
     .eq('userId', userData.user.id)
     .eq('status', 'ACTIVE')
-  
+
   if (specificOrganizationId) {
     query = query.eq('organizationId', specificOrganizationId)
   }

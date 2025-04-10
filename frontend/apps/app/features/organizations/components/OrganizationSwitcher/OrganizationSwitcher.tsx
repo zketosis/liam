@@ -111,9 +111,11 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
               }`}
               onClick={() => {
                 if (org.id !== currentOrganization.id) {
-                  router.push(urlgen('organizations/[organizationId]/projects', {
-                    organizationId: org.id.toString(),
-                  }))
+                  router.push(
+                    urlgen('organizations/[organizationId]/projects', {
+                      organizationId: org.id.toString(),
+                    }),
+                  )
                 }
                 setIsOpen(false)
               }}

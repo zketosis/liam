@@ -1,5 +1,5 @@
-import { createClient } from '@/libs/db/server'
 import { migrationFlag } from '@/libs'
+import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { notFound, redirect } from 'next/navigation'
 import React from 'react'
@@ -34,10 +34,10 @@ export default async function Page() {
   }
 
   const organizationId = organizationMembers[0].organizationId
-  
+
   redirect(
     urlgen('organizations/[organizationId]/projects', {
       organizationId: organizationId.toString(),
-    })
+    }),
   )
 }
