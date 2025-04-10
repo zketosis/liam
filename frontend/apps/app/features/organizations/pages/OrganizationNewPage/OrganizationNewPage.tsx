@@ -39,20 +39,6 @@ export const OrganizationNewPage: FC = () => {
     if (error) throw error
   }
 
-  const checkProjects = async (
-    supabase: SupabaseClient,
-    organizationId: number,
-  ) => {
-    const { data, error } = await supabase
-      .from('Project')
-      .select('id')
-      .eq('organizationId', organizationId)
-      .limit(1)
-
-    if (error) throw error
-    return data
-  }
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!name) {
@@ -73,14 +59,10 @@ export const OrganizationNewPage: FC = () => {
 
       await addUserToOrg(supabase, userData.user.id, organization.id)
 
-      const projects = await checkProjects(supabase, organization.id)
-
       router.push(
-        projects && projects.length > 0
-          ? urlgen('projects')
-          : urlgen('organizations/[organizationId]/projects/new', {
-              organizationId: organization.id.toString(),
-            }),
+        urlgen('organizations/[organizationId]/projects/new', {
+          organizationId: organization.id.toString(),
+        }),
       )
     } catch (err) {
       console.error('Error creating organization:', err)
