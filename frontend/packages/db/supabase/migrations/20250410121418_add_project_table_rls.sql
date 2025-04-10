@@ -4,7 +4,7 @@ CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."Project
 FOR SELECT
 TO authenticated
 USING (
-  organizationId IN (
+  "organizationId" IN (
     SELECT "organizationId" 
     FROM "public"."OrganizationMember" 
     WHERE "userId" = auth.uid()
