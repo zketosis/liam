@@ -25,16 +25,26 @@ export default async function Page() {
     redirect(urlgen('organizations/new'))
   }
 
-  const { data: projects } = await supabase
+  const organizationId = organizationMembers[0].organizationId
+
+  const { data: projects, error: projectsError } = await supabase
     .from('Project')
     .select('id')
+    .eq('organizationId', organizationId)
     .limit(1)
 
-  if (projects && projects.length > 0) {
-    redirect(urlgen('projects'))
+  if (projectsError) {
+    console.error('Error fetching projects:', projectsError)
   }
 
-  const organizationId = organizationMembers[0].organizationId
+  if (projects && projects.length > 0) {
+    redirect(
+      urlgen('organizations/[organizationId]/projects', {
+        organizationId: organizationId.toString(),
+      }),
+    )
+  }
+
   redirect(
     urlgen('organizations/[organizationId]/projects/new', {
       organizationId: organizationId.toString(),
