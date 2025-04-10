@@ -150,6 +150,13 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
             href={urlgen('organizations/new')} 
             className={styles.createNew}
             role="menuitem"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                router.push(urlgen('organizations/new'))
+              }
+            }}
           >
             Create New Organization
           </Link>
