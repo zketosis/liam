@@ -402,6 +402,45 @@ export type Database = {
           },
         ]
       }
+      OverallReviewKnowledgeSuggestionMapping: {
+        Row: {
+          createdAt: string
+          id: number
+          knowledgeSuggestionId: number
+          overallReviewId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          id?: number
+          knowledgeSuggestionId: number
+          overallReviewId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          id?: number
+          knowledgeSuggestionId?: number
+          overallReviewId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'OverallReviewKnowledgeSuggestionMapping_knowledgeSuggestionId_f'
+            columns: ['knowledgeSuggestionId']
+            isOneToOne: false
+            referencedRelation: 'KnowledgeSuggestion'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'OverallReviewKnowledgeSuggestionMapping_overallReviewId_fkey'
+            columns: ['overallReviewId']
+            isOneToOne: false
+            referencedRelation: 'OverallReview'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       Project: {
         Row: {
           createdAt: string
@@ -537,6 +576,8 @@ export type Database = {
           description: string
           id: number
           overallReviewId: number
+          resolutionComment: string | null
+          resolvedAt: string | null
           severity: Database['public']['Enums']['SeverityEnum']
           suggestion: string
           updatedAt: string
@@ -547,6 +588,8 @@ export type Database = {
           description: string
           id?: number
           overallReviewId: number
+          resolutionComment?: string | null
+          resolvedAt?: string | null
           severity: Database['public']['Enums']['SeverityEnum']
           suggestion: string
           updatedAt: string
@@ -557,6 +600,8 @@ export type Database = {
           description?: string
           id?: number
           overallReviewId?: number
+          resolutionComment?: string | null
+          resolvedAt?: string | null
           severity?: Database['public']['Enums']['SeverityEnum']
           suggestion?: string
           updatedAt?: string

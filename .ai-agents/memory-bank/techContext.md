@@ -2,8 +2,8 @@
 
 ## Technologies Used
 - **AI Components**: Utilized for analyzing migration impacts and providing intelligent suggestions.
-- **LangChain**: Framework for developing applications powered by language models, used for AI review generation and schema metadata suggestions.
-- **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions.
+- **LangChain**: Framework for developing applications powered by language models, used for AI review generation and schema metadata suggestions. The project uses LangChain's ChatOpenAI integration for all prompt generators.
+- **OpenAI**: Provider of AI models used for generating schema reviews and metadata suggestions. The project specifically uses the 'o3-mini-2025-01-31' model for all prompt generators.
 - **Trigger.dev**: Task orchestration platform used for implementing the review pipeline and knowledge suggestion tasks.
 - **GitHub App**: Integrated to automate comments and review approvals on PRs, with enhanced API usage for fetching PR descriptions and comments.
 - **Supabase JS**: JavaScript client for Supabase, used for database access with support for optimized queries using nested joins.
@@ -30,7 +30,10 @@
 - **Package Management**: pnpm for efficient dependency management.
 - **Monorepo Management**: pnpm workspaces.
 - **Build System**: Turborepo for optimized builds.
-- **Linting & Formatting**: Biome for code quality.
+- **Linting & Formatting**: 
+  - Biome for code quality and formatting
+  - `pnpm fmt` command to format code according to project standards
+  - `pnpm lint` command to check for code quality issues and type errors
 - **Testing**: Vitest for unit testing, Playwright for e2e testing.
   - **Supabase Testing Approach**: A direct testing approach is used with Supabase. We create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments.
 
