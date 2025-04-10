@@ -1,6 +1,7 @@
 import { getFileContent } from '@liam-hq/github'
 import { v4 as uuidv4 } from 'uuid'
 import { createClient } from '../libs/supabase'
+import type { FileContent } from '../prompts/generateDocsSuggestion/docsSuggestionSchema'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
@@ -17,7 +18,10 @@ export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
   projectId: number
   branchOrCommit?: string
-}): Promise<{ suggestions: Record<string, string>; traceId: string }> {
+}): Promise<{
+  suggestions: Record<DocFile, FileContent>
+  traceId: string
+}> {
   try {
     const supabase = createClient()
 
@@ -93,16 +97,15 @@ export async function processGenerateDocsSuggestion(payload: {
       predefinedRunId,
     )
 
-    // Only process files that have content (the multi-step approach only returns files that need updates)
     const suggestions = Object.fromEntries(
       Object.entries(result)
-        .filter(([_, value]) => value !== undefined && value !== '')
+        .filter(([_, value]) => value !== undefined)
         .map(([key, value]) => {
           // Handle file extensions consistently
           const newKey = key.endsWith('.md') ? key : `${key}.md`
           return [newKey, value]
         }),
-    ) as Record<string, string>
+    ) as Record<DocFile, FileContent>
 
     // Return a properly structured object
     return {
