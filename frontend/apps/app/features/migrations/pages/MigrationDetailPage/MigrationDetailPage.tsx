@@ -283,9 +283,7 @@ export const MigrationDetailPage: FC<Props> = async ({
             )}
           </div>
           <ReviewIssuesList
-            issues={
-              overallReview.reviewIssues as unknown as ReviewIssueWithSnippets[]
-            }
+            issues={overallReview.reviewIssues as ReviewIssueWithSnippets[]}
           />
         </div>
 
