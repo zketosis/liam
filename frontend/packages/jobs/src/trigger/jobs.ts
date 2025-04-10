@@ -105,6 +105,16 @@ export const saveReviewTask = task({
         traceId: payload.traceId,
       })
 
+      // Get the overall review ID from the database
+      const supabase = createClient()
+      const { data: overallReview, error: overallReviewError } = await supabase
+        .from('OverallReview')
+        .select('id')
+        .eq('pullRequestId', payload.pullRequestId)
+        .order('createdAt', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
       // Trigger docs suggestion generation after review is saved
       await generateDocsSuggestionTask.trigger({
         reviewComment: payload.review.bodyMarkdown,
@@ -115,17 +125,8 @@ export const saveReviewTask = task({
         installationId,
         type: 'DOCS',
         branchName: payload.branchName,
+        ...(overallReview?.id ? { overallReviewId: overallReview.id } : {}),
       })
-
-      // Get the overall review ID from the database
-      const supabase = createClient()
-      const { data: overallReview, error: overallReviewError } = await supabase
-        .from('OverallReview')
-        .select('id')
-        .eq('pullRequestId', payload.pullRequestId)
-        .order('createdAt', { ascending: false })
-        .limit(1)
-        .maybeSingle()
 
       if (overallReviewError) {
         logger.error('Error fetching overall review', {
@@ -190,6 +191,7 @@ export const generateDocsSuggestionTask = task({
     installationId: number
     type: 'DOCS'
     branchName: string
+    overallReviewId?: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
       reviewComment: payload.reviewComment,
@@ -215,6 +217,9 @@ export const generateDocsSuggestionTask = task({
         branch: payload.branchName,
         traceId,
         reasoning: suggestion.reasoning || '',
+        ...(payload.overallReviewId
+          ? { overallReviewId: payload.overallReviewId }
+          : {}),
       })
     }
 
