@@ -34,5 +34,10 @@ export default async function Page() {
     redirect(urlgen('projects'))
   }
 
-  redirect(urlgen('projects/new'))
+  const organizationId = organizationMembers[0].organizationId
+  redirect(
+    urlgen('organizations/[organizationId]/projects/new', {
+      organizationId: organizationId.toString(),
+    })
+  )
 }

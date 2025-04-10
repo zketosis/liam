@@ -31,7 +31,15 @@ export const ProjectsPage: FC = async () => {
             />
           )}
         </div>
-        <Link href={urlgen('projects/new')} className={styles.createButton}>
+        <Link 
+          href={currentOrganization 
+            ? urlgen('organizations/[organizationId]/projects/new', {
+                organizationId: currentOrganization.id.toString(),
+              }) 
+            : urlgen('organizations/new')
+          } 
+          className={styles.createButton}
+        >
           Create New Project
         </Link>
       </div>

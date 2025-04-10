@@ -1,7 +1,6 @@
-import { ProjectNewPage } from '@/features/projects/pages'
 import { createClient } from '@/libs/db/server'
-import { getInstallations } from '@liam-hq/github'
-import { notFound } from 'next/navigation'
+import { urlgen } from '@/utils/routes'
+import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 
 export default async function Page() {
@@ -9,7 +8,6 @@ export default async function Page() {
   const { data } = await supabase.auth.getSession()
 
   if (data.session === null) {
-    // TODO: Review the behavior when the session cannot be obtained.
     return notFound()
   }
 
@@ -24,17 +22,15 @@ export default async function Page() {
     console.error('Error fetching organization members:', orgError)
   }
 
-  const organizationId =
-    organizationMembers && organizationMembers.length > 0
-      ? organizationMembers[0].organizationId
-      : undefined
+  if (!organizationMembers || organizationMembers.length === 0) {
+    redirect(urlgen('organizations/new'))
+  }
 
-  const { installations } = await getInstallations(data.session)
+  const organizationId = organizationMembers[0].organizationId
 
-  return (
-    <ProjectNewPage
-      installations={installations}
-      organizationId={organizationId}
-    />
+  redirect(
+    urlgen('organizations/[organizationId]/projects/new', {
+      organizationId: organizationId.toString(),
+    })
   )
 }

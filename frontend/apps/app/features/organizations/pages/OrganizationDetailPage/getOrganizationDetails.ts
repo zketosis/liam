@@ -24,8 +24,7 @@ export const getOrganizationMembers = async (organizationId: string) => {
     .from('OrganizationMember')
     .select(`
       id,
-      status,
-      joinedAt,
+
       user:userId(
         id,
         name,
@@ -50,7 +49,7 @@ export const getOrganizationInvites = async (organizationId: string) => {
     .select(`
       id,
       email,
-      inviteOn,
+
       inviteBy:inviteByUserId(
         id,
         name,

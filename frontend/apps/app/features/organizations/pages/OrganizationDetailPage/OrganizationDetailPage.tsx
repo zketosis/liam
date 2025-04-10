@@ -15,8 +15,6 @@ interface OrganizationDetailPageProps {
   }
   members: Array<{
     id: number
-    status: string
-    joinedAt: string | null
     user: {
       id: string
       name: string
@@ -26,7 +24,6 @@ interface OrganizationDetailPageProps {
   invites: Array<{
     id: number
     email: string
-    inviteOn: string | null
     inviteBy: {
       id: string
       name: string
@@ -146,12 +143,8 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                           <tr key={member.id}>
                             <td>{member.user.name}</td>
                             <td>{member.user.email}</td>
-                            <td>{member.status}</td>
-                            <td>
-                              {member.joinedAt
-                                ? new Date(member.joinedAt).toLocaleDateString()
-                                : '-'}
-                            </td>
+                            <td>ACTIVE</td>
+                            <td>-</td>
                           </tr>
                         ))
                       ) : (
@@ -180,9 +173,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                             <td>{invite.email}</td>
                             <td>{invite.inviteBy.name}</td>
                             <td>
-                              {invite.inviteOn
-                                ? new Date(invite.inviteOn).toLocaleDateString()
-                                : '-'}
+                              -
                             </td>
                           </tr>
                         ))

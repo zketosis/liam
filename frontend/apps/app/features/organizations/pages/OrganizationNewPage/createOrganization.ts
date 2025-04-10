@@ -64,7 +64,11 @@ export const useCreateOrganization = () => {
       if (projects && projects.length > 0) {
         router.push(urlgen('projects'))
       } else {
-        router.push(urlgen('projects/new'))
+        router.push(
+          urlgen('organizations/[organizationId]/projects/new', {
+            organizationId: organization.id.toString(),
+          })
+        )
       }
 
       return { success: true }
