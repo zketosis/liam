@@ -95,6 +95,44 @@ CREATE TYPE "public"."SeverityEnum" AS ENUM (
 
 ALTER TYPE "public"."SeverityEnum" OWNER TO "postgres";
 
+
+CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  INSERT INTO public."User" (id, name, email)
+  VALUES (
+    NEW.id, 
+    COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
+    NEW.email
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  INSERT INTO public."User" (id, name, email)
+  SELECT 
+    au.id,
+    COALESCE(au.raw_user_meta_data->>'name', au.email),
+    au.email
+  FROM auth.users au
+  LEFT JOIN public."User" pu ON au.id = pu.id
+  WHERE pu.id IS NULL;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."sync_existing_users"() OWNER TO "postgres";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
@@ -217,6 +255,29 @@ ALTER SEQUENCE "public"."KnowledgeSuggestion_id_seq" OWNED BY "public"."Knowledg
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
+    "id" integer NOT NULL,
+    "email" "text" NOT NULL,
+    "inviteByUserId" "uuid" NOT NULL,
+    "organizationId" integer NOT NULL,
+    "invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE "public"."MembershipInvites" OWNER TO "postgres";
+
+
+ALTER TABLE "public"."MembershipInvites" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "public"."MembershipInvites_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."Migration" (
     "id" integer NOT NULL,
     "title" "text" NOT NULL,
@@ -241,6 +302,48 @@ ALTER TABLE "public"."Migration_id_seq" OWNER TO "postgres";
 
 
 ALTER SEQUENCE "public"."Migration_id_seq" OWNED BY "public"."Migration"."id";
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."Organization" (
+    "id" integer NOT NULL,
+    "name" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."Organization" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
+    "id" integer NOT NULL,
+    "userId" "uuid" NOT NULL,
+    "organizationId" integer NOT NULL,
+    "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE "public"."OrganizationMember" OWNER TO "postgres";
+
+
+ALTER TABLE "public"."OrganizationMember" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "public"."OrganizationMember_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+
+ALTER TABLE "public"."Organization" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "public"."Organization_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 
 
@@ -306,7 +409,8 @@ CREATE TABLE IF NOT EXISTS "public"."Project" (
     "id" integer NOT NULL,
     "name" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "organizationId" integer
 );
 
 
@@ -497,6 +601,16 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
 ALTER TABLE "public"."ReviewSuggestionSnippet" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."User" (
+    "id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "email" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."User" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
     "id" character varying(36) NOT NULL,
     "checksum" character varying(64) NOT NULL,
@@ -589,8 +703,28 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion"
 
 
 
+ALTER TABLE ONLY "public"."MembershipInvites"
+    ADD CONSTRAINT "MembershipInvites_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."Migration"
     ADD CONSTRAINT "Migration_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_userId_organizationId_key" UNIQUE ("userId", "organizationId");
+
+
+
+ALTER TABLE ONLY "public"."Organization"
+    ADD CONSTRAINT "Organization_pkey" PRIMARY KEY ("id");
 
 
 
@@ -639,6 +773,16 @@ ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
 
 
 
+ALTER TABLE ONLY "public"."User"
+    ADD CONSTRAINT "User_email_key" UNIQUE ("email");
+
+
+
+ALTER TABLE ONLY "public"."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."_prisma_migrations"
     ADD CONSTRAINT "_prisma_migrations_pkey" PRIMARY KEY ("id");
 
@@ -672,6 +816,22 @@ CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "
 
 
 
+CREATE INDEX "membership_invites_email_idx" ON "public"."MembershipInvites" USING "btree" ("email");
+
+
+
+CREATE INDEX "membership_invites_orgId_idx" ON "public"."MembershipInvites" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "organization_member_organizationId_idx" ON "public"."OrganizationMember" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "organization_member_userId_idx" ON "public"."OrganizationMember" USING "btree" ("userId");
+
+
+
 ALTER TABLE ONLY "public"."GitHubDocFilePath"
     ADD CONSTRAINT "GitHubDocFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -697,8 +857,28 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion"
 
 
 
+ALTER TABLE ONLY "public"."MembershipInvites"
+    ADD CONSTRAINT "MembershipInvites_inviteByUserId_fkey" FOREIGN KEY ("inviteByUserId") REFERENCES "public"."User"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."MembershipInvites"
+    ADD CONSTRAINT "MembershipInvites_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."Migration"
     ADD CONSTRAINT "Migration_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE;
 
 
 
@@ -941,6 +1121,18 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "anon";
+GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "service_role";
+
+
+
 
 
 
@@ -1004,6 +1196,18 @@ GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."MembershipInvites" TO "anon";
+GRANT ALL ON TABLE "public"."MembershipInvites" TO "authenticated";
+GRANT ALL ON TABLE "public"."MembershipInvites" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."MembershipInvites_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."MembershipInvites_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."MembershipInvites_id_seq" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."Migration" TO "anon";
 GRANT ALL ON TABLE "public"."Migration" TO "authenticated";
 GRANT ALL ON TABLE "public"."Migration" TO "service_role";
@@ -1013,6 +1217,30 @@ GRANT ALL ON TABLE "public"."Migration" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."Organization" TO "anon";
+GRANT ALL ON TABLE "public"."Organization" TO "authenticated";
+GRANT ALL ON TABLE "public"."Organization" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."OrganizationMember" TO "anon";
+GRANT ALL ON TABLE "public"."OrganizationMember" TO "authenticated";
+GRANT ALL ON TABLE "public"."OrganizationMember" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."OrganizationMember_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."OrganizationMember_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."OrganizationMember_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."Organization_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."Organization_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."Organization_id_seq" TO "service_role";
 
 
 
@@ -1121,6 +1349,12 @@ GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "service_role
 GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "anon";
 GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "authenticated";
 GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."User" TO "anon";
+GRANT ALL ON TABLE "public"."User" TO "authenticated";
+GRANT ALL ON TABLE "public"."User" TO "service_role";
 
 
 
