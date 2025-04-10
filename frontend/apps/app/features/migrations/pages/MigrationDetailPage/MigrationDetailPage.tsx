@@ -1,8 +1,6 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
-import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
-import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -13,14 +11,6 @@ import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
 import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssuesList'
 import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
-
-type ReviewIssueWithSnippets = Tables<'ReviewIssue'> & {
-  suggestionSnippets: Array<{
-    id: number
-    filename: string
-    snippet: string
-  }>
-}
 
 type Props = {
   migrationId: string
@@ -73,6 +63,9 @@ async function getMigrationContents(migrationId: string) {
         suggestion,
         resolvedAt,
         resolutionComment,
+        createdAt,
+        updatedAt,
+        overallReviewId,
         suggestionSnippets:ReviewSuggestionSnippet (
           id,
           filename,
@@ -282,9 +275,7 @@ export const MigrationDetailPage: FC<Props> = async ({
               />
             )}
           </div>
-          <ReviewIssuesList
-            issues={overallReview.reviewIssues as ReviewIssueWithSnippets[]}
-          />
+          <ReviewIssuesList issues={overallReview.reviewIssues} />
         </div>
 
         {/* Knowledge Suggestions Section */}
