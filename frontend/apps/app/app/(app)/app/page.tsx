@@ -38,6 +38,6 @@ export default async function Page() {
   redirect(
     urlgen('organizations/[organizationId]/projects/new', {
       organizationId: organizationId.toString(),
-    })
+    }),
   )
 }

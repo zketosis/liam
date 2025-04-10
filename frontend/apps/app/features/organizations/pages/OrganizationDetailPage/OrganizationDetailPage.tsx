@@ -172,9 +172,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                           <tr key={invite.id}>
                             <td>{invite.email}</td>
                             <td>{invite.inviteBy.name}</td>
-                            <td>
-                              -
-                            </td>
+                            <td>-</td>
                           </tr>
                         ))
                       ) : (

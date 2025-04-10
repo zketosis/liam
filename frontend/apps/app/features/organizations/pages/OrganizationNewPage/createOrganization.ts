@@ -67,7 +67,7 @@ export const useCreateOrganization = () => {
         router.push(
           urlgen('organizations/[organizationId]/projects/new', {
             organizationId: organization.id.toString(),
-          })
+          }),
         )
       }
 
