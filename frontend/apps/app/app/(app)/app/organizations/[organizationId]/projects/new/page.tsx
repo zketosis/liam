@@ -4,7 +4,9 @@ import { getInstallations } from '@liam-hq/github'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
-export default async function Page({ params }: { params: { organizationId: string } }) {
+export default async function Page({
+  params,
+}: { params: { organizationId: string } }) {
   const supabase = await createClient()
   const { data } = await supabase.auth.getSession()
 
@@ -12,8 +14,8 @@ export default async function Page({ params }: { params: { organizationId: strin
     return notFound()
   }
 
-  const organizationId = parseInt(params.organizationId, 10)
-  
+  const organizationId = Number.parseInt(params.organizationId, 10)
+
   const { data: organizationMembers, error: orgError } = await supabase
     .from('OrganizationMember')
     .select('id')

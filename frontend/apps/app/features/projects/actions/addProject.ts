@@ -22,7 +22,9 @@ export const addProject = async (formData: FormData) => {
       name: projectName,
       createdAt: now,
       updatedAt: now,
-      ...(organizationId ? { organizationId: parseInt(organizationId, 10) } : {}),
+      ...(organizationId
+        ? { organizationId: Number.parseInt(organizationId, 10) }
+        : {}),
     })
     .select()
     .single()

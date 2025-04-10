@@ -82,11 +82,11 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
       <div className={styles.header}>
         <h1 className={styles.title}>{organization.name}</h1>
         <Button
-          onClick={() => 
+          onClick={() =>
             router.push(
               urlgen('organizations/[organizationId]/projects/new', {
                 organizationId: organization.id.toString(),
-              })
+              }),
             )
           }
         >
