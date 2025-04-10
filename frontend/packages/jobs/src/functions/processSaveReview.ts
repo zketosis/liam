@@ -7,7 +7,7 @@ type Severity = keyof typeof SeverityEnum.enum
 
 export const processSaveReview = async (
   payload: ReviewResponse,
-): Promise<{ success: boolean; overallReviewId?: number }> => {
+): Promise<{ success: boolean; overallReviewId: number }> => {
   try {
     const supabase = createClient()
     const { data: pullRequest, error: pullRequestError } = await supabase
