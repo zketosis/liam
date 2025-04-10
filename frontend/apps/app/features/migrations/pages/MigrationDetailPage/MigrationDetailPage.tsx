@@ -266,7 +266,9 @@ export const MigrationDetailPage: FC<Props> = async ({
         <div className={styles.box}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.h2}>Review Issues</h2>
-            {overallReview.reviewIssues.length > 0 && (
+            {overallReview.reviewIssues.filter(
+              (issue) => issue.severity === 'CRITICAL' && !issue.resolvedAt,
+            ).length > 0 && (
               <CopyButton
                 text={formatAllReviewIssues(overallReview.reviewIssues)}
                 className={styles.headerCopyButton}
