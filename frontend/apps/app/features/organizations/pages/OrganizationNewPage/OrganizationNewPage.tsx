@@ -93,15 +93,9 @@ export const OrganizationNewPage: FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Create Organization</h1>
-      <form
-        className={styles.form}
-        onSubmit={handleSubmit}
-        aria-label="Create organization form"
-      >
+      <form className={styles.form} onSubmit={handleSubmit} aria-label="Create organization form">
         <div className={styles.formGroup}>
-          <label htmlFor="name" id="name-label">
-            Organization Name
-          </label>
+          <label htmlFor="name" id="name-label">Organization Name</label>
           <input
             id="name"
             type="text"
@@ -116,11 +110,7 @@ export const OrganizationNewPage: FC = () => {
             aria-describedby={error ? 'name-error' : undefined}
           />
         </div>
-        {error && (
-          <div id="name-error" className={styles.error} role="alert">
-            {error}
-          </div>
-        )}
+        {error && <p id="name-error" className={styles.error} role="alert">{error}</p>}
         <Button type="submit" disabled={loading}>
           {loading ? 'Creating...' : 'Create Organization'}
         </Button>

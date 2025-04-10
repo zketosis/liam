@@ -1,7 +1,6 @@
 'use client'
 
-import type React from 'react'
-import { type FC, type ReactNode, useState } from 'react'
+import React, { type FC, useState, type ReactNode } from 'react'
 import styles from './Tabs.module.css'
 
 interface TabProps {
@@ -35,11 +34,7 @@ export const Tabs: FC<TabsProps> = ({ tabs, defaultTab }) => {
 
   return (
     <div className={styles.tabs}>
-      <div
-        className={styles.tabList}
-        role="tablist"
-        aria-orientation="horizontal"
-      >
+      <div className={styles.tabList} role="tablist" aria-orientation="horizontal">
         {tabs.map((tab) => (
           <button
             type="button"
