@@ -11,16 +11,10 @@ USING (
   )
 );
 
-CREATE POLICY "authenticated_users_can_insert_org_projects" ON "public"."Project"
+CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."Project"
 FOR INSERT
 TO authenticated
-WITH CHECK (
-  "organizationId" IN (
-    SELECT "organizationId" 
-    FROM "public"."OrganizationMember" 
-    WHERE "userId" = auth.uid()
-  )
-);
+WITH CHECK (true);
 
 CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project"
 FOR UPDATE
@@ -73,7 +67,7 @@ TO service_role
 USING (true);
 
 COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" IS 'Authenticated users can only view projects belonging to organizations they are members of';
-COMMENT ON POLICY "authenticated_users_can_insert_org_projects" ON "public"."Project" IS 'Authenticated users can only create projects in organizations they are members of';
+COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."Project" IS 'Authenticated users can create any project';
 COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" IS 'Authenticated users can only update projects in organizations they are members of';
 COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" IS 'Authenticated users can only delete projects in organizations they are members of';
 COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."Project" IS 'Service role can view all projects (for jobs)';

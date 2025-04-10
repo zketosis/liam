@@ -24,16 +24,10 @@ USING (
   )
 );
 
-CREATE POLICY "authenticated_users_can_insert_org_projects" ON "public"."Project"
+CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."Project"
 FOR INSERT
 TO authenticated
-WITH CHECK (
-  "organizationId" IN (
-    SELECT "organizationId" 
-    FROM "public"."OrganizationMember" 
-    WHERE "userId" = auth.uid()
-  )
-);
+WITH CHECK (true);
 
 CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project"
 FOR UPDATE
