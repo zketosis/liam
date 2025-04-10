@@ -119,15 +119,9 @@ export const saveReviewTask = task({
       })
 
       // Trigger schema meta suggestion generation after review is saved
-      if (overallReviewId) {
-        await generateSchemaMetaSuggestionTask.trigger({
-          overallReviewId,
-        })
-      } else {
-        logger.error('No overall review ID found for pull request', {
-          pullRequestId: payload.pullRequestId,
-        })
-      }
+      await generateSchemaMetaSuggestionTask.trigger({
+        overallReviewId,
+      })
 
       return { success: true }
     } catch (error) {
