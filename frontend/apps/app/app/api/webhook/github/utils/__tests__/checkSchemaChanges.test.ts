@@ -98,6 +98,7 @@ describe('checkSchemaChanges', () => {
         .insert({
           path: 'migrations/2024_update.sql',
           projectId: project.id,
+          format: 'postgres',
           updatedAt: now,
         })
         .select()
