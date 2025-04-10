@@ -128,14 +128,13 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
               <div className={styles.membersTab}>
                 <h2 className={styles.sectionTitle}>Members</h2>
                 <div className={styles.table}>
-                  <table aria-label="Organization members">
-                    <caption className={styles.visuallyHidden}>Organization Members</caption>
+                  <table>
                     <thead>
                       <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Joined</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -159,13 +158,12 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
 
                 <h2 className={styles.sectionTitle}>Invites</h2>
                 <div className={styles.table}>
-                  <table aria-label="Organization invites">
-                    <caption className={styles.visuallyHidden}>Organization Invites</caption>
+                  <table>
                     <thead>
                       <tr>
-                        <th scope="col">Email</th>
-                        <th scope="col">Invited By</th>
-                        <th scope="col">Invited On</th>
+                        <th>Email</th>
+                        <th>Invited By</th>
+                        <th>Invited On</th>
                       </tr>
                     </thead>
                     <tbody>
