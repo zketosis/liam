@@ -139,9 +139,8 @@ export default async function Page({ params }: PageProps) {
           errorObjects={[
             {
               name: 'FormatError',
-              message: 'Format not found in database.',
-              instruction:
-                'Please ensure the schema file path has a format specified in the database.',
+              message: 'Record not found',
+              instruction: 'Please make sure that the schema file exists.',
             },
           ]}
         />
