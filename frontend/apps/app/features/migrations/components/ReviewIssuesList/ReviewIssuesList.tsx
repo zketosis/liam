@@ -1,5 +1,6 @@
 'use client'
 
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { clsx } from 'clsx'
 import type React from 'react'
 import { useState } from 'react'
@@ -8,14 +9,7 @@ import { formatReviewIssue } from '../../utils/formatReviewIssue'
 import { ResolveButton } from '../ResolveButton/ResolveButton'
 import styles from './ReviewIssuesList.module.css'
 
-type ReviewIssue = {
-  id: number
-  category: string
-  severity: string
-  description: string
-  suggestion: string
-  resolvedAt?: string | null
-  resolutionComment?: string | null
+type ReviewIssue = Tables<'ReviewIssue'> & {
   suggestionSnippets: Array<{
     id: number
     filename: string
@@ -87,10 +81,12 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
                     severity: issue.severity,
                     description: issue.description,
                     suggestion: issue.suggestion,
-                    snippets: issue.suggestionSnippets.map((snippet) => ({
-                      filename: snippet.filename,
-                      snippet: snippet.snippet,
-                    })),
+                    snippets: issue.suggestionSnippets.map(
+                      (snippet: { filename: string; snippet: string }) => ({
+                        filename: snippet.filename,
+                        snippet: snippet.snippet,
+                      }),
+                    ),
                   })}
                   className={styles.issueCopyButton}
                 />
@@ -109,17 +105,19 @@ export const ReviewIssuesList: React.FC<ReviewIssuesListProps> = ({
                 <p>{issue.suggestion}</p>
               </div>
             )}
-            {issue.suggestionSnippets.map((snippet) => (
-              <div key={snippet.filename} className={styles.snippetContainer}>
-                <div className={styles.snippetHeader}>
-                  <span className={styles.fileIcon}>📄</span>
-                  <span className={styles.fileName}>{snippet.filename}</span>
+            {issue.suggestionSnippets.map(
+              (snippet: { filename: string; snippet: string; id: number }) => (
+                <div key={snippet.filename} className={styles.snippetContainer}>
+                  <div className={styles.snippetHeader}>
+                    <span className={styles.fileIcon}>📄</span>
+                    <span className={styles.fileName}>{snippet.filename}</span>
+                  </div>
+                  <div className={styles.codeContainer}>
+                    <pre className={styles.codeSnippet}>{snippet.snippet}</pre>
+                  </div>
                 </div>
-                <div className={styles.codeContainer}>
-                  <pre className={styles.codeSnippet}>{snippet.snippet}</pre>
-                </div>
-              </div>
-            ))}
+              ),
+            )}
             {issue.resolvedAt && (
               <div className={styles.resolvedInfo}>
                 <span className={styles.resolvedIcon}>✓</span>

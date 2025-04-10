@@ -1,7 +1,6 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
-import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -64,6 +63,9 @@ async function getMigrationContents(migrationId: string) {
         suggestion,
         resolvedAt,
         resolutionComment,
+        createdAt,
+        updatedAt,
+        overallReviewId,
         suggestionSnippets:ReviewSuggestionSnippet (
           id,
           filename,
