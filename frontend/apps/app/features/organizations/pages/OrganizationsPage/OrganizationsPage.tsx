@@ -27,7 +27,7 @@ export const OrganizationsPage: FC<{
           <p>Create a new organization to get started.</p>
         </div>
       ) : (
-        <div className={styles.organizationGrid}>
+        <div className={styles.organizationGrid} role="list">
           {organizations.map((organization) => (
             <Link
               key={organization.id}
@@ -35,6 +35,9 @@ export const OrganizationsPage: FC<{
                 organizationId: `${organization.id}`,
               })}
               className={styles.organizationCard}
+              role="listitem"
+              aria-label={`${organization.name || 'Untitled Organization'} organization`}
+              tabIndex={0}
             >
               <h2>{organization.name || 'Untitled Organization'}</h2>
             </Link>
