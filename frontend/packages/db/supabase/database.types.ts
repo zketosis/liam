@@ -616,44 +616,6 @@ export type Database = {
           },
         ]
       }
-      ReviewScore: {
-        Row: {
-          category: Database['public']['Enums']['CategoryEnum']
-          createdAt: string
-          id: number
-          overallReviewId: number
-          overallScore: number
-          reason: string
-          updatedAt: string
-        }
-        Insert: {
-          category: Database['public']['Enums']['CategoryEnum']
-          createdAt?: string
-          id?: number
-          overallReviewId: number
-          overallScore: number
-          reason: string
-          updatedAt: string
-        }
-        Update: {
-          category?: Database['public']['Enums']['CategoryEnum']
-          createdAt?: string
-          id?: number
-          overallReviewId?: number
-          overallScore?: number
-          reason?: string
-          updatedAt?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'ReviewScore_overallReviewId_fkey'
-            columns: ['overallReviewId']
-            isOneToOne: false
-            referencedRelation: 'OverallReview'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       ReviewSuggestionSnippet: {
         Row: {
           createdAt: string

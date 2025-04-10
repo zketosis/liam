@@ -12,6 +12,58 @@ import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssues
 import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
 
+// Function to calculate scores from review issues
+const calculateScoresFromIssues = (
+  issues: Array<{
+    id: number
+    category: string
+    severity: string
+    resolvedAt?: string | null
+  }>,
+) => {
+  // Group issues by category
+  const issuesByCategory = issues.reduce<
+    Record<string, Array<{ severity: string; resolvedAt?: string | null }>>
+  >((acc, issue) => {
+    if (!acc[issue.category]) {
+      acc[issue.category] = []
+    }
+    acc[issue.category].push({
+      severity: issue.severity,
+      resolvedAt: issue.resolvedAt,
+    })
+    return acc
+  }, {})
+
+  // Calculate scores for each category
+  return Object.entries(issuesByCategory).map(([category, categoryIssues]) => {
+    // Start with 10 points
+    let score = 10
+
+    // Calculate deductions based on issue severity (only for unresolved issues)
+    for (const issue of categoryIssues) {
+      if (issue.resolvedAt) continue // Skip resolved issues
+
+      if (issue.severity === 'CRITICAL') {
+        score -= 3
+      } else if (issue.severity === 'WARNING') {
+        score -= 1
+      }
+      // No deduction for POSITIVE feedback
+    }
+
+    // Ensure minimum score is 0
+    score = Math.max(0, score)
+
+    return {
+      id: Number.parseInt(category, 10), // Use category as ID
+      overallReviewId: 0, // Not needed anymore
+      overallScore: score,
+      category: category as CategoryEnum,
+    }
+  })
+}
+
 type Props = {
   migrationId: string
   projectId: string
@@ -71,13 +123,6 @@ async function getMigrationContents(migrationId: string) {
           filename,
           snippet
         )
-      ),
-      reviewScores:ReviewScore (
-        id,
-        overallReviewId,
-        overallScore,
-        category,
-        reason
       )
     `)
     .eq('pullRequestId', pullRequest.id)
@@ -110,7 +155,6 @@ async function getMigrationContents(migrationId: string) {
         reviewComment: null,
         reviewedAt: null,
         reviewIssues: [],
-        reviewScores: [],
       },
       erdLinks: [],
       knowledgeSuggestions: [],
@@ -222,19 +266,15 @@ export const MigrationDetailPage: FC<Props> = async ({
         <div className={styles.box}>
           <h2 className={styles.h2}>Migration Health</h2>
           <div className={styles.healthContent}>
-            {overallReview.reviewScores.length > 0 ? (
+            {overallReview.reviewIssues &&
+            overallReview.reviewIssues.length > 0 ? (
               <div className={styles.radarChartContainer}>
                 <RadarChart
-                  scores={overallReview.reviewScores.map((score) => ({
-                    id: score.id,
-                    overallReviewId: score.overallReviewId,
-                    overallScore: score.overallScore,
-                    category: score.category as CategoryEnum,
-                  }))}
+                  scores={calculateScoresFromIssues(overallReview.reviewIssues)}
                 />
               </div>
             ) : (
-              <p className={styles.noScores}>No review scores found.</p>
+              <p className={styles.noScores}>No review issues found.</p>
             )}
             <div className={styles.erdLinks}>
               {erdLinks.map(({ path, filename }) => (
