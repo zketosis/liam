@@ -78,11 +78,12 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <Link
-            href={project.organizationId 
-              ? urlgen('organizations/[organizationId]/projects', {
-                  organizationId: project.organizationId.toString(),
-                })
-              : '/'
+            href={
+              project.organizationId
+                ? urlgen('organizations/[organizationId]/projects', {
+                    organizationId: project.organizationId.toString(),
+                  })
+                : '/'
             }
             className={styles.backLink}
             aria-label="Back to projects list"
