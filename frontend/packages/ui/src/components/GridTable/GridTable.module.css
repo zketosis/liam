@@ -11,6 +11,10 @@
   align-items: center;
 }
 
+.dlItem:not(:last-of-type) {
+  border-bottom: solid 1px var(--global-border);
+}
+
 .dtHeader {
   width: 100%;
   padding: var(--spacing-1) var(--spacing-2);
