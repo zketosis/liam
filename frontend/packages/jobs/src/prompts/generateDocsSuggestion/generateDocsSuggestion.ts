@@ -5,6 +5,7 @@ import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
 import {
+  type DocFileContentMap,
   type DocsSuggestion,
   type EvaluationResult,
   docsSuggestionSchema,
@@ -171,7 +172,7 @@ export const generateDocsSuggestion = async (
   formattedDocsContent: string,
   callbacks: Callbacks,
   predefinedRunId: string,
-): Promise<DocsSuggestion> => {
+): Promise<DocFileContentMap> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
   })
@@ -210,6 +211,44 @@ export const generateDocsSuggestion = async (
     updateResponseExampleJson: string
   }
 
+  // Helper function to collect suggested changes for files that need updates
+  const collectSuggestedChanges = (
+    evaluationResult: EvaluationResult,
+  ): Record<string, string> => {
+    const suggestedChanges: Record<string, string> = {}
+
+    for (const [key, value] of Object.entries(evaluationResult)) {
+      if (value.updateNeeded) {
+        suggestedChanges[key] = value.suggestedChanges
+      }
+    }
+
+    return suggestedChanges
+  }
+
+  // Helper function to combine content and reasoning
+  const combineContentAndReasoning = (
+    parsedResult: DocsSuggestion,
+    evaluationResult: EvaluationResult,
+  ): DocFileContentMap => {
+    const result: DocFileContentMap = {}
+
+    const evaluationKeys = Object.keys(evaluationResult) as Array<
+      keyof EvaluationResult
+    >
+
+    for (const key of evaluationKeys) {
+      if (key in parsedResult && parsedResult[key] && evaluationResult[key]) {
+        result[key] = {
+          content: parsedResult[key],
+          reasoning: evaluationResult[key].reasoning,
+        }
+      }
+    }
+
+    return result
+  }
+
   // Create a router function that returns different runnables based on evaluation
   const docsSuggestionRouter = async (
     inputs: {
@@ -219,7 +258,7 @@ export const generateDocsSuggestion = async (
       updateResponseExampleJson: string
     },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
-  ): Promise<DocsSuggestion> => {
+  ): Promise<DocFileContentMap> => {
     // First, run the evaluation chain
     const evaluationResult: EvaluationResult = await evaluationChain.invoke(
       {
@@ -230,40 +269,26 @@ export const generateDocsSuggestion = async (
       config,
     )
 
-    // Check if any files need updates
-    const needsUpdates = Object.values(evaluationResult).some(
-      (file) => file.updateNeeded,
-    )
+    // Collect suggested changes for files that need updates
+    const suggestedChanges = collectSuggestedChanges(evaluationResult)
 
-    if (needsUpdates) {
-      // Collect suggested changes for files that need updates
-      const suggestedChanges: Record<string, string> = {}
-
-      for (const [key, value] of Object.entries(evaluationResult)) {
-        if (value.updateNeeded) {
-          suggestedChanges[key] = value.suggestedChanges
-        }
-      }
-
-      // Updates are needed, generate new content for files that need changes
-      const updateInput: UpdateInput = {
-        reviewResult: inputs.reviewResult,
-        formattedDocsContent: inputs.formattedDocsContent,
-        evaluationResults: JSON.stringify(suggestedChanges, null, 2),
-        updateResponseExampleJson: inputs.updateResponseExampleJson,
-      }
-
-      const updateResult = await updateChain.invoke(updateInput, {
-        callbacks,
-        runId: predefinedRunId,
-        tags: ['generateDocsSuggestion'],
-      })
-
-      return parse(docsSuggestionSchema, updateResult)
+    // Updates are needed, generate new content for files that need changes
+    const updateInput: UpdateInput = {
+      reviewResult: inputs.reviewResult,
+      formattedDocsContent: inputs.formattedDocsContent,
+      evaluationResults: JSON.stringify(suggestedChanges, null, 2),
+      updateResponseExampleJson: inputs.updateResponseExampleJson,
     }
 
-    // No updates needed, return empty object
-    return {}
+    const updateResult = await updateChain.invoke(updateInput, {
+      callbacks,
+      runId: predefinedRunId,
+      tags: ['generateDocsSuggestion'],
+    })
+
+    // Parse the result and combine content with reasoning
+    const parsedResult = parse(docsSuggestionSchema, updateResult)
+    return combineContentAndReasoning(parsedResult, evaluationResult)
   }
 
   // Create the router chain using RunnableLambda

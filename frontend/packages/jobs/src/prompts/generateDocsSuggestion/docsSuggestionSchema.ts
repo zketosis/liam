@@ -15,7 +15,13 @@ export const evaluationSchema = object({
   migrationOpsContext: fileEvaluationSchema,
 })
 
-// Updated schema with optional fields
+// Define a file content with reasoning structure that can be reused
+export const fileContentSchema = object({
+  content: string(),
+  reasoning: string(),
+})
+
+// Updated schema with optional fields that include content and reasoning
 export const docsSuggestionSchema = object({
   schemaPatterns: optional(string()),
   schemaContext: optional(string()),
@@ -25,4 +31,6 @@ export const docsSuggestionSchema = object({
 
 // Define types for easier usage
 export type EvaluationResult = InferOutput<typeof evaluationSchema>
+export type FileContent = InferOutput<typeof fileContentSchema>
 export type DocsSuggestion = InferOutput<typeof docsSuggestionSchema>
+export type DocFileContentMap = Record<string, FileContent>
