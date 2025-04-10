@@ -1,12 +1,9 @@
 -- Add resolvedAt and resolutionComment columns to ReviewIssue table
 BEGIN;
 
--- Add resolvedAt column to ReviewIssue table
+-- Add resolvedAt column and resolutionComment to ReviewIssue table
 ALTER TABLE "public"."ReviewIssue"
-ADD COLUMN "resolvedAt" timestamp(3) without time zone;
+  ADD COLUMN "resolvedAt" timestamp(3) without time zone,
+  ADD COLUMN "resolutionComment" text;
 
--- Add resolutionComment column to ReviewIssue table
-ALTER TABLE "public"."ReviewIssue"
-ADD COLUMN "resolutionComment" text;
-
-END;
+COMMIT;
