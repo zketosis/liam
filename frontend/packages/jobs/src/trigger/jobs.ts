@@ -168,7 +168,7 @@ export const generateDocsSuggestionTask = task({
     installationId: number
     type: 'DOCS'
     branchName: string
-    overallReviewId?: number
+    overallReviewId: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
       reviewComment: payload.reviewComment,
@@ -194,7 +194,7 @@ export const generateDocsSuggestionTask = task({
         branch: payload.branchName,
         traceId,
         reasoning: suggestion.reasoning || '',
-        ...(payload.overallReviewId ? { overallReviewId: payload.overallReviewId } : {}),
+        overallReviewId: payload.overallReviewId,
       })
     }
 
@@ -244,7 +244,7 @@ export const createKnowledgeSuggestionTask = task({
     branch: string
     traceId?: string
     reasoning: string
-    overallReviewId?: number
+    overallReviewId: number
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
