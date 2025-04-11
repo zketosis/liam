@@ -952,9 +952,9 @@ ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
 ALTER TABLE "public"."Project" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" FOR DELETE TO "authenticated" USING ((("organizationId" IS NULL) OR ("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" FOR DELETE TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
    FROM "public"."OrganizationMember"
-  WHERE ("OrganizationMember"."userId" = "auth"."uid"())))));
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
 
 
 
@@ -970,9 +970,9 @@ COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."Project
 
 
 
-CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" FOR SELECT TO "authenticated" USING ((("organizationId" IS NULL) OR ("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" FOR SELECT TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
    FROM "public"."OrganizationMember"
-  WHERE ("OrganizationMember"."userId" = "auth"."uid"())))));
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
 
 
 
@@ -980,11 +980,11 @@ COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."Pro
 
 
 
-CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" FOR UPDATE TO "authenticated" USING ((("organizationId" IS NULL) OR ("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" FOR UPDATE TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
    FROM "public"."OrganizationMember"
-  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))))) WITH CHECK ((("organizationId" IS NULL) OR ("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"())))) WITH CHECK (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
    FROM "public"."OrganizationMember"
-  WHERE ("OrganizationMember"."userId" = "auth"."uid"())))));
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
 
 
 
