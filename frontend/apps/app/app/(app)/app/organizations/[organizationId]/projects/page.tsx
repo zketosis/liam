@@ -15,11 +15,7 @@ export default async function Page({ params }: PageProps) {
   if (!parsedParams.success) return notFound()
   const { organizationId } = parsedParams.output
 
-  const migrationEnabled = await migrationFlag()
 
-  if (!migrationEnabled) {
-    notFound()
-  }
 
   const supabase = await createClient()
   const { data } = await supabase.auth.getSession()
@@ -28,19 +24,20 @@ export default async function Page({ params }: PageProps) {
     return notFound()
   }
 
-  const { data: organizationMembers, error: orgError } = await supabase
+  const { data: organizationMember, error: orgError } = await supabase
     .from('OrganizationMember')
     .select('id')
     .eq('userId', data.session.user.id)
     .eq('organizationId', Number.parseInt(organizationId, 10))
     .eq('status', 'ACTIVE')
-    .limit(1)
+    .maybeSingle()
 
   if (orgError) {
     console.error('Error fetching organization members:', orgError)
+    throw orgError
   }
 
-  if (!organizationMembers || organizationMembers.length === 0) {
+  if (organizationMember === null) {
     return notFound()
   }
 
