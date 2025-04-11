@@ -19,7 +19,7 @@ interface FileChange {
 
 interface PromptVars {
   docsContent: string
-  schemaFiles: SchemaFile[]
+  schemaFile: SchemaFile[]
   fileChanges: FileChange[]
 }
 
@@ -32,7 +32,7 @@ const userPrompt = async (vars: PromptVars) => {
   const promptString = (
     await template.formatPromptValue({
       docsContent: vars.docsContent,
-      schemaFiles: vars.schemaFiles,
+      schemaFile: vars.schemaFile,
       fileChanges: vars.fileChanges,
       prDescription: 'No description provided.',
       prComments: 'No comments.',

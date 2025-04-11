@@ -109,13 +109,16 @@ async function getMigrationContents(migrationId: string) {
     }
   }
 
-  const { data: schemaPaths, error: pathsError } = await supabase
+  const { data: schemaPath, error: pathError } = await supabase
     .from('GitHubSchemaFilePath')
     .select('path')
     .eq('projectId', overallReview.projectId || 0)
+    .single()
 
-  if (pathsError) {
-    console.error('Error fetching schema paths:', pathsError)
+  if (pathError) {
+    console.warn(
+      `No schema path found for project ${overallReview.projectId}: ${JSON.stringify(pathError)}`,
+    )
     return {
       migration,
       overallReview,
@@ -126,9 +129,7 @@ async function getMigrationContents(migrationId: string) {
 
   const matchedFiles = files
     .map((file) => file.filename)
-    .filter((filename) =>
-      schemaPaths.some((schemaPath) => filename === schemaPath.path),
-    )
+    .filter((filename) => filename === schemaPath.path)
 
   const erdLinks = matchedFiles.map((filename) => ({
     path: urlgen(

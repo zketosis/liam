@@ -84,7 +84,7 @@ Documentation Context:
 {docsContent}
 
 Schema Files:
-{schemaFiles}
+{schemaFile}
 
 File Changes:
 {fileChanges}`
@@ -93,7 +93,7 @@ export const reviewJsonSchema: JSONSchema7 = toJsonSchema(reviewSchema)
 
 export const generateReview = async (
   docsContent: string,
-  schemaFiles: GenerateReviewPayload['schemaFiles'],
+  schemaFile: GenerateReviewPayload['schemaFile'],
   fileChanges: GenerateReviewPayload['fileChanges'],
   prDescription: string,
   prComments: string,
@@ -113,7 +113,7 @@ export const generateReview = async (
   const response = await chain.invoke(
     {
       docsContent,
-      schemaFiles,
+      schemaFile,
       fileChanges,
       prDescription,
       prComments,
