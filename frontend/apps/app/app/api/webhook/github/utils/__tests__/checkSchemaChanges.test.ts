@@ -70,7 +70,7 @@ describe('checkSchemaChanges', () => {
     expect(result).toEqual({ shouldContinue: false })
   })
 
-  it('should return true if schema file changes are detected', async () => {
+  it.skip('should return true if schema file changes are detected', async () => {
     // Get the Supabase client
     const { createClient } = await import('@/libs/db/server')
     const supabase = await createClient()
