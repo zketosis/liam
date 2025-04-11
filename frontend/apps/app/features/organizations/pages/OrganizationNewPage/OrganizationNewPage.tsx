@@ -65,9 +65,7 @@ export const OrganizationNewPage: FC = () => {
       )
     } catch (err) {
       console.error('Error creating organization:', err)
-      setError(
-        `組織の作成に失敗しました: ${err instanceof Error ? err.message : '不明なエラー'}`,
-      )
+      setError('Failed to create organization. Please try again.')
     } finally {
       setLoading(false)
     }
