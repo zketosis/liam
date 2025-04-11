@@ -16,8 +16,8 @@ vars:
   prDescription: ''
   prComments: ''
   docsContent: ''
-  schemaFiles:
-  - filename: frontend/packages/db/prisma/schema.prisma
+  schemaFile:
+    filename: frontend/packages/db/prisma/schema.prisma
     content: |-
       datasource db {
         provider = "postgresql"

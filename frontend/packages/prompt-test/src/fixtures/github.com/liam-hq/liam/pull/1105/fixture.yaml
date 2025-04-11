@@ -9,8 +9,8 @@ vars:
   prDescription: ''
   prComments: ''
   docsContent: ''
-  schemaFiles:
-  - filename: frontend/packages/db/schema/schema.sql
+  schemaFile:
+    filename: frontend/packages/db/schema/schema.sql
     content: |-
       
       
