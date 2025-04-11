@@ -928,7 +928,9 @@ COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."Pro
 
 
 
-CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."Project" FOR INSERT TO "authenticated" WITH CHECK (true);
+CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."Project" FOR INSERT TO "authenticated" WITH CHECK (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
 
 
 
