@@ -1,9 +1,5 @@
 import { createClient } from '@/libs/db/server'
-import {
-  type SupportedFormat,
-  detectFormat,
-  parse,
-} from '@liam-hq/db-structure/parser'
+import { type SupportedFormat, parse } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
@@ -52,6 +48,7 @@ export const ContentForSchema: FC<Props> = async ({
 
   const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)
   const filePath = githubSchemaFilePath.path
+  const format = githubSchemaFilePath.format
 
   const { content } = await getFileContent(
     repositoryFullName,
@@ -60,10 +57,9 @@ export const ContentForSchema: FC<Props> = async ({
     Number(repository.installationId),
   )
 
-  const format = detectFormat(filePath)
   const { value: dbStructure, errors } =
     content !== null && format !== undefined
-      ? await parse(content, format as SupportedFormat)
+      ? await parse(content, format)
       : { value: undefined, errors: [] }
 
   const { result } = dbStructure
@@ -85,7 +81,6 @@ export const ContentForSchema: FC<Props> = async ({
       }
       isApproved={!!suggestion.approvedAt}
       dbStructure={dbStructure}
-      format={format as SupportedFormat | undefined}
       content={content}
       errors={errors || []}
       tableGroups={result?.tableGroups || {}}

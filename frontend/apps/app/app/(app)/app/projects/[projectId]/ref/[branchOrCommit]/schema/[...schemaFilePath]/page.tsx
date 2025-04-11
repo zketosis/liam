@@ -7,13 +7,7 @@ import {
   applyOverrides,
   dbOverrideSchema,
 } from '@liam-hq/db-structure'
-import {
-  type SupportedFormat,
-  detectFormat,
-  parse,
-  setPrismWasmUrl,
-  supportedFormatSchema,
-} from '@liam-hq/db-structure/parser'
+import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import * as Sentry from '@sentry/nextjs'
 import { cookies } from 'next/headers'
@@ -71,14 +65,7 @@ const paramsSchema = v.object({
   schemaFilePath: v.array(v.string()),
 })
 
-const searchParamsSchema = v.object({
-  format: v.optional(supportedFormatSchema),
-})
-
-export default async function Page({
-  params,
-  searchParams: _searchParams,
-}: PageProps) {
+export default async function Page({ params }: PageProps) {
   const parsedParams = v.safeParse(paramsSchema, await params)
   if (!parsedParams.success) throw notFound()
 
@@ -101,6 +88,13 @@ export default async function Page({
         )
       `)
       .eq('id', Number(projectId))
+      .single()
+
+    const { data: gitHubSchemaFilePath } = await supabase
+      .from('GitHubSchemaFilePath')
+      .select('path, format')
+      .eq('projectId', Number(projectId))
+      .eq('path', filePath)
       .single()
 
     const repository = project?.ProjectRepositoryMapping[0].Repository
@@ -137,17 +131,7 @@ export default async function Page({
 
     setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
 
-    let format: SupportedFormat | undefined
-    const searchParams = await _searchParams
-
-    if (v.is(searchParamsSchema, searchParams)) {
-      format = searchParams.format
-    }
-    if (!format) {
-      format = detectFormat(filePath)
-    }
-
-    if (!format) {
+    if (!gitHubSchemaFilePath?.format) {
       return (
         <ERDViewer
           dbStructure={blankDbStructure}
@@ -155,14 +139,15 @@ export default async function Page({
           errorObjects={[
             {
               name: 'FormatError',
-              message: 'Could not detect the file format.',
-              instruction:
-                'Please specify the format in the URL query parameter `format`',
+              message: 'Record not found',
+              instruction: 'Please make sure that the schema file exists.',
             },
           ]}
         />
       )
     }
+
+    const format = gitHubSchemaFilePath.format
 
     const { value: dbStructure, errors } = await parse(content, format)
 

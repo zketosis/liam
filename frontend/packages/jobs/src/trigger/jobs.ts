@@ -200,8 +200,8 @@ export const generateDocsSuggestionTask = task({
     logger.log('Generated docs suggestions:', { suggestions, traceId })
 
     for (const key of DOC_FILES) {
-      const content = suggestions[key]
-      if (!content) {
+      const suggestion = suggestions[key]
+      if (!suggestion || !suggestion.content) {
         logger.warn(`No content found for suggestion key: ${key}`)
         continue
       }
@@ -211,10 +211,10 @@ export const generateDocsSuggestionTask = task({
         type: payload.type,
         title: `Docs update from PR #${payload.pullRequestNumber}`,
         path: `docs/${key}`,
-        content,
+        content: suggestion.content,
         branch: payload.branchName,
         traceId,
-        reasoning: '',
+        reasoning: suggestion.reasoning || '',
       })
     }
 

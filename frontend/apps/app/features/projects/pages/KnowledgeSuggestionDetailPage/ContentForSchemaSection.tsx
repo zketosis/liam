@@ -25,7 +25,6 @@ type Props = {
   originalContent: string | null
   isApproved: boolean
   dbStructure: DBStructure | undefined
-  format: SupportedFormat | undefined
   content: string | null
   errors: ErrorObject[]
   tableGroups: Record<string, TableGroup>
@@ -37,7 +36,6 @@ export const ContentForSchemaSection: FC<Props> = ({
   originalContent,
   isApproved,
   dbStructure,
-  format,
   content,
   errors,
   tableGroups: initialTableGroups,
@@ -111,7 +109,7 @@ export const ContentForSchemaSection: FC<Props> = ({
         />
       </div>
 
-      {content !== null && format !== undefined && dbStructure && (
+      {content !== null && dbStructure && (
         <ErdViewer
           key={JSON.stringify(
             processedResult?.tableGroups || initialTableGroups,
