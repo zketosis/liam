@@ -1,9 +1,5 @@
 import { createClient } from '../libs/supabase'
-import { SeverityEnum } from '../prompts/generateReview/reviewSchema'
 import type { ReviewResponse } from '../types'
-
-// Use SeverityEnum values type
-type Severity = keyof typeof SeverityEnum.enum
 
 export const processSaveReview = async (
   payload: ReviewResponse,
@@ -44,69 +40,9 @@ export const processSaveReview = async (
       )
     }
 
-    // Calculate scores based on feedback severity
-    // Group feedbacks by category
-    const feedbacksByCategory: Record<string, typeof payload.review.feedbacks> =
-      {}
+    // Create review issues directly from the feedback data
 
-    // Use for...of instead of forEach
-    for (const feedback of payload.review.feedbacks) {
-      const kind = feedback.kind || 'Unknown'
-      if (!feedbacksByCategory[kind]) {
-        feedbacksByCategory[kind] = []
-      }
-      feedbacksByCategory[kind].push(feedback)
-    }
-
-    // Create review scores
-    const reviewScores = Object.entries(feedbacksByCategory).map(
-      ([category, feedbacks]) => {
-        // Start with 10 points
-        let score = 10
-
-        // Calculate deductions based on feedback severity
-        // Use for...of instead of forEach
-        for (const feedback of feedbacks) {
-          const severity = feedback.severity as Severity
-          if (severity === SeverityEnum.enum.CRITICAL) {
-            score -= 3
-          } else if (severity === SeverityEnum.enum.WARNING) {
-            score -= 1
-          }
-          // No deduction for POSITIVE feedback (no points subtracted)
-        }
-
-        // Ensure minimum score is 0
-        score = Math.max(0, score)
-
-        // Find the reason from the original scores if available
-        const originalScore = payload.review.scores?.find(
-          (s) => s.kind === category,
-        )
-        const reason =
-          originalScore?.reason || 'Score calculated based on feedback severity'
-
-        return {
-          overallReviewId: overallReview.id,
-          overallScore: score,
-          category: mapCategoryEnum(category),
-          reason,
-          updatedAt: now,
-        }
-      },
-    )
-
-    const { error: reviewScoresError } = await supabase
-      .from('ReviewScore')
-      .insert(reviewScores)
-
-    if (reviewScoresError) {
-      throw new Error(
-        `Failed to create review scores: ${JSON.stringify(reviewScoresError)}`,
-      )
-    }
-
-    // create review issues
+    // Create review issues
     const reviewIssues = payload.review.feedbacks.map((feedback) => ({
       overallReviewId: overallReview.id,
       category: mapCategoryEnum(feedback.kind),

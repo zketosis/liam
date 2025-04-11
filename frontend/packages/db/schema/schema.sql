@@ -548,35 +548,6 @@ ALTER SEQUENCE "public"."ReviewIssue_id_seq" OWNED BY "public"."ReviewIssue"."id
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."ReviewScore" (
-    "id" integer NOT NULL,
-    "overallReviewId" integer NOT NULL,
-    "overallScore" integer NOT NULL,
-    "category" "public"."CategoryEnum" NOT NULL,
-    "reason" "text" NOT NULL,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."ReviewScore" OWNER TO "postgres";
-
-
-CREATE SEQUENCE IF NOT EXISTS "public"."ReviewScore_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "public"."ReviewScore_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."ReviewScore_id_seq" OWNED BY "public"."ReviewScore"."id";
-
-
-
 CREATE SEQUENCE IF NOT EXISTS "public"."ReviewSuggestionSnippet_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -674,10 +645,6 @@ ALTER TABLE ONLY "public"."ReviewIssue" ALTER COLUMN "id" SET DEFAULT "nextval"(
 
 
 
-ALTER TABLE ONLY "public"."ReviewScore" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewScore_id_seq"'::"regclass");
-
-
-
 ALTER TABLE ONLY "public"."GitHubDocFilePath"
     ADD CONSTRAINT "GitHubDocFilePath_pkey" PRIMARY KEY ("id");
 
@@ -760,11 +727,6 @@ ALTER TABLE ONLY "public"."Repository"
 
 ALTER TABLE ONLY "public"."ReviewIssue"
     ADD CONSTRAINT "ReviewIssue_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."ReviewScore"
-    ADD CONSTRAINT "ReviewScore_pkey" PRIMARY KEY ("id");
 
 
 
@@ -919,11 +881,6 @@ ALTER TABLE ONLY "public"."PullRequest"
 
 ALTER TABLE ONLY "public"."ReviewIssue"
     ADD CONSTRAINT "ReviewIssue_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."ReviewScore"
-    ADD CONSTRAINT "ReviewScore_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1325,18 +1282,6 @@ GRANT ALL ON TABLE "public"."ReviewIssue" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."ReviewScore" TO "anon";
-GRANT ALL ON TABLE "public"."ReviewScore" TO "authenticated";
-GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
 
 
 

@@ -30,10 +30,4 @@ export const reviewSchema = strictObject({
       ),
     }),
   ),
-  scores: array(
-    strictObject({
-      kind: KindEnum,
-      reason: string(),
-    }),
-  ),
 })

@@ -6,9 +6,9 @@ import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
-import { RadarChart } from '../../components/RadarChart/RadarChart'
-import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
+import { MigrationHealthClient } from '../../components/MigrationHealthClient/MigrationHealthClient'
 import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssuesList'
+import { ReviewIssuesProvider } from '../../contexts/ReviewIssuesContext'
 import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
 
@@ -71,13 +71,6 @@ async function getMigrationContents(migrationId: string) {
           filename,
           snippet
         )
-      ),
-      reviewScores:ReviewScore (
-        id,
-        overallReviewId,
-        overallScore,
-        category,
-        reason
       )
     `)
     .eq('pullRequestId', pullRequest.id)
@@ -110,7 +103,6 @@ async function getMigrationContents(migrationId: string) {
         reviewComment: null,
         reviewedAt: null,
         reviewIssues: [],
-        reviewScores: [],
       },
       erdLinks: [],
       knowledgeSuggestions: [],
@@ -219,66 +211,55 @@ export const MigrationDetailPage: FC<Props> = async ({
         <p className={styles.subTitle}>#{migration.PullRequest.pullNumber}</p>
       </div>
       <div className={styles.twoColumns}>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Migration Health</h2>
-          <div className={styles.healthContent}>
-            {overallReview.reviewScores.length > 0 ? (
-              <div className={styles.radarChartContainer}>
-                <RadarChart
-                  scores={overallReview.reviewScores.map((score) => ({
-                    id: score.id,
-                    overallReviewId: score.overallReviewId,
-                    overallScore: score.overallScore,
-                    category: score.category as CategoryEnum,
-                  }))}
-                />
+        <ReviewIssuesProvider initialIssues={overallReview.reviewIssues}>
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Migration Health</h2>
+            <div className={styles.healthContent}>
+              <MigrationHealthClient className={styles.radarChartContainer} />
+              <div className={styles.erdLinks}>
+                {erdLinks.map(({ path, filename }) => (
+                  <Link key={path} href={path} className={styles.erdLink}>
+                    View ERD Diagram: {filename} →
+                  </Link>
+                ))}
               </div>
-            ) : (
-              <p className={styles.noScores}>No review scores found.</p>
-            )}
-            <div className={styles.erdLinks}>
-              {erdLinks.map(({ path, filename }) => (
-                <Link key={path} href={path} className={styles.erdLink}>
-                  View ERD Diagram: {filename} →
-                </Link>
-              ))}
             </div>
           </div>
-        </div>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Summary</h2>
-        </div>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Review Content</h2>
-          {overallReview.reviewComment ? (
-            <>
-              <pre className={styles.reviewContent}>
-                {overallReview.reviewComment}
-              </pre>
-              {overallReview.traceId && (
-                <div className={styles.feedbackSection}>
-                  <UserFeedbackClient traceId={overallReview.traceId} />
-                </div>
-              )}
-            </>
-          ) : (
-            <p className={styles.noContent}>No review content found.</p>
-          )}
-        </div>
-        <div className={styles.box}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.h2}>Review Issues</h2>
-            {overallReview.reviewIssues.filter(
-              (issue) => issue.severity === 'CRITICAL' && !issue.resolvedAt,
-            ).length > 0 && (
-              <CopyButton
-                text={formatAllReviewIssues(overallReview.reviewIssues)}
-                className={styles.headerCopyButton}
-              />
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Summary</h2>
+          </div>
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Review Content</h2>
+            {overallReview.reviewComment ? (
+              <>
+                <pre className={styles.reviewContent}>
+                  {overallReview.reviewComment}
+                </pre>
+                {overallReview.traceId && (
+                  <div className={styles.feedbackSection}>
+                    <UserFeedbackClient traceId={overallReview.traceId} />
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className={styles.noContent}>No review content found.</p>
             )}
           </div>
-          <ReviewIssuesList issues={overallReview.reviewIssues} />
-        </div>
+          <div className={styles.box}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.h2}>Review Issues</h2>
+              {overallReview.reviewIssues.filter(
+                (issue) => issue.severity === 'CRITICAL' && !issue.resolvedAt,
+              ).length > 0 && (
+                <CopyButton
+                  text={formatAllReviewIssues(overallReview.reviewIssues)}
+                  className={styles.headerCopyButton}
+                />
+              )}
+            </div>
+            <ReviewIssuesList />
+          </div>
+        </ReviewIssuesProvider>
 
         {/* Knowledge Suggestions Section */}
         <div className={styles.box}>
