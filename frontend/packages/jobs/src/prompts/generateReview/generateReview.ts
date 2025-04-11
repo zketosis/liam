@@ -28,10 +28,13 @@ Your JSON-formatted response must contain:
     - Use "CRITICAL" for major issues.
     - Use "WARNING" for minor issues.
     - Use "POSITIVE" to highlight improvements in the schema design.
+    - Use "QUESTION" when you need to inquire about requirements, specifications, or design decisions that require clarification.
   - IMPORTANT FEEDBACK REQUIREMENTS:
     1. For each category, you MUST include AT LEAST one feedback item.
     2. For any category, include at least one feedback item with severity "WARNING" or "CRITICAL" for any identified issue.
     3. For any category, include at least one feedback item with severity "POSITIVE" to highlight beneficial changes.
+    4. Include feedback items with severity "QUESTION" whenever you identify areas that require clarification about requirements, design decisions, or business rules.
+    5. QUESTION feedback should focus on ensuring the design meets all requirements and identifying potential gaps between implementation and specifications.
   - "description": A clear and precise explanation of the feedback.
   - "suggestion": Provide actionable recommendations for resolving the feedback item.
     - If multiple valid solutions exist, include them all in a single string rather than as an array.
@@ -39,6 +42,10 @@ Your JSON-formatted response must contain:
     - If the severity is "POSITIVE", do not set "suggestion" to null.
       - Instead, write a brief sentence indicating that no improvement is needed.
       - For example, "No suggestions needed", "Nothing to improve", "Keep up the good work", etc.
+    - If the severity is "QUESTION", format the "suggestion" field as a specific question or set of questions that need to be answered.
+      - Make questions clear, direct and actionable.
+      - Focus on seeking information about requirements, confirming design intentions, or clarifying business rules that impact the database schema.
+      - For example, "Could you clarify if user accounts need to support multiple email addresses?" or "Is there a reason this column doesn't have a foreign key constraint?"
   - "suggestionSnippets": An array of suggestion snippets for each feedback kind in the "suggestions" field, each including:
     - "filename": The filename of the file that needs to be applied.
     - "snippet": The snippet of the file that needs to be applied.
@@ -84,7 +91,7 @@ Documentation Context:
 {docsContent}
 
 Schema Files:
-{schemaFiles}
+{schemaFile}
 
 File Changes:
 {fileChanges}`
@@ -106,7 +113,7 @@ export const chain = chatPrompt.pipe(
 
 export const generateReview = async (
   docsContent: string,
-  schemaFiles: GenerateReviewPayload['schemaFiles'],
+  schemaFile: GenerateReviewPayload['schemaFile'],
   fileChanges: GenerateReviewPayload['fileChanges'],
   prDescription: string,
   prComments: string,
@@ -116,7 +123,7 @@ export const generateReview = async (
   const response = await chain.invoke(
     {
       docsContent,
-      schemaFiles,
+      schemaFile,
       fileChanges,
       prDescription,
       prComments,

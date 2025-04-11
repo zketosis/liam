@@ -82,7 +82,7 @@ schema-meta.json is a documentation-only enhancement layer on top of the actual 
 ## Current Schema Files
 <files>
 
-{schemaFiles}
+{schemaFile}
 
 </files>
 
@@ -143,7 +143,7 @@ It is NOT for:
 ## Current Schema Files
 <files>
 
-{schemaFiles}
+{schemaFile}
 
 </files>
 
@@ -186,7 +186,7 @@ export const generateSchemaMeta = async (
   callbacks: Callbacks,
   currentSchemaMeta: DBOverride | null,
   runId: string,
-  schemaFiles: string,
+  schemaFile: string,
 ): Promise<GenerateSchemaMetaResult> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -210,7 +210,7 @@ export const generateSchemaMeta = async (
   type EvaluationInput = {
     reviewComment: string
     currentSchemaMeta: string
-    schemaFiles: string
+    schemaFile: string
   }
 
   type UpdateInput = EvaluationInput & {
@@ -228,7 +228,7 @@ export const generateSchemaMeta = async (
       {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFiles: inputs.schemaFiles,
+        schemaFile: inputs.schemaFile,
         evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
       },
       config,
@@ -239,7 +239,7 @@ export const generateSchemaMeta = async (
       const updateInput: UpdateInput = {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFiles: inputs.schemaFiles,
+        schemaFile: inputs.schemaFile,
         dbOverrideJsonSchema: inputs.dbOverrideJsonSchema,
         evaluationResults: evaluationResult.suggestedChanges,
       }
@@ -278,7 +278,7 @@ export const generateSchemaMeta = async (
     // Prepare the common inputs
     const commonInputs = {
       reviewComment,
-      schemaFiles,
+      schemaFile,
       currentSchemaMeta: currentSchemaMeta
         ? JSON.stringify(currentSchemaMeta, null, 2)
         : '{}',

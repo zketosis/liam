@@ -31,13 +31,16 @@ async function getBranchDetails(projectId: number) {
     notFound()
   }
 
-  const { data: schemaPaths, error: schemaPathsError } = await supabase
+  const { data: schemaPath, error: schemaPathError } = await supabase
     .from('GitHubSchemaFilePath')
     .select('path')
     .eq('projectId', projectId)
+    .single()
 
-  if (schemaPathsError) {
-    console.error('Error fetching schema paths:', schemaPathsError)
+  if (schemaPathError) {
+    console.warn(
+      `No schema path found for project ${projectId}: ${JSON.stringify(schemaPathError)}`,
+    )
   }
 
   const { data: docPaths, error: docPathsError } = await supabase
@@ -49,10 +52,7 @@ async function getBranchDetails(projectId: number) {
     console.error('Error fetching doc paths:', docPathsError)
   }
 
-  const transformedSchemaPaths =
-    schemaPaths?.map((schemaPath) => ({
-      path: schemaPath.path,
-    })) || []
+  const transformedSchemaPath = schemaPath ? { path: schemaPath.path } : null
 
   const transformedDocPaths =
     docPaths?.map((docPath) => ({
@@ -62,7 +62,7 @@ async function getBranchDetails(projectId: number) {
   return {
     ...project,
     repository: project.ProjectRepositoryMapping[0].Repository,
-    schemaPaths: transformedSchemaPaths,
+    schemaPath: transformedSchemaPath,
     docPaths: transformedDocPaths,
   }
 }
@@ -121,26 +121,25 @@ export const BranchDetailPage = async ({
 
             <div className={styles.resourceSection}>
               <h3 className={styles.resourceTitle}>ERD Diagrams</h3>
-              {project.schemaPaths?.map((schemaPath) => (
+              {project.schemaPath && (
                 <Link
-                  key={schemaPath.path}
                   href={urlgen(
                     'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]',
                     {
                       projectId: String(projectId),
                       branchOrCommit,
-                      schemaFilePath: schemaPath.path,
+                      schemaFilePath: project.schemaPath.path,
                     },
                   )}
                   className={styles.resourceLink}
                 >
-                  View ERD for {schemaPath.path}
+                  View ERD for {project.schemaPath.path}
                   <span className={styles.linkArrow}>→</span>
                 </Link>
-              ))}
-              {(!project.schemaPaths || project.schemaPaths.length === 0) && (
+              )}
+              {!project.schemaPath && (
                 <div className={styles.noPatterns}>
-                  No schema file paths configured for this project
+                  No schema file path configured for this project
                 </div>
               )}
             </div>

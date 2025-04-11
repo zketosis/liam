@@ -466,7 +466,15 @@ export type Database = {
           organizationId?: number | null
           updatedAt?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'Project_organizationId_fkey'
+            columns: ['organizationId']
+            isOneToOne: false
+            referencedRelation: 'Organization'
+            referencedColumns: ['id']
+          },
+        ]
       }
       ProjectRepositoryMapping: {
         Row: {
@@ -691,7 +699,7 @@ export type Database = {
         | 'SECURITY_OR_SCALABILITY'
       KnowledgeType: 'SCHEMA' | 'DOCS'
       SchemaFormatEnum: 'schemarb' | 'postgres' | 'prisma' | 'tbls'
-      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE'
+      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE' | 'QUESTION'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -819,7 +827,7 @@ export const Constants = {
       ],
       KnowledgeType: ['SCHEMA', 'DOCS'],
       SchemaFormatEnum: ['schemarb', 'postgres', 'prisma', 'tbls'],
-      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE'],
+      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE', 'QUESTION'],
     },
   },
 } as const

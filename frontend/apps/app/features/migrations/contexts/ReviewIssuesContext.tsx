@@ -1,5 +1,6 @@
 'use client'
 
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import {
   type ReactNode,
   createContext,
@@ -8,18 +9,8 @@ import {
   useState,
 } from 'react'
 
-type ReviewIssue = {
-  id: number
-  category: string
-  severity: string
-  resolvedAt?: string | null
-  resolutionComment?: string | null
-  description?: string
-  suggestion?: string
-  overallReviewId?: number
-  createdAt?: string
-  updatedAt?: string
-  suggestionSnippets?: Array<{
+type ReviewIssue = Tables<'ReviewIssue'> & {
+  suggestionSnippets: Array<{
     id: number
     filename: string
     snippet: string

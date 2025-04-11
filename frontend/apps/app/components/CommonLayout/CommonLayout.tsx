@@ -19,7 +19,7 @@ export const CommonLayout: React.FC<CommonLayoutProps> = ({ children }) => {
         <nav className={styles.nav}>
           <ul>
             <li>
-              <Link href={urlgen('projects')} className={styles.link}>
+              <Link href="/" className={styles.link}>
                 <span className={styles.icon}>📁</span>
                 Projects
               </Link>

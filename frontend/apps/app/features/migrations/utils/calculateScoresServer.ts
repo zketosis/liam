@@ -49,7 +49,7 @@ export const calculateScoresFromIssues = (
       } else if (issue.severity === 'WARNING') {
         score -= 1
       }
-      // No deduction for POSITIVE feedback
+      // No deduction for POSITIVE or QUESTION feedback
     }
 
     // Ensure minimum score is 0

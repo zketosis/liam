@@ -5,6 +5,17 @@ export type RouteDefinitions = {
   'projects/[projectId]': (params: { projectId: string }) => string
   'projects/[projectId]/migrations': (params: { projectId: string }) => string
   'projects/[projectId]/docs': (params: { projectId: string }) => string
+  'organizations/new': string
+  organizations: string
+  'organizations/[organizationId]': (params: {
+    organizationId: string
+  }) => string
+  'organizations/[organizationId]/projects': (params: {
+    organizationId: string
+  }) => string
+  'organizations/[organizationId]/projects/new': (params: {
+    organizationId: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]': (params: {
     projectId: string
     branchOrCommit: string
@@ -43,6 +54,17 @@ export const routeDefinitions: RouteDefinitions = {
   login: '/app/login',
   projects: '/app/projects',
   'projects/new': '/app/projects/new',
+  'organizations/new': '/app/organizations/new',
+  organizations: '/app/organizations',
+  'organizations/[organizationId]': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}`
+  },
+  'organizations/[organizationId]/projects': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}/projects`
+  },
+  'organizations/[organizationId]/projects/new': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}/projects/new`
+  },
   'projects/[projectId]': ({ projectId }) => {
     return `/app/projects/${projectId}`
   },

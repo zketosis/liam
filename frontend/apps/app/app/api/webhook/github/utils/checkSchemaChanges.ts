@@ -25,24 +25,25 @@ export const checkSchemaChanges = async (
   const filenames = files.map((file) => file.filename)
 
   const supabase = await createClient()
-  const { data: schemaPaths, error } = await supabase
+  const { data: schemaPath, error } = await supabase
     .from('GitHubSchemaFilePath')
     .select('path')
     .eq('projectId', projectId)
+    .single()
 
   if (error) {
-    throw new Error('Failed to fetch schema file paths')
-  }
-
-  if (!schemaPaths || schemaPaths.length === 0) {
+    console.warn(
+      `No schema path found for project ${projectId}: ${JSON.stringify(error)}`,
+    )
     return { shouldContinue: false }
   }
-  // Check if filenames match the paths directly
-  const matchedFiles = filenames.filter((filename) =>
-    schemaPaths.some((schemaPath) => filename === schemaPath.path),
+
+  // Check if any filename matches the schema path
+  const isSchemaFileChanged = filenames.some(
+    (filename) => filename === schemaPath.path,
   )
 
-  if (matchedFiles.length === 0) {
+  if (!isSchemaFileChanged) {
     return { shouldContinue: false }
   }
 
