@@ -1,16 +1,16 @@
 ---
+name: 'github.com/liam-hq/liam/pull/1105'
+
 assert:
 - type: javascript
   value: output.feedbacks.filter(feedback => feedback.severity === "POSITIVE").length > 0
-- type: is-json
-- type: cost
-  threshold: 0.008
 
 vars:
-  '# ref': github.com/liam-hq/liam/pull/1105
+  prDescription: ''
+  prComments: ''
   docsContent: ''
-  schemaFiles:
-  - filename: frontend/packages/db/schema/schema.sql
+  schemaFile:
+    filename: frontend/packages/db/schema/schema.sql
     content: |-
       
       

@@ -98,6 +98,19 @@ File Changes:
 
 export const reviewJsonSchema: JSONSchema7 = toJsonSchema(reviewSchema)
 
+const model = new ChatOpenAI({
+  model: 'o3-mini-2025-01-31',
+})
+
+const chatPrompt = ChatPromptTemplate.fromMessages([
+  ['system', SYSTEM_PROMPT],
+  ['human', USER_PROMPT],
+])
+
+export const chain = chatPrompt.pipe(
+  model.withStructuredOutput(reviewJsonSchema),
+)
+
 export const generateReview = async (
   docsContent: string,
   schemaFile: GenerateReviewPayload['schemaFile'],
@@ -107,16 +120,6 @@ export const generateReview = async (
   callbacks: Callbacks,
   runId: string,
 ) => {
-  const chatPrompt = ChatPromptTemplate.fromMessages([
-    ['system', SYSTEM_PROMPT],
-    ['human', USER_PROMPT],
-  ])
-
-  const model = new ChatOpenAI({
-    model: 'o3-mini-2025-01-31',
-  })
-
-  const chain = chatPrompt.pipe(model.withStructuredOutput(reviewJsonSchema))
   const response = await chain.invoke(
     {
       docsContent,
