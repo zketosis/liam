@@ -886,6 +886,11 @@ ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
 
 
 
+ALTER TABLE ONLY "public"."Project"
+    ADD CONSTRAINT "Project_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."PullRequest"
     ADD CONSTRAINT "PullRequest_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
