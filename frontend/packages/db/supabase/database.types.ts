@@ -466,7 +466,15 @@ export type Database = {
           organizationId?: number | null
           updatedAt?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'Project_organizationId_fkey'
+            columns: ['organizationId']
+            isOneToOne: false
+            referencedRelation: 'Organization'
+            referencedColumns: ['id']
+          },
+        ]
       }
       ProjectRepositoryMapping: {
         Row: {

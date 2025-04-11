@@ -791,6 +791,10 @@ CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "
 
 
 
+CREATE INDEX "idx_project_organizationId" ON "public"."Project" USING "btree" ("organizationId");
+
+
+
 CREATE INDEX "membership_invites_email_idx" ON "public"."MembershipInvites" USING "btree" ("email");
 
 
@@ -884,6 +888,11 @@ ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
 
 ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
     ADD CONSTRAINT "ProjectRepositoryMapping_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."Project"
+    ADD CONSTRAINT "Project_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
