@@ -766,6 +766,10 @@ CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDo
 
 
 
+CREATE UNIQUE INDEX "GitHubSchemaFilePath_projectId_key" ON "public"."GitHubSchemaFilePath" USING "btree" ("projectId");
+
+
+
 CREATE UNIQUE INDEX "KnowledgeSuggestionDocMapping_unique_mapping" ON "public"."KnowledgeSuggestionDocMapping" USING "btree" ("knowledgeSuggestionId", "gitHubDocFilePathId");
 
 
