@@ -100,7 +100,8 @@ ALTER TYPE "public"."SchemaFormatEnum" OWNER TO "postgres";
 CREATE TYPE "public"."SeverityEnum" AS ENUM (
     'CRITICAL',
     'WARNING',
-    'POSITIVE'
+    'POSITIVE',
+    'QUESTION'
 );
 
 

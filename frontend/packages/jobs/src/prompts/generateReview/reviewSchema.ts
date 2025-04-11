@@ -12,6 +12,7 @@ export const SeverityEnum = enumType({
   CRITICAL: 'CRITICAL',
   WARNING: 'WARNING',
   POSITIVE: 'POSITIVE',
+  QUESTION: 'QUESTION',
 })
 
 export const reviewSchema = strictObject({

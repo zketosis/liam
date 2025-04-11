@@ -691,7 +691,7 @@ export type Database = {
         | 'SECURITY_OR_SCALABILITY'
       KnowledgeType: 'SCHEMA' | 'DOCS'
       SchemaFormatEnum: 'schemarb' | 'postgres' | 'prisma' | 'tbls'
-      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE'
+      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE' | 'QUESTION'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -819,7 +819,7 @@ export const Constants = {
       ],
       KnowledgeType: ['SCHEMA', 'DOCS'],
       SchemaFormatEnum: ['schemarb', 'postgres', 'prisma', 'tbls'],
-      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE'],
+      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE', 'QUESTION'],
     },
   },
 } as const

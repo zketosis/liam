@@ -110,7 +110,8 @@ vars:
       CREATE TYPE "public"."SeverityEnum" AS ENUM (
           'CRITICAL',
           'WARNING',
-          'POSITIVE'
+          'POSITIVE',
+          'QUESTION'
       );
       
       
