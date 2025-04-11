@@ -59,7 +59,6 @@ function extractTableName(
     )
   }
 
-  // @ts-expect-error: unescaped is defined as string but it is actually object
   const value = nameNode.unescaped.value
 
   return ok(value)
@@ -73,7 +72,6 @@ function extractTableComment(argNodes: Node[]): string | null {
       (elem) =>
         elem instanceof AssocNode &&
         elem.key instanceof SymbolNode &&
-        // @ts-expect-error: unescaped is defined as string but it is actually object
         elem.key.unescaped.value === 'comment',
     )
 
@@ -101,7 +99,6 @@ function extractIdColumn(argNodes: Node[]): Column | null {
       (elem) =>
         elem instanceof AssocNode &&
         elem.key instanceof SymbolNode &&
-        // @ts-expect-error: unescaped is defined as string but it is actually object
         elem.key.unescaped.value === 'id',
     )
 
@@ -111,7 +108,6 @@ function extractIdColumn(argNodes: Node[]): Column | null {
         idAssoc.value instanceof StringNode ||
         idAssoc.value instanceof SymbolNode
       )
-        // @ts-expect-error: unescaped is defined as string but it is actually object
         idColumn.type = idAssoc.value.unescaped.value
 
       return idColumn
@@ -161,7 +157,6 @@ function extractColumnDetails(node: CallNode): Column {
   const argNodes = node.arguments_?.compactChildNodes() || []
   for (const argNode of argNodes) {
     if (argNode instanceof StringNode) {
-      // @ts-expect-error: unescaped is defined as string but it is actually object
       column.name = argNode.unescaped.value
     } else if (argNode instanceof KeywordHashNode) {
       extractColumnOptions(argNode, column)
@@ -185,7 +180,6 @@ function extractIndexDetails(node: CallNode): Index {
       const argElemens = argNode.compactChildNodes()
       for (const argElem of argElemens) {
         if (argElem instanceof StringNode) {
-          // @ts-expect-error: unescaped is defined as string but it is actually object
           index.columns.push(argElem.unescaped.value)
         }
       }
@@ -209,7 +203,14 @@ function extractColumnOptions(hashNode: KeywordHashNode, column: Column): void {
         column.notNull = value instanceof FalseNode
         break
       case 'default':
-        column.default = extractDefaultValue(value)
+        if (
+          value instanceof TrueNode ||
+          value instanceof FalseNode ||
+          value instanceof StringNode ||
+          value instanceof IntegerNode
+        ) {
+          column.default = extractDefaultValue(value)
+        }
         break
       case 'unique':
         column.unique = value instanceof TrueNode
@@ -250,9 +251,7 @@ function extractDefaultValue(
 ): string | number | boolean | null {
   if (value instanceof TrueNode) return true
   if (value instanceof FalseNode) return false
-  // @ts-expect-error: unescaped is defined as string but it is actually object
   if (value instanceof StringNode) return value.unescaped.value
-  // @ts-expect-error: IntegerNode actually has value property
   if (value instanceof IntegerNode) return value.value
   return null
 }
@@ -271,7 +270,6 @@ function extractRelationshipTableNames(
 
   const [foreignTableName, primaryTableName] = stringNodes.map(
     (node): string => {
-      // @ts-expect-error: unescaped is defined as string but it is actually object
       if (node instanceof StringNode) return node.unescaped.value
       return ''
     },
@@ -312,20 +310,17 @@ function extractForeignKeyOptions(
         switch (key) {
           case 'column':
             if (value instanceof StringNode || value instanceof SymbolNode) {
-              // @ts-expect-error: unescaped is defined as string but it is actually object
               relation.foreignColumnName = value.unescaped.value
             }
             break
           case 'name':
             if (value instanceof StringNode || value instanceof SymbolNode) {
-              // @ts-expect-error: unescaped is defined as string but it is actually object
               relation.name = value.unescaped.value
             }
             break
           case 'on_update':
             if (value instanceof SymbolNode) {
               relation.updateConstraint = normalizeConstraintName(
-                // @ts-expect-error: unescaped is defined as string but it is actually object
                 value.unescaped.value,
               )
             }
@@ -333,7 +328,6 @@ function extractForeignKeyOptions(
           case 'on_delete':
             if (value instanceof SymbolNode) {
               relation.deleteConstraint = normalizeConstraintName(
-                // @ts-expect-error: unescaped is defined as string but it is actually object
                 value.unescaped.value,
               )
             }
