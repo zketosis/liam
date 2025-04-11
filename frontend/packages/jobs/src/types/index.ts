@@ -15,10 +15,10 @@ export type GenerateReviewPayload = {
   owner: string
   name: string
   pullRequestNumber: number
-  schemaFiles: Array<{
+  schemaFile: {
     filename: string
     content: string
-  }>
+  }
   fileChanges: Array<{
     filename: string
     status:

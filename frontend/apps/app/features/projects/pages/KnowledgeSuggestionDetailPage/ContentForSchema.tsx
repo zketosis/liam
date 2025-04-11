@@ -16,8 +16,6 @@ async function getGithubSchemaFilePath(projectId: string) {
       .from('GitHubSchemaFilePath')
       .select('*')
       .eq('projectId', projectId_num)
-      .order('createdAt', { ascending: false })
-      .limit(1) // TODO: Remove this once we have a way to choose primary file path?
       .single()
 
     if (error || !gitHubSchemaFilePath) {
