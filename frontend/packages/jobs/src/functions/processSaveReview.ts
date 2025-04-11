@@ -40,9 +40,9 @@ export const processSaveReview = async (
       )
     }
 
-    // Create review issues directly from the feedback data
+    // Create review feedbacks directly from the feedback data
 
-    // Create review issues
+    // Create review feedbacks
     const reviewFeedbacks = payload.review.feedbacks.map((feedback) => ({
       overallReviewId: overallReview.id,
       category: mapCategoryEnum(feedback.kind),

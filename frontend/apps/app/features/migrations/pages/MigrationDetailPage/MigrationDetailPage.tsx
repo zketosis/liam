@@ -249,7 +249,7 @@ export const MigrationDetailPage: FC<Props> = async ({
           </div>
           <div className={styles.box}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.h2}>Review Issues</h2>
+              <h2 className={styles.h2}>Review Feedbacks</h2>
               {overallReview.reviewFeedbacks.filter(
                 (feedback) =>
                   feedback.severity === 'CRITICAL' && !feedback.resolvedAt,
