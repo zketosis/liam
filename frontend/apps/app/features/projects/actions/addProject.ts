@@ -10,6 +10,7 @@ export const addProject = async (formData: FormData) => {
   const repositoryName = formData.get('repositoryName') as string
   const repositoryOwner = formData.get('repositoryOwner') as string
   const installationId = formData.get('installationId') as string
+  const organizationId = formData.get('organizationId') as string
 
   const supabase = await createClient()
   const now = new Date().toISOString()
@@ -21,6 +22,9 @@ export const addProject = async (formData: FormData) => {
       name: projectName,
       createdAt: now,
       updatedAt: now,
+      ...(organizationId
+        ? { organizationId: Number.parseInt(organizationId, 10) }
+        : {}),
     })
     .select()
     .single()

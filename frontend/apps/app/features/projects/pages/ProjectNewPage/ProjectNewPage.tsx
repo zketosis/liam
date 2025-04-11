@@ -5,13 +5,20 @@ import styles from './ProjectNewPage.module.css'
 
 type Props = {
   installations: Installation[]
+  organizationId?: number
 }
 
-export const ProjectNewPage: FC<Props> = ({ installations }) => {
+export const ProjectNewPage: FC<Props> = ({
+  installations,
+  organizationId,
+}) => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Add a Project</h1>
-      <InstallationSelector installations={installations} />
+      <InstallationSelector
+        installations={installations}
+        organizationId={organizationId}
+      />
     </div>
   )
 }

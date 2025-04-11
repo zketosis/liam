@@ -18,6 +18,7 @@ async function getProject(projectId: string) {
         id,
         name,
         createdAt,
+        organizationId,
         ProjectRepositoryMapping:ProjectRepositoryMapping(
           repository:Repository(
             pullRequests:PullRequest(
@@ -60,6 +61,7 @@ async function getProject(projectId: string) {
       id: project.id,
       name: project.name,
       createdAt: project.createdAt,
+      organizationId: project.organizationId,
       migrations,
     }
   } catch (error) {
@@ -77,7 +79,13 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <Link
-            href={urlgen('projects')}
+            href={
+              project.organizationId
+                ? urlgen('organizations/[organizationId]/projects', {
+                    organizationId: project.organizationId.toString(),
+                  })
+                : '/'
+            }
             className={styles.backLink}
             aria-label="Back to projects list"
           >

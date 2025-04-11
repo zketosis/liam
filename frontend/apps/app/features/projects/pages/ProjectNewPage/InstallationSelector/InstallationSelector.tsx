@@ -18,9 +18,13 @@ import styles from './InstallationSelector.module.css'
 
 type Props = {
   installations: Installation[]
+  organizationId?: number
 }
 
-export const InstallationSelector: FC<Props> = ({ installations }) => {
+export const InstallationSelector: FC<Props> = ({
+  installations,
+  organizationId,
+}) => {
   const [selectedInstallation, setSelectedInstallation] =
     useState<Installation | null>(null)
   const [repositories, setRepositories] = useState<Repository[]>([])
@@ -77,6 +81,10 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
           selectedInstallation?.id.toString() || '',
         )
 
+        if (organizationId) {
+          formData.set('organizationId', organizationId.toString())
+        }
+
         await addProject(formData)
         // This point is not reached because a redirect occurs on success
       } catch (error) {
@@ -84,7 +92,7 @@ export const InstallationSelector: FC<Props> = ({ installations }) => {
         setIsAddingProject(false)
       }
     },
-    [selectedInstallation],
+    [selectedInstallation, organizationId],
   )
 
   return (
