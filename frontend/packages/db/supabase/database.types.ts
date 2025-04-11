@@ -105,7 +105,6 @@ export type Database = {
       GitHubSchemaFilePath: {
         Row: {
           createdAt: string
-          format: Database['public']['Enums']['SchemaFormatEnum']
           id: number
           path: string
           projectId: number
@@ -113,7 +112,6 @@ export type Database = {
         }
         Insert: {
           createdAt?: string
-          format: Database['public']['Enums']['SchemaFormatEnum']
           id?: number
           path: string
           projectId: number
@@ -121,7 +119,6 @@ export type Database = {
         }
         Update: {
           createdAt?: string
-          format?: Database['public']['Enums']['SchemaFormatEnum']
           id?: number
           path?: string
           projectId?: number
@@ -237,21 +234,21 @@ export type Database = {
           email: string
           id: number
           inviteByUserId: string
-          invitedAt: string | null
+          inviteOn: string | null
           organizationId: number
         }
         Insert: {
           email: string
           id?: never
           inviteByUserId: string
-          invitedAt?: string | null
+          inviteOn?: string | null
           organizationId: number
         }
         Update: {
           email?: string
           id?: never
           inviteByUserId?: string
-          invitedAt?: string | null
+          inviteOn?: string | null
           organizationId?: number
         }
         Relationships: [
@@ -323,18 +320,21 @@ export type Database = {
           id: number
           joinedAt: string | null
           organizationId: number
+          status: string
           userId: string
         }
         Insert: {
           id?: never
           joinedAt?: string | null
           organizationId: number
+          status: string
           userId: string
         }
         Update: {
           id?: never
           joinedAt?: string | null
           organizationId?: number
+          status?: string
           userId?: string
         }
         Relationships: [
@@ -405,45 +405,6 @@ export type Database = {
           },
         ]
       }
-      OverallReviewKnowledgeSuggestionMapping: {
-        Row: {
-          createdAt: string
-          id: number
-          knowledgeSuggestionId: number
-          overallReviewId: number
-          updatedAt: string
-        }
-        Insert: {
-          createdAt?: string
-          id?: number
-          knowledgeSuggestionId: number
-          overallReviewId: number
-          updatedAt: string
-        }
-        Update: {
-          createdAt?: string
-          id?: number
-          knowledgeSuggestionId?: number
-          overallReviewId?: number
-          updatedAt?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'OverallReviewKnowledgeSuggestionMapping_knowledgeSuggestionId_f'
-            columns: ['knowledgeSuggestionId']
-            isOneToOne: false
-            referencedRelation: 'KnowledgeSuggestion'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'OverallReviewKnowledgeSuggestionMapping_overallReviewId_fkey'
-            columns: ['overallReviewId']
-            isOneToOne: false
-            referencedRelation: 'OverallReview'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       Project: {
         Row: {
           createdAt: string
@@ -466,12 +427,53 @@ export type Database = {
           organizationId?: number | null
           updatedAt?: string
         }
+        Relationships: []
+      }
+      ProjectMember: {
+        Row: {
+          id: number
+          joinedAt: string | null
+          organizationMemberId: number | null
+          projectId: number
+          status: string
+          userId: string
+        }
+        Insert: {
+          id?: never
+          joinedAt?: string | null
+          organizationMemberId?: number | null
+          projectId: number
+          status: string
+          userId: string
+        }
+        Update: {
+          id?: never
+          joinedAt?: string | null
+          organizationMemberId?: number | null
+          projectId?: number
+          status?: string
+          userId?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'Project_organizationId_fkey'
-            columns: ['organizationId']
+            foreignKeyName: 'ProjectMember_organizationMemberId_fkey'
+            columns: ['organizationMemberId']
             isOneToOne: false
-            referencedRelation: 'Organization'
+            referencedRelation: 'OrganizationMember'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ProjectMember_projectId_fkey'
+            columns: ['projectId']
+            isOneToOne: false
+            referencedRelation: 'Project'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ProjectMember_userId_fkey'
+            columns: ['userId']
+            isOneToOne: false
+            referencedRelation: 'User'
             referencedColumns: ['id']
           },
         ]
@@ -587,8 +589,6 @@ export type Database = {
           description: string
           id: number
           overallReviewId: number
-          resolutionComment: string | null
-          resolvedAt: string | null
           severity: Database['public']['Enums']['SeverityEnum']
           suggestion: string
           updatedAt: string
@@ -599,8 +599,6 @@ export type Database = {
           description: string
           id?: number
           overallReviewId: number
-          resolutionComment?: string | null
-          resolvedAt?: string | null
           severity: Database['public']['Enums']['SeverityEnum']
           suggestion: string
           updatedAt: string
@@ -611,8 +609,6 @@ export type Database = {
           description?: string
           id?: number
           overallReviewId?: number
-          resolutionComment?: string | null
-          resolvedAt?: string | null
           severity?: Database['public']['Enums']['SeverityEnum']
           suggestion?: string
           updatedAt?: string
@@ -620,6 +616,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'ReviewIssue_overallReviewId_fkey'
+            columns: ['overallReviewId']
+            isOneToOne: false
+            referencedRelation: 'OverallReview'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      ReviewScore: {
+        Row: {
+          category: Database['public']['Enums']['CategoryEnum']
+          createdAt: string
+          id: number
+          overallReviewId: number
+          overallScore: number
+          reason: string
+          updatedAt: string
+        }
+        Insert: {
+          category: Database['public']['Enums']['CategoryEnum']
+          createdAt?: string
+          id?: number
+          overallReviewId: number
+          overallScore: number
+          reason: string
+          updatedAt: string
+        }
+        Update: {
+          category?: Database['public']['Enums']['CategoryEnum']
+          createdAt?: string
+          id?: number
+          overallReviewId?: number
+          overallScore?: number
+          reason?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ReviewScore_overallReviewId_fkey'
             columns: ['overallReviewId']
             isOneToOne: false
             referencedRelation: 'OverallReview'
@@ -698,8 +732,7 @@ export type Database = {
         | 'PROJECT_RULES_CONSISTENCY'
         | 'SECURITY_OR_SCALABILITY'
       KnowledgeType: 'SCHEMA' | 'DOCS'
-      SchemaFormatEnum: 'schemarb' | 'postgres' | 'prisma' | 'tbls'
-      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE' | 'QUESTION'
+      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -826,8 +859,7 @@ export const Constants = {
         'SECURITY_OR_SCALABILITY',
       ],
       KnowledgeType: ['SCHEMA', 'DOCS'],
-      SchemaFormatEnum: ['schemarb', 'postgres', 'prisma', 'tbls'],
-      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE', 'QUESTION'],
+      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE'],
     },
   },
 } as const
