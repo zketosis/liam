@@ -89,7 +89,8 @@ ALTER TYPE "public"."KnowledgeType" OWNER TO "postgres";
 CREATE TYPE "public"."SeverityEnum" AS ENUM (
     'CRITICAL',
     'WARNING',
-    'POSITIVE'
+    'POSITIVE',
+    'QUESTION'
 );
 
 

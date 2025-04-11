@@ -687,7 +687,7 @@ export type Database = {
         | 'PROJECT_RULES_CONSISTENCY'
         | 'SECURITY_OR_SCALABILITY'
       KnowledgeType: 'SCHEMA' | 'DOCS'
-      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE'
+      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE' | 'QUESTION'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -814,7 +814,7 @@ export const Constants = {
         'SECURITY_OR_SCALABILITY',
       ],
       KnowledgeType: ['SCHEMA', 'DOCS'],
-      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE'],
+      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE', 'QUESTION'],
     },
   },
 } as const
