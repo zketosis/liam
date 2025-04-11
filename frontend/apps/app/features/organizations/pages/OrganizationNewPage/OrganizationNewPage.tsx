@@ -51,19 +51,10 @@ export const OrganizationNewPage: FC = () => {
     try {
       const supabase = await createClient()
 
-      const { data: userData, error: userError } = await supabase.auth.getUser()
-      if (userError) {
-        console.error('User authentication error:', userError)
-        throw new Error(`認証エラー: ${userError.message}`)
-      }
-
-      if (!userData?.user?.id) {
-        throw new Error(
-          'ユーザーIDが取得できません。ログインしているか確認してください。',
-        )
-      }
-
       const organization = await createOrg(supabase)
+
+      const { data: userData, error: userError } = await supabase.auth.getUser()
+      if (userError) throw userError
 
       await addUserToOrg(supabase, userData.user.id, organization.id)
 
