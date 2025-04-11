@@ -33,7 +33,6 @@ export const OrganizationNewPage: FC = () => {
     const { error } = await supabase.from('OrganizationMember').insert({
       userId,
       organizationId,
-      status: 'ACTIVE',
     })
 
     if (error) throw error
