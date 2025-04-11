@@ -57,6 +57,7 @@ jobs:
       - run: pnpm --filter @liam-hq/db supabase:start
       - run: cp .env.template .env
       - run: ./scripts/extract-supabase-anon-key.sh
+      - run: ./scripts/extract-supabase-service-key.sh
       - run: pnpm test:turbo
       - run: pnpm --filter @liam-hq/db supabase:gen
       - name: Check for diff in generated types and schema.sql
