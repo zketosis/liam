@@ -33,7 +33,6 @@ export const OrganizationNewPage: FC = () => {
     const { error } = await supabase.from('OrganizationMember').insert({
       userId,
       organizationId,
-      status: 'ACTIVE',
     })
 
     if (error) throw error
@@ -52,10 +51,19 @@ export const OrganizationNewPage: FC = () => {
     try {
       const supabase = await createClient()
 
-      const organization = await createOrg(supabase)
-
       const { data: userData, error: userError } = await supabase.auth.getUser()
-      if (userError) throw userError
+      if (userError) {
+        console.error('User authentication error:', userError)
+        throw new Error(`認証エラー: ${userError.message}`)
+      }
+
+      if (!userData?.user?.id) {
+        throw new Error(
+          'ユーザーIDが取得できません。ログインしているか確認してください。',
+        )
+      }
+
+      const organization = await createOrg(supabase)
 
       await addUserToOrg(supabase, userData.user.id, organization.id)
 
@@ -66,7 +74,9 @@ export const OrganizationNewPage: FC = () => {
       )
     } catch (err) {
       console.error('Error creating organization:', err)
-      setError('Failed to create organization. Please try again.')
+      setError(
+        `組織の作成に失敗しました: ${err instanceof Error ? err.message : '不明なエラー'}`,
+      )
     } finally {
       setLoading(false)
     }

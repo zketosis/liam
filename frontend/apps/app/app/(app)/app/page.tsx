@@ -14,7 +14,6 @@ export default async function Page() {
     .from('OrganizationMember')
     .select('organizationId')
     .eq('userId', data.user.id)
-    .eq('status', 'ACTIVE')
     .limit(1)
 
   if (orgError) {

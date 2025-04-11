@@ -18,7 +18,6 @@ export const getOrganizations = async () => {
       )
     `)
     .eq('userId', userData.user.id)
-    .eq('status', 'ACTIVE')
 
   if (error) {
     console.error('Error fetching organizations:', error)

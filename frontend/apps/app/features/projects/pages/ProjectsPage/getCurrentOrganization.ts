@@ -20,7 +20,6 @@ export const getCurrentOrganization = async (
       )
     `)
     .eq('userId', userData.user.id)
-    .eq('status', 'ACTIVE')
 
   if (specificOrganizationId) {
     query = query.eq('organizationId', specificOrganizationId)
@@ -58,7 +57,6 @@ export const getUserOrganizations = async () => {
       )
     `)
     .eq('userId', userData.user.id)
-    .eq('status', 'ACTIVE')
 
   if (error) {
     console.error('Error fetching organizations:', error)
