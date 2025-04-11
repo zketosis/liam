@@ -86,7 +86,7 @@ export const saveReviewTask = task({
   run: async (payload: ReviewResponse & GenerateReviewPayload) => {
     logger.log('Executing review save task:', { payload })
     try {
-      await processSaveReview(payload)
+      const { overallReviewId } = await processSaveReview(payload)
 
       logger.log('Creating knowledge suggestions for docs:', {
         count: payload.schemaFiles.length,
@@ -115,35 +115,13 @@ export const saveReviewTask = task({
         installationId,
         type: 'DOCS',
         branchName: payload.branchName,
+        overallReviewId,
       })
 
-      // Get the overall review ID from the database
-      const supabase = createClient()
-      const { data: overallReview, error: overallReviewError } = await supabase
-        .from('OverallReview')
-        .select('id')
-        .eq('pullRequestId', payload.pullRequestId)
-        .order('createdAt', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-
-      if (overallReviewError) {
-        logger.error('Error fetching overall review', {
-          error: overallReviewError,
-          pullRequestId: payload.pullRequestId,
-        })
-      }
-
-      if (!overallReview) {
-        logger.error('No overall review found for pull request', {
-          pullRequestId: payload.pullRequestId,
-        })
-      } else {
-        // Trigger schema meta suggestion generation after review is saved
-        await generateSchemaMetaSuggestionTask.trigger({
-          overallReviewId: overallReview.id,
-        })
-      }
+      // Trigger schema meta suggestion generation after review is saved
+      await generateSchemaMetaSuggestionTask.trigger({
+        overallReviewId,
+      })
 
       return { success: true }
     } catch (error) {
@@ -190,6 +168,7 @@ export const generateDocsSuggestionTask = task({
     installationId: number
     type: 'DOCS'
     branchName: string
+    overallReviewId: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
       reviewComment: payload.reviewComment,
@@ -215,6 +194,7 @@ export const generateDocsSuggestionTask = task({
         branch: payload.branchName,
         traceId,
         reasoning: suggestion.reasoning || '',
+        overallReviewId: payload.overallReviewId,
       })
     }
 
@@ -264,7 +244,7 @@ export const createKnowledgeSuggestionTask = task({
     branch: string
     traceId?: string
     reasoning: string
-    overallReviewId?: number
+    overallReviewId: number
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
