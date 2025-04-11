@@ -65,10 +65,12 @@ export const processSaveReview = async (
 
     // create suggestion snippet
     const suggestionSnippet = payload.review.feedbacks
+      .filter((feedback) => feedback.severity !== 'POSITIVE')
       .flatMap(
         (
           feedback: {
             suggestionSnippets: Array<{ filename: string; snippet: string }>
+            severity: string
           },
           index: number,
         ) =>
