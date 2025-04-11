@@ -54,12 +54,6 @@ FOR SELECT
 TO service_role
 USING (true);
 
-CREATE POLICY "service_role_can_bypass_rls" ON "public"."Project"
-FOR ALL
-TO service_role
-USING (true)
-WITH CHECK (true);
-
 CREATE POLICY "service_role_can_insert_all_projects" ON "public"."Project"
 FOR INSERT
 TO service_role
