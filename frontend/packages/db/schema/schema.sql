@@ -790,6 +790,10 @@ CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "
 
 
 
+CREATE INDEX "idx_project_organizationId" ON "public"."Project" USING "btree" ("organizationId");
+
+
+
 CREATE INDEX "membership_invites_email_idx" ON "public"."MembershipInvites" USING "btree" ("email");
 
 
