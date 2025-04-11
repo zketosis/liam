@@ -1,6 +1,6 @@
-import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
+import { ChatOpenAI } from '@langchain/openai'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import type { JSONSchema7 } from 'json-schema'
 import { parse } from 'valibot'
@@ -17,26 +17,24 @@ When analyzing the changes, consider:
 
 Your JSON-formatted response must contain:
 
-- An array of scores for each feedback kind in the "scores" field, each including:
-  - "kind": One of the feedback categories listed below:
+- An array of identified feedback in the "feedbacks" field. Each feedback item must include:
+  - "kind": The feedback category, which must be one of the following:
     - Migration Safety
     - Data Integrity
     - Performance Impact
     - Project Rules Consistency
     - Security or Scalability
-  - "value": This field will be calculated by the system. Only provide the "kind" and "reason" fields.
-  - "reason": An explanation justifying the score provided, including an overview of identified issues.
-
-- Based on the findings, create an array of identified feedback in the "feedbacks" field. Each feedback item must include:
-  - "kind": The feedback category, matching one of the categories used in the scores.
   - "severity": Assign a severity value:
     - Use "CRITICAL" for major issues.
     - Use "WARNING" for minor issues.
     - Use "POSITIVE" to highlight improvements in the schema design.
+    - Use "QUESTION" when you need to inquire about requirements, specifications, or design decisions that require clarification.
   - IMPORTANT FEEDBACK REQUIREMENTS:
     1. For each category, you MUST include AT LEAST one feedback item.
     2. For any category, include at least one feedback item with severity "WARNING" or "CRITICAL" for any identified issue.
     3. For any category, include at least one feedback item with severity "POSITIVE" to highlight beneficial changes.
+    4. Include feedback items with severity "QUESTION" whenever you identify areas that require clarification about requirements, design decisions, or business rules.
+    5. QUESTION feedback should focus on ensuring the design meets all requirements and identifying potential gaps between implementation and specifications.
   - "description": A clear and precise explanation of the feedback.
   - "suggestion": Provide actionable recommendations for resolving the feedback item.
     - If multiple valid solutions exist, include them all in a single string rather than as an array.
@@ -44,6 +42,10 @@ Your JSON-formatted response must contain:
     - If the severity is "POSITIVE", do not set "suggestion" to null.
       - Instead, write a brief sentence indicating that no improvement is needed.
       - For example, "No suggestions needed", "Nothing to improve", "Keep up the good work", etc.
+    - If the severity is "QUESTION", format the "suggestion" field as a specific question or set of questions that need to be answered.
+      - Make questions clear, direct and actionable.
+      - Focus on seeking information about requirements, confirming design intentions, or clarifying business rules that impact the database schema.
+      - For example, "Could you clarify if user accounts need to support multiple email addresses?" or "Is there a reason this column doesn't have a foreign key constraint?"
   - "suggestionSnippets": An array of suggestion snippets for each feedback kind in the "suggestions" field, each including:
     - "filename": The filename of the file that needs to be applied.
     - "snippet": The snippet of the file that needs to be applied.
@@ -89,37 +91,39 @@ Documentation Context:
 {docsContent}
 
 Schema Files:
-{schemaFiles}
+{schemaFile}
 
 File Changes:
 {fileChanges}`
 
 export const reviewJsonSchema: JSONSchema7 = toJsonSchema(reviewSchema)
 
+const model = new ChatOpenAI({
+  model: 'o3-mini-2025-01-31',
+})
+
+const chatPrompt = ChatPromptTemplate.fromMessages([
+  ['system', SYSTEM_PROMPT],
+  ['human', USER_PROMPT],
+])
+
+export const chain = chatPrompt.pipe(
+  model.withStructuredOutput(reviewJsonSchema),
+)
+
 export const generateReview = async (
   docsContent: string,
-  schemaFiles: GenerateReviewPayload['schemaFiles'],
+  schemaFile: GenerateReviewPayload['schemaFile'],
   fileChanges: GenerateReviewPayload['fileChanges'],
   prDescription: string,
   prComments: string,
   callbacks: Callbacks,
   runId: string,
 ) => {
-  const chatPrompt = ChatPromptTemplate.fromMessages([
-    ['system', SYSTEM_PROMPT],
-    ['human', USER_PROMPT],
-  ])
-
-  const model = new ChatAnthropic({
-    temperature: 0.7,
-    model: 'claude-3-7-sonnet-latest',
-  })
-
-  const chain = chatPrompt.pipe(model.withStructuredOutput(reviewJsonSchema))
   const response = await chain.invoke(
     {
       docsContent,
-      schemaFiles,
+      schemaFile,
       fileChanges,
       prDescription,
       prComments,

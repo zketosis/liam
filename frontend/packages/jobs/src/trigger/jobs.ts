@@ -55,7 +55,7 @@ export const savePullRequestTask = task({
         owner: repository.owner,
         name: repository.name,
         pullRequestNumber: payload.prNumber,
-        schemaFiles: result.schemaFiles,
+        schemaFile: result.schemaFile,
         fileChanges: result.fileChanges,
       })
 
@@ -86,11 +86,9 @@ export const saveReviewTask = task({
   run: async (payload: ReviewResponse & GenerateReviewPayload) => {
     logger.log('Executing review save task:', { payload })
     try {
-      await processSaveReview(payload)
+      const { overallReviewId } = await processSaveReview(payload)
 
-      logger.log('Creating knowledge suggestions for docs:', {
-        count: payload.schemaFiles.length,
-      })
+      logger.log('Creating knowledge suggestions for docs')
 
       const installationId = await getInstallationIdFromRepositoryId(
         payload.repositoryId,
@@ -115,35 +113,13 @@ export const saveReviewTask = task({
         installationId,
         type: 'DOCS',
         branchName: payload.branchName,
+        overallReviewId,
       })
 
-      // Get the overall review ID from the database
-      const supabase = createClient()
-      const { data: overallReview, error: overallReviewError } = await supabase
-        .from('OverallReview')
-        .select('id')
-        .eq('pullRequestId', payload.pullRequestId)
-        .order('createdAt', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-
-      if (overallReviewError) {
-        logger.error('Error fetching overall review', {
-          error: overallReviewError,
-          pullRequestId: payload.pullRequestId,
-        })
-      }
-
-      if (!overallReview) {
-        logger.error('No overall review found for pull request', {
-          pullRequestId: payload.pullRequestId,
-        })
-      } else {
-        // Trigger schema meta suggestion generation after review is saved
-        await generateSchemaMetaSuggestionTask.trigger({
-          overallReviewId: overallReview.id,
-        })
-      }
+      // Trigger schema meta suggestion generation after review is saved
+      await generateSchemaMetaSuggestionTask.trigger({
+        overallReviewId,
+      })
 
       return { success: true }
     } catch (error) {
@@ -190,6 +166,7 @@ export const generateDocsSuggestionTask = task({
     installationId: number
     type: 'DOCS'
     branchName: string
+    overallReviewId: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
       reviewComment: payload.reviewComment,
@@ -200,8 +177,8 @@ export const generateDocsSuggestionTask = task({
     logger.log('Generated docs suggestions:', { suggestions, traceId })
 
     for (const key of DOC_FILES) {
-      const content = suggestions[key]
-      if (!content) {
+      const suggestion = suggestions[key]
+      if (!suggestion || !suggestion.content) {
         logger.warn(`No content found for suggestion key: ${key}`)
         continue
       }
@@ -211,10 +188,11 @@ export const generateDocsSuggestionTask = task({
         type: payload.type,
         title: `Docs update from PR #${payload.pullRequestNumber}`,
         path: `docs/${key}`,
-        content,
+        content: suggestion.content,
         branch: payload.branchName,
         traceId,
-        reasoning: '',
+        reasoning: suggestion.reasoning || '',
+        overallReviewId: payload.overallReviewId,
       })
     }
 
@@ -240,6 +218,7 @@ export const generateSchemaMetaSuggestionTask = task({
         branch: result.branchName,
         traceId: result.traceId,
         reasoning: result.reasoning || '',
+        overallReviewId: result.overallReviewId,
       })
       logger.info('Knowledge suggestion creation triggered')
     } else {
@@ -263,6 +242,7 @@ export const createKnowledgeSuggestionTask = task({
     branch: string
     traceId?: string
     reasoning: string
+    overallReviewId: number
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {

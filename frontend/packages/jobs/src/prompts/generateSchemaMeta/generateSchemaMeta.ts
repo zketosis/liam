@@ -1,7 +1,7 @@
-import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
+import { ChatOpenAI } from '@langchain/openai'
 import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { type InferOutput, boolean, object, parse, string } from 'valibot'
@@ -82,7 +82,7 @@ schema-meta.json is a documentation-only enhancement layer on top of the actual 
 ## Current Schema Files
 <files>
 
-{schemaFiles}
+{schemaFile}
 
 </files>
 
@@ -143,7 +143,7 @@ It is NOT for:
 ## Current Schema Files
 <files>
 
-{schemaFiles}
+{schemaFile}
 
 </files>
 
@@ -186,16 +186,14 @@ export const generateSchemaMeta = async (
   callbacks: Callbacks,
   currentSchemaMeta: DBOverride | null,
   runId: string,
-  schemaFiles: string,
+  schemaFile: string,
 ): Promise<GenerateSchemaMetaResult> => {
-  const evaluationModel = new ChatAnthropic({
-    temperature: 0.2,
-    model: 'claude-3-7-sonnet-latest',
+  const evaluationModel = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
-  const updateModel = new ChatAnthropic({
-    temperature: 0.7,
-    model: 'claude-3-7-sonnet-latest',
+  const updateModel = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
   // Create evaluation chain
@@ -212,7 +210,7 @@ export const generateSchemaMeta = async (
   type EvaluationInput = {
     reviewComment: string
     currentSchemaMeta: string
-    schemaFiles: string
+    schemaFile: string
   }
 
   type UpdateInput = EvaluationInput & {
@@ -230,7 +228,7 @@ export const generateSchemaMeta = async (
       {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFiles: inputs.schemaFiles,
+        schemaFile: inputs.schemaFile,
         evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
       },
       config,
@@ -241,7 +239,7 @@ export const generateSchemaMeta = async (
       const updateInput: UpdateInput = {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFiles: inputs.schemaFiles,
+        schemaFile: inputs.schemaFile,
         dbOverrideJsonSchema: inputs.dbOverrideJsonSchema,
         evaluationResults: evaluationResult.suggestedChanges,
       }
@@ -280,7 +278,7 @@ export const generateSchemaMeta = async (
     // Prepare the common inputs
     const commonInputs = {
       reviewComment,
-      schemaFiles,
+      schemaFile,
       currentSchemaMeta: currentSchemaMeta
         ? JSON.stringify(currentSchemaMeta, null, 2)
         : '{}',

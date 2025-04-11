@@ -17,6 +17,15 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
 
+
+
+CREATE EXTENSION IF NOT EXISTS "pgsodium";
+
+
+
+
+
+
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
@@ -84,10 +93,22 @@ CREATE TYPE "public"."KnowledgeType" AS ENUM (
 ALTER TYPE "public"."KnowledgeType" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."SchemaFormatEnum" AS ENUM (
+    'schemarb',
+    'postgres',
+    'prisma',
+    'tbls'
+);
+
+
+ALTER TYPE "public"."SchemaFormatEnum" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."SeverityEnum" AS ENUM (
     'CRITICAL',
     'WARNING',
-    'POSITIVE'
+    'POSITIVE',
+    'QUESTION'
 );
 
 
@@ -169,7 +190,8 @@ CREATE TABLE IF NOT EXISTS "public"."GitHubSchemaFilePath" (
     "path" "text" NOT NULL,
     "projectId" integer NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "format" "public"."SchemaFormatEnum" NOT NULL
 );
 
 
@@ -258,7 +280,7 @@ CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
     "email" "text" NOT NULL,
     "inviteByUserId" "uuid" NOT NULL,
     "organizationId" integer NOT NULL,
-    "inviteOn" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    "invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -316,7 +338,6 @@ CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
     "id" integer NOT NULL,
     "userId" "uuid" NOT NULL,
     "organizationId" integer NOT NULL,
-    "status" "text" NOT NULL,
     "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -362,6 +383,33 @@ CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
 ALTER TABLE "public"."OverallReview" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping" (
+    "id" integer NOT NULL,
+    "overallReviewId" integer NOT NULL,
+    "knowledgeSuggestionId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" OWNED BY "public"."OverallReviewKnowledgeSuggestionMapping"."id";
+
+
+
 CREATE SEQUENCE IF NOT EXISTS "public"."OverallReview_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -387,30 +435,6 @@ CREATE TABLE IF NOT EXISTS "public"."Project" (
 
 
 ALTER TABLE "public"."Project" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."ProjectMember" (
-    "id" integer NOT NULL,
-    "userId" "uuid" NOT NULL,
-    "projectId" integer NOT NULL,
-    "organizationMemberId" integer,
-    "status" "text" NOT NULL,
-    "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE "public"."ProjectMember" OWNER TO "postgres";
-
-
-ALTER TABLE "public"."ProjectMember" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME "public"."ProjectMember_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
 
 
 CREATE TABLE IF NOT EXISTS "public"."ProjectRepositoryMapping" (
@@ -520,7 +544,9 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
     "description" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "suggestion" "text" NOT NULL
+    "suggestion" "text" NOT NULL,
+    "resolvedAt" timestamp(3) without time zone,
+    "resolutionComment" "text"
 );
 
 
@@ -539,35 +565,6 @@ ALTER TABLE "public"."ReviewIssue_id_seq" OWNER TO "postgres";
 
 
 ALTER SEQUENCE "public"."ReviewIssue_id_seq" OWNED BY "public"."ReviewIssue"."id";
-
-
-
-CREATE TABLE IF NOT EXISTS "public"."ReviewScore" (
-    "id" integer NOT NULL,
-    "overallReviewId" integer NOT NULL,
-    "overallScore" integer NOT NULL,
-    "category" "public"."CategoryEnum" NOT NULL,
-    "reason" "text" NOT NULL,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."ReviewScore" OWNER TO "postgres";
-
-
-CREATE SEQUENCE IF NOT EXISTS "public"."ReviewScore_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "public"."ReviewScore_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."ReviewScore_id_seq" OWNED BY "public"."ReviewScore"."id";
 
 
 
@@ -644,6 +641,10 @@ ALTER TABLE ONLY "public"."OverallReview" ALTER COLUMN "id" SET DEFAULT "nextval
 
 
 
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."OverallReviewKnowledgeSuggestionMapping_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."Project" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Project_id_seq"'::"regclass");
 
 
@@ -661,10 +662,6 @@ ALTER TABLE ONLY "public"."Repository" ALTER COLUMN "id" SET DEFAULT "nextval"('
 
 
 ALTER TABLE ONLY "public"."ReviewIssue" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewIssue_id_seq"'::"regclass");
-
-
-
-ALTER TABLE ONLY "public"."ReviewScore" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewScore_id_seq"'::"regclass");
 
 
 
@@ -718,18 +715,13 @@ ALTER TABLE ONLY "public"."Organization"
 
 
 
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."OverallReview"
     ADD CONSTRAINT "OverallReview_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_userId_projectId_key" UNIQUE ("userId", "projectId");
 
 
 
@@ -758,11 +750,6 @@ ALTER TABLE ONLY "public"."ReviewIssue"
 
 
 
-ALTER TABLE ONLY "public"."ReviewScore"
-    ADD CONSTRAINT "ReviewScore_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
     ADD CONSTRAINT "ReviewSuggestionSnippet_pkey" PRIMARY KEY ("id");
 
@@ -787,11 +774,19 @@ CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDo
 
 
 
+CREATE UNIQUE INDEX "GitHubSchemaFilePath_projectId_key" ON "public"."GitHubSchemaFilePath" USING "btree" ("projectId");
+
+
+
 CREATE UNIQUE INDEX "KnowledgeSuggestionDocMapping_unique_mapping" ON "public"."KnowledgeSuggestionDocMapping" USING "btree" ("knowledgeSuggestionId", "gitHubDocFilePathId");
 
 
 
 CREATE UNIQUE INDEX "Migration_pullRequestId_key" ON "public"."Migration" USING "btree" ("pullRequestId");
+
+
+
+CREATE UNIQUE INDEX "OverallReviewKnowledgeSuggestionMapping_unique_mapping" ON "public"."OverallReviewKnowledgeSuggestionMapping" USING "btree" ("overallReviewId", "knowledgeSuggestionId");
 
 
 
@@ -804,6 +799,10 @@ CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullR
 
 
 CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
+
+
+
+CREATE INDEX "idx_project_organizationId" ON "public"."Project" USING "btree" ("organizationId");
 
 
 
@@ -820,18 +819,6 @@ CREATE INDEX "organization_member_organizationId_idx" ON "public"."OrganizationM
 
 
 CREATE INDEX "organization_member_userId_idx" ON "public"."OrganizationMember" USING "btree" ("userId");
-
-
-
-CREATE INDEX "project_member_org_memberId_idx" ON "public"."ProjectMember" USING "btree" ("organizationMemberId");
-
-
-
-CREATE INDEX "project_member_projectId_idx" ON "public"."ProjectMember" USING "btree" ("projectId");
-
-
-
-CREATE INDEX "project_member_userId_idx" ON "public"."ProjectMember" USING "btree" ("userId");
 
 
 
@@ -885,6 +872,16 @@ ALTER TABLE ONLY "public"."OrganizationMember"
 
 
 
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_knowledgeSuggestionId_f" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."OverallReview"
     ADD CONSTRAINT "OverallReview_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
@@ -892,21 +889,6 @@ ALTER TABLE ONLY "public"."OverallReview"
 
 ALTER TABLE ONLY "public"."OverallReview"
     ADD CONSTRAINT "OverallReview_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_organizationMemberId_fkey" FOREIGN KEY ("organizationMemberId") REFERENCES "public"."OrganizationMember"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."ProjectMember"
-    ADD CONSTRAINT "ProjectMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE;
 
 
 
@@ -920,6 +902,11 @@ ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
 
 
 
+ALTER TABLE ONLY "public"."Project"
+    ADD CONSTRAINT "Project_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."PullRequest"
     ADD CONSTRAINT "PullRequest_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -927,11 +914,6 @@ ALTER TABLE ONLY "public"."PullRequest"
 
 ALTER TABLE ONLY "public"."ReviewIssue"
     ADD CONSTRAINT "ReviewIssue_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."ReviewScore"
-    ADD CONSTRAINT "ReviewScore_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1027,6 +1009,15 @@ GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1333,6 +1324,18 @@ GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "anon";
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "service_role";
+
+
+
 GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "service_role";
@@ -1342,18 +1345,6 @@ GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."Project" TO "anon";
 GRANT ALL ON TABLE "public"."Project" TO "authenticated";
 GRANT ALL ON TABLE "public"."Project" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."ProjectMember" TO "anon";
-GRANT ALL ON TABLE "public"."ProjectMember" TO "authenticated";
-GRANT ALL ON TABLE "public"."ProjectMember" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."ProjectMember_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."ProjectMember_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."ProjectMember_id_seq" TO "service_role";
 
 
 
@@ -1408,21 +1399,6 @@ GRANT ALL ON TABLE "public"."ReviewIssue" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."ReviewScore" TO "anon";
-GRANT ALL ON TABLE "public"."ReviewScore" TO "authenticated";
-GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
-
-
-
 
 
 

@@ -2,7 +2,7 @@
 
 ## What Works
 
-- AI components have been successfully integrated to analyze migration impacts and provide intelligent suggestions.
+- AI components have been successfully integrated to analyze migration impacts and provide intelligent suggestions, now using OpenAI's o3-mini-2025-01-31 model instead of Anthropic's Claude model.
 - The product is deployed in the AWS us-east-1 region, supporting English-speaking markets.
 - The GitHub App integration is operational, automating comments and review approvals on PRs.
 - Complete review pipeline from GitHub webhook to AI review generation to PR comment posting.
@@ -31,6 +31,8 @@
 - Optimized KnowledgeSuggestion creation to avoid duplicate suggestions by checking if content has changed before creating a new suggestion.
 - Refactored complex functions into smaller, focused helper functions to reduce cognitive complexity and improve maintainability.
 - Improved type safety with proper type definitions and return types for functions.
+- Implemented relationship between OverallReview and KnowledgeSuggestion tables using an intermediate mapping table (OverallReviewKnowledgeSuggestionMapping), allowing users to track and navigate to KnowledgeSuggestions from the MigrationDetailPage.
+- Enhanced MigrationDetailPage to fetch and display related KnowledgeSuggestions with proper navigation using the urlgen utility for type-safe route generation.
 
 ## What's Left to Build
 

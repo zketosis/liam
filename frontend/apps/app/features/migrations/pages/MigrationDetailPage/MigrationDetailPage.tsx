@@ -1,22 +1,21 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
-import { clsx } from 'clsx'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
-import { RadarChart } from '../../components/RadarChart/RadarChart'
-import type { CategoryEnum } from '../../components/RadarChart/RadarChart'
-import {
-  formatAllReviewIssues,
-  formatReviewIssue,
-} from '../../utils/formatReviewIssue'
+import { MigrationHealthClient } from '../../components/MigrationHealthClient/MigrationHealthClient'
+import { ReviewIssuesList } from '../../components/ReviewIssuesList/ReviewIssuesList'
+import { ReviewIssuesProvider } from '../../contexts/ReviewIssuesContext'
+import { formatAllReviewIssues } from '../../utils/formatReviewIssue'
 import styles from './MigrationDetailPage.module.css'
 
 type Props = {
   migrationId: string
+  projectId: string
+  branchOrCommit: string
 }
 
 async function getMigrationContents(migrationId: string) {
@@ -62,18 +61,16 @@ async function getMigrationContents(migrationId: string) {
         severity,
         description,
         suggestion,
+        resolvedAt,
+        resolutionComment,
+        createdAt,
+        updatedAt,
+        overallReviewId,
         suggestionSnippets:ReviewSuggestionSnippet (
           id,
           filename,
           snippet
         )
-      ),
-      reviewScores:ReviewScore (
-        id,
-        overallReviewId,
-        overallScore,
-        category,
-        reason
       )
     `)
     .eq('pullRequestId', pullRequest.id)
@@ -106,31 +103,33 @@ async function getMigrationContents(migrationId: string) {
         reviewComment: null,
         reviewedAt: null,
         reviewIssues: [],
-        reviewScores: [],
       },
       erdLinks: [],
+      knowledgeSuggestions: [],
     }
   }
 
-  const { data: schemaPaths, error: pathsError } = await supabase
+  const { data: schemaPath, error: pathError } = await supabase
     .from('GitHubSchemaFilePath')
     .select('path')
     .eq('projectId', overallReview.projectId || 0)
+    .single()
 
-  if (pathsError) {
-    console.error('Error fetching schema paths:', pathsError)
+  if (pathError) {
+    console.warn(
+      `No schema path found for project ${overallReview.projectId}: ${JSON.stringify(pathError)}`,
+    )
     return {
       migration,
       overallReview,
       erdLinks: [],
+      knowledgeSuggestions: [],
     }
   }
 
   const matchedFiles = files
     .map((file) => file.filename)
-    .filter((filename) =>
-      schemaPaths.some((schemaPath) => filename === schemaPath.path),
-    )
+    .filter((filename) => filename === schemaPath.path)
 
   const erdLinks = matchedFiles.map((filename) => ({
     path: urlgen(
@@ -144,18 +143,53 @@ async function getMigrationContents(migrationId: string) {
     filename,
   }))
 
+  // Fetch related KnowledgeSuggestions through the mapping table
+  const { data: knowledgeSuggestions = [] } = await supabase
+    .from('OverallReviewKnowledgeSuggestionMapping')
+    .select(`
+      knowledgeSuggestionId,
+      knowledgeSuggestion:knowledgeSuggestionId (
+        id,
+        type,
+        title,
+        path,
+        content,
+        projectId,
+        branchName,
+        createdAt,
+        updatedAt,
+        approvedAt,
+        fileSha,
+        traceId
+      )
+    `)
+    .eq('overallReviewId', overallReview.id)
+    .order('createdAt', { ascending: false })
+
+  // Map the result to extract the knowledgeSuggestion property from each item
+  const mappedKnowledgeSuggestions = (knowledgeSuggestions || [])
+    .map((item) => item.knowledgeSuggestion)
+    .filter((suggestion) => !!suggestion)
+
   return {
     migration,
     overallReview,
     erdLinks,
+    knowledgeSuggestions: mappedKnowledgeSuggestions,
   }
 }
 
-export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
-  const { migration, overallReview, erdLinks } =
-    await getMigrationContents(migrationId)
-
-  const projectId = overallReview.projectId
+export const MigrationDetailPage: FC<Props> = async ({
+  migrationId,
+  projectId,
+  branchOrCommit,
+}) => {
+  const {
+    migration,
+    overallReview,
+    erdLinks,
+    knowledgeSuggestions = [],
+  } = await getMigrationContents(migrationId)
 
   const formattedReviewDate = overallReview.reviewedAt
     ? new Date(overallReview.reviewedAt).toLocaleDateString('en-US')
@@ -163,169 +197,112 @@ export const MigrationDetailPage: FC<Props> = async ({ migrationId }) => {
 
   return (
     <main className={styles.wrapper}>
-      {projectId && (
-        <Link
-          href={urlgen('projects/[projectId]', { projectId: `${projectId}` })}
-          className={styles.backLink}
-        >
-          ← Back to Project Detail
-        </Link>
-      )}
+      <Link
+        href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
+          projectId,
+          branchOrCommit,
+        })}
+        className={styles.backLink}
+      >
+        ← Back to Project Detail
+      </Link>
 
       <div className={styles.heading}>
         <h1 className={styles.title}>{migration.title}</h1>
         <p className={styles.subTitle}>#{migration.PullRequest.pullNumber}</p>
       </div>
       <div className={styles.twoColumns}>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Migration Health</h2>
-          <div className={styles.healthContent}>
-            {overallReview.reviewScores.length > 0 ? (
-              <div className={styles.radarChartContainer}>
-                <RadarChart
-                  scores={overallReview.reviewScores.map((score) => ({
-                    id: score.id,
-                    overallReviewId: score.overallReviewId,
-                    overallScore: score.overallScore,
-                    category: score.category as CategoryEnum,
-                  }))}
-                />
+        <ReviewIssuesProvider initialIssues={overallReview.reviewIssues}>
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Migration Health</h2>
+            <div className={styles.healthContent}>
+              <MigrationHealthClient className={styles.radarChartContainer} />
+              <div className={styles.erdLinks}>
+                {erdLinks.map(({ path, filename }) => (
+                  <Link key={path} href={path} className={styles.erdLink}>
+                    View ERD Diagram: {filename} →
+                  </Link>
+                ))}
               </div>
-            ) : (
-              <p className={styles.noScores}>No review scores found.</p>
-            )}
-            <div className={styles.erdLinks}>
-              {erdLinks.map(({ path, filename }) => (
-                <Link key={path} href={path} className={styles.erdLink}>
-                  View ERD Diagram: {filename} →
-                </Link>
-              ))}
             </div>
           </div>
-        </div>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Summary</h2>
-        </div>
-        <div className={styles.box}>
-          <h2 className={styles.h2}>Review Content</h2>
-          {overallReview.reviewComment ? (
-            <>
-              <pre className={styles.reviewContent}>
-                {overallReview.reviewComment}
-              </pre>
-              {overallReview.traceId && (
-                <div className={styles.feedbackSection}>
-                  <UserFeedbackClient traceId={overallReview.traceId} />
-                </div>
-              )}
-            </>
-          ) : (
-            <p className={styles.noContent}>No review content found.</p>
-          )}
-        </div>
-        <div className={styles.box}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.h2}>Review Issues</h2>
-            {overallReview.reviewIssues.length > 0 && (
-              <CopyButton
-                text={formatAllReviewIssues(overallReview.reviewIssues)}
-                className={styles.headerCopyButton}
-              />
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Summary</h2>
+          </div>
+          <div className={styles.box}>
+            <h2 className={styles.h2}>Review Content</h2>
+            {overallReview.reviewComment ? (
+              <>
+                <pre className={styles.reviewContent}>
+                  {overallReview.reviewComment}
+                </pre>
+                {overallReview.traceId && (
+                  <div className={styles.feedbackSection}>
+                    <UserFeedbackClient traceId={overallReview.traceId} />
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className={styles.noContent}>No review content found.</p>
             )}
           </div>
-          <div className={styles.reviewIssues}>
-            {overallReview.reviewIssues.length > 0 ? (
-              [...overallReview.reviewIssues]
-                .sort((a, b) => {
-                  const severityOrder = {
-                    CRITICAL: 0,
-                    WARNING: 1,
-                    POSITIVE: 2,
-                  }
-                  return (
-                    severityOrder[a.severity as keyof typeof severityOrder] -
-                    severityOrder[b.severity as keyof typeof severityOrder]
-                  )
-                })
-                .map(
-                  (issue: {
-                    id: number
-                    category: string
-                    severity: string
-                    description: string
-                    suggestion: string
-                    suggestionSnippets: Array<{
-                      id: number
-                      filename: string
-                      snippet: string
-                    }>
-                  }) => (
-                    <div
-                      key={issue.id}
-                      className={clsx(
-                        styles.reviewIssue,
-                        styles[`severity${issue.severity}`],
-                      )}
-                    >
-                      <div className={styles.issueHeader}>
-                        <span className={styles.issueCategory}>
-                          {issue.category}
-                        </span>
-                        <div className={styles.issueActions}>
-                          <span className={styles.issueSeverity}>
-                            {issue.severity}
-                          </span>
-                          <CopyButton
-                            text={formatReviewIssue({
-                              category: issue.category,
-                              severity: issue.severity,
-                              description: issue.description,
-                              suggestion: issue.suggestion,
-                              snippets: issue.suggestionSnippets.map(
-                                (snippet) => ({
-                                  filename: snippet.filename,
-                                  snippet: snippet.snippet,
-                                }),
-                              ),
-                            })}
-                            className={styles.issueCopyButton}
-                          />
-                        </div>
-                      </div>
-                      <p className={styles.issueDescription}>
-                        {issue.description}
-                      </p>
-                      {issue.suggestion && (
-                        <div className={styles.issueSuggestion}>
-                          <h4 className={styles.suggestionTitle}>
-                            💡 Suggestion:
-                          </h4>
-                          <p>{issue.suggestion}</p>
-                        </div>
-                      )}
-                      {issue.suggestionSnippets.map((snippet) => (
-                        <div
-                          key={snippet.filename}
-                          className={styles.snippetContainer}
-                        >
-                          <div className={styles.snippetHeader}>
-                            <span className={styles.fileIcon}>📄</span>
-                            <span className={styles.fileName}>
-                              {snippet.filename}
-                            </span>
-                          </div>
-                          <div className={styles.codeContainer}>
-                            <pre className={styles.codeSnippet}>
-                              {snippet.snippet}
-                            </pre>
-                          </div>
-                        </div>
-                      ))}
+          <div className={styles.box}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.h2}>Review Issues</h2>
+              {overallReview.reviewIssues.filter(
+                (issue) => issue.severity === 'CRITICAL' && !issue.resolvedAt,
+              ).length > 0 && (
+                <CopyButton
+                  text={formatAllReviewIssues(overallReview.reviewIssues)}
+                  className={styles.headerCopyButton}
+                />
+              )}
+            </div>
+            <ReviewIssuesList />
+          </div>
+        </ReviewIssuesProvider>
+
+        {/* Knowledge Suggestions Section */}
+        <div className={styles.box}>
+          <h2 className={styles.h2}>Knowledge Suggestions</h2>
+          <div className={styles.knowledgeSuggestions}>
+            {knowledgeSuggestions.length > 0 ? (
+              <div className={styles.suggestionList}>
+                {knowledgeSuggestions.map((suggestion) => (
+                  <div key={suggestion.id} className={styles.suggestionItem}>
+                    <div className={styles.suggestionHeader}>
+                      <span className={styles.suggestionType}>
+                        {suggestion.type}
+                      </span>
+                      <span className={styles.suggestionTitle}>
+                        {suggestion.title}
+                      </span>
+                      <span className={styles.suggestionPath}>
+                        {suggestion.path}
+                      </span>
                     </div>
-                  ),
-                )
+                    <div className={styles.suggestionActions}>
+                      <Link
+                        href={urlgen(
+                          'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
+                          {
+                            projectId: `${projectId}`,
+                            branchOrCommit: suggestion.branchName || 'main',
+                            id: `${suggestion.id}`,
+                          },
+                        )}
+                        className={styles.viewButton}
+                      >
+                        View Details →
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
-              <p className={styles.noIssues}>No review issues found.</p>
+              <p className={styles.noSuggestions}>
+                No knowledge suggestions found.
+              </p>
             )}
           </div>
         </div>

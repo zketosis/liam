@@ -8,46 +8,37 @@ import { createClient } from '../libs/supabase'
 import type { PostCommentPayload } from '../types'
 
 /**
- * Generate ER diagram links for schema files in a pull request
+ * Generate ER diagram link for a schema file in a pull request
  */
-async function generateERDLinks({
+async function generateERDLink({
   installationId,
   owner,
   repo,
   pullNumber,
-  repositoryId,
+  projectId,
   branchRef,
 }: {
   installationId: string | number
   owner: string
   repo: string
   pullNumber: string | number
-  repositoryId: number
+  projectId: number
   branchRef: string
 }): Promise<string> {
   const supabase = createClient()
-  const { data: projectMappings, error: mappingsError } = await supabase
-    .from('ProjectRepositoryMapping')
-    .select('projectId')
-    .eq('repositoryId', repositoryId)
 
-  if (mappingsError) {
-    console.error('Error fetching project mappings:', mappingsError)
-    throw new Error('Project mappings not found')
-  }
-
-  const projectIds = projectMappings.map(
-    (mapping: { projectId: number }) => mapping.projectId,
-  )
-
-  const { data: schemaPaths, error: pathsError } = await supabase
+  // Fetch schema path for the project
+  const { data: schemaPath, error } = await supabase
     .from('GitHubSchemaFilePath')
-    .select('path, projectId')
-    .in('projectId', projectIds)
+    .select('path')
+    .eq('projectId', projectId)
+    .single()
 
-  if (pathsError) {
-    console.error('Error fetching schema paths:', pathsError)
-    throw new Error('Schema paths not found')
+  if (error) {
+    console.warn(
+      `No schema path found for project ${projectId}: ${JSON.stringify(error)}`,
+    )
+    return ''
   }
 
   const files = await getPullRequestFiles(
@@ -57,43 +48,28 @@ async function generateERDLinks({
     Number(pullNumber),
   )
 
-  const matchedFiles = files
-    .map((file) => file.filename)
-    .filter((filename) =>
-      schemaPaths.some((schemaPath) => filename === schemaPath.path),
-    )
+  // Check if the schema file is in the PR files
+  const matchedFile = files.find((file) => file.filename === schemaPath.path)
 
-  let erdLinksText = ''
-  if (matchedFiles.length > 0) {
-    erdLinksText = '\n\nER Diagrams:'
-
-    const filesByProject = new Map<number, string[]>()
-
-    for (const filename of matchedFiles) {
-      const schemaPath = schemaPaths.find((sp) => sp.path === filename)
-      if (schemaPath) {
-        const projectFiles = filesByProject.get(schemaPath.projectId) || []
-        projectFiles.push(filename)
-        filesByProject.set(schemaPath.projectId, projectFiles)
-      }
-    }
-
-    for (const [projectId, filenames] of filesByProject.entries()) {
-      for (const filename of filenames) {
-        const encodedBranchRef = encodeURIComponent(branchRef)
-        erdLinksText += `\n- View ERD for ${filename}: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodedBranchRef}/schema/${filename}`
-      }
-    }
+  if (!matchedFile) {
+    return ''
   }
 
-  return erdLinksText
+  const encodedBranchRef = encodeURIComponent(branchRef)
+  return `\n\nER Diagram:\n- View ERD for ${schemaPath.path}: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodedBranchRef}/schema/${schemaPath.path}`
 }
 
 export async function postComment(
   payload: PostCommentPayload,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const { reviewComment, pullRequestId, repositoryId } = payload
+    const {
+      reviewComment,
+      pullRequestId,
+      repositoryId,
+      projectId,
+      branchName,
+    } = payload
     const supabase = createClient()
 
     // Get repository information
@@ -139,7 +115,7 @@ export async function postComment(
     }
 
     const migration = prRecord.Migration[0]
-    const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${migration.id}`
+    const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodeURIComponent(branchName)}/migrations/${migration.id}`
 
     const prDetails = await getPullRequestDetails(
       Number(installationId),
@@ -148,16 +124,16 @@ export async function postComment(
       Number(prRecord.pullNumber),
     )
 
-    const erdLinksText = await generateERDLinks({
+    const erdLinkText = await generateERDLink({
       installationId,
       owner,
       repo,
       pullNumber: prRecord.pullNumber,
-      repositoryId: Number(repositoryId),
+      projectId,
       branchRef: prDetails.head.ref,
     })
 
-    const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinksText}`
+    const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinkText}`
 
     // If PR already has a comment, update it; otherwise create a new one
     if (prRecord.commentId) {

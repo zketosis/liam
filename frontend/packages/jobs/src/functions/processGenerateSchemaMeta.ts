@@ -5,7 +5,7 @@ import { safeParse } from 'valibot'
 import { createClient } from '../libs/supabase'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
 import type { GenerateSchemaMetaPayload, SchemaMetaResult } from '../types'
-import { fetchSchemaFilesContent } from '../utils/githubFileUtils'
+import { fetchSchemaFileContent } from '../utils/githubFileUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
@@ -78,7 +78,7 @@ export const processGenerateSchemaMeta = async (
     }
 
     // Enrich AI context with actual schema structure for more accurate metadata suggestions
-    const schemaFiles = await fetchSchemaFilesContent(
+    const schemaFile = await fetchSchemaFileContent(
       Number(project.id),
       overallReview.branchName,
       repositoryFullName,
@@ -90,7 +90,7 @@ export const processGenerateSchemaMeta = async (
       callbacks,
       currentSchemaMeta,
       predefinedRunId,
-      schemaFiles, // Add schema files content
+      schemaFile, // Pass single schema file content
     )
 
     // If no update is needed, return early with createNeeded: false
@@ -110,6 +110,7 @@ export const processGenerateSchemaMeta = async (
       title: `Schema meta update from PR #${Number(pullRequest.pullNumber)}`,
       traceId: predefinedRunId,
       reasoning: schemaMetaResult.reasoning,
+      overallReviewId: payload.overallReviewId,
     }
   } catch (error) {
     console.error('Error generating schema meta:', error)
