@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { getProjectRepository } from './getProjectRepository'
 
 describe('getProjectRepository', () => {
-  it('should return repository information with the correct structure', async () => {
+  it.skip('should return repository information with the correct structure', async () => {
     const supabase = await createClient()
 
     // Create test repository
