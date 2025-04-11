@@ -24,14 +24,14 @@ if [ ! -f .env ]; then
   exit 1
 fi
 
-# Check if SUPABASE_SERVICE_KEY already exists in .env
-if grep -q "SUPABASE_SERVICE_KEY=" .env; then
+# Check if SUPABASE_SERVICE_ROLE_KEY already exists in .env
+if grep -q "SUPABASE_SERVICE_ROLE_KEY=" .env; then
   # Replace the existing line
-  sed -i.bak "s/SUPABASE_SERVICE_KEY=.*/SUPABASE_SERVICE_KEY=$SERVICE_KEY/" .env
+  sed -i.bak "s/SUPABASE_SERVICE_ROLE_KEY=.*/SUPABASE_SERVICE_ROLE_KEY=$SERVICE_KEY/" .env
   rm -f .env.bak
-  echo "Updated SUPABASE_SERVICE_KEY in .env file"
+  echo "Updated SUPABASE_SERVICE_ROLE_KEY in .env file"
 else
   # Append the new line
-  echo "SUPABASE_SERVICE_KEY=$SERVICE_KEY" >> .env
-  echo "Added SUPABASE_SERVICE_KEY to .env file"
+  echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_KEY" >> .env
+  echo "Added SUPABASE_SERVICE_ROLE_KEY to .env file"
 fi 
