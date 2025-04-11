@@ -56,6 +56,8 @@ jobs:
       - uses: ./.github/actions/pnpm-setup
       - run: pnpm --filter @liam-hq/db supabase:start
       - run: cp .env.template .env
+      - name: Make scripts executable
+        run: chmod +x ./scripts/extract-supabase-anon-key.sh ./scripts/extract-supabase-service-key.sh
       - run: ./scripts/extract-supabase-anon-key.sh
       - run: ./scripts/extract-supabase-service-key.sh
       - run: pnpm test:turbo
