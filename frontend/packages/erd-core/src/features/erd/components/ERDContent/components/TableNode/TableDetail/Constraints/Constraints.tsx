@@ -1,10 +1,11 @@
 import type { Constraints as ConstraintsType } from '@liam-hq/db-structure/dist/schema'
-import { KeyRound, Link, Lock } from '@liam-hq/ui'
+import { Fingerprint, KeyRound, Link, Lock } from '@liam-hq/ui'
 import type React from 'react'
 import { CollapsibleHeader } from '../CollapsibleHeader'
 import styles from './Constraints.module.css'
 import { ForeignKeyConstraintsItem } from './ForeignKeyConstraintsItem'
 import { PrimaryKeyConstraintsItem } from './PrimaryKeyConstraintsItem'
+import { UniqueConstraintsItem } from './Unique'
 
 type Props = {
   constraints: ConstraintsType
@@ -18,6 +19,9 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
   )
   const foreignKeyConstraints = constraints.filter(
     (constraint) => constraint.type === 'FOREIGN KEY',
+  )
+  const uniqueConstraints = constraints.filter(
+    (constraint) => constraint.type === 'UNIQUE',
   )
 
   return (
@@ -54,6 +58,20 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
             <ForeignKeyConstraintsItem
               key={constraint.name}
               foreignKeyConstraint={constraint}
+            />
+          ))}
+        </div>
+      ) : null}
+      {uniqueConstraints.length >= 1 ? (
+        <div className={styles.itemWrapper}>
+          <div className={styles.sectionTitle}>
+            <Fingerprint className={styles.primaryKeyIcon} />
+            Unique
+          </div>
+          {uniqueConstraints.map((constraint) => (
+            <UniqueConstraintsItem
+              key={constraint.name}
+              uniqueConstraint={constraint}
             />
           ))}
         </div>
