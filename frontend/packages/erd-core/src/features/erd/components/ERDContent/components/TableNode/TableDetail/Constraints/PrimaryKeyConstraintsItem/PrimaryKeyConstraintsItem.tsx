@@ -1,4 +1,4 @@
-import type { PrimaryKeyConstraint } from '@liam-hq/db-structure/dist/schema/dbStructure'
+import type { PrimaryKeyConstraint } from '@liam-hq/db-structure'
 import {
   GridTableDd,
   GridTableDt,

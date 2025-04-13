@@ -1,4 +1,4 @@
-import type { CheckConstraint } from '@liam-hq/db-structure/dist/schema/dbStructure'
+import type { CheckConstraint } from '@liam-hq/db-structure'
 import {
   GridTableDd,
   GridTableDt,

@@ -1,4 +1,4 @@
-import type { Constraints as ConstraintsType } from '@liam-hq/db-structure/dist/schema'
+import type { Constraints as ConstraintsType } from '@liam-hq/db-structure'
 import { Check, Fingerprint, KeyRound, Link, Lock } from '@liam-hq/ui'
 import { clsx } from 'clsx'
 import type React from 'react'

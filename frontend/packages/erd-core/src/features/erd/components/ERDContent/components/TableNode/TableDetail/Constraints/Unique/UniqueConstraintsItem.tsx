@@ -1,4 +1,4 @@
-import type { UniqueConstraint } from '@liam-hq/db-structure/dist/schema/dbStructure'
+import type { UniqueConstraint } from '@liam-hq/db-structure'
 import {
   GridTableDd,
   GridTableDt,
