@@ -1,7 +1,8 @@
 import type { Constraints as ConstraintsType } from '@liam-hq/db-structure/dist/schema'
-import { Fingerprint, KeyRound, Link, Lock } from '@liam-hq/ui'
+import { Check, Fingerprint, KeyRound, Link, Lock } from '@liam-hq/ui'
 import type React from 'react'
 import { CollapsibleHeader } from '../CollapsibleHeader'
+import { CheckConstraintsItem } from './CheckConstraintsItem'
 import styles from './Constraints.module.css'
 import { ForeignKeyConstraintsItem } from './ForeignKeyConstraintsItem'
 import { PrimaryKeyConstraintsItem } from './PrimaryKeyConstraintsItem'
@@ -22,6 +23,9 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
   )
   const uniqueConstraints = constraints.filter(
     (constraint) => constraint.type === 'UNIQUE',
+  )
+  const checkConstraints = constraints.filter(
+    (constraint) => constraint.type === 'CHECK',
   )
 
   return (
@@ -72,6 +76,20 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
             <UniqueConstraintsItem
               key={constraint.name}
               uniqueConstraint={constraint}
+            />
+          ))}
+        </div>
+      ) : null}
+      {checkConstraints.length >= 1 ? (
+        <div className={styles.itemWrapper}>
+          <div className={styles.sectionTitle}>
+            <Check className={styles.primaryKeyIcon} />
+            Check
+          </div>
+          {checkConstraints.map((constraint) => (
+            <CheckConstraintsItem
+              key={constraint.name}
+              checkConstraint={constraint}
             />
           ))}
         </div>
