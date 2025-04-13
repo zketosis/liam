@@ -1,8 +1,9 @@
 import type { Constraints as ConstraintsType } from '@liam-hq/db-structure/dist/schema'
-import { KeyRound, Lock } from '@liam-hq/ui'
+import { KeyRound, Link, Lock } from '@liam-hq/ui'
 import type React from 'react'
 import { CollapsibleHeader } from '../CollapsibleHeader'
 import styles from './Constraints.module.css'
+import { ForeignKeyConstraintsItem } from './ForeignKeyConstraintsItem'
 import { PrimaryKeyConstraintsItem } from './PrimaryKeyConstraintsItem'
 
 type Props = {
@@ -14,6 +15,9 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
 
   const primaryKeyConstraints = constraints.filter(
     (constraint) => constraint.type === 'PRIMARY KEY',
+  )
+  const foreignKeyConstraints = constraints.filter(
+    (constraint) => constraint.type === 'FOREIGN KEY',
   )
 
   return (
@@ -36,6 +40,20 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
             <PrimaryKeyConstraintsItem
               key={constraint.name}
               primaryKeyConstraint={constraint}
+            />
+          ))}
+        </div>
+      ) : null}
+      {foreignKeyConstraints.length >= 1 ? (
+        <div className={styles.itemWrapper}>
+          <div className={styles.sectionTitle}>
+            <Link className={styles.primaryKeyIcon} />
+            Foreign key
+          </div>
+          {foreignKeyConstraints.map((constraint) => (
+            <ForeignKeyConstraintsItem
+              key={constraint.name}
+              foreignKeyConstraint={constraint}
             />
           ))}
         </div>
