@@ -18,8 +18,11 @@
   line-height: normal;
 }
 
-.primaryKeyIcon {
+.constraintsIcon {
   width: 0.75rem;
   height: 0.75rem;
+}
+
+.primaryConstraintsIcon {
   color: var(--primary-accent);
 }

@@ -1,5 +1,6 @@
 import type { Constraints as ConstraintsType } from '@liam-hq/db-structure/dist/schema'
 import { Check, Fingerprint, KeyRound, Link, Lock } from '@liam-hq/ui'
+import { clsx } from 'clsx'
 import type React from 'react'
 import { CollapsibleHeader } from '../CollapsibleHeader'
 import { CheckConstraintsItem } from './CheckConstraintsItem'
@@ -43,7 +44,12 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       {primaryKeyConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
           <div className={styles.sectionTitle}>
-            <KeyRound className={styles.primaryKeyIcon} />
+            <KeyRound
+              className={clsx(
+                styles.constraintsIcon,
+                styles.primaryConstraintsIcon,
+              )}
+            />
             Primary key
           </div>
           {primaryKeyConstraints.map((constraint) => (
@@ -57,7 +63,12 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       {foreignKeyConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
           <div className={styles.sectionTitle}>
-            <Link className={styles.primaryKeyIcon} />
+            <Link
+              className={clsx(
+                styles.constraintsIcon,
+                styles.primaryConstraintsIcon,
+              )}
+            />
             Foreign key
           </div>
           {foreignKeyConstraints.map((constraint) => (
@@ -71,7 +82,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       {uniqueConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
           <div className={styles.sectionTitle}>
-            <Fingerprint className={styles.primaryKeyIcon} />
+            <Fingerprint className={styles.constraintsIcon} />
             Unique
           </div>
           {uniqueConstraints.map((constraint) => (
@@ -85,7 +96,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       {checkConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
           <div className={styles.sectionTitle}>
-            <Check className={styles.primaryKeyIcon} />
+            <Check className={styles.constraintsIcon} />
             Check
           </div>
           {checkConstraints.map((constraint) => (
