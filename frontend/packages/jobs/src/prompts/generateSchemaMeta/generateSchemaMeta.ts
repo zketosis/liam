@@ -1,7 +1,7 @@
-import { ChatAnthropic } from '@langchain/anthropic'
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
+import { ChatOpenAI } from '@langchain/openai'
 import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { type InferOutput, boolean, object, parse, string } from 'valibot'
@@ -19,6 +19,17 @@ const dbOverrideJsonSchema = toJsonSchema(dbOverrideSchema)
 
 // Define type for evaluation result
 type EvaluationResult = InferOutput<typeof evaluationSchema>
+
+type GenerateSchemaMetaResult =
+  | {
+      updateNeeded: true
+      override: DBOverride
+      reasoning: string
+    }
+  | {
+      updateNeeded: false
+      reasoning: string
+    }
 
 // Step 1: Evaluation template to determine if updates are needed
 const EVALUATION_TEMPLATE = ChatPromptTemplate.fromTemplate(`
@@ -71,7 +82,7 @@ schema-meta.json is a documentation-only enhancement layer on top of the actual 
 ## Current Schema Files
 <files>
 
-{schemaFiles}
+{schemaFile}
 
 </files>
 
@@ -132,7 +143,7 @@ It is NOT for:
 ## Current Schema Files
 <files>
 
-{schemaFiles}
+{schemaFile}
 
 </files>
 
@@ -175,16 +186,14 @@ export const generateSchemaMeta = async (
   callbacks: Callbacks,
   currentSchemaMeta: DBOverride | null,
   runId: string,
-  schemaFiles: string,
-) => {
-  const evaluationModel = new ChatAnthropic({
-    temperature: 0.2,
-    model: 'claude-3-7-sonnet-latest',
+  schemaFile: string,
+): Promise<GenerateSchemaMetaResult> => {
+  const evaluationModel = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
-  const updateModel = new ChatAnthropic({
-    temperature: 0.7,
-    model: 'claude-3-7-sonnet-latest',
+  const updateModel = new ChatOpenAI({
+    model: 'o3-mini-2025-01-31',
   })
 
   // Create evaluation chain
@@ -201,7 +210,7 @@ export const generateSchemaMeta = async (
   type EvaluationInput = {
     reviewComment: string
     currentSchemaMeta: string
-    schemaFiles: string
+    schemaFile: string
   }
 
   type UpdateInput = EvaluationInput & {
@@ -213,13 +222,13 @@ export const generateSchemaMeta = async (
   const schemaMetaRouter = async (
     inputs: EvaluationInput & { dbOverrideJsonSchema: string },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
-  ): Promise<DBOverride> => {
+  ): Promise<GenerateSchemaMetaResult> => {
     // First, run the evaluation chain
     const evaluationResult: EvaluationResult = await evaluationChain.invoke(
       {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFiles: inputs.schemaFiles,
+        schemaFile: inputs.schemaFile,
         evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
       },
       config,
@@ -230,7 +239,7 @@ export const generateSchemaMeta = async (
       const updateInput: UpdateInput = {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFiles: inputs.schemaFiles,
+        schemaFile: inputs.schemaFile,
         dbOverrideJsonSchema: inputs.dbOverrideJsonSchema,
         evaluationResults: evaluationResult.suggestedChanges,
       }
@@ -241,20 +250,22 @@ export const generateSchemaMeta = async (
         tags: ['generateSchemaMeta'],
       })
 
-      return parse(dbOverrideSchema, updateResult)
+      // Parse the result and add the reasoning from the evaluation
+      const parsedResult = parse(dbOverrideSchema, updateResult)
+
+      // Return the result with the new structure
+      return {
+        updateNeeded: true,
+        override: parsedResult,
+        reasoning: evaluationResult.reasoning,
+      }
     }
 
-    // No update needed, return current schema metadata or create a valid empty DBOverride
-    if (currentSchemaMeta) {
-      return currentSchemaMeta
-    }
-
-    // Create a valid empty DBOverride object
     return {
-      overrides: {
-        tables: {},
-        tableGroups: {},
-      },
+      updateNeeded: false,
+      reasoning:
+        evaluationResult.reasoning ||
+        'No updates needed based on the review comments.',
     }
   }
 
@@ -267,7 +278,7 @@ export const generateSchemaMeta = async (
     // Prepare the common inputs
     const commonInputs = {
       reviewComment,
-      schemaFiles,
+      schemaFile,
       currentSchemaMeta: currentSchemaMeta
         ? JSON.stringify(currentSchemaMeta, null, 2)
         : '{}',

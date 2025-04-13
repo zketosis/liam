@@ -18,6 +18,7 @@ async function getProject(projectId: string) {
         id,
         name,
         createdAt,
+        organizationId,
         ProjectRepositoryMapping:ProjectRepositoryMapping(
           repository:Repository(
             pullRequests:PullRequest(
@@ -60,6 +61,7 @@ async function getProject(projectId: string) {
       id: project.id,
       name: project.name,
       createdAt: project.createdAt,
+      organizationId: project.organizationId,
       migrations,
     }
   } catch (error) {
@@ -68,6 +70,7 @@ async function getProject(projectId: string) {
   }
 }
 
+// TODO: Delete this page
 export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
   const project = await getProject(projectId)
 
@@ -76,7 +79,13 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <Link
-            href={urlgen('projects')}
+            href={
+              project.organizationId
+                ? urlgen('organizations/[organizationId]/projects', {
+                    organizationId: project.organizationId.toString(),
+                  })
+                : '/'
+            }
             className={styles.backLink}
             aria-label="Back to projects list"
           >
@@ -115,23 +124,6 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
           Created: {new Date(project.createdAt).toLocaleDateString('en-US')}
         </p>
       </div>
-      <section style={{ margin: '24px 0' }}>
-        <h2 style={{ fontSize: '24px' }}>Migrations</h2>
-        <ul style={{ display: 'grid', gap: '12px', margin: '16px 0' }}>
-          {project.migrations.map((migration) => (
-            <li key={migration.id}>
-              <Link
-                href={urlgen('migrations/[migrationId]', {
-                  migrationId: `${migration.id}`,
-                })}
-                style={{
-                  textDecoration: 'underline',
-                }}
-              >{`${migration.title} #${migration.pullNumber}`}</Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </div>
   )
 }

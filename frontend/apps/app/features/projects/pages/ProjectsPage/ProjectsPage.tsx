@@ -1,17 +1,54 @@
+import { OrganizationSwitcher } from '@/features/organizations/components/OrganizationSwitcher'
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import type { FC } from 'react'
 import styles from './ProjectsPage.module.css'
+import {
+  getCurrentOrganization,
+  getUserOrganizations,
+} from './getCurrentOrganization'
 import { getProjects } from './getProjects'
 
-export const ProjectsPage: FC = async () => {
-  const projects = await getProjects()
+interface Organization {
+  id: number
+  name: string
+}
+
+interface ProjectsPageProps {
+  organizationId?: number
+}
+
+export const ProjectsPage: FC<ProjectsPageProps> = async ({
+  organizationId,
+}) => {
+  const currentOrganization = organizationId
+    ? await getCurrentOrganization(organizationId)
+    : await getCurrentOrganization()
+  const organizations = await getUserOrganizations()
+  const projects = await getProjects(currentOrganization?.id)
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Projects</h1>
-        <Link href={urlgen('projects/new')} className={styles.createButton}>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.title}>Projects</h1>
+          {currentOrganization && organizations && (
+            <OrganizationSwitcher
+              currentOrganization={currentOrganization as Organization}
+              organizations={organizations as Organization[]}
+            />
+          )}
+        </div>
+        <Link
+          href={
+            currentOrganization
+              ? urlgen('organizations/[organizationId]/projects/new', {
+                  organizationId: currentOrganization.id.toString(),
+                })
+              : urlgen('organizations/new')
+          }
+          className={styles.createButton}
+        >
           Create New Project
         </Link>
       </div>

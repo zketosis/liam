@@ -55,11 +55,7 @@ describe.skip('processSaveReview', () => {
 
     if (reviews && reviews.length > 0) {
       const reviewIds = reviews.map((r) => r.id)
-      // Delete associated ReviewScores and ReviewIssues
-      await supabase
-        .from('ReviewScore')
-        .delete()
-        .in('overallReviewId', reviewIds)
+      // Delete associated ReviewIssues
       await supabase
         .from('ReviewIssue')
         .delete()
@@ -82,13 +78,6 @@ describe.skip('processSaveReview', () => {
       traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review comment',
-        scores: [
-          {
-            kind: 'Migration Safety',
-            value: 8,
-            reason: 'Good migration safety',
-          },
-        ],
         feedbacks: [
           {
             kind: 'Migration Safety',
@@ -114,14 +103,6 @@ describe.skip('processSaveReview', () => {
     expect(review).toBeTruthy()
     expect(review.projectId).toBe(testProject.id)
 
-    const { data: scores, error: scoresError } = await supabase
-      .from('ReviewScore')
-      .select('*')
-      .eq('overallReviewId', review.id)
-    if (scoresError) throw scoresError
-    expect(scores).toBeTruthy()
-    expect(scores.length).toBeGreaterThanOrEqual(1)
-
     const { data: issues, error: issuesError } = await supabase
       .from('ReviewIssue')
       .select('*')
@@ -140,7 +121,6 @@ describe.skip('processSaveReview', () => {
       traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review',
-        scores: [],
         feedbacks: [],
       },
     }
@@ -159,7 +139,6 @@ describe.skip('processSaveReview', () => {
       traceId: 'test-trace-id-123',
       review: {
         bodyMarkdown: 'Test review',
-        scores: [],
         feedbacks: [],
       },
     }

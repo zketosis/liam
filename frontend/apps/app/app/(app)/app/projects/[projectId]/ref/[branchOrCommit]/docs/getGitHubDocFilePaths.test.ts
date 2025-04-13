@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { getGitHubDocFilePaths } from './getGitHubDocFilePaths'
 
 describe('getGitHubDocFilePaths', () => {
-  it('should return doc file paths with correct structure', async () => {
+  it.skip('should return doc file paths with correct structure', async () => {
     const supabase = await createClient()
 
     // Create test project

@@ -86,14 +86,64 @@ CREATE TYPE "public"."KnowledgeType" AS ENUM (
 ALTER TYPE "public"."KnowledgeType" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."SchemaFormatEnum" AS ENUM (
+    'schemarb',
+    'postgres',
+    'prisma',
+    'tbls'
+);
+
+
+ALTER TYPE "public"."SchemaFormatEnum" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."SeverityEnum" AS ENUM (
     'CRITICAL',
     'WARNING',
-    'POSITIVE'
+    'POSITIVE',
+    'QUESTION'
 );
 
 
 ALTER TYPE "public"."SeverityEnum" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+BEGIN
+  INSERT INTO public."User" (id, name, email)
+  VALUES (
+    NEW.id, 
+    COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
+    NEW.email
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  INSERT INTO public."User" (id, name, email)
+  SELECT 
+    au.id,
+    COALESCE(au.raw_user_meta_data->>'name', au.email),
+    au.email
+  FROM auth.users au
+  LEFT JOIN public."User" pu ON au.id = pu.id
+  WHERE pu.id IS NULL;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."sync_existing_users"() OWNER TO "postgres";
 
 SET default_tablespace = '';
 
@@ -133,7 +183,8 @@ CREATE TABLE IF NOT EXISTS "public"."GitHubSchemaFilePath" (
     "path" "text" NOT NULL,
     "projectId" integer NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "format" "public"."SchemaFormatEnum" NOT NULL
 );
 
 
@@ -167,7 +218,8 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
     "branchName" "text" NOT NULL,
-    "traceId" "text"
+    "traceId" "text",
+    "reasoning" "text" DEFAULT ''::"text"
 );
 
 
@@ -216,6 +268,29 @@ ALTER SEQUENCE "public"."KnowledgeSuggestion_id_seq" OWNED BY "public"."Knowledg
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
+    "id" integer NOT NULL,
+    "email" "text" NOT NULL,
+    "inviteByUserId" "uuid" NOT NULL,
+    "organizationId" integer NOT NULL,
+    "invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE "public"."MembershipInvites" OWNER TO "postgres";
+
+
+ALTER TABLE "public"."MembershipInvites" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "public"."MembershipInvites_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."Migration" (
     "id" integer NOT NULL,
     "title" "text" NOT NULL,
@@ -243,6 +318,48 @@ ALTER SEQUENCE "public"."Migration_id_seq" OWNED BY "public"."Migration"."id";
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."Organization" (
+    "id" integer NOT NULL,
+    "name" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."Organization" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
+    "id" integer NOT NULL,
+    "userId" "uuid" NOT NULL,
+    "organizationId" integer NOT NULL,
+    "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE "public"."OrganizationMember" OWNER TO "postgres";
+
+
+ALTER TABLE "public"."OrganizationMember" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "public"."OrganizationMember_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+
+ALTER TABLE "public"."Organization" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "public"."Organization_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
     "id" integer NOT NULL,
     "projectId" integer,
@@ -257,6 +374,33 @@ CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
 
 
 ALTER TABLE "public"."OverallReview" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping" (
+    "id" integer NOT NULL,
+    "overallReviewId" integer NOT NULL,
+    "knowledgeSuggestionId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" OWNED BY "public"."OverallReviewKnowledgeSuggestionMapping"."id";
+
 
 
 CREATE SEQUENCE IF NOT EXISTS "public"."OverallReview_id_seq"
@@ -278,7 +422,8 @@ CREATE TABLE IF NOT EXISTS "public"."Project" (
     "id" integer NOT NULL,
     "name" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "organizationId" integer
 );
 
 
@@ -392,7 +537,9 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
     "description" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "suggestion" "text" NOT NULL
+    "suggestion" "text" NOT NULL,
+    "resolvedAt" timestamp(3) without time zone,
+    "resolutionComment" "text"
 );
 
 
@@ -411,35 +558,6 @@ ALTER TABLE "public"."ReviewIssue_id_seq" OWNER TO "postgres";
 
 
 ALTER SEQUENCE "public"."ReviewIssue_id_seq" OWNED BY "public"."ReviewIssue"."id";
-
-
-
-CREATE TABLE IF NOT EXISTS "public"."ReviewScore" (
-    "id" integer NOT NULL,
-    "overallReviewId" integer NOT NULL,
-    "overallScore" integer NOT NULL,
-    "category" "public"."CategoryEnum" NOT NULL,
-    "reason" "text" NOT NULL,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."ReviewScore" OWNER TO "postgres";
-
-
-CREATE SEQUENCE IF NOT EXISTS "public"."ReviewScore_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE "public"."ReviewScore_id_seq" OWNER TO "postgres";
-
-
-ALTER SEQUENCE "public"."ReviewScore_id_seq" OWNED BY "public"."ReviewScore"."id";
 
 
 
@@ -465,6 +583,16 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
 
 
 ALTER TABLE "public"."ReviewSuggestionSnippet" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."User" (
+    "id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "email" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."User" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
@@ -506,6 +634,10 @@ ALTER TABLE ONLY "public"."OverallReview" ALTER COLUMN "id" SET DEFAULT "nextval
 
 
 
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."OverallReviewKnowledgeSuggestionMapping_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."Project" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Project_id_seq"'::"regclass");
 
 
@@ -523,10 +655,6 @@ ALTER TABLE ONLY "public"."Repository" ALTER COLUMN "id" SET DEFAULT "nextval"('
 
 
 ALTER TABLE ONLY "public"."ReviewIssue" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewIssue_id_seq"'::"regclass");
-
-
-
-ALTER TABLE ONLY "public"."ReviewScore" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewScore_id_seq"'::"regclass");
 
 
 
@@ -555,8 +683,33 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion"
 
 
 
+ALTER TABLE ONLY "public"."MembershipInvites"
+    ADD CONSTRAINT "MembershipInvites_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."Migration"
     ADD CONSTRAINT "Migration_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_userId_organizationId_key" UNIQUE ("userId", "organizationId");
+
+
+
+ALTER TABLE ONLY "public"."Organization"
+    ADD CONSTRAINT "Organization_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_pkey" PRIMARY KEY ("id");
 
 
 
@@ -590,13 +743,18 @@ ALTER TABLE ONLY "public"."ReviewIssue"
 
 
 
-ALTER TABLE ONLY "public"."ReviewScore"
-    ADD CONSTRAINT "ReviewScore_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
     ADD CONSTRAINT "ReviewSuggestionSnippet_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."User"
+    ADD CONSTRAINT "User_email_key" UNIQUE ("email");
+
+
+
+ALTER TABLE ONLY "public"."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY ("id");
 
 
 
@@ -609,11 +767,19 @@ CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDo
 
 
 
+CREATE UNIQUE INDEX "GitHubSchemaFilePath_projectId_key" ON "public"."GitHubSchemaFilePath" USING "btree" ("projectId");
+
+
+
 CREATE UNIQUE INDEX "KnowledgeSuggestionDocMapping_unique_mapping" ON "public"."KnowledgeSuggestionDocMapping" USING "btree" ("knowledgeSuggestionId", "gitHubDocFilePathId");
 
 
 
 CREATE UNIQUE INDEX "Migration_pullRequestId_key" ON "public"."Migration" USING "btree" ("pullRequestId");
+
+
+
+CREATE UNIQUE INDEX "OverallReviewKnowledgeSuggestionMapping_unique_mapping" ON "public"."OverallReviewKnowledgeSuggestionMapping" USING "btree" ("overallReviewId", "knowledgeSuggestionId");
 
 
 
@@ -626,6 +792,26 @@ CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullR
 
 
 CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
+
+
+
+CREATE INDEX "idx_project_organizationId" ON "public"."Project" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "membership_invites_email_idx" ON "public"."MembershipInvites" USING "btree" ("email");
+
+
+
+CREATE INDEX "membership_invites_orgId_idx" ON "public"."MembershipInvites" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "organization_member_organizationId_idx" ON "public"."OrganizationMember" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "organization_member_userId_idx" ON "public"."OrganizationMember" USING "btree" ("userId");
 
 
 
@@ -654,8 +840,38 @@ ALTER TABLE ONLY "public"."KnowledgeSuggestion"
 
 
 
+ALTER TABLE ONLY "public"."MembershipInvites"
+    ADD CONSTRAINT "MembershipInvites_inviteByUserId_fkey" FOREIGN KEY ("inviteByUserId") REFERENCES "public"."User"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."MembershipInvites"
+    ADD CONSTRAINT "MembershipInvites_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."Migration"
     ADD CONSTRAINT "Migration_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."OrganizationMember"
+    ADD CONSTRAINT "OrganizationMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_knowledgeSuggestionId_f" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."OverallReviewKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "OverallReviewKnowledgeSuggestionMapping_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -679,6 +895,11 @@ ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
 
 
 
+ALTER TABLE ONLY "public"."Project"
+    ADD CONSTRAINT "Project_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "public"."Organization"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."PullRequest"
     ADD CONSTRAINT "PullRequest_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -689,13 +910,85 @@ ALTER TABLE ONLY "public"."ReviewIssue"
 
 
 
-ALTER TABLE ONLY "public"."ReviewScore"
-    ADD CONSTRAINT "ReviewScore_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
 ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
     ADD CONSTRAINT "ReviewSuggestionSnippet_reviewIssueId_fkey" FOREIGN KEY ("reviewIssueId") REFERENCES "public"."ReviewIssue"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE "public"."Project" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" FOR DELETE TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" IS 'Authenticated users can only delete projects in organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."Project" FOR INSERT TO "authenticated" WITH CHECK (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."Project" IS 'Authenticated users can create any project';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" FOR SELECT TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" IS 'Authenticated users can only view projects belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" FOR UPDATE TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"())))) WITH CHECK (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" IS 'Authenticated users can only update projects in organizations they are members of';
+
+
+
+CREATE POLICY "service_role_can_delete_all_projects" ON "public"."Project" FOR DELETE TO "service_role" USING (true);
+
+
+
+COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."Project" IS 'Service role can delete any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_insert_all_projects" ON "public"."Project" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
+COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."Project" IS 'Service role can create any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_select_all_projects" ON "public"."Project" FOR SELECT TO "service_role" USING (true);
+
+
+
+COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."Project" IS 'Service role can view all projects (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_update_all_projects" ON "public"."Project" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+COMMENT ON POLICY "service_role_can_update_all_projects" ON "public"."Project" IS 'Service role can update any project (for jobs)';
 
 
 
@@ -888,6 +1181,18 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "anon";
+GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "service_role";
+
+
+
 
 
 
@@ -951,6 +1256,18 @@ GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."MembershipInvites" TO "anon";
+GRANT ALL ON TABLE "public"."MembershipInvites" TO "authenticated";
+GRANT ALL ON TABLE "public"."MembershipInvites" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."MembershipInvites_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."MembershipInvites_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."MembershipInvites_id_seq" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."Migration" TO "anon";
 GRANT ALL ON TABLE "public"."Migration" TO "authenticated";
 GRANT ALL ON TABLE "public"."Migration" TO "service_role";
@@ -963,9 +1280,45 @@ GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."Organization" TO "anon";
+GRANT ALL ON TABLE "public"."Organization" TO "authenticated";
+GRANT ALL ON TABLE "public"."Organization" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."OrganizationMember" TO "anon";
+GRANT ALL ON TABLE "public"."OrganizationMember" TO "authenticated";
+GRANT ALL ON TABLE "public"."OrganizationMember" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."OrganizationMember_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."OrganizationMember_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."OrganizationMember_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."Organization_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."Organization_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."Organization_id_seq" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."OverallReview" TO "anon";
 GRANT ALL ON TABLE "public"."OverallReview" TO "authenticated";
 GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "anon";
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."OverallReviewKnowledgeSuggestionMapping_id_seq" TO "service_role";
 
 
 
@@ -1035,18 +1388,6 @@ GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."ReviewScore" TO "anon";
-GRANT ALL ON TABLE "public"."ReviewScore" TO "authenticated";
-GRANT ALL ON TABLE "public"."ReviewScore" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."ReviewScore_id_seq" TO "service_role";
-
-
-
 GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "service_role";
@@ -1056,6 +1397,12 @@ GRANT ALL ON SEQUENCE "public"."ReviewSuggestionSnippet_id_seq" TO "service_role
 GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "anon";
 GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "authenticated";
 GRANT ALL ON TABLE "public"."ReviewSuggestionSnippet" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."User" TO "anon";
+GRANT ALL ON TABLE "public"."User" TO "authenticated";
+GRANT ALL ON TABLE "public"."User" TO "service_role";
 
 
 
