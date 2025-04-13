@@ -22,6 +22,7 @@ import { type FC, useCallback } from 'react'
 import { hasNonRelatedChildNodes, updateNodesHiddenState } from '../../../utils'
 import { Columns } from './Columns'
 import { Comment } from './Comment'
+import { Constraints } from './Constraints'
 import { Indexes } from './Indexes'
 import { RelatedTables } from './RelatedTables'
 import styles from './TableDetail.module.css'
@@ -104,6 +105,7 @@ export const TableDetail: FC<Props> = ({ table }) => {
         {table.comment && <Comment comment={table.comment} />}
         <Columns columns={table.columns} />
         <Indexes indexes={table.indexes} />
+        <Constraints constraints={table.constraints} />
         <div className={styles.relatedTables}>
           <RelatedTables
             nodes={nodes}
