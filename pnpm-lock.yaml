@@ -124,8 +124,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@octokit/openapi-types':
-        specifier: 24.2.0
-        version: 24.2.0
+        specifier: 25.0.0
+        version: 25.0.0
       '@prisma/nextjs-monorepo-workaround-plugin':
         specifier: 6.6.0
         version: 6.6.0
@@ -492,8 +492,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@octokit/openapi-types':
-        specifier: 24.2.0
-        version: 24.2.0
+        specifier: 25.0.0
+        version: 25.0.0
       '@octokit/rest':
         specifier: 21.1.1
         version: 21.1.1
