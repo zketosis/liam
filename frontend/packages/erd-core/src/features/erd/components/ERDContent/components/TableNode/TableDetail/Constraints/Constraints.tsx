@@ -28,6 +28,8 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
     (constraint) => constraint.type === 'CHECK',
   )
 
+  const contentMaxHeight = constraints.length * 400
+
   return (
     <CollapsibleHeader
       title="Constraints #"
@@ -36,7 +38,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       // NOTE: Header height for Columns and Indexes section:
       // (40px (content) + 1px (border))) * 2 = 82px
       stickyTopHeight={82}
-      contentMaxHeight={10000} // temporary value
+      contentMaxHeight={contentMaxHeight}
     >
       {primaryKeyConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
