@@ -43,7 +43,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
     >
       {primaryKeyConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
-          <div className={styles.sectionTitle}>
+          <h3 className={styles.sectionTitle}>
             <KeyRound
               className={clsx(
                 styles.constraintsIcon,
@@ -51,7 +51,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
               )}
             />
             Primary key
-          </div>
+          </h3>
           {primaryKeyConstraints.map((constraint) => (
             <PrimaryKeyConstraintsItem
               key={constraint.name}
@@ -62,7 +62,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       ) : null}
       {foreignKeyConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
-          <div className={styles.sectionTitle}>
+          <h3 className={styles.sectionTitle}>
             <Link
               className={clsx(
                 styles.constraintsIcon,
@@ -70,7 +70,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
               )}
             />
             Foreign key
-          </div>
+          </h3>
           {foreignKeyConstraints.map((constraint) => (
             <ForeignKeyConstraintsItem
               key={constraint.name}
@@ -81,10 +81,10 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       ) : null}
       {uniqueConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
-          <div className={styles.sectionTitle}>
+          <h3 className={styles.sectionTitle}>
             <Fingerprint className={styles.constraintsIcon} />
             Unique
-          </div>
+          </h3>
           {uniqueConstraints.map((constraint) => (
             <UniqueConstraintsItem
               key={constraint.name}
@@ -95,10 +95,10 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
       ) : null}
       {checkConstraints.length >= 1 ? (
         <div className={styles.itemWrapper}>
-          <div className={styles.sectionTitle}>
+          <h3 className={styles.sectionTitle}>
             <Check className={styles.constraintsIcon} />
             Check
-          </div>
+          </h3>
           {checkConstraints.map((constraint) => (
             <CheckConstraintsItem
               key={constraint.name}
