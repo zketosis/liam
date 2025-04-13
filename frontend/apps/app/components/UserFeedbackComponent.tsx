@@ -8,13 +8,15 @@ type UserFeedbackComponentProps = {
   traceId: string | null
 }
 
+type Feedback = 0 | 1
+
 export const UserFeedbackComponent = ({
   traceId,
 }: UserFeedbackComponentProps) => {
-  const [feedback, setFeedback] = useState<number | null>(null)
+  const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleUserFeedback = async (value: number) => {
+  const handleUserFeedback = async (value: Feedback) => {
     try {
       setIsSubmitting(true)
       const langfuseWeb = getLangfuseWeb()
