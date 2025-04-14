@@ -52,8 +52,6 @@ export async function addReviewFeedbackComment(data: {
   const now = new Date().toISOString()
 
   try {
-    const supabase = await createClient()
-
     // Insert the comment
     const { data: comment, error } = await supabase
       .from('ReviewFeedbackComment')
