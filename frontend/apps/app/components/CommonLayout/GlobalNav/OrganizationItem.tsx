@@ -1,4 +1,4 @@
-import { Building, ChevronDown, ChevronsUpDown } from '@/icons'
+import { Building, ChevronsUpDown } from '@/icons'
 import clsx from 'clsx'
 import type { FC } from 'react'
 import itemStyles from './Item.module.css'
