@@ -1,6 +1,6 @@
 'use client'
 
-import React, { type FC, useState, type ReactNode } from 'react'
+import { type FC, type ReactNode, useState } from 'react'
 import styles from './Tabs.module.css'
 
 interface TabProps {
