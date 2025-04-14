@@ -4,7 +4,6 @@ import { processOverrideContent } from '@/features/projects/actions/processOverr
 import { updateKnowledgeSuggestionContent } from '@/features/projects/actions/updateKnowledgeSuggestionContent'
 import { EditableContent } from '@/features/projects/components/EditableContent'
 import type { DBStructure, TableGroup } from '@liam-hq/db-structure'
-import type { SupportedFormat } from '@liam-hq/db-structure/parser'
 import { type FC, useState } from 'react'
 import { ErdViewer } from './ErdViewer'
 import styles from './KnowledgeSuggestionDetailPage.module.css'

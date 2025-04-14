@@ -1,6 +1,4 @@
 'use client'
-
-import React from 'react'
 import { UserFeedbackComponent } from './UserFeedbackComponent'
 
 type UserFeedbackClientProps = {

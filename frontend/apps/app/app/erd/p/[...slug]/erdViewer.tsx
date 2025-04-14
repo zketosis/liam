@@ -1,7 +1,7 @@
 'use client'
 
 import { CookieConsent } from '@/components/CookieConsent'
-import type { DBStructure, ProcessError } from '@liam-hq/db-structure'
+import type { DBStructure } from '@liam-hq/db-structure'
 import {
   ERDRenderer,
   VersionProvider,

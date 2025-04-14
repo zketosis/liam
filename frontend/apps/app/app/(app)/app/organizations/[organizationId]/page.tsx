@@ -6,7 +6,6 @@ import {
   getOrganizationMembers,
 } from '@/features/organizations/pages/OrganizationDetailPage/getOrganizationDetails'
 import { notFound } from 'next/navigation'
-import React from 'react'
 import * as v from 'valibot'
 
 const paramsSchema = v.object({

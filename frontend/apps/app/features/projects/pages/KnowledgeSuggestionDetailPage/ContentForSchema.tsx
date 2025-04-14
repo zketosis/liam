@@ -1,5 +1,5 @@
 import { createClient } from '@/libs/db/server'
-import { type SupportedFormat, parse } from '@liam-hq/db-structure/parser'
+import { parse } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import { notFound } from 'next/navigation'
 import type { FC } from 'react'

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { updateKnowledgeSuggestionContent } from '../../actions/updateKnowledgeSuggestionContent'
 import { DiffDisplay } from '../DiffDisplay/DiffDisplay'
 import styles from './EditableContent.module.css'

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { getLangfuseWeb } from '../lib/langfuseWeb'
 import styles from './UserFeedbackComponent.module.css'
 
