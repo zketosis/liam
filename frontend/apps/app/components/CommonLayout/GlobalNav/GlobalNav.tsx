@@ -41,6 +41,7 @@ export const GlobalNav: FC = () => {
         <div className={styles.logoContainer}>
           <div className={styles.logoSection}>
             {isExpanded ? (
+              // TODO: Split LiamMigrationLogo into Liam Mark + Liam Migration Text to create a more natural animation
               <LiamMigrationLogo className={styles.expandLogo} />
             ) : (
               <LiamLogoMark className={styles.logo} />
