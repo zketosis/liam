@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/libs/db/server'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import * as v from 'valibot'
 
 // Schema for adding a comment
@@ -15,16 +16,8 @@ const getCommentsSchema = v.object({
 })
 
 // Type for a comment with user information
-export type CommentWithUser = {
-  id: number
-  content: string
-  createdAt: string
-  updatedAt: string
-  reviewFeedbackId: number
-  userId: string
-  user: {
-    name: string
-  }
+export type CommentWithUser = Tables<'ReviewFeedbackComment'> & {
+  user: Tables<'User'>
 }
 
 /**
@@ -95,7 +88,7 @@ export async function getReviewFeedbackComments(data: {
     // Get comments with user information
     const { data: comments, error } = await supabase
       .from('ReviewFeedbackComment')
-      .select(`
+      .select<string, CommentWithUser>(`
         *,
         user:userId (
           name
@@ -108,7 +101,7 @@ export async function getReviewFeedbackComments(data: {
       throw new Error(`Failed to get comments: ${error.message}`)
     }
 
-    return comments as CommentWithUser[]
+    return comments
   } catch (error) {
     console.error('Error getting comments:', error)
     throw error
