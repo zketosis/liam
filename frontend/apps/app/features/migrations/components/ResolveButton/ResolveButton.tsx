@@ -8,14 +8,14 @@ import { ResolutionCommentModal } from '../ResolutionCommentModal/ResolutionComm
 import styles from './ResolveButton.module.css'
 
 interface ResolveButtonProps {
-  issueId: number
+  feedbackId: number
   isResolved: boolean
   resolutionComment?: string | null
   onResolve: (comment: string) => void
 }
 
 export const ResolveButton: React.FC<ResolveButtonProps> = ({
-  issueId,
+  feedbackId,
   isResolved,
   resolutionComment,
   onResolve,
@@ -39,7 +39,7 @@ export const ResolveButton: React.FC<ResolveButtonProps> = ({
 
       try {
         await resolveReviewFeedback({
-          feedbackId: issueId,
+          feedbackId: feedbackId,
           resolutionComment: comment,
         })
 

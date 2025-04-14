@@ -91,7 +91,7 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
                   className={styles.feedbackCopyButton}
                 />
                 <ResolveButton
-                  issueId={feedback.id}
+                  feedbackId={feedback.id}
                   isResolved={!!feedback.resolvedAt}
                   resolutionComment={feedback.resolutionComment}
                   onResolve={(comment) => handleResolve(feedback.id, comment)}
