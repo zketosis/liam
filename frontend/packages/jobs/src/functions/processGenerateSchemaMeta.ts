@@ -1,5 +1,9 @@
 import path from 'node:path'
-import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
+import {
+  type DBOverride,
+  applyOverrides,
+  dbOverrideSchema,
+} from '@liam-hq/db-structure'
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import { v4 as uuidv4 } from 'uuid'
@@ -93,12 +97,16 @@ export const processGenerateSchemaMeta = async (
       console.warn('Errors parsing schema file:', errors)
     }
 
+    const overriddenDbStructure = currentSchemaMeta
+      ? applyOverrides(dbStructure, currentSchemaMeta).dbStructure
+      : dbStructure
+
     const schemaMetaResult = await generateSchemaMeta(
       overallReview.reviewComment || '',
       callbacks,
       currentSchemaMeta,
       predefinedRunId,
-      dbStructure,
+      overriddenDbStructure,
     )
 
     // If no update is needed, return early with createNeeded: false
