@@ -2,6 +2,7 @@ import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
 import { ChatOpenAI } from '@langchain/openai'
+import type { DBStructure } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
 import {
@@ -90,6 +91,13 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 </docs>
 
+## Current Database Structure
+<json>
+
+{dbStructure}
+
+</json>
+
 ---
 
 ## Your Task
@@ -138,6 +146,13 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 </docs>
 
+## Current Database Structure
+<json>
+
+{dbStructure}
+
+</json>
+
 ## Evaluation Results
 
 <text>
@@ -172,6 +187,7 @@ export const generateDocsSuggestion = async (
   formattedDocsContent: string,
   callbacks: Callbacks,
   predefinedRunId: string,
+  dbStructure: DBStructure,
 ): Promise<DocFileContentMap> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -209,6 +225,7 @@ export const generateDocsSuggestion = async (
     formattedDocsContent: string
     evaluationResults: string
     updateResponseExampleJson: string
+    dbStructure: string
   }
 
   // Helper function to collect suggested changes for files that need updates
@@ -256,6 +273,7 @@ export const generateDocsSuggestion = async (
       formattedDocsContent: string
       evaluationResponseExampleJson: string
       updateResponseExampleJson: string
+      dbStructure: string
     },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
   ): Promise<DocFileContentMap> => {
@@ -265,6 +283,7 @@ export const generateDocsSuggestion = async (
         reviewResult: inputs.reviewResult,
         formattedDocsContent: inputs.formattedDocsContent,
         evaluationResponseExampleJson: inputs.evaluationResponseExampleJson,
+        dbStructure: inputs.dbStructure,
       },
       config,
     )
@@ -278,6 +297,7 @@ export const generateDocsSuggestion = async (
       formattedDocsContent: inputs.formattedDocsContent,
       evaluationResults: JSON.stringify(suggestedChanges, null, 2),
       updateResponseExampleJson: inputs.updateResponseExampleJson,
+      dbStructure: inputs.dbStructure,
     }
 
     const updateResult = await updateChain.invoke(updateInput, {
@@ -302,6 +322,7 @@ export const generateDocsSuggestion = async (
     formattedDocsContent,
     evaluationResponseExampleJson,
     updateResponseExampleJson,
+    dbStructure: JSON.stringify(dbStructure, null, 2),
   }
 
   // Execute the router chain

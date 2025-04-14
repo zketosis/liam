@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { createClient } from '../libs/supabase'
 import type { FileContent } from '../prompts/generateDocsSuggestion/docsSuggestionSchema'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
+import { fetchSchemaInfoWithOverrides } from '../utils/schemaUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const DOC_FILES = [
@@ -88,13 +89,22 @@ export async function processGenerateDocsSuggestion(payload: {
     }
 
     const predefinedRunId = uuidv4()
-
     const callbacks = [langfuseLangchainHandler]
+
+    // Fetch schema information with overrides
+    const { overriddenDbStructure } = await fetchSchemaInfoWithOverrides(
+      payload.projectId,
+      branch,
+      repositoryFullName,
+      Number(repository.installationId),
+    )
+
     const result = await generateDocsSuggestion(
       payload.reviewComment,
       formattedDocsContent,
       callbacks,
       predefinedRunId,
+      overriddenDbStructure,
     )
 
     const suggestions = Object.fromEntries(
