@@ -1,5 +1,4 @@
 import { logger, task } from '@trigger.dev/sdk/v3'
-import { createClient } from '../libs/supabase'
 
 // FIXME: This should be imported from the app package once we have proper package structure
 const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
@@ -12,60 +11,14 @@ import {
 } from '../functions/processGenerateDocsSuggestion'
 import { processGenerateReview } from '../functions/processGenerateReview'
 import { processGenerateSchemaMeta } from '../functions/processGenerateSchemaMeta'
-import { processSavePullRequest } from '../functions/processSavePullRequest'
 import { processSaveReview } from '../functions/processSaveReview'
 import type {
   GenerateReviewPayload,
   GenerateSchemaMetaPayload,
   PostCommentPayload,
   ReviewResponse,
-  SavePullRequestPayload,
 } from '../types'
 import { helloWorldTask } from './helloworld'
-
-export const savePullRequestTask = task({
-  id: 'save-pull-request',
-  run: async (payload: SavePullRequestPayload) => {
-    logger.log('Executing PR save task:', { payload })
-
-    try {
-      const result = await processSavePullRequest(payload)
-      logger.info('Successfully saved PR to database:', { prId: result.prId })
-
-      // Get repository information from the result
-      const supabase = createClient()
-      const { data: repository, error: repositoryError } = await supabase
-        .from('Repository')
-        .select('*')
-        .eq('id', result.repositoryId)
-        .single()
-
-      if (repositoryError || !repository) {
-        throw new Error(
-          `Repository not found: ${JSON.stringify(repositoryError)}`,
-        )
-      }
-
-      // Trigger the next task in the chain - generate review
-      await generateReviewTask.trigger({
-        pullRequestId: result.prId,
-        projectId: payload.projectId,
-        repositoryId: repository.id,
-        branchName: result.branchName,
-        owner: repository.owner,
-        name: repository.name,
-        pullRequestNumber: payload.prNumber,
-        schemaFile: result.schemaFile,
-        fileChanges: result.fileChanges,
-      })
-
-      return result
-    } catch (error) {
-      logger.error('Error in savePullRequest task:', { error })
-      throw error
-    }
-  },
-})
 
 export const generateReviewTask = task({
   id: 'generate-review',
