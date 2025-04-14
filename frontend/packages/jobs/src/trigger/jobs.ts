@@ -55,7 +55,7 @@ export const savePullRequestTask = task({
         owner: repository.owner,
         name: repository.name,
         pullRequestNumber: payload.prNumber,
-        schemaFiles: result.schemaFiles,
+        schemaFile: result.schemaFile,
         fileChanges: result.fileChanges,
       })
 
@@ -88,9 +88,7 @@ export const saveReviewTask = task({
     try {
       const { overallReviewId } = await processSaveReview(payload)
 
-      logger.log('Creating knowledge suggestions for docs:', {
-        count: payload.schemaFiles.length,
-      })
+      logger.log('Creating knowledge suggestions for docs')
 
       const installationId = await getInstallationIdFromRepositoryId(
         payload.repositoryId,

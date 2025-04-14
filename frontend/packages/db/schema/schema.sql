@@ -767,6 +767,10 @@ CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDo
 
 
 
+CREATE UNIQUE INDEX "GitHubSchemaFilePath_projectId_key" ON "public"."GitHubSchemaFilePath" USING "btree" ("projectId");
+
+
+
 CREATE UNIQUE INDEX "KnowledgeSuggestionDocMapping_unique_mapping" ON "public"."KnowledgeSuggestionDocMapping" USING "btree" ("knowledgeSuggestionId", "gitHubDocFilePathId");
 
 
@@ -908,6 +912,83 @@ ALTER TABLE ONLY "public"."ReviewFeedback"
 
 ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
     ADD CONSTRAINT "ReviewSuggestionSnippet_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE "public"."Project" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" FOR DELETE TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."Project" IS 'Authenticated users can only delete projects in organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."Project" FOR INSERT TO "authenticated" WITH CHECK (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."Project" IS 'Authenticated users can create any project';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" FOR SELECT TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."Project" IS 'Authenticated users can only view projects belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" FOR UPDATE TO "authenticated" USING (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"())))) WITH CHECK (("organizationId" IN ( SELECT "OrganizationMember"."organizationId"
+   FROM "public"."OrganizationMember"
+  WHERE ("OrganizationMember"."userId" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."Project" IS 'Authenticated users can only update projects in organizations they are members of';
+
+
+
+CREATE POLICY "service_role_can_delete_all_projects" ON "public"."Project" FOR DELETE TO "service_role" USING (true);
+
+
+
+COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."Project" IS 'Service role can delete any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_insert_all_projects" ON "public"."Project" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
+COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."Project" IS 'Service role can create any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_select_all_projects" ON "public"."Project" FOR SELECT TO "service_role" USING (true);
+
+
+
+COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."Project" IS 'Service role can view all projects (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_update_all_projects" ON "public"."Project" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+COMMENT ON POLICY "service_role_can_update_all_projects" ON "public"."Project" IS 'Service role can update any project (for jobs)';
 
 
 

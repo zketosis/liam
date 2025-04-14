@@ -50,6 +50,7 @@ Your JSON-formatted response must contain:
     - "filename": The filename of the file that needs to be applied.
     - "snippet": The snippet of the file that needs to be applied.
       - For example, if DEFAULT value is needed for a column, the snippet should include the statement with the DEFAULT value.
+    - Note: Do not include suggestion snippets for feedbacks with severity "POSITIVE" as they are meant for highlighting good practices rather than suggesting changes.
 
 - A concise overall review in the "bodyMarkdown" field that follows these rules:
   - IMPORTANT:
@@ -91,36 +92,39 @@ Documentation Context:
 {docsContent}
 
 Schema Files:
-{schemaFiles}
+{schemaFile}
 
 File Changes:
 {fileChanges}`
 
 export const reviewJsonSchema: JSONSchema7 = toJsonSchema(reviewSchema)
 
+const model = new ChatOpenAI({
+  model: 'o3-mini-2025-01-31',
+})
+
+const chatPrompt = ChatPromptTemplate.fromMessages([
+  ['system', SYSTEM_PROMPT],
+  ['human', USER_PROMPT],
+])
+
+export const chain = chatPrompt.pipe(
+  model.withStructuredOutput(reviewJsonSchema),
+)
+
 export const generateReview = async (
   docsContent: string,
-  schemaFiles: GenerateReviewPayload['schemaFiles'],
+  schemaFile: GenerateReviewPayload['schemaFile'],
   fileChanges: GenerateReviewPayload['fileChanges'],
   prDescription: string,
   prComments: string,
   callbacks: Callbacks,
   runId: string,
 ) => {
-  const chatPrompt = ChatPromptTemplate.fromMessages([
-    ['system', SYSTEM_PROMPT],
-    ['human', USER_PROMPT],
-  ])
-
-  const model = new ChatOpenAI({
-    model: 'o3-mini-2025-01-31',
-  })
-
-  const chain = chatPrompt.pipe(model.withStructuredOutput(reviewJsonSchema))
   const response = await chain.invoke(
     {
       docsContent,
-      schemaFiles,
+      schemaFile,
       fileChanges,
       prDescription,
       prComments,

@@ -33,7 +33,6 @@ export default async function Page({ params }: PageProps) {
     .select('id')
     .eq('userId', data.session.user.id)
     .eq('organizationId', Number.parseInt(organizationId, 10))
-    .eq('status', 'ACTIVE')
     .limit(1)
 
   if (orgError) {

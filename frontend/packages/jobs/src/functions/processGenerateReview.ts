@@ -101,7 +101,7 @@ export const processGenerateReview = async (
     const callbacks = [langfuseLangchainHandler]
     const review = await generateReview(
       docsContent,
-      payload.schemaFiles,
+      payload.schemaFile,
       payload.fileChanges,
       prDescription,
       formattedComments,
