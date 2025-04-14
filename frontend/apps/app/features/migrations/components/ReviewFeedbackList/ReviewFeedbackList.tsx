@@ -7,6 +7,7 @@ import { resolveReviewFeedback } from '../../actions/resolveReviewFeedback'
 import { useReviewFeedbacks } from '../../contexts/ReviewFeedbackContext'
 import { formatReviewFeedback } from '../../utils/formatReviewFeedback'
 import { ResolveButton } from '../ResolveButton/ResolveButton'
+import { ReviewFeedbackComments } from '../ReviewFeedbackComments'
 import styles from './ReviewFeedbackList.module.css'
 
 interface ReviewFeedbackListProps {
@@ -141,6 +142,9 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
                 )}
               </div>
             )}
+
+            {/* Comments section for this feedback */}
+            <ReviewFeedbackComments reviewFeedbackId={feedback.id} />
           </div>
         ))
       ) : (

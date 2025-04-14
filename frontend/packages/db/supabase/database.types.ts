@@ -627,6 +627,48 @@ export type Database = {
           },
         ]
       }
+      ReviewFeedbackComment: {
+        Row: {
+          content: string
+          createdAt: string
+          id: number
+          reviewFeedbackId: number
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          content: string
+          createdAt?: string
+          id?: number
+          reviewFeedbackId: number
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          content?: string
+          createdAt?: string
+          id?: number
+          reviewFeedbackId?: number
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ReviewFeedbackComment_reviewFeedbackId_fkey'
+            columns: ['reviewFeedbackId']
+            isOneToOne: false
+            referencedRelation: 'ReviewFeedback'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ReviewFeedbackComment_userId_fkey'
+            columns: ['userId']
+            isOneToOne: false
+            referencedRelation: 'User'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       ReviewSuggestionSnippet: {
         Row: {
           createdAt: string

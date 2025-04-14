@@ -546,6 +546,30 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewFeedback" (
 ALTER TABLE "public"."ReviewFeedback" OWNER TO "postgres";
 
 
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewFeedbackComment_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewFeedbackComment_id_seq" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackComment" (
+    "id" integer DEFAULT "nextval"('"public"."ReviewFeedbackComment_id_seq"'::"regclass") NOT NULL,
+    "reviewFeedbackId" integer NOT NULL,
+    "userId" "uuid" NOT NULL,
+    "content" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewFeedbackComment" OWNER TO "postgres";
+
+
 CREATE SEQUENCE IF NOT EXISTS "public"."ReviewFeedback_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -738,6 +762,11 @@ ALTER TABLE ONLY "public"."Repository"
 
 
 
+ALTER TABLE ONLY "public"."ReviewFeedbackComment"
+    ADD CONSTRAINT "ReviewFeedbackComment_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."ReviewFeedback"
     ADD CONSTRAINT "ReviewFeedback_pkey" PRIMARY KEY ("id");
 
@@ -796,6 +825,10 @@ CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "
 
 
 CREATE INDEX "idx_project_organizationId" ON "public"."Project" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."ReviewFeedbackComment" USING "btree" ("reviewFeedbackId");
 
 
 
@@ -902,6 +935,16 @@ ALTER TABLE ONLY "public"."Project"
 
 ALTER TABLE ONLY "public"."PullRequest"
     ADD CONSTRAINT "PullRequest_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackComment"
+    ADD CONSTRAINT "ReviewFeedbackComment_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackComment"
+    ADD CONSTRAINT "ReviewFeedbackComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -1379,6 +1422,18 @@ GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."ReviewFeedback" TO "anon";
 GRANT ALL ON TABLE "public"."ReviewFeedback" TO "authenticated";
 GRANT ALL ON TABLE "public"."ReviewFeedback" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "service_role";
 
 
 
