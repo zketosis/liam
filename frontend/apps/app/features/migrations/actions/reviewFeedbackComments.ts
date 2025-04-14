@@ -24,7 +24,6 @@ export type CommentWithUser = {
   userId: string
   user: {
     name: string
-    email: string
   }
 }
 
@@ -101,8 +100,7 @@ export async function getReviewFeedbackComments(data: {
       .select(`
         *,
         user:userId (
-          name,
-          email
+          name
         )
       `)
       .eq('reviewFeedbackId', feedbackId)
