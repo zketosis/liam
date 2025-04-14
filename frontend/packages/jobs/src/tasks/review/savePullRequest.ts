@@ -3,9 +3,14 @@ import {
   getPullRequestDetails,
   getPullRequestFiles,
 } from '@liam-hq/github'
-import { type SupabaseClient, createClient } from '../libs/supabase'
+import { logger, task } from '@trigger.dev/sdk/v3'
+import { type SupabaseClient, createClient } from '../../libs/supabase'
+import { generateReviewTask } from '../../trigger/jobs'
 
-import type { SavePullRequestPayload } from '../types'
+type SavePullRequestPayload = {
+  prNumber: number
+  projectId: number
+}
 
 export type SavePullRequestResult = {
   success: boolean
@@ -270,3 +275,45 @@ export async function processSavePullRequest(
     branchName: prDetails.head.ref,
   }
 }
+
+export const savePullRequestTask = task({
+  id: 'save-pull-request',
+  run: async (payload: SavePullRequestPayload) => {
+    logger.log('Executing PR save task:', { payload })
+
+    try {
+      const result = await processSavePullRequest(payload)
+      logger.info('Successfully saved PR to database:', { prId: result.prId })
+
+      const supabase = createClient()
+      const { data: repository, error: repositoryError } = await supabase
+        .from('Repository')
+        .select('*')
+        .eq('id', result.repositoryId)
+        .single()
+
+      if (repositoryError || !repository) {
+        throw new Error(
+          `Repository not found: ${JSON.stringify(repositoryError)}`,
+        )
+      }
+
+      await generateReviewTask.trigger({
+        pullRequestId: result.prId,
+        projectId: payload.projectId,
+        repositoryId: repository.id,
+        branchName: result.branchName,
+        owner: repository.owner,
+        name: repository.name,
+        pullRequestNumber: payload.prNumber,
+        schemaFile: result.schemaFile,
+        fileChanges: result.fileChanges,
+      })
+
+      return result
+    } catch (error) {
+      logger.error('Error in savePullRequest task:', { error })
+      throw error
+    }
+  },
+})
