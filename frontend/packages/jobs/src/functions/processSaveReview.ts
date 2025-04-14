@@ -57,7 +57,7 @@ export const processSaveReview = async (
 
     if (reviewFeedbacksError || !insertedFeedbacks) {
       throw new Error(
-        `Failed to create review issues: ${JSON.stringify(reviewFeedbacksError)}`,
+        `Failed to create review feedbacks: ${JSON.stringify(reviewFeedbacksError)}`,
       )
     }
 
