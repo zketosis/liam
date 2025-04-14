@@ -93,8 +93,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       dotenv:
-        specifier: 16.4.7
-        version: 16.4.7
+        specifier: 16.5.0
+        version: 16.5.0
       flags:
         specifier: 3.2.0
         version: 3.2.0(@opentelemetry/api@1.9.0)(next@15.3.0(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -581,8 +581,8 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
       dotenv:
-        specifier: 16.4.7
-        version: 16.4.7
+        specifier: 16.5.0
+        version: 16.5.0
       glob:
         specifier: 11.0.1
         version: 11.0.1
@@ -614,8 +614,8 @@ importers:
         specifier: workspace:*
         version: link:../jobs
       dotenv:
-        specifier: 16.4.7
-        version: 16.4.7
+        specifier: 16.5.0
+        version: 16.5.0
       langfuse:
         specifier: 3.37.1
         version: 3.37.1
@@ -4577,8 +4577,8 @@ packages:
   dot-case@2.1.1:
     resolution: {integrity: sha512-HnM6ZlFqcajLsyudHq7LeeLDr2rFAVYtDv/hV5qchQEidSck8j9OPUsXY9KwJv/lHMtYlX4DjRQqwFYa+0r8Ug==}
 
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -10916,7 +10916,7 @@ snapshots:
       '@babel/core': 7.26.9
       '@sentry/babel-plugin-component-annotate': 3.2.4
       '@sentry/cli': 2.42.2(encoding@0.1.13)
-      dotenv: 16.4.7
+      dotenv: 16.5.0
       find-up: 5.0.0
       glob: 9.3.5
       magic-string: 0.30.8
@@ -10930,7 +10930,7 @@ snapshots:
       '@babel/core': 7.26.9
       '@sentry/babel-plugin-component-annotate': 3.3.1
       '@sentry/cli': 2.42.2(encoding@0.1.13)
-      dotenv: 16.4.7
+      dotenv: 16.5.0
       find-up: 5.0.0
       glob: 9.3.5
       magic-string: 0.30.8
@@ -12170,7 +12170,7 @@ snapshots:
       chokidar: 3.6.0
       confbox: 0.1.8
       defu: 6.1.4
-      dotenv: 16.4.7
+      dotenv: 16.5.0
       giget: 1.2.5
       jiti: 1.21.7
       mlly: 1.7.4
@@ -12675,7 +12675,7 @@ snapshots:
     dependencies:
       no-case: 2.3.2
 
-  dotenv@16.4.7: {}
+  dotenv@16.5.0: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -16242,7 +16242,7 @@ snapshots:
       cli-table3: 0.6.5
       commander: 9.5.0
       defu: 6.1.4
-      dotenv: 16.4.7
+      dotenv: 16.5.0
       esbuild: 0.25.2
       evt: 2.5.9
       fast-npm-meta: 0.2.2
