@@ -1,4 +1,11 @@
 import type { DBOverride } from '@liam-hq/db-structure'
+import type {
+  GenerateReviewPayload,
+  Review,
+  ReviewResponse,
+} from '../tasks/review/savePullRequest'
+
+export type { GenerateReviewPayload, Review, ReviewResponse }
 
 export type PostCommentPayload = {
   reviewComment: string
