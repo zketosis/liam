@@ -8,9 +8,8 @@ import {
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import { safeParse } from 'valibot'
+import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
 import { fetchSchemaFileContent } from './githubFileUtils'
-
-const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
 
 export type SchemaInfo = {
   dbStructure: DBStructure // Original database structure
@@ -36,7 +35,7 @@ export const fetchSchemaInfoWithOverrides = async (
   // Fetch the current schema metadata file from GitHub
   const { content: currentSchemaMetaContent } = await getFileContent(
     repositoryFullName,
-    OVERRIDE_SCHEMA_FILE_PATH,
+    SCHEMA_OVERRIDE_FILE_PATH,
     branchName,
     installationId,
   )
