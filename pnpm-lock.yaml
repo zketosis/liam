@@ -119,6 +119,9 @@ importers:
       valibot:
         specifier: 1.0.0
         version: 1.0.0(typescript@5.8.3)
+      yaml:
+        specifier: 2.7.1
+        version: 2.7.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4

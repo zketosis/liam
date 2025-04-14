@@ -1,7 +1,5 @@
 import { logger, task } from '@trigger.dev/sdk/v3'
-
-// FIXME: This should be imported from the app package once we have proper package structure
-const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
+import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
 import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
 import { postComment } from '../functions/postComment'
 import { processCreateKnowledgeSuggestion } from '../functions/processCreateKnowledgeSuggestion'
@@ -166,7 +164,7 @@ export const generateSchemaMetaSuggestionTask = task({
         projectId: result.projectId,
         type: 'SCHEMA',
         title: result.title,
-        path: OVERRIDE_SCHEMA_FILE_PATH,
+        path: SCHEMA_OVERRIDE_FILE_PATH,
         content: JSON.stringify(result.override, null, 2),
         branch: result.branchName,
         traceId: result.traceId,

@@ -13,7 +13,8 @@ import * as Sentry from '@sentry/nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
-import { OVERRIDE_SCHEMA_FILE_PATH } from './constants'
+import { parse as parseYaml } from 'yaml'
+import { SCHEMA_OVERRIDE_FILE_PATH } from './constants'
 import ERDViewer from './erdViewer'
 
 const processOverrideFile = async (
@@ -24,7 +25,7 @@ const processOverrideFile = async (
 ) => {
   const { content: overrideContent } = await getFileContent(
     repositoryFullName,
-    OVERRIDE_SCHEMA_FILE_PATH,
+    SCHEMA_OVERRIDE_FILE_PATH,
     branchOrCommit,
     installationId,
   )
@@ -38,7 +39,7 @@ const processOverrideFile = async (
 
   const parsedOverrideContent = v.safeParse(
     dbOverrideSchema,
-    JSON.parse(overrideContent),
+    parseYaml(overrideContent),
   )
 
   if (!parsedOverrideContent.success) {
