@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@octokit/openapi-types": "24.2.0",
+    "@octokit/openapi-types": "25.0.0",
     "@prisma/nextjs-monorepo-workaround-plugin": "6.6.0",
     "@types/diff": "7.0.2",
     "@types/gtag.js": "0.0.20",

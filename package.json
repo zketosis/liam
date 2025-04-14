@@ -10,7 +10,7 @@
     "concurrently": "9.1.2",
     "syncpack": "13.0.3",
     "turbo": "2.5.0",
-    "vercel": "41.5.0"
+    "vercel": "41.6.0"
   },
   "scripts": {
     "build": "turbo build",
