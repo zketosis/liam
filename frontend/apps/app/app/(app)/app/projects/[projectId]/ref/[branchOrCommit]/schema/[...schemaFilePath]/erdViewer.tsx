@@ -1,12 +1,12 @@
 'use client'
 
 import { CookieConsent } from '@/components/CookieConsent'
-import type { DBStructure } from '@liam-hq/db-structure'
+import type { Schema } from '@liam-hq/db-structure'
 import type { TableGroup } from '@liam-hq/db-structure'
 import {
   ERDRenderer,
   VersionProvider,
-  initDBStructureStore,
+  initSchemaStore,
   useTableGroups,
   versionSchema,
 } from '@liam-hq/erd-core'
@@ -21,7 +21,7 @@ type ErrorObject = {
 }
 
 export type ERDViewerProps = {
-  dbStructure: DBStructure
+  schema: Schema
   tableGroups?: Record<string, TableGroup>
   errorObjects: ErrorObject[]
   defaultSidebarOpen: boolean
@@ -31,7 +31,7 @@ export type ERDViewerProps = {
 }
 
 export default function ERDViewer({
-  dbStructure,
+  schema,
   tableGroups: initialTableGroups = {},
   errorObjects,
   defaultSidebarOpen,
@@ -45,9 +45,9 @@ export default function ERDViewer({
   const [updateMessage, setUpdateMessage] = useState('')
 
   useEffect(() => {
-    initDBStructureStore(dbStructure)
+    initSchemaStore(schema)
     setShowCookieConsent(window === window.parent)
-  }, [dbStructure])
+  }, [schema])
 
   // Handler for commit & push button
   const handleCommitAndPush = useCallback(async () => {

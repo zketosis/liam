@@ -3,7 +3,7 @@
 import { processOverrideContent } from '@/features/projects/actions/processOverrideContent'
 import { updateKnowledgeSuggestionContent } from '@/features/projects/actions/updateKnowledgeSuggestionContent'
 import { EditableContent } from '@/features/projects/components/EditableContent'
-import type { DBStructure, TableGroup } from '@liam-hq/db-structure'
+import type { Schema, TableGroup } from '@liam-hq/db-structure'
 import { type FC, useState } from 'react'
 import { ErdViewer } from './ErdViewer'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
@@ -23,7 +23,7 @@ type Props = {
   suggestionId: number
   originalContent: string | null
   isApproved: boolean
-  dbStructure: DBStructure | undefined
+  schema: Schema | undefined
   content: string | null
   errors: ErrorObject[]
   tableGroups: Record<string, TableGroup>
@@ -34,7 +34,7 @@ export const ContentForSchemaSection: FC<Props> = ({
   suggestionId,
   originalContent,
   isApproved,
-  dbStructure,
+  schema,
   content,
   errors,
   tableGroups: initialTableGroups,
@@ -47,8 +47,8 @@ export const ContentForSchemaSection: FC<Props> = ({
     setCurrentContent(savedContent)
 
     // Update ErdViewer data with the saved content using server action
-    if (dbStructure) {
-      const { result } = await processOverrideContent(savedContent, dbStructure)
+    if (schema) {
+      const { result } = await processOverrideContent(savedContent, schema)
       setProcessedResult(result)
     }
   }
@@ -78,11 +78,8 @@ export const ContentForSchemaSection: FC<Props> = ({
       await updateKnowledgeSuggestionContent(formData)
 
       // Update ErdViewer data
-      if (dbStructure) {
-        const { result } = await processOverrideContent(
-          updatedContent,
-          dbStructure,
-        )
+      if (schema) {
+        const { result } = await processOverrideContent(updatedContent, schema)
         setProcessedResult(result)
       }
     } catch (error) {
@@ -108,12 +105,12 @@ export const ContentForSchemaSection: FC<Props> = ({
         />
       </div>
 
-      {content !== null && dbStructure && (
+      {content !== null && schema && (
         <ErdViewer
           key={JSON.stringify(
             processedResult?.tableGroups || initialTableGroups,
           )}
-          dbStructure={dbStructure}
+          schema={schema}
           tableGroups={processedResult?.tableGroups || initialTableGroups || {}}
           errorObjects={errors || []}
           defaultSidebarOpen={false}

@@ -3,9 +3,9 @@ import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
 import { ChatOpenAI } from '@langchain/openai'
 import {
-  type DBOverride,
-  type DBStructure,
-  dbOverrideSchema,
+  type Schema,
+  type SchemaOverride,
+  schemaOverrideSchema,
 } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { type InferOutput, boolean, object, parse, string } from 'valibot'
@@ -19,7 +19,7 @@ const evaluationSchema = object({
 
 // Convert schemas to JSON format for LLM
 const evaluationJsonSchema = toJsonSchema(evaluationSchema)
-const dbOverrideJsonSchema = toJsonSchema(dbOverrideSchema)
+const schemaOverrideJsonSchema = toJsonSchema(schemaOverrideSchema)
 
 // Define type for evaluation result
 type EvaluationResult = InferOutput<typeof evaluationSchema>
@@ -27,7 +27,7 @@ type EvaluationResult = InferOutput<typeof evaluationSchema>
 type GenerateSchemaMetaResult =
   | {
       updateNeeded: true
-      override: DBOverride
+      override: SchemaOverride
       reasoning: string
     }
   | {
@@ -86,7 +86,7 @@ schema-override.yml is a documentation-only enhancement layer on top of the actu
 ## Current Database Structure
 <json>
 
-{dbStructure}
+{schema}
 
 </json>
 
@@ -147,7 +147,7 @@ It is NOT for:
 ## Current Database Structure
 <json>
 
-{dbStructure}
+{schema}
 
 </json>
 
@@ -162,7 +162,7 @@ It is NOT for:
 Your response must strictly follow this JSON Schema and maintain the existing structure:
 <json>
 
-{dbOverrideJsonSchema}
+{schemaOverrideJsonSchema}
 
 </json>
 
@@ -188,9 +188,9 @@ REMEMBER: schema-override.yml is ONLY for documentation and organization purpose
 export const generateSchemaMeta = async (
   reviewComment: string,
   callbacks: Callbacks,
-  currentSchemaMeta: DBOverride | null,
+  currentSchemaMeta: SchemaOverride | null,
   runId: string,
-  dbStructure: DBStructure,
+  schema: Schema,
 ): Promise<GenerateSchemaMetaResult> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -207,24 +207,24 @@ export const generateSchemaMeta = async (
 
   // Create update chain
   const updateChain = UPDATE_TEMPLATE.pipe(
-    updateModel.withStructuredOutput(dbOverrideJsonSchema),
+    updateModel.withStructuredOutput(schemaOverrideJsonSchema),
   )
 
   // Define input types for our templates
   type EvaluationInput = {
     reviewComment: string
     currentSchemaMeta: string
-    dbStructure: string
+    schema: string
   }
 
   type UpdateInput = EvaluationInput & {
     evaluationResults: string
-    dbOverrideJsonSchema: string
+    schemaOverrideJsonSchema: string
   }
 
   // Create a router function that returns different runnables based on evaluation
   const schemaMetaRouter = async (
-    inputs: EvaluationInput & { dbOverrideJsonSchema: string },
+    inputs: EvaluationInput & { schemaOverrideJsonSchema: string },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
   ): Promise<GenerateSchemaMetaResult> => {
     // First, run the evaluation chain
@@ -232,7 +232,7 @@ export const generateSchemaMeta = async (
       {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        dbStructure: inputs.dbStructure,
+        schema: inputs.schema,
         evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
       },
       config,
@@ -243,8 +243,8 @@ export const generateSchemaMeta = async (
       const updateInput: UpdateInput = {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        dbStructure: inputs.dbStructure,
-        dbOverrideJsonSchema: inputs.dbOverrideJsonSchema,
+        schema: inputs.schema,
+        schemaOverrideJsonSchema: inputs.schemaOverrideJsonSchema,
         evaluationResults: evaluationResult.suggestedChanges,
       }
 
@@ -255,7 +255,7 @@ export const generateSchemaMeta = async (
       })
 
       // Parse the result and add the reasoning from the evaluation
-      const parsedResult = parse(dbOverrideSchema, updateResult)
+      const parsedResult = parse(schemaOverrideSchema, updateResult)
 
       // Return the result with the new structure
       return {
@@ -282,11 +282,15 @@ export const generateSchemaMeta = async (
     // Prepare the common inputs
     const commonInputs = {
       reviewComment,
-      dbStructure: JSON.stringify(dbStructure, null, 2),
+      schema: JSON.stringify(schema, null, 2),
       currentSchemaMeta: currentSchemaMeta
         ? JSON.stringify(currentSchemaMeta, null, 2)
         : '{}',
-      dbOverrideJsonSchema: JSON.stringify(dbOverrideJsonSchema, null, 2),
+      schemaOverrideJsonSchema: JSON.stringify(
+        schemaOverrideJsonSchema,
+        null,
+        2,
+      ),
       evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
     }
 

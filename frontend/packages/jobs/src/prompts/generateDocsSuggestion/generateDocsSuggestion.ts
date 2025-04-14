@@ -2,7 +2,7 @@ import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
 import { ChatOpenAI } from '@langchain/openai'
-import type { DBStructure } from '@liam-hq/db-structure'
+import type { Schema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
 import {
@@ -94,7 +94,7 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 ## Current Database Structure
 <json>
 
-{dbStructure}
+{schema}
 
 </json>
 
@@ -149,7 +149,7 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 ## Current Database Structure
 <json>
 
-{dbStructure}
+{schema}
 
 </json>
 
@@ -187,7 +187,7 @@ export const generateDocsSuggestion = async (
   formattedDocsContent: string,
   callbacks: Callbacks,
   predefinedRunId: string,
-  dbStructure: DBStructure,
+  schema: Schema,
 ): Promise<DocFileContentMap> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -225,7 +225,7 @@ export const generateDocsSuggestion = async (
     formattedDocsContent: string
     evaluationResults: string
     updateResponseExampleJson: string
-    dbStructure: string
+    schema: string
   }
 
   // Helper function to collect suggested changes for files that need updates
@@ -273,7 +273,7 @@ export const generateDocsSuggestion = async (
       formattedDocsContent: string
       evaluationResponseExampleJson: string
       updateResponseExampleJson: string
-      dbStructure: string
+      schema: string
     },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
   ): Promise<DocFileContentMap> => {
@@ -283,7 +283,7 @@ export const generateDocsSuggestion = async (
         reviewResult: inputs.reviewResult,
         formattedDocsContent: inputs.formattedDocsContent,
         evaluationResponseExampleJson: inputs.evaluationResponseExampleJson,
-        dbStructure: inputs.dbStructure,
+        schema: inputs.schema,
       },
       config,
     )
@@ -297,7 +297,7 @@ export const generateDocsSuggestion = async (
       formattedDocsContent: inputs.formattedDocsContent,
       evaluationResults: JSON.stringify(suggestedChanges, null, 2),
       updateResponseExampleJson: inputs.updateResponseExampleJson,
-      dbStructure: inputs.dbStructure,
+      schema: inputs.schema,
     }
 
     const updateResult = await updateChain.invoke(updateInput, {
@@ -322,7 +322,7 @@ export const generateDocsSuggestion = async (
     formattedDocsContent,
     evaluationResponseExampleJson,
     updateResponseExampleJson,
-    dbStructure: JSON.stringify(dbStructure, null, 2),
+    schema: JSON.stringify(schema, null, 2),
   }
 
   // Execute the router chain
