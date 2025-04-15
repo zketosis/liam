@@ -1,6 +1,7 @@
 import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
+import type { Schema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import type { JSONSchema7 } from 'json-schema'
 import { parse } from 'valibot'
@@ -91,8 +92,8 @@ Pull Request Comments:
 Documentation Context:
 {docsContent}
 
-Schema Files:
-{schemaFile}
+Current Database Schema:
+{schema}
 
 File Changes:
 {fileChanges}`
@@ -114,7 +115,7 @@ export const chain = chatPrompt.pipe(
 
 export const generateReview = async (
   docsContent: string,
-  schemaFile: GenerateReviewPayload['schemaFile'],
+  schema: Schema,
   fileChanges: GenerateReviewPayload['fileChanges'],
   prDescription: string,
   prComments: string,
@@ -124,7 +125,7 @@ export const generateReview = async (
   const response = await chain.invoke(
     {
       docsContent,
-      schemaFile,
+      schema: JSON.stringify(schema, null, 2),
       fileChanges,
       prDescription,
       prComments,
