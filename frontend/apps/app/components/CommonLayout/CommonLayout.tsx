@@ -14,12 +14,18 @@ type CommonLayoutProps = {
 export const CommonLayout: React.FC<CommonLayoutProps> = ({ children }) => {
   const pathname = usePathname()
   const isMinimal = pathname?.includes('/organizations/')
+
+  // Extract projectId from pathname if it's a project page
+  const projectIdMatch = pathname?.match(/\/projects\/(\d+)/)
+  const projectId = projectIdMatch ? projectIdMatch[1] : undefined
+
   return (
     <div className={styles.layout}>
       <GlobalNav />
       <div className={styles.mainContent}>
         <AppBar
-          projectName="Liam Project"
+          projectId={projectId}
+          projectName="Liam Project" // Fallback name if projectId is not available
           branchName="main"
           avatarInitial="L"
           avatarColor="var(--color-teal-800)"

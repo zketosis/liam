@@ -7,6 +7,7 @@ import type {
   KeyboardEvent,
   ReactNode,
 } from 'react'
+import { useEffect, useState } from 'react'
 import { Avatar } from '../Avatar'
 import { IconButton } from '../IconButton'
 import styles from './AppBar.module.css'
@@ -21,33 +22,70 @@ type BreadcrumbItemProps = {
 }
 
 type AppBarProps = {
-  projectName: string
-  branchName: string
+  projectId?: string
+  projectName?: string
+  branchName?: string
   branchTag?: string
   onProjectClick?: () => void
   onBranchClick?: () => void
   onSearchChange?: (value: string) => void
   onNotificationClick?: () => void
   onAvatarClick?: () => void
-  avatarInitial: string
+  avatarInitial?: string
   avatarColor?: string
   minimal?: boolean
 } & ComponentProps<'div'>
 
+type Project = {
+  id: number
+  name: string
+  createdAt: string
+  organizationId?: number
+}
+
+async function getProject(projectId: string): Promise<Project | null> {
+  try {
+    const response = await fetch(`/api/projects/${projectId}`)
+    if (!response.ok) {
+      console.error('Failed to fetch project:', response.statusText)
+      return null
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching project:', error)
+    return null
+  }
+}
+
 export const AppBar = ({
-  projectName,
-  branchName,
-  branchTag,
+  projectId,
+  projectName: initialProjectName = 'Project Name',
+  branchName = 'main',
+  branchTag = 'production',
   onProjectClick,
   onBranchClick,
   onSearchChange,
   onNotificationClick,
   onAvatarClick,
-  avatarInitial,
+  avatarInitial = 'L',
   avatarColor = 'var(--avatar-background)',
   minimal = false,
   ...props
 }: AppBarProps) => {
+  const [projectName, setProjectName] = useState(initialProjectName)
+
+  useEffect(() => {
+    if (projectId) {
+      const fetchProject = async () => {
+        const project = await getProject(projectId)
+        if (project) {
+          setProjectName(project.name)
+        }
+      }
+      fetchProject()
+    }
+  }, [projectId])
+
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearchChange?.(e.target.value)
   }
