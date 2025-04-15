@@ -29,6 +29,7 @@ export const Constraints: React.FC<Props> = ({ constraints: _constraints }) => {
     (constraint) => constraint.type === 'CHECK',
   )
 
+  // NOTE: 400px is higher enough than each table, even considering titles and padding of its section.
   const contentMaxHeight = constraints.length * 400
 
   return (
