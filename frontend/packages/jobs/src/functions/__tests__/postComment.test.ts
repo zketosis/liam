@@ -12,7 +12,7 @@ import {
   vi,
 } from 'vitest'
 import { createClient } from '../../libs/supabase'
-import { postComment } from '../postComment'
+import { postComment } from '../../tasks/review/postComment'
 
 // Mock the GitHub API functions
 vi.mock('@liam-hq/github', () => ({

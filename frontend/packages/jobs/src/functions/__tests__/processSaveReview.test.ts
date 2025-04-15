@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createClient } from '../../libs/supabase'
-import type { ReviewResponse } from '../../types'
-import { processSaveReview } from '../processSaveReview'
+import type { ReviewResponse } from '../../tasks/review/generateReview'
+import { processSaveReview } from '../../tasks/review/saveReview'
 
 // Mock environment variables
 vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
@@ -76,6 +76,9 @@ describe.skip('processSaveReview', () => {
       repositoryId: testRepository.id,
       branchName: 'test-branch',
       traceId: 'test-trace-id-123',
+      pullRequestNumber: testPullRequest.pullNumber,
+      owner: testRepository.owner,
+      name: testRepository.name,
       review: {
         bodyMarkdown: 'Test review comment',
         feedbacks: [
@@ -119,6 +122,9 @@ describe.skip('processSaveReview', () => {
       repositoryId: 9999,
       branchName: 'test-branch',
       traceId: 'test-trace-id-123',
+      pullRequestNumber: 999,
+      owner: 'test-owner',
+      name: 'test-repo',
       review: {
         bodyMarkdown: 'Test review',
         feedbacks: [],
@@ -137,6 +143,9 @@ describe.skip('processSaveReview', () => {
       repositoryId: 9999,
       branchName: 'test-branch',
       traceId: 'test-trace-id-123',
+      pullRequestNumber: 999,
+      owner: 'test-owner',
+      name: 'test-repo',
       review: {
         bodyMarkdown: 'Test review',
         feedbacks: [],
