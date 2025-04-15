@@ -71,7 +71,6 @@ export type ReviewResponse = {
   name: string
 }
 
-
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
 ): Promise<{ review: Review; traceId: string }> => {
