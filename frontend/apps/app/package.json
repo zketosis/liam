@@ -37,7 +37,7 @@
     "@prisma/nextjs-monorepo-workaround-plugin": "6.6.0",
     "@types/diff": "7.0.2",
     "@types/gtag.js": "0.0.20",
-    "@types/node": "22.14.0",
+    "@types/node": "22.14.1",
     "@types/react": "18",
     "@types/react-dom": "18",
     "esbuild": "0.25.2",
