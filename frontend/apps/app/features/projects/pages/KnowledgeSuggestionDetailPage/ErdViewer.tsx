@@ -5,8 +5,8 @@ import { ERDRenderer } from '@/features'
 import { useTableGroups } from '@/hooks'
 import { VersionProvider } from '@/providers'
 import { versionSchema } from '@/schemas'
-import { initDBStructureStore } from '@/stores'
-import type { DBStructure, TableGroup } from '@liam-hq/db-structure'
+import { initSchemaStore } from '@/stores'
+import type { Schema, TableGroup } from '@liam-hq/db-structure'
 import { type FC, useEffect, useState } from 'react'
 import { parse } from 'valibot'
 
@@ -17,7 +17,7 @@ type ErrorObject = {
 }
 
 export type Props = {
-  dbStructure: DBStructure
+  schema: Schema
   tableGroups?: Record<string, TableGroup>
   errorObjects: ErrorObject[]
   defaultSidebarOpen: boolean
@@ -26,7 +26,7 @@ export type Props = {
 }
 
 export const ErdViewer: FC<Props> = ({
-  dbStructure,
+  schema,
   tableGroups: initialTableGroups = {},
   errorObjects,
   defaultSidebarOpen,
@@ -37,9 +37,9 @@ export const ErdViewer: FC<Props> = ({
   const { tableGroups, addTableGroup } = useTableGroups(initialTableGroups)
 
   useEffect(() => {
-    initDBStructureStore(dbStructure)
+    initSchemaStore(schema)
     setShowCookieConsent(window === window.parent)
-  }, [dbStructure])
+  }, [schema])
 
   const versionData = {
     version: '0.1.0', // NOTE: no maintained version for ERD Web

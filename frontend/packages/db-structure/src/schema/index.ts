@@ -1,12 +1,12 @@
 export {
-  dbStructureSchema,
+  schemaSchema,
   tableGroupSchema,
   tableGroupsSchema,
-} from './dbStructure.js'
+} from './schema.js'
 export type {
   Column,
   Columns,
-  DBStructure,
+  Schema,
   Table,
   Tables,
   Relationship,
@@ -17,16 +17,16 @@ export type {
   ForeignKeyConstraintReferenceOption,
   Cardinality,
   TableGroup,
-} from './dbStructure.js'
+} from './schema.js'
 export {
   aColumn,
   aTable,
-  aDBStructure,
+  aSchema,
   anIndex,
   aRelationship,
 } from './factories.js'
 export {
-  applyOverrides,
-  dbOverrideSchema,
-} from './overrideDbStructure.js'
-export type { DBOverride } from './overrideDbStructure.js'
+  overrideSchema,
+  schemaOverrideSchema,
+} from './overrideSchema.js'
+export type { SchemaOverride } from './overrideSchema.js'

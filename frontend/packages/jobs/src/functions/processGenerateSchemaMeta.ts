@@ -53,7 +53,7 @@ export const processGenerateSchemaMeta = async (
 
     // Fetch schema information with overrides
     const repositoryFullName = `${repository.owner}/${repository.name}`
-    const { currentSchemaMeta, overriddenDbStructure } =
+    const { currentSchemaMeta, overriddenSchema } =
       await fetchSchemaInfoWithOverrides(
         Number(project.id),
         overallReview.branchName,
@@ -66,7 +66,7 @@ export const processGenerateSchemaMeta = async (
       callbacks,
       currentSchemaMeta,
       predefinedRunId,
-      overriddenDbStructure,
+      overriddenSchema,
     )
 
     // If no update is needed, return early with createNeeded: false

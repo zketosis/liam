@@ -92,7 +92,7 @@ export async function processGenerateDocsSuggestion(payload: {
     const callbacks = [langfuseLangchainHandler]
 
     // Fetch schema information with overrides
-    const { overriddenDbStructure } = await fetchSchemaInfoWithOverrides(
+    const { overriddenSchema } = await fetchSchemaInfoWithOverrides(
       payload.projectId,
       branch,
       repositoryFullName,
@@ -104,7 +104,7 @@ export async function processGenerateDocsSuggestion(payload: {
       formattedDocsContent,
       callbacks,
       predefinedRunId,
-      overriddenDbStructure,
+      overriddenSchema,
     )
 
     const suggestions = Object.fromEntries(

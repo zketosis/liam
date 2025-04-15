@@ -1,9 +1,9 @@
 import path from 'node:path'
 import {
-  type DBOverride,
-  type DBStructure,
-  applyOverrides,
-  dbOverrideSchema,
+  type Schema,
+  type SchemaOverride,
+  overrideSchema,
+  schemaOverrideSchema,
 } from '@liam-hq/db-structure'
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
@@ -12,9 +12,9 @@ import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
 import { fetchSchemaFileContent } from './githubFileUtils'
 
 export type SchemaInfo = {
-  dbStructure: DBStructure // Original database structure
-  overriddenDbStructure: DBStructure // Database structure with overrides applied
-  currentSchemaMeta: DBOverride | null // Current schema metadata
+  schema: Schema // Original database structure
+  overriddenSchema: Schema // Database structure with overrides applied
+  currentSchemaMeta: SchemaOverride | null // Current schema metadata
 }
 
 /**
@@ -41,10 +41,10 @@ export const fetchSchemaInfoWithOverrides = async (
   )
 
   // Parse and validate the current schema metadata if it exists
-  let currentSchemaMeta: DBOverride | null = null
+  let currentSchemaMeta: SchemaOverride | null = null
   if (currentSchemaMetaContent) {
     const parsedJson = JSON.parse(currentSchemaMetaContent)
-    const result = safeParse(dbOverrideSchema, parsedJson)
+    const result = safeParse(schemaOverrideSchema, parsedJson)
 
     if (result.success) {
       currentSchemaMeta = result.output
@@ -61,20 +61,20 @@ export const fetchSchemaInfoWithOverrides = async (
 
   // Parse the schema file
   setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
-  const { value: dbStructure, errors } = await parse(content, format)
+  const { value: schema, errors } = await parse(content, format)
 
   if (errors.length > 0) {
     console.warn('Errors parsing schema file:', errors)
   }
 
-  // Apply overrides to dbStructure if currentSchemaMeta exists
-  const overriddenDbStructure = currentSchemaMeta
-    ? applyOverrides(dbStructure, currentSchemaMeta).dbStructure
-    : dbStructure
+  // Apply overrides to schema if currentSchemaMeta exists
+  const overriddenSchema = currentSchemaMeta
+    ? overrideSchema(schema, currentSchemaMeta).schema
+    : schema
 
   return {
-    dbStructure,
-    overriddenDbStructure,
+    schema,
+    overriddenSchema,
     currentSchemaMeta,
   }
 }
