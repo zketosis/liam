@@ -3,7 +3,7 @@ import { getInstallationIdFromRepositoryId } from '../../functions/getInstallati
 import { createClient } from '../../libs/supabase'
 import {
   generateDocsSuggestionTask,
-  generateSchemaMetaSuggestionTask,
+  generateSchemaOverrideSuggestionTask,
 } from '../../trigger/jobs'
 import type { ReviewResponse } from './generateReview'
 import { postCommentTask } from './postComment'
@@ -209,7 +209,7 @@ export const saveReviewTask = task({
         overallReviewId,
       })
 
-      await generateSchemaMetaSuggestionTask.trigger({
+      await generateSchemaOverrideSuggestionTask.trigger({
         overallReviewId,
       })
 
