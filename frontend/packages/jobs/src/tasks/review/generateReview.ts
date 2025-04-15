@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { langfuseLangchainHandler } from '../../functions/langfuseLangchainHandler'
 import { createClient } from '../../libs/supabase'
 import { generateReview } from '../../prompts/generateReview/generateReview'
+import { fetchSchemaInfoWithOverrides } from '../../utils/schemaUtils'
 import { saveReviewTask } from './saveReview'
 
 export type GenerateReviewPayload = {
@@ -150,10 +151,18 @@ export const processGenerateReview = async (
       )
       .join('\n\n')
 
+    // Fetch schema information with overrides
+    const { overriddenSchema } = await fetchSchemaInfoWithOverrides(
+      payload.projectId,
+      payload.branchName,
+      `${payload.owner}/${payload.name}`,
+      Number(repository.installationId),
+    )
+
     const callbacks = [langfuseLangchainHandler]
     const review = await generateReview(
       docsContent,
-      payload.schemaFile,
+      overriddenSchema,
       payload.fileChanges,
       prDescription,
       formattedComments,
