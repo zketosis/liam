@@ -6,6 +6,7 @@ import { LayoutGrid } from '@liam-hq/ui/src/icons'
 import clsx from 'clsx'
 import { type FC, useState } from 'react'
 import styles from './GlobalNav.module.css'
+import itemStyles from './Item.module.css'
 import { LinkItem, type LinkItemProps } from './LinkItem'
 import { OrganizationItem } from './OrganizationItem'
 
@@ -40,12 +41,17 @@ export const GlobalNav: FC = () => {
       >
         <div className={styles.logoContainer}>
           <div className={styles.logoSection}>
-            {isExpanded ? (
-              // TODO: Split LiamMigrationLogo into Liam Mark + Liam Migration Text to create a more natural animation
-              <LiamMigrationLogo className={styles.expandLogo} />
-            ) : (
-              <LiamLogoMark className={styles.logo} />
-            )}
+            <div className={itemStyles.iconContainer}>
+              <LiamLogoMark />
+            </div>
+            <div
+              className={clsx(
+                itemStyles.labelArea,
+                isExpanded && itemStyles.expandLabelArea,
+              )}
+            >
+              <LiamMigrationLogo className={styles.liamMigrationLogo} />
+            </div>
           </div>
         </div>
 
