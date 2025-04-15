@@ -1,14 +1,9 @@
-import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
-import { getFileContent } from '@liam-hq/github'
 import { v4 as uuidv4 } from 'uuid'
-import { safeParse } from 'valibot'
 import { createClient } from '../libs/supabase'
 import { generateSchemaMeta } from '../prompts/generateSchemaMeta/generateSchemaMeta'
 import type { GenerateSchemaMetaPayload, SchemaMetaResult } from '../types'
-import { fetchSchemaFileContent } from '../utils/githubFileUtils'
+import { fetchSchemaInfoWithOverrides } from '../utils/schemaUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
-
-const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
 
 export const processGenerateSchemaMeta = async (
   payload: GenerateSchemaMetaPayload,
@@ -54,43 +49,24 @@ export const processGenerateSchemaMeta = async (
     }
 
     const predefinedRunId = uuidv4()
-
     const callbacks = [langfuseLangchainHandler]
 
-    // Fetch the current schema metadata file from GitHub
+    // Fetch schema information with overrides
     const repositoryFullName = `${repository.owner}/${repository.name}`
-    const { content: currentSchemaMetaContent } = await getFileContent(
-      repositoryFullName,
-      OVERRIDE_SCHEMA_FILE_PATH,
-      overallReview.branchName,
-      Number(repository.installationId),
-    )
-
-    // Parse and validate the current schema metadata if it exists
-    let currentSchemaMeta: DBOverride | null = null
-    if (currentSchemaMetaContent) {
-      const parsedJson = JSON.parse(currentSchemaMetaContent)
-      const result = safeParse(dbOverrideSchema, parsedJson)
-
-      if (result.success) {
-        currentSchemaMeta = result.output
-      }
-    }
-
-    // Enrich AI context with actual schema structure for more accurate metadata suggestions
-    const schemaFile = await fetchSchemaFileContent(
-      Number(project.id),
-      overallReview.branchName,
-      repositoryFullName,
-      Number(repository.installationId),
-    )
+    const { currentSchemaMeta, overriddenSchema } =
+      await fetchSchemaInfoWithOverrides(
+        Number(project.id),
+        overallReview.branchName,
+        repositoryFullName,
+        Number(repository.installationId),
+      )
 
     const schemaMetaResult = await generateSchemaMeta(
       overallReview.reviewComment || '',
       callbacks,
       currentSchemaMeta,
       predefinedRunId,
-      schemaFile, // Pass single schema file content
+      overriddenSchema,
     )
 
     // If no update is needed, return early with createNeeded: false

@@ -1,1 +1,1 @@
-export const OVERRIDE_SCHEMA_FILE_PATH = '.liam/schema-meta.json'
+export const SCHEMA_OVERRIDE_FILE_PATH = '.liam/schema-override.yml'

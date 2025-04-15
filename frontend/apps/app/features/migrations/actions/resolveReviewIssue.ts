@@ -8,7 +8,7 @@ const requestSchema = v.object({
   resolutionComment: v.optional(v.nullable(v.string())),
 })
 
-export const resolveReviewIssue = async (data: {
+export const resolveReviewFeedback = async (data: {
   issueId: number
   resolutionComment?: string | null
 }) => {
@@ -24,7 +24,7 @@ export const resolveReviewIssue = async (data: {
     const supabase = await createClient()
 
     const { data: updatedIssue, error } = await supabase
-      .from('ReviewIssue')
+      .from('ReviewFeedback')
       .update({
         resolvedAt: new Date().toISOString(),
         resolutionComment: resolutionComment || null,

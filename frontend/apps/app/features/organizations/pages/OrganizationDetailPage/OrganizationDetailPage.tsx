@@ -5,7 +5,7 @@ import { urlgen } from '@/utils/routes'
 import { Button } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
 import { type FC, type FormEvent, useState } from 'react'
-import { Tab, Tabs } from '../../components/Tabs'
+import { Tabs } from '../../components/Tabs'
 import styles from './OrganizationDetailPage.module.css'
 
 interface OrganizationDetailPageProps {

@@ -131,7 +131,7 @@ export type Relationships = v.InferOutput<typeof relationshipsSchema>
 export const tableGroupSchema = v.object({
   name: v.string(),
   tables: v.array(tableNameSchema),
-  comment: v.nullable(v.string()),
+  comment: v.optional(v.nullable(v.string()), ''),
 })
 
 export type TableGroup = v.InferOutput<typeof tableGroupSchema>
@@ -142,10 +142,10 @@ export const tableGroupsSchema = v.record(
 )
 export type TableGroups = v.InferOutput<typeof tableGroupsSchema>
 
-export const dbStructureSchema = v.object({
+export const schemaSchema = v.object({
   tables: tablesSchema,
   relationships: relationshipsSchema,
   tableGroups: tableGroupsSchema,
 })
 
-export type DBStructure = v.InferOutput<typeof dbStructureSchema>
+export type Schema = v.InferOutput<typeof schemaSchema>

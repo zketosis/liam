@@ -40,10 +40,10 @@ export const processSaveReview = async (
       )
     }
 
-    // Create review issues directly from the feedback data
+    // Create review feedbacks directly from the feedback data
 
-    // Create review issues
-    const reviewIssues = payload.review.feedbacks.map((feedback) => ({
+    // Create review feedbacks
+    const reviewFeedbacks = payload.review.feedbacks.map((feedback) => ({
       overallReviewId: overallReview.id,
       category: mapCategoryEnum(feedback.kind),
       severity: feedback.severity,
@@ -52,25 +52,23 @@ export const processSaveReview = async (
       updatedAt: now,
     }))
 
-    const { data: insertedIssues, error: reviewIssuesError } = await supabase
-      .from('ReviewIssue')
-      .insert(reviewIssues)
-      .select('id')
+    const { data: insertedFeedbacks, error: reviewFeedbacksError } =
+      await supabase.from('ReviewFeedback').insert(reviewFeedbacks).select('id')
 
-    if (reviewIssuesError || !insertedIssues) {
+    if (reviewFeedbacksError || !insertedFeedbacks) {
       throw new Error(
-        `Failed to create review issues: ${JSON.stringify(reviewIssuesError)}`,
+        `Failed to create review feedbacks: ${JSON.stringify(reviewFeedbacksError)}`,
       )
     }
 
     // create suggestion snippet
     const suggestionSnippet = payload.review.feedbacks
       .map((feedback, index) => {
-        const reviewIssue = insertedIssues[index]
-        return reviewIssue
+        const reviewFeedback = insertedFeedbacks[index]
+        return reviewFeedback
           ? {
               feedback,
-              reviewIssueId: reviewIssue.id,
+              reviewFeedbackId: reviewFeedback.id,
             }
           : null
       })
@@ -79,19 +77,19 @@ export const processSaveReview = async (
           item,
         ): item is {
           feedback: (typeof payload.review.feedbacks)[0]
-          reviewIssueId: number
+          reviewFeedbackId: number
         } => item !== null && item.feedback.severity !== 'POSITIVE',
       )
-      .flatMap(({ feedback, reviewIssueId }) =>
+      .flatMap(({ feedback, reviewFeedbackId }) =>
         feedback.suggestionSnippets.map((snippet) => ({
           ...snippet,
-          reviewIssueId,
+          reviewFeedbackId,
           updatedAt: now,
         })),
       ) as Array<{
       filename: string
       snippet: string
-      reviewIssueId: number
+      reviewFeedbackId: number
       updatedAt: string
     }>
 

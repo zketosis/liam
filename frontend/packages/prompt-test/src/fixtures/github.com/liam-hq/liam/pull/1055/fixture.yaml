@@ -16,124 +16,785 @@ vars:
   prDescription: ''
   prComments: ''
   docsContent: ''
-  schemaFile:
-    filename: frontend/packages/db/prisma/schema.prisma
-    content: |-
-      datasource db {
-        provider = "postgresql"
-        // NOTE: Use the non-pooling URL to avoid PrismaClientUnknownRequestError for now
-        url      = env("POSTGRES_URL_NON_POOLING")
+  schema: |-
+    {
+      "tables": {
+        "Project": {
+          "name": "Project",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "name": {
+              "name": "name",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "Project_pkey": {
+              "name": "Project_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "Repository": {
+          "name": "Repository",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "name": {
+              "name": "name",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "owner": {
+              "name": "owner",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "installationId": {
+              "name": "installationId",
+              "type": "bigint",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "isActive": {
+              "name": "isActive",
+              "type": "boolean",
+              "default": true,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "Repository_pkey": {
+              "name": "Repository_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            },
+            "Repository_owner_name_key": {
+              "name": "Repository_owner_name_key",
+              "unique": true,
+              "columns": [
+                "owner",
+                "name"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "PullRequest": {
+          "name": "PullRequest",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "pullNumber": {
+              "name": "pullNumber",
+              "type": "bigint",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "commentId": {
+              "name": "commentId",
+              "type": "bigint",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "repositoryId": {
+              "name": "repositoryId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "PullRequest_pkey": {
+              "name": "PullRequest_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            },
+            "PullRequest_repositoryId_pullNumber_key": {
+              "name": "PullRequest_repositoryId_pullNumber_key",
+              "unique": true,
+              "columns": [
+                "repositoryId",
+                "pullNumber"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "Migration": {
+          "name": "Migration",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "title": {
+              "name": "title",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "pullRequestId": {
+              "name": "pullRequestId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "Migration_pkey": {
+              "name": "Migration_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            },
+            "Migration_pullRequestId_key": {
+              "name": "Migration_pullRequestId_key",
+              "unique": true,
+              "columns": [
+                "pullRequestId"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "OverallReview": {
+          "name": "OverallReview",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "pullRequestId": {
+              "name": "pullRequestId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "branchName": {
+              "name": "branchName",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "reviewComment": {
+              "name": "reviewComment",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "reviewedAt": {
+              "name": "reviewedAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "OverallReview_pkey": {
+              "name": "OverallReview_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "ProjectRepositoryMapping": {
+          "name": "ProjectRepositoryMapping",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "repositoryId": {
+              "name": "repositoryId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "ProjectRepositoryMapping_pkey": {
+              "name": "ProjectRepositoryMapping_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            },
+            "ProjectRepositoryMapping_projectId_repositoryId_key": {
+              "name": "ProjectRepositoryMapping_projectId_repositoryId_key",
+              "unique": true,
+              "columns": [
+                "projectId",
+                "repositoryId"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "WatchSchemaFilePattern": {
+          "name": "WatchSchemaFilePattern",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "pattern": {
+              "name": "pattern",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "WatchSchemaFilePattern_pkey": {
+              "name": "WatchSchemaFilePattern_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        },
+        "KnowledgeSuggestion": {
+          "name": "KnowledgeSuggestion",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "serial",
+              "default": "autoincrement()",
+              "check": null,
+              "primary": true,
+              "unique": true,
+              "notNull": true,
+              "comment": null
+            },
+            "type": {
+              "name": "type",
+              "type": "KnowledgeType",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "title": {
+              "name": "title",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "path": {
+              "name": "path",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "content": {
+              "name": "content",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "fileSha": {
+              "name": "fileSha",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "branchName": {
+              "name": "branchName",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "integer",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "approvedAt": {
+              "name": "approvedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp(3)",
+              "default": "now()",
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp(3)",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "KnowledgeSuggestion_pkey": {
+              "name": "KnowledgeSuggestion_pkey",
+              "unique": true,
+              "columns": [
+                "id"
+              ],
+              "type": ""
+            }
+          },
+          "constraints": {}
+        }
+      },
+      "relationships": {
+        "OverallReviewToProject": {
+          "name": "OverallReviewToProject",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "OverallReview",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "ProjectToProjectRepositoryMapping": {
+          "name": "ProjectToProjectRepositoryMapping",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "ProjectRepositoryMapping",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "ProjectToWatchSchemaFilePattern": {
+          "name": "ProjectToWatchSchemaFilePattern",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "WatchSchemaFilePattern",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "KnowledgeSuggestionToProject": {
+          "name": "KnowledgeSuggestionToProject",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "KnowledgeSuggestion",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "PullRequestToRepository": {
+          "name": "PullRequestToRepository",
+          "primaryTableName": "Repository",
+          "primaryColumnName": "id",
+          "foreignTableName": "PullRequest",
+          "foreignColumnName": "repositoryId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "ProjectRepositoryMappingToRepository": {
+          "name": "ProjectRepositoryMappingToRepository",
+          "primaryTableName": "Repository",
+          "primaryColumnName": "id",
+          "foreignTableName": "ProjectRepositoryMapping",
+          "foreignColumnName": "repositoryId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "MigrationToPullRequest": {
+          "name": "MigrationToPullRequest",
+          "primaryTableName": "PullRequest",
+          "primaryColumnName": "id",
+          "foreignTableName": "Migration",
+          "foreignColumnName": "pullRequestId",
+          "cardinality": "ONE_TO_ONE",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        },
+        "OverallReviewToPullRequest": {
+          "name": "OverallReviewToPullRequest",
+          "primaryTableName": "PullRequest",
+          "primaryColumnName": "id",
+          "foreignTableName": "OverallReview",
+          "foreignColumnName": "pullRequestId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "NO_ACTION",
+          "deleteConstraint": "NO_ACTION"
+        }
+      },
+      "tableGroups": {
+        "Github": {
+          "name": "Github",
+          "tables": [
+            "Repository",
+            "PullRequest",
+            "ProjectRepositoryMapping"
+          ],
+          "comment": "Tables related to Github"
+        }
       }
-
-      generator client {
-        provider      = "prisma-client-js"
-        binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
-      }
-
-      model Project {
-        id        Int      @id @default(autoincrement())
-        name      String
-        createdAt DateTime @default(now())
-        updatedAt DateTime @updatedAt
-        reviews   OverallReview[]
-        repositoryMappings ProjectRepositoryMapping[]
-        watchSchemaFilePatterns WatchSchemaFilePattern[]
-        knowledgeSuggestions KnowledgeSuggestion[]
-        githubDocFilePaths GitHubDocFilePath[]
-      }
-
-      model Repository {
-        id             Int      @id @default(autoincrement())
-        name           String
-        owner          String
-        installationId BigInt
-        isActive       Boolean  @default(true)
-        createdAt      DateTime @default(now())
-        updatedAt      DateTime @updatedAt
-
-        pullRequests   PullRequest[]
-        projectMappings ProjectRepositoryMapping[]
-
-        @@unique([owner, name])
-      }
-
-      model PullRequest {
-        id             Int      @id @default(autoincrement())
-        pullNumber     BigInt
-        commentId      BigInt?
-        createdAt      DateTime @default(now())
-        updatedAt      DateTime @updatedAt
-        migration Migration?
-        repositoryId   Int
-        repository     Repository @relation(fields: [repositoryId], references: [id])
-        reviews        OverallReview[]
-
-        @@unique([repositoryId, pullNumber])
-      }
-
-      model Migration {
-        id             Int         @id @default(autoincrement())
-        title          String
-        pullRequestId  Int         @unique
-        pullRequest    PullRequest @relation(fields: [pullRequestId], references: [id])
-        createdAt       DateTime  @default(now())
-        updatedAt       DateTime  @updatedAt
-      }
-
-      model OverallReview {
-        id            Int     @id @default(autoincrement())
-        projectId     Int?
-        project       Project?    @relation(fields: [projectId], references: [id])
-        pullRequestId Int
-        pullRequest   PullRequest @relation(fields: [pullRequestId], references: [id])
-        branchName    String
-        reviewComment String?
-        reviewedAt    DateTime   @default(now())
-        createdAt       DateTime  @default(now())
-        updatedAt       DateTime  @updatedAt
-      }
-
-      model ProjectRepositoryMapping {
-        id           Int        @id @default(autoincrement())
-        projectId    Int
-        project      Project    @relation(fields: [projectId], references: [id])
-        repositoryId Int
-        repository   Repository @relation(fields: [repositoryId], references: [id])
-        createdAt    DateTime   @default(now())
-        updatedAt    DateTime   @updatedAt
-
-        @@unique([projectId, repositoryId])
-      }
-
-      model WatchSchemaFilePattern {
-        id        Int      @id @default(autoincrement())
-        pattern   String
-        projectId Int
-        project   Project  @relation(fields: [projectId], references: [id])
-        createdAt DateTime @default(now())
-        updatedAt DateTime @updatedAt
-      }
-
-
-      enum KnowledgeType {
-        SCHEMA
-        DOCS
-      }
-
-      model KnowledgeSuggestion {
-        id             Int           @id @default(autoincrement())
-        type           KnowledgeType
-        title          String
-        path           String
-        content        String
-        fileSha        String?
-        branchName     String
-        projectId      Int
-        project        Project       @relation(fields: [projectId], references: [id])
-        approvedAt     DateTime?
-        createdAt      DateTime      @default(now())
-        updatedAt      DateTime      @updatedAt
-      }
+    }
   fileChanges:
   - filename: frontend/packages/db/prisma/schema.prisma
     status: modified

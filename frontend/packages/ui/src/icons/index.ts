@@ -1,7 +1,9 @@
+export * from './Building'
 export * from './BookText'
 export * from './Check'
 export * from './ChevronDown'
 export * from './ChevronLeft'
+export * from './ChevronsUpDown'
 export * from './ChevronUp'
 export * from './CircleHelp'
 export * from './InfoIcon'
@@ -39,4 +41,6 @@ export {
   AlertTriangle,
   Info,
   XCircle,
+  LayoutGrid,
+  Settings,
 } from 'lucide-react'

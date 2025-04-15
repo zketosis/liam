@@ -529,7 +529,7 @@ ALTER SEQUENCE "public"."Repository_id_seq" OWNED BY "public"."Repository"."id";
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
+CREATE TABLE IF NOT EXISTS "public"."ReviewFeedback" (
     "id" integer NOT NULL,
     "overallReviewId" integer NOT NULL,
     "category" "public"."CategoryEnum" NOT NULL,
@@ -543,10 +543,10 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
 );
 
 
-ALTER TABLE "public"."ReviewIssue" OWNER TO "postgres";
+ALTER TABLE "public"."ReviewFeedback" OWNER TO "postgres";
 
 
-CREATE SEQUENCE IF NOT EXISTS "public"."ReviewIssue_id_seq"
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewFeedbackComment_id_seq"
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -554,10 +554,34 @@ CREATE SEQUENCE IF NOT EXISTS "public"."ReviewIssue_id_seq"
     CACHE 1;
 
 
-ALTER TABLE "public"."ReviewIssue_id_seq" OWNER TO "postgres";
+ALTER TABLE "public"."ReviewFeedbackComment_id_seq" OWNER TO "postgres";
 
 
-ALTER SEQUENCE "public"."ReviewIssue_id_seq" OWNED BY "public"."ReviewIssue"."id";
+CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackComment" (
+    "id" integer DEFAULT "nextval"('"public"."ReviewFeedbackComment_id_seq"'::"regclass") NOT NULL,
+    "reviewFeedbackId" integer NOT NULL,
+    "userId" "uuid" NOT NULL,
+    "content" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewFeedbackComment" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewFeedback_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewFeedback_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."ReviewFeedback_id_seq" OWNED BY "public"."ReviewFeedback"."id";
 
 
 
@@ -574,7 +598,7 @@ ALTER TABLE "public"."ReviewSuggestionSnippet_id_seq" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
     "id" integer DEFAULT "nextval"('"public"."ReviewSuggestionSnippet_id_seq"'::"regclass") NOT NULL,
-    "reviewIssueId" integer NOT NULL,
+    "reviewFeedbackId" integer NOT NULL,
     "filename" "text" NOT NULL,
     "snippet" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -654,7 +678,7 @@ ALTER TABLE ONLY "public"."Repository" ALTER COLUMN "id" SET DEFAULT "nextval"('
 
 
 
-ALTER TABLE ONLY "public"."ReviewIssue" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewIssue_id_seq"'::"regclass");
+ALTER TABLE ONLY "public"."ReviewFeedback" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewFeedback_id_seq"'::"regclass");
 
 
 
@@ -738,8 +762,13 @@ ALTER TABLE ONLY "public"."Repository"
 
 
 
-ALTER TABLE ONLY "public"."ReviewIssue"
-    ADD CONSTRAINT "ReviewIssue_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."ReviewFeedbackComment"
+    ADD CONSTRAINT "ReviewFeedbackComment_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedback"
+    ADD CONSTRAINT "ReviewFeedback_pkey" PRIMARY KEY ("id");
 
 
 
@@ -796,6 +825,10 @@ CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "
 
 
 CREATE INDEX "idx_project_organizationId" ON "public"."Project" USING "btree" ("organizationId");
+
+
+
+CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."ReviewFeedbackComment" USING "btree" ("reviewFeedbackId");
 
 
 
@@ -905,13 +938,23 @@ ALTER TABLE ONLY "public"."PullRequest"
 
 
 
-ALTER TABLE ONLY "public"."ReviewIssue"
-    ADD CONSTRAINT "ReviewIssue_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."ReviewFeedbackComment"
+    ADD CONSTRAINT "ReviewFeedbackComment_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackComment"
+    ADD CONSTRAINT "ReviewFeedbackComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedback"
+    ADD CONSTRAINT "ReviewFeedback_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
 ALTER TABLE ONLY "public"."ReviewSuggestionSnippet"
-    ADD CONSTRAINT "ReviewSuggestionSnippet_reviewIssueId_fkey" FOREIGN KEY ("reviewIssueId") REFERENCES "public"."ReviewIssue"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "ReviewSuggestionSnippet_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -1376,15 +1419,27 @@ GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."ReviewIssue" TO "anon";
-GRANT ALL ON TABLE "public"."ReviewIssue" TO "authenticated";
-GRANT ALL ON TABLE "public"."ReviewIssue" TO "service_role";
+GRANT ALL ON TABLE "public"."ReviewFeedback" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewFeedback" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewFeedback" TO "service_role";
 
 
 
-GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "service_role";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewFeedback_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedback_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedback_id_seq" TO "service_role";
 
 
 

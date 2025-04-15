@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
 import {
   aColumn,
-  aDBStructure,
   aRelationship,
+  aSchema,
   aTable,
   anIndex,
 } from '../../schema/index.js'
@@ -12,7 +12,7 @@ import { processor as _processor } from './index.js'
 
 describe(_processor, () => {
   const userTable = (override?: Partial<Table>) =>
-    aDBStructure({
+    aSchema({
       tables: {
         users: aTable({
           name: 'users',
@@ -403,7 +403,7 @@ describe(_processor, () => {
         }
       `)
 
-      const expectedTables = aDBStructure({
+      const expectedTables = aSchema({
         tables: {
           users: aTable({
             name: 'users',
