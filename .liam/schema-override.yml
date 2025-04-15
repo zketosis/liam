@@ -5,6 +5,11 @@ overrides:
       tables:
         - Repository
         - PullRequest
-        - ProjectRepositoryMapping
         - GitHubSchemaFilePath
-      comment: Tables related to Github
+        - GitHubDocFilePath
+      comment: Tables related to Github. All tables in this group should have a GitHub prefix.
+  tables:
+    Repository:
+      comment: "TODO: Rename to GitHubRepository to match the GitHub prefix pattern of this table group"
+    PullRequest:
+      comment: "TODO: Rename to GitHubPullRequest to match the GitHub prefix pattern of this table group"
