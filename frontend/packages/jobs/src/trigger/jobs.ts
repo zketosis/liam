@@ -14,6 +14,7 @@ import type {
   GenerateReviewPayload,
   GenerateSchemaMetaPayload,
   PostCommentPayload,
+  Review,
   ReviewResponse,
 } from '../types'
 import { helloWorldTask } from './helloworld'
@@ -56,7 +57,7 @@ export const saveReviewTask = task({
 
       // Trigger docs suggestion generation after review is saved
       await generateDocsSuggestionTask.trigger({
-        reviewComment: payload.review.bodyMarkdown,
+        review: payload.review,
         projectId: payload.projectId,
         pullRequestNumber: payload.pullRequestNumber,
         owner: payload.owner,
@@ -109,7 +110,7 @@ export const postCommentTask = task({
 export const generateDocsSuggestionTask = task({
   id: 'generate-docs-suggestion',
   run: async (payload: {
-    reviewComment: string
+    review: Review
     projectId: number
     pullRequestNumber: number
     owner: string
@@ -120,7 +121,7 @@ export const generateDocsSuggestionTask = task({
     overallReviewId: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
-      reviewComment: payload.reviewComment,
+      review: payload.review,
       projectId: payload.projectId,
       branchOrCommit: payload.branchName,
     })
