@@ -6,7 +6,15 @@ import {
 } from '@liam-hq/github'
 import { logger, task } from '@trigger.dev/sdk/v3'
 import { createClient } from '../../libs/supabase'
-import type { PostCommentPayload } from './generateReview'
+
+export type PostCommentPayload = {
+  reviewComment: string
+  projectId: number
+  pullRequestId: number
+  repositoryId: number
+  branchName: string
+  traceId: string
+}
 
 /**
  * Generate ER diagram link for a schema file in a pull request

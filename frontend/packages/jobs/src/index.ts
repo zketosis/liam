@@ -1,8 +1,8 @@
 export type {
   GenerateReviewPayload,
   ReviewResponse,
-  PostCommentPayload,
 } from './tasks/review/generateReview'
+export type { PostCommentPayload } from './tasks/review/postComment'
 
 export { processGenerateReview } from './tasks/review/generateReview'
 export { processSavePullRequest } from './tasks/review/savePullRequest'

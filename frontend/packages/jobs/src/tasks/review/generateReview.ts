@@ -71,14 +71,6 @@ export type ReviewResponse = {
   name: string
 }
 
-export type PostCommentPayload = {
-  reviewComment: string
-  projectId: number
-  pullRequestId: number
-  repositoryId: number
-  branchName: string
-  traceId: string
-}
 
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
