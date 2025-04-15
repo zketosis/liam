@@ -129,7 +129,7 @@ export const AppBar = ({
             isProject={true}
           />
           <div className={styles.breadcrumbDivider}>
-            <ChevronRight size={16} />
+            <ChevronRight size={16} strokeWidth={1.5} />
           </div>
           <BreadcrumbItem
             label={branchName}
