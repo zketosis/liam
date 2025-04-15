@@ -1,15 +1,34 @@
-overrides:
-  tableGroups:
-    Github:
-      name: Github
-      tables:
-        - Repository
-        - PullRequest
-        - GitHubSchemaFilePath
-        - GitHubDocFilePath
-      comment: Tables related to Github. All tables in this group should have a GitHub prefix.
-  tables:
-    Repository:
-      comment: "TODO: Rename to GitHubRepository to match the GitHub prefix pattern of this table group"
-    PullRequest:
-      comment: "TODO: Rename to GitHubPullRequest to match the GitHub prefix pattern of this table group"
+{
+  "overrides": {
+    "tables": {
+      "Repository": {
+        "comment": "TODO: Rename to GitHubRepository to match the GitHub prefix pattern of this table group"
+      },
+      "PullRequest": {
+        "comment": "TODO: Rename to GitHubPullRequest to match the GitHub prefix pattern of this table group"
+      }
+    },
+    "tableGroups": {
+      "Github": {
+        "name": "Github",
+        "tables": [
+          "Repository",
+          "PullRequest",
+          "GitHubSchemaFilePath",
+          "GitHubDocFilePath"
+        ],
+        "comment": "Tables related to Github. All tables in this group should have a GitHub prefix."
+      },
+      "Group_20250415T04160": {
+        "name": "Group_20250415T04160",
+        "tables": [
+          "MembershipInvites",
+          "Organization",
+          "OrganizationMember",
+          "User"
+        ],
+        "comment": null
+      }
+    }
+  }
+}
