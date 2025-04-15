@@ -20,7 +20,8 @@
       "correctness": {
         "noUndeclaredDependencies": "error",
         "noUnusedVariables": "error",
-        "noUndeclaredVariables": "error"
+        "noUndeclaredVariables": "error",
+        "noUnusedImports": "error"
       },
       "suspicious": {
         "noConsoleLog": "error"

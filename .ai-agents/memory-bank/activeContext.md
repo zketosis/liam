@@ -176,6 +176,8 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Prioritize CSS Variables from @liam-hq/ui
    - Prefer UI components from @liam-hq/ui
    - Import icons from @liam-hq/ui
+   - When implementing designs from Figma using the Figma MCP tool, always reference 'frontend/packages/ui/src/styles/Dark/variables.css' for colors, padding, gap, spacing, and borderRadius values
+   - When specifying colors, prioritize semantic color definitions (e.g., --primary-accent, --global-foreground) and avoid using --color- prefixed variables whenever possible
 
 4. **Database Access**:
    - Use type assertions for Supabase types

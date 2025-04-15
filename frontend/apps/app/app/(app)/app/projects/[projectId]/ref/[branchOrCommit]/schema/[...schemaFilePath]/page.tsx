@@ -3,9 +3,9 @@ import type { PageProps } from '@/app/types'
 import { createClient } from '@/libs/db/server'
 import { branchOrCommitSchema } from '@/utils/routes'
 import {
-  type DBStructure,
-  applyOverrides,
-  dbOverrideSchema,
+  type Schema,
+  overrideSchema,
+  schemaOverrideSchema,
 } from '@liam-hq/db-structure'
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
@@ -13,32 +13,33 @@ import * as Sentry from '@sentry/nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import * as v from 'valibot'
-import { OVERRIDE_SCHEMA_FILE_PATH } from './constants'
+import { parse as parseYaml } from 'yaml'
+import { SCHEMA_OVERRIDE_FILE_PATH } from './constants'
 import ERDViewer from './erdViewer'
 
 const processOverrideFile = async (
   repositoryFullName: string,
   branchOrCommit: string,
   installationId: number,
-  dbStructure: DBStructure,
+  schema: Schema,
 ) => {
   const { content: overrideContent } = await getFileContent(
     repositoryFullName,
-    OVERRIDE_SCHEMA_FILE_PATH,
+    SCHEMA_OVERRIDE_FILE_PATH,
     branchOrCommit,
     installationId,
   )
 
   if (overrideContent === null) {
     return {
-      result: { dbStructure, tableGroups: {} },
+      result: { schema: schema, tableGroups: {} },
       error: null,
     }
   }
 
   const parsedOverrideContent = v.safeParse(
-    dbOverrideSchema,
-    JSON.parse(overrideContent),
+    schemaOverrideSchema,
+    parseYaml(overrideContent),
   )
 
   if (!parsedOverrideContent.success) {
@@ -54,7 +55,11 @@ const processOverrideFile = async (
   }
 
   return {
-    result: applyOverrides(dbStructure, parsedOverrideContent.output),
+    result: {
+      schema: overrideSchema(schema, parsedOverrideContent.output).schema,
+      tableGroups: overrideSchema(schema, parsedOverrideContent.output)
+        .tableGroups,
+    },
     error: null,
   }
 }
@@ -72,7 +77,7 @@ export default async function Page({ params }: PageProps) {
   const { projectId, branchOrCommit, schemaFilePath } = parsedParams.output
   const filePath = schemaFilePath.join('/')
 
-  const blankDbStructure = { tables: {}, relationships: {}, tableGroups: {} }
+  const blankSchema = { tables: {}, relationships: {}, tableGroups: {} }
 
   try {
     const supabase = await createClient()
@@ -114,7 +119,7 @@ export default async function Page({ params }: PageProps) {
     if (!content) {
       return (
         <ERDViewer
-          dbStructure={blankDbStructure}
+          schema={blankSchema}
           defaultSidebarOpen={false}
           errorObjects={[
             {
@@ -134,7 +139,7 @@ export default async function Page({ params }: PageProps) {
     if (!gitHubSchemaFilePath?.format) {
       return (
         <ERDViewer
-          dbStructure={blankDbStructure}
+          schema={blankSchema}
           defaultSidebarOpen={false}
           errorObjects={[
             {
@@ -149,7 +154,7 @@ export default async function Page({ params }: PageProps) {
 
     const format = gitHubSchemaFilePath.format
 
-    const { value: dbStructure, errors } = await parse(content, format)
+    const { value: schema, errors } = await parse(content, format)
 
     for (const error of errors) {
       Sentry.captureException(error)
@@ -159,21 +164,21 @@ export default async function Page({ params }: PageProps) {
       repositoryFullName,
       branchOrCommit,
       Number(repository.installationId),
-      dbStructure,
+      schema,
     )
 
     if (overrideError) {
       return (
         <ERDViewer
-          dbStructure={blankDbStructure}
+          schema={blankSchema}
           defaultSidebarOpen={false}
           errorObjects={[overrideError]}
         />
       )
     }
 
-    const { dbStructure: overriddenDbStructure, tableGroups } = result || {
-      dbStructure,
+    const { schema: overriddenSchema, tableGroups } = result || {
+      schema,
       tableGroups: {},
     }
 
@@ -192,7 +197,7 @@ export default async function Page({ params }: PageProps) {
 
     return (
       <ERDViewer
-        dbStructure={overriddenDbStructure}
+        schema={overriddenSchema}
         tableGroups={tableGroups}
         defaultSidebarOpen={defaultSidebarOpen}
         defaultPanelSizes={defaultPanelSizes}
@@ -207,7 +212,7 @@ export default async function Page({ params }: PageProps) {
   } catch (_error) {
     return (
       <ERDViewer
-        dbStructure={blankDbStructure}
+        schema={blankSchema}
         defaultSidebarOpen={false}
         errorObjects={[
           {

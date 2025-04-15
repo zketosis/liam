@@ -9,978 +9,1012 @@ vars:
   prDescription: ''
   prComments: ''
   docsContent: ''
-  schemaFile:
-    filename: frontend/packages/db/schema/schema.sql
-    content: |-
-      
-      
-      SET statement_timeout = 0;
-      SET lock_timeout = 0;
-      SET idle_in_transaction_session_timeout = 0;
-      SET client_encoding = 'UTF8';
-      SET standard_conforming_strings = on;
-      SELECT pg_catalog.set_config('search_path', '', false);
-      SET check_function_bodies = false;
-      SET xmloption = content;
-      SET client_min_messages = warning;
-      SET row_security = off;
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
-      
-      
-      
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "pgsodium";
-      
-      
-      
-      
-      
-      
-      COMMENT ON SCHEMA "public" IS 'standard public schema';
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
-      
-      
-      
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
-      
-      
-      
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
-      
-      
-      
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
-      
-      
-      
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-      
-      
-      
-      
-      
-      
-      CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
-      
-      
-      
-      
-      
-      
-      CREATE TYPE "public"."CategoryEnum" AS ENUM (
-          'MIGRATION_SAFETY',
-          'DATA_INTEGRITY',
-          'PERFORMANCE_IMPACT',
-          'PROJECT_RULES_CONSISTENCY',
-          'SECURITY_OR_SCALABILITY'
-      );
-      
-      
-      ALTER TYPE "public"."CategoryEnum" OWNER TO "postgres";
-      
-      
-      CREATE TYPE "public"."KnowledgeType" AS ENUM (
-          'SCHEMA',
-          'DOCS'
-      );
-      
-      
-      ALTER TYPE "public"."KnowledgeType" OWNER TO "postgres";
-      
-      
-      CREATE TYPE "public"."SeverityEnum" AS ENUM (
-          'CRITICAL',
-          'WARNING',
-          'POSITIVE',
-          'QUESTION'
-      );
-      
-      
-      ALTER TYPE "public"."SeverityEnum" OWNER TO "postgres";
-      
-      SET default_tablespace = '';
-      
-      SET default_table_access_method = "heap";
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."GitHubDocFilePath" (
-          "id" integer NOT NULL,
-          "path" "text" NOT NULL,
-          "isReviewEnabled" boolean DEFAULT true NOT NULL,
-          "projectId" integer NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."GitHubDocFilePath" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."GitHubDocFilePath_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."GitHubDocFilePath_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."GitHubDocFilePath_id_seq" OWNED BY "public"."GitHubDocFilePath"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."GitHubSchemaFilePath" (
-          "id" integer NOT NULL,
-          "path" "text" NOT NULL,
-          "projectId" integer NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."GitHubSchemaFilePath" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."GitHubSchemaFilePath_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."GitHubSchemaFilePath_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."GitHubSchemaFilePath_id_seq" OWNED BY "public"."GitHubSchemaFilePath"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
-          "id" integer NOT NULL,
-          "type" "public"."KnowledgeType" NOT NULL,
-          "title" "text" NOT NULL,
-          "path" "text" NOT NULL,
-          "content" "text" NOT NULL,
-          "fileSha" "text",
-          "projectId" integer NOT NULL,
-          "approvedAt" timestamp(3) without time zone,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL,
-          "branchName" "text" NOT NULL,
-          "traceId" "text"
-      );
-      
-      
-      ALTER TABLE "public"."KnowledgeSuggestion" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."KnowledgeSuggestion_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."KnowledgeSuggestion_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."KnowledgeSuggestion_id_seq" OWNED BY "public"."KnowledgeSuggestion"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."Migration" (
-          "id" integer NOT NULL,
-          "title" "text" NOT NULL,
-          "pullRequestId" integer NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."Migration" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."Migration_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."Migration_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."Migration_id_seq" OWNED BY "public"."Migration"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
-          "id" integer NOT NULL,
-          "projectId" integer,
-          "pullRequestId" integer NOT NULL,
-          "reviewComment" "text",
-          "reviewedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL,
-          "branchName" "text" NOT NULL,
-          "traceId" "text"
-      );
-      
-      
-      ALTER TABLE "public"."OverallReview" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."OverallReview_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."OverallReview_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."OverallReview_id_seq" OWNED BY "public"."OverallReview"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."Project" (
-          "id" integer NOT NULL,
-          "name" "text" NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."Project" OWNER TO "postgres";
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."ProjectRepositoryMapping" (
-          "id" integer NOT NULL,
-          "projectId" integer NOT NULL,
-          "repositoryId" integer NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."ProjectRepositoryMapping" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."ProjectRepositoryMapping_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."ProjectRepositoryMapping_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."ProjectRepositoryMapping_id_seq" OWNED BY "public"."ProjectRepositoryMapping"."id";
-      
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."Project_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."Project_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."Project_id_seq" OWNED BY "public"."Project"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."PullRequest" (
-          "id" integer NOT NULL,
-          "pullNumber" bigint NOT NULL,
-          "commentId" bigint,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL,
-          "repositoryId" integer NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."PullRequest" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."PullRequest_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."PullRequest_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."PullRequest_id_seq" OWNED BY "public"."PullRequest"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."Repository" (
-          "id" integer NOT NULL,
-          "name" "text" NOT NULL,
-          "owner" "text" NOT NULL,
-          "installationId" bigint NOT NULL,
-          "isActive" boolean DEFAULT true NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."Repository" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."Repository_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."Repository_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."Repository_id_seq" OWNED BY "public"."Repository"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."ReviewIssue" (
-          "id" integer NOT NULL,
-          "overallReviewId" integer NOT NULL,
-          "category" "public"."CategoryEnum" NOT NULL,
-          "severity" "public"."SeverityEnum" NOT NULL,
-          "description" "text" NOT NULL,
-          "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          "updatedAt" timestamp(3) without time zone NOT NULL,
-          "suggestion" "text" NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."ReviewIssue" OWNER TO "postgres";
-      
-      
-      CREATE SEQUENCE IF NOT EXISTS "public"."ReviewIssue_id_seq"
-          START WITH 1
-          INCREMENT BY 1
-          NO MINVALUE
-          NO MAXVALUE
-          CACHE 1;
-      
-      
-      ALTER TABLE "public"."ReviewIssue_id_seq" OWNER TO "postgres";
-      
-      
-      ALTER SEQUENCE "public"."ReviewIssue_id_seq" OWNED BY "public"."ReviewIssue"."id";
-      
-      
-      
-      CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
-          "id" character varying(36) NOT NULL,
-          "checksum" character varying(64) NOT NULL,
-          "finished_at" timestamp with time zone,
-          "migration_name" character varying(255) NOT NULL,
-          "logs" "text",
-          "rolled_back_at" timestamp with time zone,
-          "started_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-          "applied_steps_count" integer DEFAULT 0 NOT NULL
-      );
-      
-      
-      ALTER TABLE "public"."_prisma_migrations" OWNER TO "postgres";
-      
-      
-      ALTER TABLE ONLY "public"."GitHubDocFilePath" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."GitHubDocFilePath_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."GitHubSchemaFilePath" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."GitHubSchemaFilePath_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."KnowledgeSuggestion" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."KnowledgeSuggestion_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."Migration" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Migration_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."OverallReview" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."OverallReview_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."Project" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Project_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."ProjectRepositoryMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ProjectRepositoryMapping_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."PullRequest" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."PullRequest_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."Repository" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."Repository_id_seq"'::"regclass");
-      
-      
-      
-      ALTER TABLE ONLY "public"."ReviewIssue" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewIssue_id_seq"'::"regclass");
-      
-      
-      
-      
-      ALTER TABLE ONLY "public"."GitHubDocFilePath"
-          ADD CONSTRAINT "GitHubDocFilePath_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
-          ADD CONSTRAINT "GitHubSchemaFilePath_path_projectId_key" UNIQUE ("path", "projectId");
-      
-      
-      
-      ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
-          ADD CONSTRAINT "GitHubSchemaFilePath_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."KnowledgeSuggestion"
-          ADD CONSTRAINT "KnowledgeSuggestion_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."Migration"
-          ADD CONSTRAINT "Migration_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."OverallReview"
-          ADD CONSTRAINT "OverallReview_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
-          ADD CONSTRAINT "ProjectRepositoryMapping_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."Project"
-          ADD CONSTRAINT "Project_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."PullRequest"
-          ADD CONSTRAINT "PullRequest_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."Repository"
-          ADD CONSTRAINT "Repository_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."ReviewIssue"
-          ADD CONSTRAINT "ReviewIssue_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      ALTER TABLE ONLY "public"."_prisma_migrations"
-          ADD CONSTRAINT "_prisma_migrations_pkey" PRIMARY KEY ("id");
-      
-      
-      
-      CREATE UNIQUE INDEX "GitHubDocFilePath_path_projectId_key" ON "public"."GitHubDocFilePath" USING "btree" ("path", "projectId");
-      
-      
-      
-      CREATE UNIQUE INDEX "Migration_pullRequestId_key" ON "public"."Migration" USING "btree" ("pullRequestId");
-      
-      
-      
-      CREATE UNIQUE INDEX "ProjectRepositoryMapping_projectId_repositoryId_key" ON "public"."ProjectRepositoryMapping" USING "btree" ("projectId", "repositoryId");
-      
-      
-      
-      CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullRequest" USING "btree" ("repositoryId", "pullNumber");
-      
-      
-      
-      CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
-      
-      
-      
-      ALTER TABLE ONLY "public"."GitHubDocFilePath"
-          ADD CONSTRAINT "GitHubDocFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."GitHubSchemaFilePath"
-          ADD CONSTRAINT "GitHubSchemaFilePath_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."KnowledgeSuggestion"
-          ADD CONSTRAINT "KnowledgeSuggestion_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."Migration"
-          ADD CONSTRAINT "Migration_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."OverallReview"
-          ADD CONSTRAINT "OverallReview_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE SET NULL;
-      
-      
-      
-      ALTER TABLE ONLY "public"."OverallReview"
-          ADD CONSTRAINT "OverallReview_pullRequestId_fkey" FOREIGN KEY ("pullRequestId") REFERENCES "public"."PullRequest"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
-          ADD CONSTRAINT "ProjectRepositoryMapping_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."ProjectRepositoryMapping"
-          ADD CONSTRAINT "ProjectRepositoryMapping_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."PullRequest"
-          ADD CONSTRAINT "PullRequest_repositoryId_fkey" FOREIGN KEY ("repositoryId") REFERENCES "public"."Repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER TABLE ONLY "public"."ReviewIssue"
-          ADD CONSTRAINT "ReviewIssue_overallReviewId_fkey" FOREIGN KEY ("overallReviewId") REFERENCES "public"."OverallReview"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-      
-      
-      
-      ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
-      
-      
-      
-      
-      
-      GRANT USAGE ON SCHEMA "public" TO "postgres";
-      GRANT USAGE ON SCHEMA "public" TO "anon";
-      GRANT USAGE ON SCHEMA "public" TO "authenticated";
-      GRANT USAGE ON SCHEMA "public" TO "service_role";
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      GRANT ALL ON TABLE "public"."GitHubDocFilePath" TO "anon";
-      GRANT ALL ON TABLE "public"."GitHubDocFilePath" TO "authenticated";
-      GRANT ALL ON TABLE "public"."GitHubDocFilePath" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."GitHubDocFilePath_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."GitHubDocFilePath_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."GitHubDocFilePath_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."GitHubSchemaFilePath" TO "anon";
-      GRANT ALL ON TABLE "public"."GitHubSchemaFilePath" TO "authenticated";
-      GRANT ALL ON TABLE "public"."GitHubSchemaFilePath" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."GitHubSchemaFilePath_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."GitHubSchemaFilePath_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."GitHubSchemaFilePath_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "anon";
-      GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "authenticated";
-      GRANT ALL ON TABLE "public"."KnowledgeSuggestion" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."KnowledgeSuggestion_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."Migration" TO "anon";
-      GRANT ALL ON TABLE "public"."Migration" TO "authenticated";
-      GRANT ALL ON TABLE "public"."Migration" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."Migration_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."OverallReview" TO "anon";
-      GRANT ALL ON TABLE "public"."OverallReview" TO "authenticated";
-      GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."OverallReview_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."Project" TO "anon";
-      GRANT ALL ON TABLE "public"."Project" TO "authenticated";
-      GRANT ALL ON TABLE "public"."Project" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."ProjectRepositoryMapping" TO "anon";
-      GRANT ALL ON TABLE "public"."ProjectRepositoryMapping" TO "authenticated";
-      GRANT ALL ON TABLE "public"."ProjectRepositoryMapping" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."ProjectRepositoryMapping_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."ProjectRepositoryMapping_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."ProjectRepositoryMapping_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."Project_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."Project_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."Project_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."PullRequest" TO "anon";
-      GRANT ALL ON TABLE "public"."PullRequest" TO "authenticated";
-      GRANT ALL ON TABLE "public"."PullRequest" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."PullRequest_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."PullRequest_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."PullRequest_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."Repository" TO "anon";
-      GRANT ALL ON TABLE "public"."Repository" TO "authenticated";
-      GRANT ALL ON TABLE "public"."Repository" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."Repository_id_seq" TO "service_role";
-      
-      
-      
-      GRANT ALL ON TABLE "public"."ReviewIssue" TO "anon";
-      GRANT ALL ON TABLE "public"."ReviewIssue" TO "authenticated";
-      GRANT ALL ON TABLE "public"."ReviewIssue" TO "service_role";
-      
-      
-      
-      GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "anon";
-      GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "authenticated";
-      GRANT ALL ON SEQUENCE "public"."ReviewIssue_id_seq" TO "service_role";
-      
-      
-      
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
-      
-      
-      
-      
-      
-      
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
-      
-      
-      
-      
-      
-      
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
-      ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      RESET ALL;
+  schema: |-
+    {
+      "tables": {
+        "GitHubDocFilePath": {
+          "name": "GitHubDocFilePath",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "path": {
+              "name": "path",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "isReviewEnabled": {
+              "name": "isReviewEnabled",
+              "type": "bool",
+              "default": true,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "GitHubDocFilePath_path_projectId_key": {
+              "name": "GitHubDocFilePath_path_projectId_key",
+              "unique": true,
+              "columns": [
+                "path",
+                "projectId"
+              ],
+              "type": "btree"
+            }
+          },
+          "constraints": {}
+        },
+        "GitHubSchemaFilePath": {
+          "name": "GitHubSchemaFilePath",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "path": {
+              "name": "path",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {},
+          "constraints": {}
+        },
+        "KnowledgeSuggestion": {
+          "name": "KnowledgeSuggestion",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "type": {
+              "name": "type",
+              "type": "publicKnowledgeType",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "title": {
+              "name": "title",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "path": {
+              "name": "path",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "content": {
+              "name": "content",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "fileSha": {
+              "name": "fileSha",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "approvedAt": {
+              "name": "approvedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "branchName": {
+              "name": "branchName",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "traceId": {
+              "name": "traceId",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {},
+          "constraints": {}
+        },
+        "Migration": {
+          "name": "Migration",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "title": {
+              "name": "title",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "pullRequestId": {
+              "name": "pullRequestId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "Migration_pullRequestId_key": {
+              "name": "Migration_pullRequestId_key",
+              "unique": true,
+              "columns": [
+                "pullRequestId"
+              ],
+              "type": "btree"
+            }
+          },
+          "constraints": {}
+        },
+        "OverallReview": {
+          "name": "OverallReview",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "pullRequestId": {
+              "name": "pullRequestId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "reviewComment": {
+              "name": "reviewComment",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "reviewedAt": {
+              "name": "reviewedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "branchName": {
+              "name": "branchName",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "traceId": {
+              "name": "traceId",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {},
+          "constraints": {}
+        },
+        "Project": {
+          "name": "Project",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "name": {
+              "name": "name",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {},
+          "constraints": {}
+        },
+        "ProjectRepositoryMapping": {
+          "name": "ProjectRepositoryMapping",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "projectId": {
+              "name": "projectId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "repositoryId": {
+              "name": "repositoryId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "ProjectRepositoryMapping_projectId_repositoryId_key": {
+              "name": "ProjectRepositoryMapping_projectId_repositoryId_key",
+              "unique": true,
+              "columns": [
+                "projectId",
+                "repositoryId"
+              ],
+              "type": "btree"
+            }
+          },
+          "constraints": {}
+        },
+        "PullRequest": {
+          "name": "PullRequest",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "pullNumber": {
+              "name": "pullNumber",
+              "type": "int8",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "commentId": {
+              "name": "commentId",
+              "type": "int8",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "repositoryId": {
+              "name": "repositoryId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "PullRequest_repositoryId_pullNumber_key": {
+              "name": "PullRequest_repositoryId_pullNumber_key",
+              "unique": true,
+              "columns": [
+                "repositoryId",
+                "pullNumber"
+              ],
+              "type": "btree"
+            }
+          },
+          "constraints": {}
+        },
+        "Repository": {
+          "name": "Repository",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "name": {
+              "name": "name",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "owner": {
+              "name": "owner",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "installationId": {
+              "name": "installationId",
+              "type": "int8",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "isActive": {
+              "name": "isActive",
+              "type": "bool",
+              "default": true,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {
+            "Repository_owner_name_key": {
+              "name": "Repository_owner_name_key",
+              "unique": true,
+              "columns": [
+                "owner",
+                "name"
+              ],
+              "type": "btree"
+            }
+          },
+          "constraints": {}
+        },
+        "ReviewFeedback": {
+          "name": "ReviewFeedback",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "overallReviewId": {
+              "name": "overallReviewId",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "category": {
+              "name": "category",
+              "type": "publicCategoryEnum",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "severity": {
+              "name": "severity",
+              "type": "publicSeverityEnum",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "description": {
+              "name": "description",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "createdAt": {
+              "name": "createdAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "updatedAt": {
+              "name": "updatedAt",
+              "type": "timestamp",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "suggestion": {
+              "name": "suggestion",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {},
+          "constraints": {}
+        },
+        "_prisma_migrations": {
+          "name": "_prisma_migrations",
+          "columns": {
+            "id": {
+              "name": "id",
+              "type": "varchar",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "checksum": {
+              "name": "checksum",
+              "type": "varchar",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "finished_at": {
+              "name": "finished_at",
+              "type": "timestamptz",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "migration_name": {
+              "name": "migration_name",
+              "type": "varchar",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "logs": {
+              "name": "logs",
+              "type": "text",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "rolled_back_at": {
+              "name": "rolled_back_at",
+              "type": "timestamptz",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": false,
+              "comment": null
+            },
+            "started_at": {
+              "name": "started_at",
+              "type": "timestamptz",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            },
+            "applied_steps_count": {
+              "name": "applied_steps_count",
+              "type": "int4",
+              "default": null,
+              "check": null,
+              "primary": false,
+              "unique": false,
+              "notNull": true,
+              "comment": null
+            }
+          },
+          "comment": null,
+          "indexes": {},
+          "constraints": {}
+        }
+      },
+      "relationships": {
+        "GitHubDocFilePath_projectId_fkey": {
+          "name": "GitHubDocFilePath_projectId_fkey",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "GitHubDocFilePath",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "GitHubSchemaFilePath_projectId_fkey": {
+          "name": "GitHubSchemaFilePath_projectId_fkey",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "GitHubSchemaFilePath",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "KnowledgeSuggestion_projectId_fkey": {
+          "name": "KnowledgeSuggestion_projectId_fkey",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "KnowledgeSuggestion",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "Migration_pullRequestId_fkey": {
+          "name": "Migration_pullRequestId_fkey",
+          "primaryTableName": "PullRequest",
+          "primaryColumnName": "id",
+          "foreignTableName": "Migration",
+          "foreignColumnName": "pullRequestId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "OverallReview_projectId_fkey": {
+          "name": "OverallReview_projectId_fkey",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "OverallReview",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "SET_NULL"
+        },
+        "OverallReview_pullRequestId_fkey": {
+          "name": "OverallReview_pullRequestId_fkey",
+          "primaryTableName": "PullRequest",
+          "primaryColumnName": "id",
+          "foreignTableName": "OverallReview",
+          "foreignColumnName": "pullRequestId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "ProjectRepositoryMapping_projectId_fkey": {
+          "name": "ProjectRepositoryMapping_projectId_fkey",
+          "primaryTableName": "Project",
+          "primaryColumnName": "id",
+          "foreignTableName": "ProjectRepositoryMapping",
+          "foreignColumnName": "projectId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "ProjectRepositoryMapping_repositoryId_fkey": {
+          "name": "ProjectRepositoryMapping_repositoryId_fkey",
+          "primaryTableName": "Repository",
+          "primaryColumnName": "id",
+          "foreignTableName": "ProjectRepositoryMapping",
+          "foreignColumnName": "repositoryId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "PullRequest_repositoryId_fkey": {
+          "name": "PullRequest_repositoryId_fkey",
+          "primaryTableName": "Repository",
+          "primaryColumnName": "id",
+          "foreignTableName": "PullRequest",
+          "foreignColumnName": "repositoryId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        },
+        "ReviewFeedback_overallReviewId_fkey": {
+          "name": "ReviewFeedback_overallReviewId_fkey",
+          "primaryTableName": "OverallReview",
+          "primaryColumnName": "id",
+          "foreignTableName": "ReviewFeedback",
+          "foreignColumnName": "overallReviewId",
+          "cardinality": "ONE_TO_MANY",
+          "updateConstraint": "CASCADE",
+          "deleteConstraint": "RESTRICT"
+        }
+      },
+      "tableGroups": {
+        "Github": {
+          "name": "Github",
+          "tables": [
+            "Repository",
+            "PullRequest",
+            "ProjectRepositoryMapping",
+            "GitHubDocFilePath"
+          ],
+          "comment": "Tables related to Github"
+        }
+      }
+    }
   fileChanges:
   - filename: frontend/apps/app/features/projects/actions/approveKnowledgeSuggestion.ts
     status: modified
@@ -992,7 +1026,7 @@ vars:
        ),
       - branch: v.string(),
        })
-       
+
        export const approveKnowledgeSuggestion = async (formData: FormData) => {
       @@ -28,7 +27,6 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
        repositoryOwner: formData.get('repositoryOwner'),
@@ -1000,12 +1034,12 @@ vars:
        installationId: formData.get('installationId'),
       - branch: formData.get('branch') ?? 'tmp-knowledge-suggestion',
        }
-       
+
        const parsedData = v.safeParse(formDataSchema, formDataObject)
       @@ -37,13 +35,8 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
        throw new Error(`Invalid form data: ${JSON.stringify(parsedData.issues)}`)
        }
-       
+
       - const {
       - suggestionId,
       - repositoryOwner,
@@ -1015,7 +1049,7 @@ vars:
       - } = parsedData.output
       + const { suggestionId, repositoryOwner, repositoryName, installationId } =
       + parsedData.output
-       
+
        try {
        // Get the knowledge suggestion
       @@ -66,7 +59,7 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
@@ -1025,7 +1059,7 @@ vars:
       - branch,
       + suggestion.branchName,
        )
-       
+
        if (!success) {
   - filename: frontend/packages/db/prisma/migrations/20250328105323_add_branch_name_to_knowledge_suggestion/migration.sql
     status: added
@@ -1064,8 +1098,8 @@ vars:
       + "updatedAt" timestamp(3) without time zone NOT NULL,
       + "branchName" text NOT NULL
        );
-       
-       
+
+
   - filename: frontend/packages/db/supabase/database.types.ts
     status: modified
     changes: 3
@@ -1112,7 +1146,7 @@ vars:
       + branch: string,
        ): Promise<boolean> => {
        const [owner, repo] = repositoryFullName.split('/')
-       
+
   - filename: frontend/packages/jobs/src/functions/processCreateKnowledgeSuggestion.ts
     status: modified
     changes: 1
@@ -1124,7 +1158,7 @@ vars:
       + branchName: branch,
        },
        })
-       
+
   - filename: memory-bank/progress.md
     status: modified
     changes: 3
@@ -1134,15 +1168,14 @@ vars:
        - Documentation list page that displays all GitHubDocFilePath entries for a project with links to individual document pages.
        - Supabase JS integration for database access in the document viewer page, with optimized queries using nested joins.
       +- Dynamic branch name management for KnowledgeSuggestion operations, replacing hardcoded branch names.
-       
+
        ## What's Left to Build
-       
+
       @@ -27,7 +28,7 @@ The project is currently focused on enhancing the Reviewer User experience, with
-       
+
        The core review pipeline is now operational, connecting GitHub webhooks to AI-powered review generation and PR comment posting. This enables automatic review of database schema changes when pull requests are opened or updated.
-       
+
       -The KnowledgeSuggestion feature is being implemented to allow AI-generated suggestions for Schema and Docs updates. The database model has been created, which will store suggestions that can be approved and then committed to GitHub using the GitHub API.
       +The KnowledgeSuggestion feature is being implemented to allow AI-generated suggestions for Schema and Docs updates. The database model has been created, which will store suggestions that can be approved and then committed to GitHub using the GitHub API. Recent improvements include adding a branchName column to the KnowledgeSuggestion table to replace hardcoded branch names with dynamic ones, making the system more flexible and maintainable.
-       
+
        A new text document viewer page has been implemented at `/app/projects/[projectId]/docs/[branchOrCommit]/[...slug]` that fetches and displays raw text content from GitHub repositories. This page uses Supabase JS for database access instead of Prisma, demonstrating the flexibility of our data access layer. The implementation uses a single optimized query with nested joins to efficiently retrieve all necessary data. This serves as a prototype for the planned migration from Prisma to Supabase JS across the entire application.
-     

@@ -9,6 +9,7 @@ import { createClient } from '../libs/supabase'
 
 import { generateReview } from '../prompts/generateReview/generateReview'
 import type { GenerateReviewPayload, Review } from '../types'
+import { fetchSchemaInfoWithOverrides } from '../utils/schemaUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
 export const processGenerateReview = async (
@@ -98,10 +99,18 @@ export const processGenerateReview = async (
       )
       .join('\n\n')
 
+    // Fetch schema information with overrides
+    const { overriddenSchema } = await fetchSchemaInfoWithOverrides(
+      payload.projectId,
+      payload.branchName,
+      `${payload.owner}/${payload.name}`,
+      Number(repository.installationId),
+    )
+
     const callbacks = [langfuseLangchainHandler]
     const review = await generateReview(
       docsContent,
-      payload.schemaFile,
+      overriddenSchema,
       payload.fileChanges,
       prDescription,
       formattedComments,

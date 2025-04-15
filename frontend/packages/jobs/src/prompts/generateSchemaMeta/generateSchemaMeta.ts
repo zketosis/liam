@@ -2,7 +2,11 @@ import type { Callbacks } from '@langchain/core/callbacks/manager'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { RunnableLambda } from '@langchain/core/runnables'
 import { ChatOpenAI } from '@langchain/openai'
-import { type DBOverride, dbOverrideSchema } from '@liam-hq/db-structure'
+import {
+  type Schema,
+  type SchemaOverride,
+  schemaOverrideSchema,
+} from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { type InferOutput, boolean, object, parse, string } from 'valibot'
 
@@ -15,7 +19,7 @@ const evaluationSchema = object({
 
 // Convert schemas to JSON format for LLM
 const evaluationJsonSchema = toJsonSchema(evaluationSchema)
-const dbOverrideJsonSchema = toJsonSchema(dbOverrideSchema)
+const schemaOverrideJsonSchema = toJsonSchema(schemaOverrideSchema)
 
 // Define type for evaluation result
 type EvaluationResult = InferOutput<typeof evaluationSchema>
@@ -23,7 +27,7 @@ type EvaluationResult = InferOutput<typeof evaluationSchema>
 type GenerateSchemaMetaResult =
   | {
       updateNeeded: true
-      override: DBOverride
+      override: SchemaOverride
       reasoning: string
     }
   | {
@@ -39,22 +43,22 @@ You are Liam, an expert in database schema design and optimization.
 Analyze the review comments and current schema metadata to determine if specific updates to schema metadata are necessary.
 
 ## Understanding Schema Metadata (IMPORTANT)
-The schema-meta.json file is ONLY used for:
+The schema-override.yml file is ONLY used for:
 1. Adding informative comments to existing database tables and columns
 2. Documenting relationships between existing tables
 3. Grouping related tables together for better organization
 4. Adding descriptive column metadata
 
-schema-meta.json is NOT used for:
+schema-override.yml is NOT used for:
 1. Defining database migrations or changes to actual schema structure
 2. Creating migration safety mechanisms, rollbacks, or changesets
 3. Addressing performance concerns or data integrity checks
 4. Defining new tables or columns (only adds metadata to existing ones)
 
-schema-meta.json is a documentation-only enhancement layer on top of the actual database schema.
+schema-override.yml is a documentation-only enhancement layer on top of the actual database schema.
 
 ## When to Update Schema Metadata
-- If a table is removed from the actual schema, remove its references from schema-meta.json
+- If a table is removed from the actual schema, remove its references from schema-override.yml
 - If a review comment suggests better documentation for a table's purpose, add a comment
 - If tables are logically related but not grouped, create a table group
 - If important relationships between tables are not documented, add them
@@ -79,12 +83,12 @@ schema-meta.json is a documentation-only enhancement layer on top of the actual 
 
 </json>
 
-## Current Schema Files
-<files>
+## Current Database Structure
+<json>
 
-{schemaFile}
+{schema}
 
-</files>
+</json>
 
 ## Expected Output Format
 Provide a JSON response with the following schema:
@@ -101,11 +105,11 @@ The response must include:
 - suggestedChanges: If updates are needed, provide specific metadata changes (NOT schema structure changes)
 
 ## Guidelines for Evaluation
-1. IGNORE any comments about migrations, rollbacks, performance, or data integrity - these are NOT relevant to schema-meta.json
+1. IGNORE any comments about migrations, rollbacks, performance, or data integrity - these are NOT relevant to schema-override.yml
 2. Focus ONLY on improving table/column documentation and organization
 3. Default to "updateNeeded: false" unless there is clear evidence that metadata documentation needs improvement
-4. If a table has been removed from the schema (like GitHubDocFilePath), simply suggest removing it from schema-meta.json
-5. Be conservative - schema-meta.json is for documentation purposes only
+4. If a table has been removed from the schema (like GitHubDocFilePath), simply suggest removing it from schema-override.yml
+5. Be conservative - schema-override.yml is for documentation purposes only
 `)
 
 // Step 2: Update template for generating schema updates
@@ -116,7 +120,7 @@ You are Liam, an expert in database schema design and optimization for this proj
 Create minimal, focused updates to the schema metadata based on the evaluation results.
 
 ## Schema Metadata Purpose (CRITICAL)
-schema-meta.json is STRICTLY for documentation and organization:
+schema-override.yml is STRICTLY for documentation and organization:
 1. Documentation: Adding descriptive comments to existing tables and columns
 2. Relationships: Documenting logical connections between existing tables
 3. Grouping: Organizing related tables into logical groups for better visualization
@@ -140,12 +144,12 @@ It is NOT for:
 
 </evaluationResults>
 
-## Current Schema Files
-<files>
+## Current Database Structure
+<json>
 
-{schemaFile}
+{schema}
 
-</files>
+</json>
 
 ## Current Schema Metadata
 <json>
@@ -158,13 +162,13 @@ It is NOT for:
 Your response must strictly follow this JSON Schema and maintain the existing structure:
 <json>
 
-{dbOverrideJsonSchema}
+{schemaOverrideJsonSchema}
 
 </json>
 
 ## Guidelines for Updates (IMPORTANT)
 1. PRESERVE ALL EXISTING METADATA unless explicitly replacing or removing it
-2. If a table has been removed from the schema (like GitHubDocFilePath), remove all references to it from schema-meta.json
+2. If a table has been removed from the schema (like GitHubDocFilePath), remove all references to it from schema-override.yml
 3. ONLY focus on documentation and organization, not on actual schema changes
 4. Keep the same structure and format as the existing schema metadata
 5. Only add/modify sections that need changes based on documentation needs
@@ -178,15 +182,15 @@ Your response must strictly follow this JSON Schema and maintain the existing st
 
 3. Adding a relationship that documents a logical connection: Only document relationships between existing tables with correct column references.
 
-REMEMBER: schema-meta.json is ONLY for documentation and organization purposes, NOT for actual database structure changes.
+REMEMBER: schema-override.yml is ONLY for documentation and organization purposes, NOT for actual database structure changes.
 `)
 
 export const generateSchemaMeta = async (
   reviewComment: string,
   callbacks: Callbacks,
-  currentSchemaMeta: DBOverride | null,
+  currentSchemaMeta: SchemaOverride | null,
   runId: string,
-  schemaFile: string,
+  schema: Schema,
 ): Promise<GenerateSchemaMetaResult> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -203,24 +207,24 @@ export const generateSchemaMeta = async (
 
   // Create update chain
   const updateChain = UPDATE_TEMPLATE.pipe(
-    updateModel.withStructuredOutput(dbOverrideJsonSchema),
+    updateModel.withStructuredOutput(schemaOverrideJsonSchema),
   )
 
   // Define input types for our templates
   type EvaluationInput = {
     reviewComment: string
     currentSchemaMeta: string
-    schemaFile: string
+    schema: string
   }
 
   type UpdateInput = EvaluationInput & {
     evaluationResults: string
-    dbOverrideJsonSchema: string
+    schemaOverrideJsonSchema: string
   }
 
   // Create a router function that returns different runnables based on evaluation
   const schemaMetaRouter = async (
-    inputs: EvaluationInput & { dbOverrideJsonSchema: string },
+    inputs: EvaluationInput & { schemaOverrideJsonSchema: string },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
   ): Promise<GenerateSchemaMetaResult> => {
     // First, run the evaluation chain
@@ -228,7 +232,7 @@ export const generateSchemaMeta = async (
       {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFile: inputs.schemaFile,
+        schema: inputs.schema,
         evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
       },
       config,
@@ -239,8 +243,8 @@ export const generateSchemaMeta = async (
       const updateInput: UpdateInput = {
         reviewComment: inputs.reviewComment,
         currentSchemaMeta: inputs.currentSchemaMeta,
-        schemaFile: inputs.schemaFile,
-        dbOverrideJsonSchema: inputs.dbOverrideJsonSchema,
+        schema: inputs.schema,
+        schemaOverrideJsonSchema: inputs.schemaOverrideJsonSchema,
         evaluationResults: evaluationResult.suggestedChanges,
       }
 
@@ -251,7 +255,7 @@ export const generateSchemaMeta = async (
       })
 
       // Parse the result and add the reasoning from the evaluation
-      const parsedResult = parse(dbOverrideSchema, updateResult)
+      const parsedResult = parse(schemaOverrideSchema, updateResult)
 
       // Return the result with the new structure
       return {
@@ -278,11 +282,15 @@ export const generateSchemaMeta = async (
     // Prepare the common inputs
     const commonInputs = {
       reviewComment,
-      schemaFile,
+      schema: JSON.stringify(schema, null, 2),
       currentSchemaMeta: currentSchemaMeta
         ? JSON.stringify(currentSchemaMeta, null, 2)
         : '{}',
-      dbOverrideJsonSchema: JSON.stringify(dbOverrideJsonSchema, null, 2),
+      schemaOverrideJsonSchema: JSON.stringify(
+        schemaOverrideJsonSchema,
+        null,
+        2,
+      ),
       evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
     }
 

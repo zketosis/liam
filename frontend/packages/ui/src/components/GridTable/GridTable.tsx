@@ -1,5 +1,4 @@
 import { clsx } from 'clsx'
-import type React from 'react'
 import { forwardRef } from 'react'
 import type { ComponentProps } from 'react'
 import styles from './GridTable.module.css'

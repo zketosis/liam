@@ -95,6 +95,8 @@ Follow these rules when you write code:
 - When styling, prioritize using CSS Variables from the `@liam-hq/ui` package whenever possible.
 - Prefer using UI components provided by `@liam-hq/ui` over custom implementations.
 - When using icons, always import them from `@liam-hq/ui`.
+- When implementing designs from Figma using the Figma MCP tool, always reference 'frontend/packages/ui/src/styles/Dark/variables.css' for colors, padding, gap, spacing, and borderRadius values.
+- When specifying colors, prioritize semantic color definitions (e.g., --primary-accent, --global-foreground) and avoid using --color- prefixed variables whenever possible.
 
 ### Documentation Guidelines
 

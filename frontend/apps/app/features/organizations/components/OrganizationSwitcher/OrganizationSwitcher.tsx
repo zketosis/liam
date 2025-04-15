@@ -3,7 +3,7 @@
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { type FC, type MouseEvent, useEffect, useRef, useState } from 'react'
+import { type FC, useEffect, useRef, useState } from 'react'
 import styles from './OrganizationSwitcher.module.css'
 
 interface Organization {

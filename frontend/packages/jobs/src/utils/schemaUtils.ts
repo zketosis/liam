@@ -1,0 +1,80 @@
+import path from 'node:path'
+import {
+  type Schema,
+  type SchemaOverride,
+  overrideSchema,
+  schemaOverrideSchema,
+} from '@liam-hq/db-structure'
+import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
+import { getFileContent } from '@liam-hq/github'
+import { safeParse } from 'valibot'
+import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
+import { fetchSchemaFileContent } from './githubFileUtils'
+
+export type SchemaInfo = {
+  schema: Schema // Original database structure
+  overriddenSchema: Schema // Database structure with overrides applied
+  currentSchemaMeta: SchemaOverride | null // Current schema metadata
+}
+
+/**
+ * Fetches schema information and applies overrides
+ *
+ * @param projectId - The project ID
+ * @param branchName - The branch name
+ * @param repositoryFullName - The repository full name (owner/name)
+ * @param installationId - The installation ID
+ * @returns The schema information including original and overridden database structure
+ */
+export const fetchSchemaInfoWithOverrides = async (
+  projectId: number,
+  branchName: string,
+  repositoryFullName: string,
+  installationId: number,
+): Promise<SchemaInfo> => {
+  // Fetch the current schema metadata file from GitHub
+  const { content: currentSchemaMetaContent } = await getFileContent(
+    repositoryFullName,
+    SCHEMA_OVERRIDE_FILE_PATH,
+    branchName,
+    installationId,
+  )
+
+  // Parse and validate the current schema metadata if it exists
+  let currentSchemaMeta: SchemaOverride | null = null
+  if (currentSchemaMetaContent) {
+    const parsedJson = JSON.parse(currentSchemaMetaContent)
+    const result = safeParse(schemaOverrideSchema, parsedJson)
+
+    if (result.success) {
+      currentSchemaMeta = result.output
+    }
+  }
+
+  // Fetch the schema file content
+  const { content, format } = await fetchSchemaFileContent(
+    projectId,
+    branchName,
+    repositoryFullName,
+    installationId,
+  )
+
+  // Parse the schema file
+  setPrismWasmUrl(path.resolve(process.cwd(), 'prism.wasm'))
+  const { value: schema, errors } = await parse(content, format)
+
+  if (errors.length > 0) {
+    console.warn('Errors parsing schema file:', errors)
+  }
+
+  // Apply overrides to schema if currentSchemaMeta exists
+  const overriddenSchema = currentSchemaMeta
+    ? overrideSchema(schema, currentSchemaMeta).schema
+    : schema
+
+  return {
+    schema,
+    overriddenSchema,
+    currentSchemaMeta,
+  }
+}
