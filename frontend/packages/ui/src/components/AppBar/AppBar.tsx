@@ -7,6 +7,7 @@ import type {
   KeyboardEvent,
   ReactNode,
 } from 'react'
+import { Avatar } from '../Avatar'
 import { IconButton } from '../IconButton'
 import styles from './AppBar.module.css'
 
@@ -66,15 +67,12 @@ export const AppBar = ({
             aria-label="Notifications"
           />
 
-          <button
-            className={styles.avatar}
-            style={{ backgroundColor: avatarColor }}
+          <Avatar
+            initial={avatarInitial}
+            size="sm"
+            color={avatarColor}
             onClick={onAvatarClick}
-            aria-label="User profile"
-            type="button"
-          >
-            {avatarInitial}
-          </button>
+          />
         </div>
       </div>
     )
@@ -125,15 +123,12 @@ export const AppBar = ({
           aria-label="Notifications"
         />
 
-        <button
-          className={styles.avatar}
-          style={{ backgroundColor: avatarColor }}
+        <Avatar
+          initial={avatarInitial}
+          size="sm"
+          color={avatarColor}
           onClick={onAvatarClick}
-          aria-label="User profile"
-          type="button"
-        >
-          {avatarInitial}
-        </button>
+        />
       </div>
     </div>
   )
