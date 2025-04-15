@@ -1,15 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createClient } from '../../libs/supabase'
-import type { ReviewResponse } from '../../tasks/review/generateReview'
-import { processSaveReview } from '../../tasks/review/saveReview'
+import { createClient } from '../../../libs/supabase'
+import type { ReviewResponse } from '../generateReview'
+import { processSaveReview } from '../saveReview'
 
-// Mock environment variables
 vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 
 describe.skip('processSaveReview', () => {
   const supabase = createClient()
 
-  // Test data
   const testRepository = {
     id: 9999,
     name: 'test-repo',
@@ -39,15 +37,12 @@ describe.skip('processSaveReview', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    // Insert test data
     await supabase.from('Repository').insert(testRepository)
     await supabase.from('PullRequest').insert(testPullRequest)
     await supabase.from('Project').insert(testProject)
   })
 
   afterEach(async () => {
-    // Delete test data
-    // First, find all OverallReviews
     const { data: reviews } = await supabase
       .from('OverallReview')
       .select('id')
@@ -55,12 +50,10 @@ describe.skip('processSaveReview', () => {
 
     if (reviews && reviews.length > 0) {
       const reviewIds = reviews.map((r) => r.id)
-      // Delete associated ReviewFeedbacks
       await supabase
         .from('ReviewFeedback')
         .delete()
         .in('overallReviewId', reviewIds)
-      // Delete OverallReviews
       await supabase.from('OverallReview').delete().in('id', reviewIds)
     }
 
