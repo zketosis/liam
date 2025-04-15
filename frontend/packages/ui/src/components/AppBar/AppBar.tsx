@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, ChevronRight, Search } from 'lucide-react'
+import { Bell, ChevronRight, ChevronsUpDown, Search } from 'lucide-react'
 import type {
   ChangeEvent,
   ComponentProps,
@@ -197,6 +197,11 @@ const BreadcrumbItem = ({
       {icon && <div className={styles.breadcrumbIcon}>{icon}</div>}
       <span className={textClassName}>{label}</span>
       {tag && <div className={styles.branchTag}>{tag}</div>}
+      <ChevronsUpDown
+        size={12}
+        strokeWidth={1.5}
+        className={styles.chevronIcon}
+      />
     </button>
   )
 }

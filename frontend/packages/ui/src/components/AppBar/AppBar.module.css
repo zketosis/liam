@@ -44,6 +44,7 @@
   cursor: pointer;
   border: none;
   background-color: transparent;
+  position: relative;
 }
 
 .breadcrumbItem:hover {
@@ -52,6 +53,14 @@
 
 .breadcrumbItem.active {
   background-color: #2e3031;
+}
+
+.chevronIcon {
+  color: var(--overlay-70);
+}
+
+.breadcrumbItem:hover .chevronIcon {
+  color: var(--global-foreground);
 }
 
 .breadcrumbIcon {
