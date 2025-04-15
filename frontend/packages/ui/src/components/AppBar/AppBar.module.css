@@ -1,0 +1,146 @@
+.appBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 52px;
+  padding: var(--spacing-3) var(--spacing-3half) var(--spacing-3)
+    var(--spacing-2);
+  background-color: var(--global-muted-background);
+  border-radius: var(--border-radius-base);
+}
+
+.minimal {
+  background-color: transparent;
+  justify-content: flex-end;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) 0;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1half) var(--spacing-2);
+  color: var(--global-foreground);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+}
+
+.breadcrumbItem:hover {
+  background-color: var(--overlay-5);
+}
+
+.breadcrumbIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.breadcrumbText {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2em;
+}
+
+.breadcrumbDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-100);
+}
+
+.branchTag {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-1);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--global-foreground);
+  background-color: var(--overlay-20);
+  border-radius: var(--border-radius-base);
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  width: 240px;
+  padding: var(--spacing-1) var(--spacing-2);
+  background-color: var(--global-background);
+  border: 1px solid var(--global-border);
+  border-radius: var(--border-radius-base);
+}
+
+.searchIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--overlay-50);
+}
+
+.searchInput {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--overlay-30);
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--overlay-30);
+}
+
+.shortcutContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.shortcutKey {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-1);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--color-gray-100);
+  background-color: var(--overlay-5);
+  border-radius: var(--border-radius-smbase);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--global-muted-background);
+  background-color: var(--avatar-background);
+  border-radius: var(--border-radius-2xl);
+  cursor: pointer;
+}

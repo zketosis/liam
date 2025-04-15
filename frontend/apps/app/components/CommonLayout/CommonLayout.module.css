@@ -5,6 +5,13 @@
   color: #ffffff;
 }
 
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
 .content {
   flex-grow: 1;
   padding: 20px;
