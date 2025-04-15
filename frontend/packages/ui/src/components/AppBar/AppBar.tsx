@@ -101,7 +101,7 @@ export const AppBar = ({
       <div className={`${styles.appBar} ${styles.minimal}`} {...props}>
         <div className={styles.rightSection}>
           <IconButton
-            icon={<Bell size={16} />}
+            icon={<Bell size={16} strokeWidth={1.5} />}
             tooltipContent="Notifications"
             onClick={onNotificationClick}
             aria-label="Notifications"
@@ -159,7 +159,7 @@ export const AppBar = ({
         </div>
 
         <IconButton
-          icon={<Bell size={16} />}
+          icon={<Bell size={16} strokeWidth={1.5} />}
           tooltipContent="Notifications"
           onClick={onNotificationClick}
           aria-label="Notifications"
