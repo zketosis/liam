@@ -16,6 +16,8 @@ type BreadcrumbItemProps = {
   icon?: ReactNode | undefined
   tag?: string | undefined
   onClick?: (() => void) | undefined
+  isActive?: boolean
+  isProject?: boolean
 }
 
 type AppBarProps = {
@@ -86,6 +88,7 @@ export const AppBar = ({
             label={projectName}
             icon={<ProjectIcon />}
             onClick={onProjectClick}
+            isProject={true}
           />
           <div className={styles.breadcrumbDivider}>
             <ChevronRight size={16} />
@@ -94,6 +97,7 @@ export const AppBar = ({
             label={branchName}
             tag={branchTag}
             onClick={onBranchClick}
+            isProject={false}
           />
         </div>
       </div>
@@ -134,11 +138,26 @@ export const AppBar = ({
   )
 }
 
-const BreadcrumbItem = ({ label, icon, tag, onClick }: BreadcrumbItemProps) => {
+const BreadcrumbItem = ({
+  label,
+  icon,
+  tag,
+  onClick,
+  isActive = false,
+  isProject = false,
+}: BreadcrumbItemProps) => {
+  const textClassName = isProject
+    ? `${styles.breadcrumbText} ${styles.projectText}`
+    : `${styles.breadcrumbText} ${styles.branchText}`
+
   return (
-    <button className={styles.breadcrumbItem} onClick={onClick} type="button">
+    <button
+      className={`${styles.breadcrumbItem} ${isActive ? styles.active : ''}`}
+      onClick={onClick}
+      type="button"
+    >
       {icon && <div className={styles.breadcrumbIcon}>{icon}</div>}
-      <span className={styles.breadcrumbText}>{label}</span>
+      <span className={textClassName}>{label}</span>
       {tag && <div className={styles.branchTag}>{tag}</div>}
     </button>
   )

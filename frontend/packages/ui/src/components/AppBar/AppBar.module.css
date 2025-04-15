@@ -42,10 +42,16 @@
   color: var(--global-foreground);
   border-radius: var(--border-radius-md);
   cursor: pointer;
+  border: none;
+  background-color: transparent;
 }
 
 .breadcrumbItem:hover {
-  background-color: var(--overlay-5);
+  background-color: #2e3031;
+}
+
+.breadcrumbItem.active {
+  background-color: #2e3031;
 }
 
 .breadcrumbIcon {
@@ -57,8 +63,15 @@
 .breadcrumbText {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-  font-weight: 600;
   line-height: 1.2em;
+}
+
+.projectText {
+  font-weight: 600;
+}
+
+.branchText {
+  font-weight: 400;
 }
 
 .breadcrumbDivider {
@@ -71,12 +84,13 @@
 .branchTag {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: var(--spacing-1);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 500;
   color: var(--global-foreground);
-  background-color: var(--overlay-20);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-base);
 }
 
