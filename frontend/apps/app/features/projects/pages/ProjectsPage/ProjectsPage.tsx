@@ -1,8 +1,9 @@
 import { urlgen } from '@/utils/routes'
-import { ChevronDown, SearchIcon } from '@liam-hq/ui'
+import { ChevronDown } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
-import { EmptyProjectsState, ProjectItem } from '../../components'
+import { EmptyProjectsState, ProjectItem, SearchInput } from '../../components'
+import { ClientSearchWrapper } from './ClientSearchWrapper'
 import styles from './ProjectsPage.module.css'
 import {
   getCurrentOrganization,
@@ -38,41 +39,10 @@ export const ProjectsPage: FC<ProjectsPageProps> = async ({
             }
           />
         ) : (
-          <div className={styles.projectsContainer}>
-            <div className={styles.projectsHeader}>
-              <div className={styles.searchInput}>
-                <SearchIcon className={styles.searchIcon} />
-                <input type="text" placeholder="Search Projects..." />
-              </div>
-
-              <div className={styles.sortSelect}>
-                <span>Sort by activity</span>
-                <ChevronDown
-                  className={styles.sortSelectIcon}
-                  aria-hidden="true"
-                />
-              </div>
-
-              <Link
-                href={
-                  currentOrganization
-                    ? urlgen('organizations/[organizationId]/projects/new', {
-                        organizationId: currentOrganization.id.toString(),
-                      })
-                    : urlgen('organizations/new')
-                }
-                className={styles.newProjectButton}
-              >
-                New Project
-              </Link>
-            </div>
-
-            <div className={styles.projectsGrid}>
-              {projects.map((project) => (
-                <ProjectItem key={project.id} project={project} />
-              ))}
-            </div>
-          </div>
+          <ClientSearchWrapper
+            initialProjects={projects}
+            organizationId={currentOrganization?.id}
+          />
         )}
       </div>
     </div>
