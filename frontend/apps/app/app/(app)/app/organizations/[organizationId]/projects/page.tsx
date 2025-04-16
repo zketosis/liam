@@ -1,5 +1,5 @@
 import type { PageProps } from '@/app/types'
-import { ProjectsPage } from '@/features/projects/pages'
+import { ProjectsPageV2 } from '@/features/projects/pages'
 import { migrationFlag } from '@/libs'
 import { createClient } from '@/libs/db/server'
 import { notFound } from 'next/navigation'
@@ -42,5 +42,5 @@ export default async function Page({ params }: PageProps) {
     return notFound()
   }
 
-  return <ProjectsPage organizationId={Number.parseInt(organizationId, 10)} />
+  return <ProjectsPageV2 organizationId={Number.parseInt(organizationId, 10)} />
 }
