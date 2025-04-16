@@ -99,7 +99,7 @@ export const resolveReviewFeedback = async (data: {
     // Trigger the knowledge suggestion creation task with reviewFeedbackId
     const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
       projectId,
-      reviewFeedback: updatedFeedback,
+      reviewFeedback: updatedFeedback[0],
       title: `Knowledge from resolved feedback #${feedbackId}`,
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
       overallReview: completeOverallReview,
