@@ -191,7 +191,18 @@ export const getFileContent = async (
     console.warn('Not a file:', filePath)
     return { content: null, sha: null }
   } catch (error) {
-    console.error(`Error fetching file content for ${filePath}:`, error)
+    // Handle 404 errors silently as they're expected when files don't exist
+    const isNotFoundError =
+      error instanceof Error && 'status' in error && error.status === 404
+
+    if (isNotFoundError) {
+      console.info(
+        `File not found: ${filePath} in ${repositoryFullName}@${ref}`,
+      )
+    } else {
+      // Log other errors as they might indicate actual problems
+      console.error(`Error fetching file content for ${filePath}:`, error)
+    }
     return { content: null, sha: null }
   }
 }
