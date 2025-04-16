@@ -20,11 +20,16 @@ type BreadcrumbItemProps = {
   isProject?: boolean
 }
 
+// Using a generic Project interface to avoid tight coupling with specific implementations
+export interface Project {
+  id: number
+  name: string
+}
+
 type AppBarProps = {
-  projectId?: string
-  projectName?: string
-  branchName?: string
-  branchTag?: string
+  project?: Project
+  branchName: string
+  branchTag: string
   onProjectClick?: () => void
   onBranchClick?: () => void
   onSearchChange?: (value: string) => void
@@ -36,10 +41,9 @@ type AppBarProps = {
 } & ComponentProps<'div'>
 
 export const AppBar = ({
-  projectId,
-  projectName = 'Project Name',
-  branchName = 'main',
-  branchTag = 'production',
+  project,
+  branchName = 'main', // TODO: get branch name from database
+  branchTag = 'production', // TODO: get branch tag from database
   onProjectClick,
   onBranchClick,
   onSearchChange,
@@ -87,7 +91,7 @@ export const AppBar = ({
       <div className={styles.leftSection}>
         <div className={styles.breadcrumbs}>
           <BreadcrumbItem
-            label={projectName}
+            label={project?.name || 'Project Name'}
             icon={<ProjectIcon />}
             onClick={onProjectClick}
             isProject={true}

@@ -1,78 +1,20 @@
-import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import type { FC } from 'react'
 import styles from './ProjectDetailPage.module.css'
+import { getProject } from './getProject'
 
 type Props = {
   projectId: string
 }
 
-async function getProject(projectId: string) {
-  try {
-    const supabase = await createClient()
-    const { data: project, error } = await supabase
-      .from('Project')
-      .select(`
-        id,
-        name,
-        createdAt,
-        organizationId,
-        ProjectRepositoryMapping:ProjectRepositoryMapping(
-          repository:Repository(
-            pullRequests:PullRequest(
-              id,
-              pullNumber,
-              migration:Migration(
-                id,
-                title
-              )
-            )
-          )
-        )
-      `)
-      .eq('id', Number(projectId))
-      .single()
-
-    if (error || !project) {
-      console.error('Error fetching project:', error)
-      notFound()
-    }
-
-    // Extract migrations from the nested structure
-    const migrations = project.ProjectRepositoryMapping.flatMap((mapping) =>
-      mapping.repository.pullRequests
-        .filter((pr) => pr.migration !== null)
-        .map((pr) => {
-          // Handle case where migration might be an array due to Supabase's return format
-          const migration = Array.isArray(pr.migration)
-            ? pr.migration[0]
-            : pr.migration
-          return {
-            id: migration.id,
-            title: migration.title,
-            pullNumber: pr.pullNumber,
-          }
-        }),
-    )
-
-    return {
-      id: project.id,
-      name: project.name,
-      createdAt: project.createdAt,
-      organizationId: project.organizationId,
-      migrations,
-    }
-  } catch (error) {
-    console.error('Error in getProject:', error)
-    notFound()
-  }
-}
-
 // TODO: Delete this page
 export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
   const project = await getProject(projectId)
+
+  if (!project) {
+    return <div>Project not found</div>
+  }
 
   return (
     <div className={styles.container}>
