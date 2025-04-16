@@ -34,6 +34,8 @@ export * from './CardinalityZeroOrOneLeftIcon'
 export * from './Eye'
 export * from './EyeClosed'
 export * from './FileText'
+export * from './ProjectIcon'
+export * from './SearchIcon'
 
 export {
   Copy,

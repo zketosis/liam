@@ -1,5 +1,5 @@
 import { urlgen } from '@/utils/routes'
-import { GitHubIcon, ProjectIcon } from '@liam-hq/ui'
+import { GithubLogo, ProjectIcon } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
 import styles from './ProjectItem.module.css'
@@ -46,7 +46,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
       <div className={styles.projectInfo}>
         <div className={styles.repositoryBadge}>
           <div className={styles.repositoryIcon}>
-            <GitHubIcon className={styles.icon} />
+            <GithubLogo className={styles.icon} opacity={0.5} />
           </div>
           <span className={styles.repositoryName}>
             {project.name
