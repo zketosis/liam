@@ -5,8 +5,8 @@ import {
   DOC_FILES,
   processGenerateDocsSuggestion,
 } from '../functions/processGenerateDocsSuggestion'
-import { processGenerateSchemaMeta } from '../functions/processGenerateSchemaMeta'
-import type { GenerateSchemaMetaPayload } from '../types'
+import { processGenerateSchemaOverride } from '../functions/processGenerateSchemaOverride'
+import type { GenerateSchemaOverridePayload } from '../types'
 import { helloWorldTask } from './helloworld'
 
 export const generateDocsSuggestionTask = task({
@@ -54,11 +54,11 @@ export const generateDocsSuggestionTask = task({
   },
 })
 
-export const generateSchemaMetaSuggestionTask = task({
+export const generateSchemaOverrideSuggestionTask = task({
   id: 'generate-schema-meta-suggestion',
-  run: async (payload: GenerateSchemaMetaPayload) => {
+  run: async (payload: GenerateSchemaOverridePayload) => {
     logger.log('Executing schema meta suggestion task:', { payload })
-    const result = await processGenerateSchemaMeta(payload)
+    const result = await processGenerateSchemaOverride(payload)
     logger.info('Generated schema meta suggestion:', { result })
 
     if (result.createNeeded) {
