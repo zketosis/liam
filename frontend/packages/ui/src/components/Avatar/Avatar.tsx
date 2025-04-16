@@ -47,52 +47,23 @@ export const Avatar = ({
     .otherwise(() => styles.sizeMd)
 
   // Determine background color based on user type
-  let backgroundColor = ''
-  if (color) {
-    backgroundColor = color
-  } else {
-    switch (user) {
-      case 'you':
-        backgroundColor = 'var(--collaborator-color-you)'
-        break
-      case 'collaborator-1':
-        backgroundColor = 'var(--collaborator-color-1)'
-        break
-      case 'collaborator-2':
-        backgroundColor = 'var(--collaborator-color-2)'
-        break
-      case 'collaborator-3':
-        backgroundColor = 'var(--collaborator-color-3)'
-        break
-      case 'collaborator-4':
-        backgroundColor = 'var(--collaborator-color-4)'
-        break
-      case 'collaborator-5':
-        backgroundColor = 'var(--collaborator-color-5)'
-        break
-      case 'collaborator-6':
-        backgroundColor = 'var(--collaborator-color-6)'
-        break
-      case 'collaborator-7':
-        backgroundColor = 'var(--collaborator-color-7)'
-        break
-      case 'collaborator-8':
-        backgroundColor = 'var(--collaborator-color-8)'
-        break
-      case 'collaborator-9':
-        backgroundColor = 'var(--collaborator-color-9)'
-        break
-      case 'collaborator-10':
-      case 'collaborator-11':
-        backgroundColor = 'var(--primary-accent)'
-        break
-      case 'jack':
-        backgroundColor = 'var(--primary-accent)'
-        break
-      default:
-        backgroundColor = 'var(--avatar-background)'
-    }
-  }
+  const backgroundColor: string = color
+    ? color
+    : match<AvatarUser, string>(user)
+        .with('you', () => 'var(--collaborator-color-you)')
+        .with('collaborator-1', () => 'var(--collaborator-color-1)')
+        .with('collaborator-2', () => 'var(--collaborator-color-2)')
+        .with('collaborator-3', () => 'var(--collaborator-color-3)')
+        .with('collaborator-4', () => 'var(--collaborator-color-4)')
+        .with('collaborator-5', () => 'var(--collaborator-color-5)')
+        .with('collaborator-6', () => 'var(--collaborator-color-6)')
+        .with('collaborator-7', () => 'var(--collaborator-color-7)')
+        .with('collaborator-8', () => 'var(--collaborator-color-8)')
+        .with('collaborator-9', () => 'var(--collaborator-color-9)')
+        .with('collaborator-10', () => 'var(--primary-accent)')
+        .with('collaborator-11', () => 'var(--primary-accent)')
+        .with('jack', () => 'var(--primary-accent)')
+        .otherwise(() => 'var(--avatar-background)')
 
   // Special case for Jack avatar which uses an image
   if (user === 'jack') {
