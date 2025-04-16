@@ -1,12 +1,12 @@
 'use client'
 
-import { FC } from 'react'
-import { EmptyProjectsState, ProjectItem, SearchInput } from '../../components'
-import { useProjectSearch } from '../../hooks/useProjectSearch'
-import styles from './ProjectsPage.module.css'
+import { urlgen } from '@/utils/routes'
 import { ChevronDown } from '@liam-hq/ui'
 import Link from 'next/link'
-import { urlgen } from '@/utils/routes'
+import type { FC } from 'react'
+import { ProjectItem, SearchInput } from '../../components'
+import { useProjectSearch } from '../../hooks/useProjectSearch'
+import styles from './ProjectsPage.module.css'
 
 interface Project {
   id: number

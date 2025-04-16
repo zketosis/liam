@@ -18,14 +18,17 @@ export async function GET(request: Request) {
   }
 
   if (organizationId) {
-    dbQuery = dbQuery.eq('organizationId', parseInt(organizationId))
+    dbQuery = dbQuery.eq('organizationId', Number.parseInt(organizationId))
   }
 
   const { data: projects, error } = await dbQuery
 
   if (error) {
     console.error('Error searching projects:', error)
-    return NextResponse.json({ error: 'Failed to search projects' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to search projects' },
+      { status: 500 },
+    )
   }
 
   return NextResponse.json(projects)
