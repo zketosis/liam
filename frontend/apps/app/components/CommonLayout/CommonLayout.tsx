@@ -1,9 +1,5 @@
-'use client'
-
-import { AppBar } from '@liam-hq/ui'
-import { usePathname } from 'next/navigation'
-import type { FC } from 'react'
 import type { ReactNode } from 'react'
+import { ClientAppBar } from './ClientAppBar'
 import styles from './CommonLayout.module.css'
 import { GlobalNav } from './GlobalNav'
 
@@ -11,24 +7,15 @@ type CommonLayoutProps = {
   children: ReactNode
 }
 
-export const CommonLayout: FC<CommonLayoutProps> = ({ children }) => {
-  const pathname = usePathname() || ''
-  const isMinimal = pathname.includes('/organizations/')
-
-  // Extract projectId from pathname - handle complex URL patterns
-  const projectId = pathname.match(/\/projects\/(\d+)/)?.[1]
+export async function CommonLayout({ children }: CommonLayoutProps) {
+  // In a Server Component, we can't directly access the URL path
+  // We'll let the ClientAppBar handle path detection and project ID extraction
 
   return (
     <div className={styles.layout}>
       <GlobalNav />
       <div className={styles.mainContent}>
-        <AppBar
-          {...(projectId ? { projectId, projectName: 'Project Name' } : {})}
-          branchName="main"
-          avatarInitial="L"
-          avatarColor="var(--color-teal-800)"
-          minimal={isMinimal}
-        />
+        <ClientAppBar avatarInitial="L" avatarColor="var(--color-teal-800)" />
         <main className={styles.content}>{children}</main>
       </div>
     </div>
