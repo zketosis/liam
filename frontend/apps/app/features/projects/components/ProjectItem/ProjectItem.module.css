@@ -50,9 +50,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed var(--global-border);
-  color: var(--global-mute-text);
-  font-size: 16px;
+  overflow: hidden;
+}
+
+.projectIconPlaceholder svg {
+  width: 100%;
+  height: 100%;
 }
 
 /* Project name */
@@ -84,10 +87,16 @@
 }
 
 .repositoryIcon {
-  width: 12px;
-  height: 12px;
-  color: var(--global-foreground);
-  opacity: 0.5;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.repositoryIcon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .repositoryName {
