@@ -6,7 +6,11 @@ import {
   processGenerateDocsSuggestion,
 } from '../functions/processGenerateDocsSuggestion'
 import { processGenerateSchemaOverride } from '../functions/processGenerateSchemaOverride'
-import type { GenerateSchemaOverridePayload } from '../types'
+import type {
+  GenerateSchemaOverridePayload,
+  OverallReview,
+  ReviewFeedback,
+} from '../types'
 import { helloWorldTask } from './helloworld'
 
 export const generateDocsSuggestionTask = task({
@@ -110,6 +114,83 @@ export const createKnowledgeSuggestionTask = task({
       return result
     } catch (error) {
       logger.error('Error in createKnowledgeSuggestion task:', { error })
+      throw error
+    }
+  },
+})
+
+export const generateKnowledgeFromFeedbackTask = task({
+  id: 'generate-knowledge-from-feedback',
+  run: async (payload: {
+    projectId: number
+    reviewFeedback: ReviewFeedback
+    title: string
+    branch: string
+    traceId?: string
+    reasoning: string
+    overallReview: OverallReview
+  }) => {
+    logger.log('Executing generate knowledge from feedback task:', { payload })
+    try {
+      const { suggestions, traceId } = await processGenerateDocsSuggestion({
+        reviewComment: payload.overallReview.reviewComment || '',
+        projectId: payload.projectId,
+        branchOrCommit: payload.branch,
+        reviewFeedback: payload.reviewFeedback,
+      })
+      logger.log('Generated docs suggestions:', { suggestions, traceId })
+
+      for (const key of DOC_FILES) {
+        const suggestion = suggestions[key]
+        if (!suggestion || !suggestion.content) {
+          logger.warn(`No content found for suggestion key: ${key}`)
+          continue
+        }
+
+        await createKnowledgeSuggestionTask.trigger({
+          projectId: payload.projectId,
+          type: 'DOCS',
+          title: `Docs update related to feedback #${payload.reviewFeedback.id}`,
+          path: `docs/${key}`,
+          content: suggestion.content,
+          branch: payload.branch,
+          traceId,
+          reasoning: suggestion.reasoning || '',
+          overallReviewId: payload.overallReview.id,
+        })
+      }
+
+      const result = await processGenerateSchemaOverride({
+        overallReviewId: payload.overallReview.id,
+        reviewFeedback: payload.reviewFeedback,
+      })
+      logger.info('Generated schema meta suggestion:', { result })
+
+      if (result.createNeeded) {
+        // Create a knowledge suggestion with the schema meta using the returned information
+        await createKnowledgeSuggestionTask.trigger({
+          projectId: result.projectId,
+          type: 'SCHEMA',
+          title: result.title,
+          path: SCHEMA_OVERRIDE_FILE_PATH,
+          content: JSON.stringify(result.override, null, 2),
+          branch: result.branchName,
+          traceId: result.traceId,
+          reasoning: result.reasoning || '',
+          overallReviewId: result.overallReviewId,
+        })
+        logger.info('Knowledge suggestion creation triggered')
+      } else {
+        logger.info(
+          'No schema meta update needed, skipping knowledge suggestion creation',
+        )
+      }
+
+      return {
+        success: true,
+      }
+    } catch (error) {
+      logger.error('Error in generateKnowledgeFromFeedback task:', { error })
       throw error
     }
   },

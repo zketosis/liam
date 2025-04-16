@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { createClient } from '../libs/supabase'
 import type { FileContent } from '../prompts/generateDocsSuggestion/docsSuggestionSchema'
 import { generateDocsSuggestion } from '../prompts/generateDocsSuggestion/generateDocsSuggestion'
+import type { ReviewFeedback } from '../types'
 import { fetchSchemaInfoWithOverrides } from '../utils/schemaUtils'
 import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 
@@ -19,6 +20,7 @@ export async function processGenerateDocsSuggestion(payload: {
   reviewComment: string
   projectId: number
   branchOrCommit?: string
+  reviewFeedback?: ReviewFeedback
 }): Promise<{
   suggestions: Record<DocFile, FileContent>
   traceId: string
@@ -105,6 +107,7 @@ export async function processGenerateDocsSuggestion(payload: {
       callbacks,
       predefinedRunId,
       overriddenSchema,
+      payload.reviewFeedback,
     )
 
     const suggestions = Object.fromEntries(

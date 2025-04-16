@@ -5,6 +5,7 @@ import { ChatOpenAI } from '@langchain/openai'
 import type { Schema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
+import type { ReviewFeedback } from '../../types'
 import {
   type DocFileContentMap,
   type DocsSuggestion,
@@ -83,6 +84,8 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 </text>
 
+{reviewFeedbackInfo}
+
 ## Current Documentation
 
 <docs>
@@ -138,6 +141,8 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 </text>
 
+{reviewFeedbackInfo}
+
 ## Current Documentation
 
 <docs>
@@ -188,6 +193,7 @@ export const generateDocsSuggestion = async (
   callbacks: Callbacks,
   predefinedRunId: string,
   schema: Schema,
+  reviewFeedback?: ReviewFeedback,
 ): Promise<DocFileContentMap> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -196,6 +202,23 @@ export const generateDocsSuggestion = async (
   const updateModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
   })
+
+  // Format review feedback if available
+  let reviewFeedbackInfo = ''
+  if (reviewFeedback) {
+    reviewFeedbackInfo = `
+## Review Feedback Information
+
+<feedback>
+- **Category**: ${reviewFeedback.category}
+- **Severity**: ${reviewFeedback.severity}
+- **Description**: ${reviewFeedback.description}
+- **Suggestion**: ${reviewFeedback.suggestion}
+${reviewFeedback.resolvedAt ? `- **Resolution Date**: ${reviewFeedback.resolvedAt}` : ''}
+${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback.resolutionComment}` : ''}
+</feedback>
+`
+  }
 
   // Convert example objects to JSON strings for template use
   const evaluationResponseExampleJson = JSON.stringify(
@@ -226,6 +249,7 @@ export const generateDocsSuggestion = async (
     evaluationResults: string
     updateResponseExampleJson: string
     schema: string
+    reviewFeedbackInfo: string
   }
 
   // Helper function to collect suggested changes for files that need updates
@@ -274,6 +298,7 @@ export const generateDocsSuggestion = async (
       evaluationResponseExampleJson: string
       updateResponseExampleJson: string
       schema: string
+      reviewFeedbackInfo: string
     },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
   ): Promise<DocFileContentMap> => {
@@ -284,6 +309,7 @@ export const generateDocsSuggestion = async (
         formattedDocsContent: inputs.formattedDocsContent,
         evaluationResponseExampleJson: inputs.evaluationResponseExampleJson,
         schema: inputs.schema,
+        reviewFeedbackInfo: inputs.reviewFeedbackInfo,
       },
       config,
     )
@@ -298,6 +324,7 @@ export const generateDocsSuggestion = async (
       evaluationResults: JSON.stringify(suggestedChanges, null, 2),
       updateResponseExampleJson: inputs.updateResponseExampleJson,
       schema: inputs.schema,
+      reviewFeedbackInfo: inputs.reviewFeedbackInfo,
     }
 
     const updateResult = await updateChain.invoke(updateInput, {
@@ -323,6 +350,7 @@ export const generateDocsSuggestion = async (
     evaluationResponseExampleJson,
     updateResponseExampleJson,
     schema: JSON.stringify(schema, null, 2),
+    reviewFeedbackInfo,
   }
 
   // Execute the router chain
