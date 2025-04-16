@@ -8,6 +8,7 @@ import {
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import { safeParse } from 'valibot'
+import { parse as parseYaml } from 'yaml'
 import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
 import { fetchSchemaFileContent } from './githubFileUtils'
 
@@ -43,7 +44,7 @@ export const fetchSchemaInfoWithOverrides = async (
   // Parse and validate the current schema override if it exists
   let currentSchemaOverride: SchemaOverride | null = null
   if (currentSchemaOverrideContent) {
-    const parsedJson = JSON.parse(currentSchemaOverrideContent)
+    const parsedJson = parseYaml(currentSchemaOverrideContent)
     const result = safeParse(schemaOverrideSchema, parsedJson)
 
     if (result.success) {
