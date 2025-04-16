@@ -1,8 +1,6 @@
 import { urlgen } from '@/utils/routes'
-import { ChevronDown } from '@liam-hq/ui'
-import Link from 'next/link'
 import type { FC } from 'react'
-import { EmptyProjectsState, ProjectItem, SearchInput } from '../../components'
+import { EmptyProjectsState } from '../../components'
 import { ClientSearchWrapper } from './ClientSearchWrapper'
 import styles from './ProjectsPage.module.css'
 import {

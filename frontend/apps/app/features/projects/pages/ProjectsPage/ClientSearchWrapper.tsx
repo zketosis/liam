@@ -42,10 +42,7 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
 
         <div className={styles.sortSelect}>
           <span>Sort by activity</span>
-          <ChevronDown
-            className={styles.sortSelectIcon}
-            aria-hidden="true"
-          />
+          <ChevronDown className={styles.sortSelectIcon} aria-hidden="true" />
         </div>
 
         <Link
