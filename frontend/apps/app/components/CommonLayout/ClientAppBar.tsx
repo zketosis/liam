@@ -1,9 +1,9 @@
 'use client'
 
 import type { Tables } from '@liam-hq/db/supabase/database.types'
-import { AppBar } from '@liam-hq/ui'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { AppBar } from '../AppBar/AppBar'
 
 type Project = Tables<'Project'>
 

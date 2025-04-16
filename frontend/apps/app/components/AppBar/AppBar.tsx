@@ -1,5 +1,7 @@
 'use client'
 
+import type { Tables } from '@liam-hq/db/supabase/database.types'
+import { Avatar, IconButton } from '@liam-hq/ui'
 import { Bell, ChevronRight, ChevronsUpDown, Search } from 'lucide-react'
 import type {
   ChangeEvent,
@@ -7,8 +9,6 @@ import type {
   KeyboardEvent,
   ReactNode,
 } from 'react'
-import { Avatar } from '../Avatar'
-import { IconButton } from '../IconButton'
 import styles from './AppBar.module.css'
 
 type BreadcrumbItemProps = {
@@ -20,11 +20,8 @@ type BreadcrumbItemProps = {
   isProject?: boolean
 }
 
-// Using a generic Project interface to avoid tight coupling with specific implementations
-export interface Project {
-  id: number
-  name: string
-}
+// Using the database type for Project
+type Project = Tables<'Project'>
 
 type AppBarProps = {
   project?: Project
@@ -42,8 +39,8 @@ type AppBarProps = {
 
 export const AppBar = ({
   project,
-  branchName = 'main', // TODO: get branch name from database
-  branchTag = 'production', // TODO: get branch tag from database
+  branchName = 'main',
+  branchTag = 'production',
   onProjectClick,
   onBranchClick,
   onSearchChange,
