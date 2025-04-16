@@ -13,7 +13,7 @@ type CreateKnowledgeSuggestionPayload = {
   traceId?: string
   reasoning?: string
   overallReviewId?: number
-  reviewFeedbackId?: number // Optional parameter for mapping
+  reviewFeedbackId?: number | null
 }
 
 type CreateKnowledgeSuggestionResult = {

@@ -25,6 +25,7 @@ export const generateDocsSuggestionTask = task({
     type: 'DOCS'
     branchName: string
     overallReviewId: number
+    reviewFeedbackId?: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
       reviewComment: payload.reviewComment,
@@ -51,6 +52,7 @@ export const generateDocsSuggestionTask = task({
         traceId,
         reasoning: suggestion.reasoning || '',
         overallReviewId: payload.overallReviewId,
+        reviewFeedbackId: payload.reviewFeedbackId || null,
       })
     }
 
@@ -77,6 +79,9 @@ export const generateSchemaOverrideSuggestionTask = task({
         traceId: result.traceId,
         reasoning: result.reasoning || '',
         overallReviewId: result.overallReviewId,
+        reviewFeedbackId: payload.reviewFeedback
+          ? payload.reviewFeedback.id
+          : null,
       })
       logger.info('Knowledge suggestion creation triggered')
     } else {
@@ -101,6 +106,7 @@ export const createKnowledgeSuggestionTask = task({
     traceId?: string
     reasoning: string
     overallReviewId: number
+    reviewFeedbackId?: number | null
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
@@ -157,6 +163,7 @@ export const generateKnowledgeFromFeedbackTask = task({
           traceId,
           reasoning: suggestion.reasoning || '',
           overallReviewId: payload.overallReview.id,
+          reviewFeedbackId: payload.reviewFeedback.id,
         })
       }
 
@@ -178,6 +185,9 @@ export const generateKnowledgeFromFeedbackTask = task({
           traceId: result.traceId,
           reasoning: result.reasoning || '',
           overallReviewId: result.overallReviewId,
+          reviewFeedbackId: payload.reviewFeedback
+            ? payload.reviewFeedback.id
+            : null,
         })
         logger.info('Knowledge suggestion creation triggered')
       } else {
