@@ -38,7 +38,7 @@ export function ClientAppBar({
 }: ClientAppBarProps) {
   const pathname = usePathname()
   const [project, setProject] = useState<Project | null>(initialProject || null)
-  const isMinimal = pathname?.includes('/organizations/')
+  const isMinimal = !pathname?.includes('/projects/')
 
   useEffect(() => {
     // If we already have a project from props, don't fetch again
