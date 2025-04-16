@@ -37,7 +37,7 @@
 .breadcrumbItem {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-1half);
   padding: var(--spacing-1half) var(--spacing-2);
   color: var(--global-foreground);
   border-radius: var(--border-radius-md);
@@ -103,6 +103,7 @@
   color: var(--global-foreground);
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-base);
+  line-height: 1.0;
 }
 
 .searchContainer {
@@ -147,10 +148,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 21px;
+  height: 21px;
   padding: var(--spacing-1);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  color: var(--color-gray-100);
+  color: var(--global-mute-text);
   background-color: var(--overlay-5);
   border-radius: var(--border-radius-smbase);
 }
