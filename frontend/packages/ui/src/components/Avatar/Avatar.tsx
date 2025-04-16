@@ -36,32 +36,15 @@ export const Avatar = ({
   ...props
 }: AvatarProps) => {
   // Map size to CSS class
-  let sizeClass: string
-  switch (size) {
-    case 'xxs':
-      sizeClass = styles.sizeXxs
-      break
-    case 'xs':
-      sizeClass = styles.sizeXs
-      break
-    case 'sm':
-      sizeClass = styles.sizeSm
-      break
-    case 'md':
-      sizeClass = styles.sizeMd
-      break
-    case 'lg':
-      sizeClass = styles.sizeLg
-      break
-    case 'xl':
-      sizeClass = styles.sizeXl
-      break
-    case '2xl':
-      sizeClass = styles.size2xl
-      break
-    default:
-      sizeClass = styles.sizeMd
-  }
+  const sizeClass = match(size)
+    .with('xxs', () => styles.sizeXxs)
+    .with('xs', () => styles.sizeXs)
+    .with('sm', () => styles.sizeSm)
+    .with('md', () => styles.sizeMd)
+    .with('lg', () => styles.sizeLg)
+    .with('xl', () => styles.sizeXl)
+    .with('2xl', () => styles.size2xl)
+    .otherwise(() => styles.sizeMd)
 
   // Determine background color based on user type
   let backgroundColor = ''
