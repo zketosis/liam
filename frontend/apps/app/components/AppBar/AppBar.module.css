@@ -70,8 +70,8 @@
 }
 
 .breadcrumbText {
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-family: var(--main-font), sans-serif;
+  font-size: var(--font-size-4);
   line-height: 1.2em;
 }
 
@@ -97,8 +97,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-1);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-family: var(--code-font);
+  font-size: var(--font-size-2);
   font-weight: 500;
   color: var(--global-foreground);
   background-color: rgba(255, 255, 255, 0.2);
@@ -126,8 +126,8 @@
 
 .searchInput {
   flex: 1;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-family: var(--main-font), sans-serif;
+  font-size: var(--font-size-3);
   color: var(--overlay-30);
   background-color: transparent;
   border: none;
@@ -151,8 +151,8 @@
   width: 21px;
   height: 21px;
   padding: var(--spacing-1);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-family: var(--code-font);
+  font-size: var(--font-size-3);
   color: var(--global-mute-text);
   background-color: var(--overlay-5);
   border-radius: var(--border-radius-smbase);
