@@ -96,17 +96,20 @@ export const resolveReviewFeedback = async (data: {
     const projectId: number = completeOverallReview.projectId
     let taskId: string | null = null
 
-    // Trigger the knowledge suggestion creation task with reviewFeedbackId
-    const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId,
-      reviewFeedback: updatedFeedback[0],
-      title: `Knowledge from resolved feedback #${feedbackId}`,
-      reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
-      overallReview: completeOverallReview,
-      branch: completeOverallReview.branchName,
-    })
+    // Only trigger knowledge suggestion creation if severity is not POSITIVE
+    if (updatedFeedback[0].severity !== 'POSITIVE') {
+      // Trigger the knowledge suggestion creation task with reviewFeedbackId
+      const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
+        projectId,
+        reviewFeedback: updatedFeedback[0],
+        title: `Knowledge from resolved feedback #${feedbackId}`,
+        reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
+        overallReview: completeOverallReview,
+        branch: completeOverallReview.branchName,
+      })
 
-    taskId = taskHandle.id
+      taskId = taskHandle.id
+    }
 
     // Return the task information so the client can track its progress
     return {
