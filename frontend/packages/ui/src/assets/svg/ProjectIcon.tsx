@@ -1,4 +1,3 @@
-import React from 'react'
 import type { ComponentPropsWithoutRef, FC } from 'react'
 
 type Props = Omit<ComponentPropsWithoutRef<'svg'>, 'xmlns'> & {

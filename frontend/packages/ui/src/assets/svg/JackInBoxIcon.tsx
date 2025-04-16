@@ -1,4 +1,3 @@
-import React from 'react'
 import type { ComponentPropsWithoutRef, FC } from 'react'
 
 type Props = Omit<ComponentPropsWithoutRef<'svg'>, 'xmlns'>
@@ -19,20 +18,14 @@ export const JackInBoxIcon: FC<Props> = ({
     {...props}
   >
     <title>Jack in the box illustration</title>
-    <path
-      d="M73.3396 31.1109L76.8896 29.3709L66.5 21.501"
-      fill="#141616"
-    />
+    <path d="M73.3396 31.1109L76.8896 29.3709L66.5 21.501" fill="#141616" />
     <path
       d="M73.3396 31.1109L76.8896 29.3709L66.5 21.501"
       stroke="#1DED83"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M17.1802 27.1406L9.49023 32.2206L34.7502 48.1606"
-      fill="#141616"
-    />
+    <path d="M17.1802 27.1406L9.49023 32.2206L34.7502 48.1606" fill="#141616" />
     <path
       d="M17.1802 27.1406L9.49023 32.2206L34.7502 48.1606"
       stroke="#1DED83"
