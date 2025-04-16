@@ -259,3 +259,84 @@ export const createOrUpdateFileContent = async (
     return { success: false, sha: null }
   }
 }
+
+/**
+ * Gets the latest commit information for a repository
+ * @returns Latest commit details or null
+ */
+export const getLastCommit = async (
+  installationId: number,
+  owner: string,
+  repo: string,
+  branch = 'main',
+): Promise<{
+  sha: string
+  date: string
+  message: string
+  author: string
+} | null> => {
+  const octokit = await createOctokit(installationId)
+
+  try {
+    const { data: commits } = await octokit.repos.listCommits({
+      owner,
+      repo,
+      sha: branch,
+      per_page: 1, // Only need the latest commit
+    })
+
+    if (!commits || commits.length === 0) {
+      return null
+    }
+
+    const latestCommit = commits[0]
+    if (!latestCommit || !latestCommit.commit) {
+      return null
+    }
+
+    return {
+      sha: latestCommit.sha || '',
+      date:
+        latestCommit.commit.committer?.date ||
+        latestCommit.commit.author?.date ||
+        '',
+      message: latestCommit.commit.message || '',
+      author:
+        latestCommit.commit.author?.name ||
+        latestCommit.commit.committer?.name ||
+        '',
+    }
+  } catch (error) {
+    console.error(`Error fetching latest commit for ${owner}/${repo}:`, error)
+    return null
+  }
+}
+
+/**
+ * Gets organization information for a repository
+ * @returns Organization avatar URL or null
+ */
+export const getOrganizationInfo = async (
+  installationId: number,
+  owner: string,
+  repo: string,
+): Promise<{ avatar_url: string } | null> => {
+  const octokit = await createOctokit(installationId)
+
+  try {
+    const { data } = await octokit.repos.get({
+      owner,
+      repo,
+    })
+
+    return {
+      avatar_url: data.organization?.avatar_url || '',
+    }
+  } catch (error) {
+    console.error(
+      `Error fetching organization info for ${owner}/${repo}:`,
+      error,
+    )
+    return null
+  }
+}
