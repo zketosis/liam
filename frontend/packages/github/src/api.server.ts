@@ -193,7 +193,12 @@ export const getFileContent = async (
   } catch (error) {
     // Handle 404 errors silently as they're expected when files don't exist
     const isNotFoundError =
-      error instanceof Error && 'status' in error && error.status === 404
+      (error instanceof Error && 'status' in error && error.status === 404) ||
+      (error instanceof Error && error.message.includes('Not Found')) ||
+      (typeof error === 'object' &&
+        error !== null &&
+        'status' in error &&
+        error.status === 404)
 
     if (isNotFoundError) {
       console.info(
