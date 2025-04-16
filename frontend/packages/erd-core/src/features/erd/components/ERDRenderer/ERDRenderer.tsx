@@ -138,6 +138,7 @@ export const ERDRenderer: FC<Props> = ({
                         nodes={nodes}
                         edges={edges}
                         displayArea="main"
+                        onAddTableGroup={onAddTableGroup}
                       />
                       <TableDetailDrawer />
                     </>
@@ -145,7 +146,7 @@ export const ERDRenderer: FC<Props> = ({
                 </TableDetailDrawerRoot>
                 {errorObjects.length === 0 && (
                   <div className={styles.toolbarWrapper}>
-                    <Toolbar onAddTableGroup={onAddTableGroup} />
+                    <Toolbar withGroupButton={!!onAddTableGroup} />
                   </div>
                 )}
               </main>

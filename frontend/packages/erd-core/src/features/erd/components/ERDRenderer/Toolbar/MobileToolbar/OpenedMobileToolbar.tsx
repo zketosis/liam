@@ -3,7 +3,6 @@ import { useCustomReactflow } from '@/features/reactflow/hooks'
 import { useVersion } from '@/providers'
 import type { ShowMode } from '@/schemas/showMode'
 import { useUserEditingStore } from '@/stores'
-import type { TableGroup } from '@liam-hq/db-structure'
 import { ChevronDown } from '@liam-hq/ui'
 import { IconButton, Minus, Plus } from '@liam-hq/ui'
 import { ToolbarButton } from '@radix-ui/react-toolbar'
@@ -15,15 +14,15 @@ import { TidyUpButton } from '../TidyUpButton'
 import styles from './OpenedMobileToolbar.module.css'
 
 type Props = {
+  withGroupButton?: boolean
   toggleOpenClose: () => void
   toggleShowModeMenu: () => void
-  onAddTableGroup: ((props: TableGroup) => void) | undefined
 }
 
 export const OpenedMobileToolbar: FC<Props> = ({
+  withGroupButton = false,
   toggleOpenClose,
   toggleShowModeMenu,
-  onAddTableGroup,
 }) => {
   const { zoomIn, zoomOut } = useCustomReactflow()
   const zoomLevel = useStore((store) => store.transform[2])
@@ -103,9 +102,7 @@ export const OpenedMobileToolbar: FC<Props> = ({
 
         <FitviewButton size="sm">Zoom to Fit</FitviewButton>
         <TidyUpButton size="sm">Tidy up</TidyUpButton>
-        {onAddTableGroup && (
-          <GroupButton size="sm" onAddTableGroup={onAddTableGroup} />
-        )}
+        {withGroupButton && <GroupButton size="sm" />}
       </div>
       <hr className={styles.divider} />
 
