@@ -1,5 +1,5 @@
 .container {
-  width: 282px;
+  flex: 1;
 }
 
 .searchInput {
