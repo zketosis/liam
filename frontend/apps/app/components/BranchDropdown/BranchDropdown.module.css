@@ -1,0 +1,137 @@
+/* Custom container styles that override the default DropdownMenuContent */
+.dropdownContainer {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  width: 282px !important;
+  max-height: 400px !important;
+  border-radius: var(--border-radius-md) !important;
+  border: var(--border-width-base) solid var(--global-border) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Custom list styles */
+.branchesList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 300px;
+  padding: var(--spacing-1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--overlay-30) transparent;
+}
+
+.branchesList::-webkit-scrollbar {
+  width: var(--spacing-1half);
+}
+
+.branchesList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.branchesList::-webkit-scrollbar-thumb {
+  background-color: var(--overlay-30);
+  border-radius: var(--border-radius-full);
+}
+
+/* Custom item styles */
+.branchItem {
+  margin-bottom: var(--spacing-half) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-right: var(--spacing-1) !important; /* Ensure there's space for the check icon */
+}
+
+.branchesList > :last-child {
+  margin-bottom: 0;
+}
+
+/* Hover and selected states need !important to override the UI package */
+.branchItem:hover {
+  background-color: var(--dropdown-background-hover) !important;
+}
+
+.branchItem.selected {
+  background-color: var(--dropdown-background-active) !important;
+}
+
+.branchItem.selected:hover {
+  background-color: var(--dropdown-background-hover) !important;
+}
+
+/* Branch content styles */
+.branchContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-1half);
+  flex: 1;
+  min-width: 0; /* Allows flex children to shrink below their content size */
+  overflow: hidden;
+  width: 100%; /* Subtract check icon width */
+  padding-right: 20px;
+}
+/* Name styles */
+.branchName {
+  font-size: var(--font-size-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0; /* Allows text to shrink */
+  /* No max-width here to allow filling available space */
+  width: 100%; /* Fill available space minus check icon width */
+  padding-right: 20px;
+}
+
+.branchItem.selected .branchContent,
+.branchItem.selected .branchContent .branchName {
+  padding-right: 0;
+}
+
+/* Name styles for branches with badges */
+.branchNameWithBadge {
+  font-size: var(--font-size-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0; /* Allows text to shrink */
+  width: auto; /* Auto width for branches with badges */
+}
+
+/* Tag styles */
+.branchTag {
+  font-family: var(--code-font), monospace;
+  font-size: var(--font-size-2);
+  font-weight: 500;
+  color: var(--global-foreground);
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-half) var(--spacing-1);
+  border-radius: var(--border-radius-base);
+  white-space: nowrap;
+  flex-shrink: 0; /* Prevent badge from shrinking */
+}
+
+.chevronContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 16px;
+  margin-left: auto; /* Push to the right edge */
+}
+
+/* Override icon colors */
+.dropdownContainer :global(svg) {
+  color: var(--overlay-50);
+}
+
+/* Fix icon width */
+.branchItem :global(.leftIcon) {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+}

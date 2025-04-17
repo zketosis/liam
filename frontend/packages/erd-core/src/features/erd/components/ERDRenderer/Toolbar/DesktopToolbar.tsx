@@ -1,4 +1,3 @@
-import type { TableGroup } from '@liam-hq/db-structure'
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import type { FC } from 'react'
 import styles from './DesktopToolbar.module.css'
@@ -9,11 +8,11 @@ import { TidyUpButton } from './TidyUpButton'
 import { ZoomControls } from './ZoomControls'
 
 type DesktopToolbarProps = {
-  onAddTableGroup: ((props: TableGroup) => void) | undefined
+  withGroupButton?: boolean
 }
 
 export const DesktopToolbar: FC<DesktopToolbarProps> = ({
-  onAddTableGroup,
+  withGroupButton = false,
 }) => {
   return (
     <ToolbarPrimitive.Root className={styles.root} aria-label="Toolbar">
@@ -22,7 +21,7 @@ export const DesktopToolbar: FC<DesktopToolbarProps> = ({
       <div className={styles.buttons}>
         <FitviewButton />
         <TidyUpButton />
-        {onAddTableGroup && <GroupButton onAddTableGroup={onAddTableGroup} />}
+        {withGroupButton && <GroupButton />}
         {/* TODO: enable once implemented */}
         {/* <ViewControlButton /> */}
       </div>

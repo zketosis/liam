@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { langfuseLangchainHandler } from '../../functions/langfuseLangchainHandler'
 import { createClient } from '../../libs/supabase'
 import { generateReview } from '../../prompts/generateReview/generateReview'
+import type { Review } from '../../types'
 import { fetchSchemaInfoWithOverrides } from '../../utils/schemaUtils'
 import { saveReviewTask } from './saveReview'
 
@@ -36,27 +37,6 @@ export type GenerateReviewPayload = {
       | 'unchanged'
     changes: number
     patch: string
-  }>
-}
-
-export type Review = {
-  bodyMarkdown: string
-  feedbacks: Array<{
-    kind: string
-    severity:
-      | 'POSITIVE'
-      | 'CRITICAL'
-      | 'WARNING'
-      | 'QUESTION'
-      | 'HIGH'
-      | 'MEDIUM'
-      | 'LOW'
-    description: string
-    suggestion: string
-    suggestionSnippets: Array<{
-      filename: string
-      snippet: string
-    }>
   }>
 }
 
