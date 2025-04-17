@@ -150,12 +150,12 @@ const createReviewFeedbackMapping = async (
 ) => {
   const supabase = createClient()
   const { error } = await supabase
-    .from('ReviewFeedbackKnowledgeSuggestionMapping')
+    .from('review_feedback_knowledge_suggestion_mappings')
     .insert({
-      knowledgeSuggestionId,
-      reviewFeedbackId,
-      createdAt: timestamp,
-      updatedAt: timestamp,
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      review_feedback_id: reviewFeedbackId,
+      created_at: timestamp,
+      updated_at: timestamp,
     })
 
   if (error) {
