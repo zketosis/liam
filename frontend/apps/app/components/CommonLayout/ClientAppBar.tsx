@@ -2,13 +2,12 @@
 
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { AppBar } from '../AppBar/AppBar'
+import { useCallback, useEffect, useState } from 'react'
+import { AppBar, type Project } from '../AppBar/AppBar'
 
-type Project = Tables<'projects'>
-
+type DBProject = Tables<'projects'>
 type ClientAppBarProps = {
-  project?: Project | null
+  project?: DBProject | null
   branchName?: string
   branchTag?: string
   avatarInitial?: string
@@ -16,7 +15,7 @@ type ClientAppBarProps = {
 }
 
 // Client-side function to fetch project data
-async function fetchProjectData(projectId: string): Promise<Project | null> {
+async function fetchProjectData(projectId: string): Promise<DBProject | null> {
   try {
     const response = await fetch(`/api/projects/${projectId}`)
     if (!response.ok) {
@@ -29,6 +28,28 @@ async function fetchProjectData(projectId: string): Promise<Project | null> {
   }
 }
 
+// Client-side function to fetch all projects
+async function fetchProjects(): Promise<DBProject[]> {
+  try {
+    const response = await fetch('/api/projects')
+    if (!response.ok) {
+      throw new Error('Failed to fetch projects')
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching projects:', error)
+    return []
+  }
+}
+
+// Convert database Project to UI Project
+function toUIProject(project: DBProject): Project {
+  return {
+    id: project.id,
+    name: project.name,
+  }
+}
+
 export function ClientAppBar({
   project: initialProject,
   branchName = 'main', // TODO: get branch name from database
@@ -37,8 +58,14 @@ export function ClientAppBar({
   avatarColor = 'var(--color-teal-800)',
 }: ClientAppBarProps) {
   const pathname = usePathname()
-  const [project, setProject] = useState<Project | null>(initialProject || null)
-  const isMinimal = !pathname?.includes('/projects/')
+  const [project, setProject] = useState<DBProject | null>(
+    initialProject || null,
+  )
+  const [projects, setProjects] = useState<DBProject[]>([])
+  // Make AppBar minimal when not in a project page OR when on the new project page within an organization
+  const isMinimal =
+    !pathname?.includes('/projects/') ||
+    Boolean(pathname?.match(/\/projects\/new/))
 
   useEffect(() => {
     // If we already have a project from props, don't fetch again
@@ -60,14 +87,73 @@ export function ClientAppBar({
     }
   }, [pathname, initialProject])
 
+  // Fetch all projects for the dropdown
+  useEffect(() => {
+    fetchProjects().then((data) => {
+      setProjects(data)
+    })
+  }, [])
+
+  const handleProjectSelect = useCallback(
+    (selectedProject: Project) => {
+      // Find the selected project in the projects list and set it as the current project
+      // without navigating to a new page
+      const dbProject = projects.find((p) => p.id === selectedProject.id)
+      if (dbProject) {
+        setProject(dbProject)
+      }
+    },
+    [projects],
+  )
+
+  const handleAddNewProject = useCallback(() => {
+    // This function is intentionally empty as project navigation is disabled
+  }, [])
+
+  // Create dummy projects with different names when there are no real projects
+  const createDummyProjects = (): Project[] => {
+    const dummyNames = [
+      'Sample Project 1',
+      'E-commerce App',
+      'Portfolio Website',
+      'Mobile Game',
+      'Analytics Dashboard',
+      'Social Media Platform',
+      'Booking System',
+      'Inventory Management',
+      'CRM Application',
+      'Learning Management System',
+    ]
+
+    return dummyNames.map((name, index) => ({
+      id: (-index - 1).toString(),
+      name,
+    }))
+  }
+
+  // Create a projectsList object that matches the expected type
+  // When there are no projects, provide dummy content instead of undefined
+  const projectsListProp = {
+    projects:
+      projects.length > 0 ? projects.map(toUIProject) : createDummyProjects(),
+    onProjectSelect: (selectedProject: Project) => {
+      // Only update the current project if it's a real project (id > 0, not a dummy project)
+      if (Number.parseInt(selectedProject.id) > 0) {
+        handleProjectSelect(selectedProject)
+      }
+    },
+    onAddNewProject: handleAddNewProject,
+  }
+
   return (
     <AppBar
-      project={project || undefined}
+      project={project ? toUIProject(project) : undefined}
       branchName={branchName}
       branchTag={branchTag}
       avatarInitial={avatarInitial}
       avatarColor={avatarColor}
       minimal={isMinimal}
+      projectsList={projectsListProp}
     />
   )
 }

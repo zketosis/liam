@@ -13,6 +13,7 @@ type CreateKnowledgeSuggestionPayload = {
   traceId?: string
   reasoning?: string
   overallReviewId?: string
+  reviewFeedbackId?: string | null
 }
 
 type CreateKnowledgeSuggestionResult = {
@@ -140,6 +141,29 @@ const createOverallReviewMapping = async (
 }
 
 /**
+ * Create a mapping between ReviewFeedback and KnowledgeSuggestion
+ */
+const createReviewFeedbackMapping = async (
+  knowledgeSuggestionId: string,
+  reviewFeedbackId: string,
+  timestamp: string,
+) => {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('ReviewFeedbackKnowledgeSuggestionMapping')
+    .insert({
+      knowledgeSuggestionId,
+      reviewFeedbackId,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    })
+
+  if (error) {
+    console.error('Failed to create ReviewFeedback mapping:', error.message)
+  }
+}
+
+/**
  * Process the creation of a knowledge suggestion
  * For DOCS type, checks if there's a corresponding GitHubDocFilePath entry and if content has changed
  */
@@ -230,6 +254,15 @@ export const processCreateKnowledgeSuggestion = async (
       await createOverallReviewMapping(
         knowledgeSuggestion.id,
         overallReviewId,
+        now,
+      )
+    }
+
+    // Create ReviewFeedback mapping if reviewFeedbackId is provided
+    if (payload.reviewFeedbackId) {
+      await createReviewFeedbackMapping(
+        knowledgeSuggestion.id,
+        payload.reviewFeedbackId,
         now,
       )
     }

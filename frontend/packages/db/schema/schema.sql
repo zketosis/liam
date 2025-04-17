@@ -344,6 +344,18 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
 ALTER TABLE "public"."review_feedback_comments" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."review_feedback_knowledge_suggestion_mappings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "review_feedback_id" "uuid",
+    "knowledge_suggestion_id" "uuid",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."review_feedbacks" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "overall_review_id" "uuid" NOT NULL,
@@ -642,6 +654,16 @@ ALTER TABLE ONLY "public"."review_feedback_comments"
 
 ALTER TABLE ONLY "public"."review_feedback_comments"
     ADD CONSTRAINT "review_feedback_comment_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
+    ADD CONSTRAINT "review_feedback_knowledge_suggesti_knowledge_suggestion_id_fkey" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id");
+
+
+
+ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
+    ADD CONSTRAINT "review_feedback_knowledge_suggestion_ma_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id");
 
 
 
@@ -1035,6 +1057,12 @@ GRANT ALL ON TABLE "public"."repositories" TO "service_role";
 GRANT ALL ON TABLE "public"."review_feedback_comments" TO "anon";
 GRANT ALL ON TABLE "public"."review_feedback_comments" TO "authenticated";
 GRANT ALL ON TABLE "public"."review_feedback_comments" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."review_feedback_knowledge_suggestion_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."review_feedback_knowledge_suggestion_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."review_feedback_knowledge_suggestion_mappings" TO "service_role";
 
 
 

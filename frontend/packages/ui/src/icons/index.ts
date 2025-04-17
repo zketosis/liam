@@ -49,4 +49,5 @@ export {
   Settings,
   ChevronRight,
   Search,
+  GitBranch,
 } from 'lucide-react'

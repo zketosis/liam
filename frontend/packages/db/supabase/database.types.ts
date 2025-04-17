@@ -589,6 +589,45 @@ export type Database = {
           },
         ]
       }
+      review_feedback_knowledge_suggestion_mappings: {
+        Row: {
+          created_at: string
+          id: string
+          knowledge_suggestion_id: string | null
+          review_feedback_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          knowledge_suggestion_id?: string | null
+          review_feedback_id?: string | null
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          knowledge_suggestion_id?: string | null
+          review_feedback_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'review_feedback_knowledge_suggesti_knowledge_suggestion_id_fkey'
+            columns: ['knowledge_suggestion_id']
+            isOneToOne: false
+            referencedRelation: 'knowledge_suggestions'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'review_feedback_knowledge_suggestion_ma_review_feedback_id_fkey'
+            columns: ['review_feedback_id']
+            isOneToOne: false
+            referencedRelation: 'review_feedbacks'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       review_feedbacks: {
         Row: {
           category: Database['public']['Enums']['category_enum']

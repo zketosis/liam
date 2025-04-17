@@ -6,6 +6,13 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
     // This is a mock implementation. In a real app, you would fetch projects from a database.
     const projects = await getProjects()
 
+    if (!Array.isArray(projects)) {
+      return NextResponse.json(
+        { error: 'Invalid projects data format' },
+        { status: 500 },
+      )
+    }
+
     return NextResponse.json(projects)
   } catch (error) {
     console.error('Error in projects API route:', error)
@@ -26,7 +33,7 @@ async function getProjects(): Promise<Tables<'Project'>[]> {
       name: 'Liam HQ',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      organizationId: '00000000-0000-0000-0000-000000000001',
+      organizationId: '00000000-0000-0000-0000-100000000001',
     },
     {
       id: '00000000-0000-0000-0000-000000000002',

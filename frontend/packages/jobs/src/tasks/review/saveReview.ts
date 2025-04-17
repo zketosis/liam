@@ -5,6 +5,7 @@ import {
   generateDocsSuggestionTask,
   generateSchemaOverrideSuggestionTask,
 } from '../../trigger/jobs'
+import { kindToCategory } from '../../utils/categoryUtils'
 import type { ReviewResponse } from './generateReview'
 import { postCommentTask } from './postComment'
 
@@ -120,38 +121,7 @@ export const processSaveReview = async (
   }
 }
 
-const mapCategoryEnum = (
-  category: string,
-):
-  | 'MIGRATION_SAFETY'
-  | 'DATA_INTEGRITY'
-  | 'PERFORMANCE_IMPACT'
-  | 'PROJECT_RULES_CONSISTENCY'
-  | 'SECURITY_OR_SCALABILITY' => {
-  const mapping: Record<
-    string,
-    | 'MIGRATION_SAFETY'
-    | 'DATA_INTEGRITY'
-    | 'PERFORMANCE_IMPACT'
-    | 'PROJECT_RULES_CONSISTENCY'
-    | 'SECURITY_OR_SCALABILITY'
-  > = {
-    'Migration Safety': 'MIGRATION_SAFETY',
-    'Data Integrity': 'DATA_INTEGRITY',
-    'Performance Impact': 'PERFORMANCE_IMPACT',
-    'Project Rules Consistency': 'PROJECT_RULES_CONSISTENCY',
-    'Security or Scalability': 'SECURITY_OR_SCALABILITY',
-    Unknown: 'MIGRATION_SAFETY', // Default to MIGRATION_SAFETY for unknown categories
-  }
-  const result = mapping[category]
-  if (!result) {
-    console.warn(
-      `Unknown category: ${category}, defaulting to MIGRATION_SAFETY`,
-    )
-    return 'MIGRATION_SAFETY'
-  }
-  return result
-}
+const mapCategoryEnum = kindToCategory
 
 const mapSeverityEnum = (
   severity:
@@ -214,6 +184,7 @@ export const saveReviewTask = task({
 
       await generateSchemaOverrideSuggestionTask.trigger({
         overallReviewId,
+        review: payload.review,
       })
 
       return { success: true }
