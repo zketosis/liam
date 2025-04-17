@@ -158,6 +158,7 @@ export const generateKnowledgeFromFeedbackTask = task({
           traceId,
           reasoning: suggestion.reasoning || '',
           overallReviewId: payload.overallReview.id,
+          reviewFeedbackId: payload.reviewFeedbackId,
         })
       }
 
