@@ -6,9 +6,10 @@ export const getProjects = async (organizationId?: number) => {
   let query = supabase
     .from('Project')
     .select(`
-      id, 
-      name, 
-      createdAt, 
+      id,
+      name,
+      createdAt,
+      updatedAt,
       organizationId,
       ProjectRepositoryMapping:ProjectRepositoryMapping(
         repository:Repository(

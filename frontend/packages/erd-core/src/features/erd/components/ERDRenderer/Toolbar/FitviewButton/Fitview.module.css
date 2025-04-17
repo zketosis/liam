@@ -3,9 +3,12 @@
   padding: var(--spacing-1, 4px);
   align-items: center;
   border-radius: var(--border-radius-base);
-  color: var(--global-foreground, #fff);
   transition: background-color var(--default-hover-animation-duration)
     var(--default-timing-function);
+}
+
+.menuButton svg {
+  color: var(--global-foreground, #fff);
 }
 
 .menuButton:hover {

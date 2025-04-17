@@ -8,13 +8,14 @@ import {
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
 import { safeParse } from 'valibot'
+import { parse as parseYaml } from 'yaml'
 import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
 import { fetchSchemaFileContent } from './githubFileUtils'
 
 export type SchemaInfo = {
-  schema: Schema // Original database structure
-  overriddenSchema: Schema // Database structure with overrides applied
-  currentSchemaMeta: SchemaOverride | null // Current schema metadata
+  schema: Schema // Original schema
+  overriddenSchema: Schema // schema with overrides applied
+  currentSchemaOverride: SchemaOverride | null // Current schema override
 }
 
 /**
@@ -24,7 +25,7 @@ export type SchemaInfo = {
  * @param branchName - The branch name
  * @param repositoryFullName - The repository full name (owner/name)
  * @param installationId - The installation ID
- * @returns The schema information including original and overridden database structure
+ * @returns The schema information including original and overridden schema
  */
 export const fetchSchemaInfoWithOverrides = async (
   projectId: number,
@@ -32,22 +33,22 @@ export const fetchSchemaInfoWithOverrides = async (
   repositoryFullName: string,
   installationId: number,
 ): Promise<SchemaInfo> => {
-  // Fetch the current schema metadata file from GitHub
-  const { content: currentSchemaMetaContent } = await getFileContent(
+  // Fetch the current schema override file from GitHub
+  const { content: currentSchemaOverrideContent } = await getFileContent(
     repositoryFullName,
     SCHEMA_OVERRIDE_FILE_PATH,
     branchName,
     installationId,
   )
 
-  // Parse and validate the current schema metadata if it exists
-  let currentSchemaMeta: SchemaOverride | null = null
-  if (currentSchemaMetaContent) {
-    const parsedJson = JSON.parse(currentSchemaMetaContent)
+  // Parse and validate the current schema override if it exists
+  let currentSchemaOverride: SchemaOverride | null = null
+  if (currentSchemaOverrideContent) {
+    const parsedJson = parseYaml(currentSchemaOverrideContent)
     const result = safeParse(schemaOverrideSchema, parsedJson)
 
     if (result.success) {
-      currentSchemaMeta = result.output
+      currentSchemaOverride = result.output
     }
   }
 
@@ -67,14 +68,14 @@ export const fetchSchemaInfoWithOverrides = async (
     console.warn('Errors parsing schema file:', errors)
   }
 
-  // Apply overrides to schema if currentSchemaMeta exists
-  const overriddenSchema = currentSchemaMeta
-    ? overrideSchema(schema, currentSchemaMeta).schema
+  // Apply overrides to schema if currentSchemaOverride exists
+  const overriddenSchema = currentSchemaOverride
+    ? overrideSchema(schema, currentSchemaOverride).schema
     : schema
 
   return {
     schema,
     overriddenSchema,
-    currentSchemaMeta,
+    currentSchemaOverride,
   }
 }
