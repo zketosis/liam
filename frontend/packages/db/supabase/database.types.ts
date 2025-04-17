@@ -669,6 +669,45 @@ export type Database = {
           },
         ]
       }
+      ReviewFeedbackKnowledgeSuggestionMapping: {
+        Row: {
+          createdAt: string
+          id: number
+          knowledgeSuggestionId: number
+          reviewFeedbackId: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          id?: number
+          knowledgeSuggestionId: number
+          reviewFeedbackId: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          id?: number
+          knowledgeSuggestionId?: number
+          reviewFeedbackId?: number
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'ReviewFeedbackKnowledgeSuggestionMapping_knowledgeSuggestionId_'
+            columns: ['knowledgeSuggestionId']
+            isOneToOne: false
+            referencedRelation: 'KnowledgeSuggestion'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_fkey'
+            columns: ['reviewFeedbackId']
+            isOneToOne: false
+            referencedRelation: 'ReviewFeedback'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       ReviewSuggestionSnippet: {
         Row: {
           createdAt: string

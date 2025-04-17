@@ -570,6 +570,33 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackComment" (
 ALTER TABLE "public"."ReviewFeedbackComment" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackKnowledgeSuggestionMapping" (
+    "id" integer NOT NULL,
+    "reviewFeedbackId" integer NOT NULL,
+    "knowledgeSuggestionId" integer NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" OWNER TO "postgres";
+
+
+CREATE SEQUENCE IF NOT EXISTS "public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq" OWNER TO "postgres";
+
+
+ALTER SEQUENCE "public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq" OWNED BY "public"."ReviewFeedbackKnowledgeSuggestionMapping"."id";
+
+
+
 CREATE SEQUENCE IF NOT EXISTS "public"."ReviewFeedback_id_seq"
     START WITH 1
     INCREMENT BY 1
@@ -682,6 +709,10 @@ ALTER TABLE ONLY "public"."ReviewFeedback" ALTER COLUMN "id" SET DEFAULT "nextva
 
 
 
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq"'::"regclass");
+
+
+
 ALTER TABLE ONLY "public"."GitHubDocFilePath"
     ADD CONSTRAINT "GitHubDocFilePath_pkey" PRIMARY KEY ("id");
 
@@ -767,6 +798,11 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 
 
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."ReviewFeedback"
     ADD CONSTRAINT "ReviewFeedback_pkey" PRIMARY KEY ("id");
 
@@ -821,6 +857,10 @@ CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullR
 
 
 CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
+
+
+
+CREATE UNIQUE INDEX "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_knowl" ON "public"."ReviewFeedbackKnowledgeSuggestionMapping" USING "btree" ("reviewFeedbackId", "knowledgeSuggestionId");
 
 
 
@@ -945,6 +985,16 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 ALTER TABLE ONLY "public"."ReviewFeedbackComment"
     ADD CONSTRAINT "ReviewFeedbackComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_knowledgeSuggestionId_" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1434,6 +1484,18 @@ GRANT ALL ON SEQUENCE "public"."ReviewFeedbackComment_id_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "anon";
 GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "authenticated";
 GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "service_role";
+
+
+
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."ReviewFeedbackKnowledgeSuggestionMapping_id_seq" TO "service_role";
 
 
 

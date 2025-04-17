@@ -1,4 +1,5 @@
 import type { SchemaOverride } from '@liam-hq/db-structure'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import type { InferOutput } from 'valibot'
 import type { reviewSchema } from '../prompts/generateReview/reviewSchema'
 
@@ -52,6 +53,7 @@ export type PostCommentPayload = {
 
 export type GenerateSchemaOverridePayload = {
   overallReviewId: number
+  review: Review
 }
 
 export type SchemaOverrideResult =
@@ -69,3 +71,6 @@ export type SchemaOverrideResult =
   | {
       createNeeded: false
     }
+
+export type OverallReview = Tables<'OverallReview'>
+export type ReviewFeedback = Tables<'ReviewFeedback'>
