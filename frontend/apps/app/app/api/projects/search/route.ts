@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
   if (organizationId) {
     const parsedId = Number.parseInt(organizationId, 10)
-    if (isNaN(parsedId)) {
+    if (Number.isNaN(parsedId)) {
       return NextResponse.json(
         { error: 'Invalid organizationId parameter' },
         { status: 400 },
