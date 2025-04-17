@@ -8,13 +8,13 @@ import type { ComponentProps } from 'react'
 import { ProjectIcon } from '../ProjectIcon'
 import styles from './ProjectsDropdown.module.css'
 export interface ProjectItem {
-  id: number
+  id: string
   name: string
 }
 
 export interface ProjectsDropdownProps extends ComponentProps<'div'> {
   projects: ProjectItem[]
-  selectedProjectId?: number | undefined
+  selectedProjectId?: string | undefined
   onProjectSelect: (project: ProjectItem) => void
   onAddNewProject?: () => void
 }

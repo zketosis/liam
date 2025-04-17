@@ -361,6 +361,18 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackComment" (
 ALTER TABLE "public"."ReviewFeedbackComment" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackKnowledgeSuggestionMapping" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "reviewFeedbackId" "uuid",
+    "knowledgeSuggestionId" "uuid",
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "reviewFeedbackId" "uuid" NOT NULL,
@@ -469,11 +481,6 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 
 
-ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
-    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."ReviewFeedback"
     ADD CONSTRAINT "ReviewFeedback_pkey" PRIMARY KEY ("id");
 
@@ -523,10 +530,6 @@ CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullR
 
 
 CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
-
-
-
-CREATE UNIQUE INDEX "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_knowl" ON "public"."ReviewFeedbackKnowledgeSuggestionMapping" USING "btree" ("reviewFeedbackId", "knowledgeSuggestionId");
 
 
 
@@ -655,12 +658,12 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 
 ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
-    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_knowledgeSuggestionId_" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMap_knowledgeSuggestionId_fkey" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id");
 
 
 
 ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
-    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id");
 
 
 
@@ -1060,6 +1063,12 @@ GRANT ALL ON TABLE "public"."ReviewFeedback" TO "service_role";
 GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "anon";
 GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "authenticated";
 GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "anon";
+GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "authenticated";
+GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "service_role";
 
 
 

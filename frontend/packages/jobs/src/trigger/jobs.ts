@@ -101,7 +101,7 @@ export const createKnowledgeSuggestionTask = task({
     traceId?: string
     reasoning: string
     overallReviewId: string
-    reviewFeedbackId?: number | null
+    reviewFeedbackId?: string | null
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
@@ -123,14 +123,14 @@ export const createKnowledgeSuggestionTask = task({
 export const generateKnowledgeFromFeedbackTask = task({
   id: 'generate-knowledge-from-feedback',
   run: async (payload: {
-    projectId: number
+    projectId: string
     title: string
     branch: string
     traceId?: string
     reasoning: string
     overallReview: OverallReview
     review: Review
-    reviewFeedbackId: number
+    reviewFeedbackId: string
   }) => {
     logger.log('Executing generate knowledge from feedback task:', { payload })
     try {

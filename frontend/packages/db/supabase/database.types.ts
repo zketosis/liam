@@ -639,28 +639,28 @@ export type Database = {
       ReviewFeedbackKnowledgeSuggestionMapping: {
         Row: {
           createdAt: string
-          id: number
-          knowledgeSuggestionId: number
-          reviewFeedbackId: number
+          id: string
+          knowledgeSuggestionId: string | null
+          reviewFeedbackId: string | null
           updatedAt: string
         }
         Insert: {
           createdAt?: string
-          id?: number
-          knowledgeSuggestionId: number
-          reviewFeedbackId: number
+          id?: string
+          knowledgeSuggestionId?: string | null
+          reviewFeedbackId?: string | null
           updatedAt: string
         }
         Update: {
           createdAt?: string
-          id?: number
-          knowledgeSuggestionId?: number
-          reviewFeedbackId?: number
+          id?: string
+          knowledgeSuggestionId?: string | null
+          reviewFeedbackId?: string | null
           updatedAt?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'ReviewFeedbackKnowledgeSuggestionMapping_knowledgeSuggestionId_'
+            foreignKeyName: 'ReviewFeedbackKnowledgeSuggestionMap_knowledgeSuggestionId_fkey'
             columns: ['knowledgeSuggestionId']
             isOneToOne: false
             referencedRelation: 'KnowledgeSuggestion'

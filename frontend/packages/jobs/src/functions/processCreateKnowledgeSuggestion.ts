@@ -13,7 +13,7 @@ type CreateKnowledgeSuggestionPayload = {
   traceId?: string
   reasoning?: string
   overallReviewId?: string
-  reviewFeedbackId?: number | null
+  reviewFeedbackId?: string | null
 }
 
 type CreateKnowledgeSuggestionResult = {
@@ -140,8 +140,8 @@ const createOverallReviewMapping = async (
  * Create a mapping between ReviewFeedback and KnowledgeSuggestion
  */
 const createReviewFeedbackMapping = async (
-  knowledgeSuggestionId: number,
-  reviewFeedbackId: number,
+  knowledgeSuggestionId: string,
+  reviewFeedbackId: string,
   timestamp: string,
 ) => {
   const supabase = createClient()

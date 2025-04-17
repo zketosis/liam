@@ -14,7 +14,7 @@ const requestSchema = v.object({
 /**
  * Fetches feedback data with related information
  */
-async function getFeedbackData(supabase: SupabaseClient, feedbackId: number) {
+async function getFeedbackData(supabase: SupabaseClient, feedbackId: string) {
   const { data, error } = await supabase
     .from('ReviewFeedback')
     .select(`
@@ -52,7 +52,7 @@ async function getFeedbackData(supabase: SupabaseClient, feedbackId: number) {
  */
 async function updateFeedbackAsResolved(
   supabase: SupabaseClient,
-  feedbackId: number,
+  feedbackId: string,
   resolutionComment?: string | null,
 ) {
   const { data, error } = await supabase
@@ -77,7 +77,7 @@ async function updateFeedbackAsResolved(
  */
 async function getCompleteOverallReview(
   supabase: SupabaseClient,
-  overallReviewId: number,
+  overallReviewId: string,
 ) {
   const { data, error } = await supabase
     .from('OverallReview')
@@ -121,7 +121,7 @@ function formatReviewFromFeedback(feedback: ReviewFeedback): Review {
  */
 async function addSnippetsToReview(
   supabase: SupabaseClient,
-  feedbackId: number,
+  feedbackId: string,
   review: Review,
 ): Promise<Review> {
   const { data, error } = await supabase
@@ -198,7 +198,7 @@ export const resolveReviewFeedback = async (data: {
 
     // Trigger knowledge generation task
     const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId: Number(completeOverallReview.projectId),
+      projectId: completeOverallReview.projectId || '',
       review: reviewFormatted,
       title: `Knowledge from resolved feedback #${feedbackId}`,
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
