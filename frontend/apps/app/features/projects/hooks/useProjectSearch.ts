@@ -24,6 +24,15 @@ export const useProjectSearch = (
     setSearchQuery(query)
     setSearchResult((prev) => ({ ...prev, loading: true }))
 
+    if (!query.trim()) {
+      setSearchResult({
+        projects: initialProjects || null,
+        loading: false,
+        error: null,
+      })
+      return
+    }
+
     try {
       const searchPath = `/api/projects/search?query=${encodeURIComponent(
         query,
