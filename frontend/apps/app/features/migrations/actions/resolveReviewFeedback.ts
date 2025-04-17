@@ -1,7 +1,7 @@
 'use server'
 
 import { type SupabaseClient, createClient } from '@/libs/db/server'
-import { generateKnowledgeFromFeedbackTask } from '@liam-hq/jobs/src/trigger/jobs'
+import { generateKnowledgeFromFeedbackTask } from '@liam-hq/jobs'
 import type { Review, ReviewFeedback } from '@liam-hq/jobs/src/types'
 import { categoryToKind } from '@liam-hq/jobs/src/utils/categoryUtils'
 import * as v from 'valibot'
@@ -198,7 +198,7 @@ export const resolveReviewFeedback = async (data: {
 
     // Trigger knowledge generation task
     const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId: completeOverallReview.projectId as number, // We've already checked this is not null
+      projectId: Number(completeOverallReview.projectId),
       review: reviewFormatted,
       title: `Knowledge from resolved feedback #${feedbackId}`,
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,

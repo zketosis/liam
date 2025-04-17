@@ -15,6 +15,9 @@ export {
   saveReviewTask,
   postCommentTask,
 } from './tasks/review'
-export { helloWorld } from './trigger/jobs'
+export {
+  helloWorld,
+  generateKnowledgeFromFeedbackTask,
+} from './trigger/jobs'
 
 export * from './prompts'
