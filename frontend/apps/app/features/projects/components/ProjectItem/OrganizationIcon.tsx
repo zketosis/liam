@@ -1,6 +1,6 @@
 import { getOrganizationInfo } from '@liam-hq/github'
-import { ProjectIcon } from './ProjectIcon'
 import Image from 'next/image'
+import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
 interface OrganizationIconProps {
@@ -16,11 +16,11 @@ export async function OrganizationIcon({
 }: OrganizationIconProps) {
   try {
     const orgInfo = await getOrganizationInfo(installationId, owner, repo)
-    
+
     if (orgInfo?.avatar_url) {
       return (
-        <Image 
-          src={orgInfo.avatar_url} 
+        <Image
+          src={orgInfo.avatar_url}
           alt={`${owner} organization icon`}
           width={32}
           height={32}
