@@ -3,6 +3,7 @@ import pkg from '@prisma/internals'
 import type {
   Columns,
   Constraints,
+  ForeignKeyConstraint,
   ForeignKeyConstraintReferenceOption,
   Index,
   Relationship,
@@ -130,7 +131,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         field.relationFromFields?.[0] &&
         (field.relationFromFields?.length ?? 0) > 0
 
-      const relationship: Relationship = isTargetField
+      const _relationship: Relationship = isTargetField
         ? ({
             name: field.relationName,
             primaryTableName: field.type,
@@ -154,10 +155,25 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             deleteConstraint: 'NO_ACTION',
           } as const)
 
-      relationships[relationship.name] = getFieldRenamedRelationship(
-        relationship,
+      const relationship = getFieldRenamedRelationship(
+        _relationship,
         tableFieldRenaming,
       )
+      relationships[relationship.name] = relationship
+
+      const constraint: ForeignKeyConstraint = {
+        type: 'FOREIGN KEY',
+        name: relationship.name,
+        columnName: relationship.foreignColumnName,
+        targetTableName: relationship.primaryTableName,
+        targetColumnName: relationship.primaryColumnName,
+        updateConstraint: relationship.updateConstraint,
+        deleteConstraint: relationship.deleteConstraint,
+      }
+      const table = tables[relationship.foreignTableName]
+      if (table) {
+        table.constraints[constraint.name] = constraint
+      }
     }
   }
   for (const index of dmmf.datamodel.indexes) {
