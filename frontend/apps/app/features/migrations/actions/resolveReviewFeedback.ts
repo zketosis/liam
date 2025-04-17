@@ -204,6 +204,7 @@ export const resolveReviewFeedback = async (data: {
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
       overallReview: completeOverallReview,
       branch: completeOverallReview.branchName,
+      reviewFeedbackId: feedbackId,
     })
 
     taskId = taskHandle.id

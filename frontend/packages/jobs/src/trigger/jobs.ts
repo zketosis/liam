@@ -101,6 +101,7 @@ export const createKnowledgeSuggestionTask = task({
     traceId?: string
     reasoning: string
     overallReviewId: number
+    reviewFeedbackId?: number | null
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
@@ -129,6 +130,7 @@ export const generateKnowledgeFromFeedbackTask = task({
     reasoning: string
     overallReview: OverallReview
     review: Review
+    reviewFeedbackId: number
   }) => {
     logger.log('Executing generate knowledge from feedback task:', { payload })
     try {
@@ -177,6 +179,7 @@ export const generateKnowledgeFromFeedbackTask = task({
           traceId: result.traceId,
           reasoning: result.reasoning || '',
           overallReviewId: result.overallReviewId,
+          reviewFeedbackId: payload.reviewFeedbackId,
         })
         logger.info('Knowledge suggestion creation triggered')
       } else {
