@@ -34,243 +34,243 @@ export type Database = {
   }
   public: {
     Tables: {
-      GitHubDocFilePath: {
+      github_doc_file_path: {
         Row: {
-          createdAt: string
+          created_at: string
           id: string
-          isReviewEnabled: boolean
+          is_review_enabled: boolean
           path: string
-          projectId: string
-          updatedAt: string
+          project_id: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          isReviewEnabled?: boolean
+          is_review_enabled?: boolean
           path: string
-          projectId: string
-          updatedAt: string
+          project_id: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          isReviewEnabled?: boolean
+          is_review_enabled?: boolean
           path?: string
-          projectId?: string
-          updatedAt?: string
+          project_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'GitHubDocFilePath_projectId_fkey'
-            columns: ['projectId']
+            foreignKeyName: 'github_doc_file_path_project_id_fkey'
+            columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'Project'
+            referencedRelation: 'project'
             referencedColumns: ['id']
           },
         ]
       }
-      GitHubSchemaFilePath: {
+      github_schema_file_path: {
         Row: {
-          createdAt: string
-          format: Database['public']['Enums']['SchemaFormatEnum']
+          created_at: string
+          format: Database['public']['Enums']['schema_format_enum']
           id: string
           path: string
-          projectId: string
-          updatedAt: string
+          project_id: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
-          format: Database['public']['Enums']['SchemaFormatEnum']
+          created_at?: string
+          format: Database['public']['Enums']['schema_format_enum']
           id?: string
           path: string
-          projectId: string
-          updatedAt: string
+          project_id: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
-          format?: Database['public']['Enums']['SchemaFormatEnum']
+          created_at?: string
+          format?: Database['public']['Enums']['schema_format_enum']
           id?: string
           path?: string
-          projectId?: string
-          updatedAt?: string
+          project_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'GitHubSchemaFilePath_projectId_fkey'
-            columns: ['projectId']
+            foreignKeyName: 'github_schema_file_path_project_id_fkey'
+            columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'Project'
+            referencedRelation: 'project'
             referencedColumns: ['id']
           },
         ]
       }
-      KnowledgeSuggestion: {
+      knowledge_suggestion: {
         Row: {
-          approvedAt: string | null
-          branchName: string
+          approved_at: string | null
+          branch_name: string
           content: string
-          createdAt: string
-          fileSha: string | null
+          created_at: string
+          file_sha: string | null
           id: string
           path: string
-          projectId: string
+          project_id: string
           reasoning: string | null
           title: string
-          traceId: string | null
-          type: Database['public']['Enums']['KnowledgeType']
-          updatedAt: string
+          trace_id: string | null
+          type: Database['public']['Enums']['knowledge_type']
+          updated_at: string
         }
         Insert: {
-          approvedAt?: string | null
-          branchName: string
+          approved_at?: string | null
+          branch_name: string
           content: string
-          createdAt?: string
-          fileSha?: string | null
+          created_at?: string
+          file_sha?: string | null
           id?: string
           path: string
-          projectId: string
+          project_id: string
           reasoning?: string | null
           title: string
-          traceId?: string | null
-          type: Database['public']['Enums']['KnowledgeType']
-          updatedAt: string
+          trace_id?: string | null
+          type: Database['public']['Enums']['knowledge_type']
+          updated_at: string
         }
         Update: {
-          approvedAt?: string | null
-          branchName?: string
+          approved_at?: string | null
+          branch_name?: string
           content?: string
-          createdAt?: string
-          fileSha?: string | null
+          created_at?: string
+          file_sha?: string | null
           id?: string
           path?: string
-          projectId?: string
+          project_id?: string
           reasoning?: string | null
           title?: string
-          traceId?: string | null
-          type?: Database['public']['Enums']['KnowledgeType']
-          updatedAt?: string
+          trace_id?: string | null
+          type?: Database['public']['Enums']['knowledge_type']
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'KnowledgeSuggestion_projectId_fkey'
-            columns: ['projectId']
+            foreignKeyName: 'knowledge_suggestion_project_id_fkey'
+            columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'Project'
+            referencedRelation: 'project'
             referencedColumns: ['id']
           },
         ]
       }
-      KnowledgeSuggestionDocMapping: {
+      knowledge_suggestion_doc_mapping: {
         Row: {
-          createdAt: string
-          gitHubDocFilePathId: string
+          created_at: string
+          github_doc_file_path_id: string
           id: string
-          knowledgeSuggestionId: string
-          updatedAt: string
+          knowledge_suggestion_id: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
-          gitHubDocFilePathId: string
+          created_at?: string
+          github_doc_file_path_id: string
           id?: string
-          knowledgeSuggestionId: string
-          updatedAt: string
+          knowledge_suggestion_id: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
-          gitHubDocFilePathId?: string
+          created_at?: string
+          github_doc_file_path_id?: string
           id?: string
-          knowledgeSuggestionId?: string
-          updatedAt?: string
+          knowledge_suggestion_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'KnowledgeSuggestionDocMapping_gitHubDocFilePathId_fkey'
-            columns: ['gitHubDocFilePathId']
+            foreignKeyName: 'knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey'
+            columns: ['github_doc_file_path_id']
             isOneToOne: false
-            referencedRelation: 'GitHubDocFilePath'
+            referencedRelation: 'github_doc_file_path'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'KnowledgeSuggestionDocMapping_knowledgeSuggestionId_fkey'
-            columns: ['knowledgeSuggestionId']
+            foreignKeyName: 'knowledge_suggestion_doc_mapping_knowledge_suggestion_id_fkey'
+            columns: ['knowledge_suggestion_id']
             isOneToOne: false
-            referencedRelation: 'KnowledgeSuggestion'
+            referencedRelation: 'knowledge_suggestion'
             referencedColumns: ['id']
           },
         ]
       }
-      MembershipInvites: {
+      membership_invites: {
         Row: {
           email: string
           id: string
-          inviteByUserId: string
-          invitedAt: string | null
-          organizationId: string
+          invite_by_user_id: string
+          invited_at: string | null
+          organization_id: string
         }
         Insert: {
           email: string
           id?: string
-          inviteByUserId: string
-          invitedAt?: string | null
-          organizationId: string
+          invite_by_user_id: string
+          invited_at?: string | null
+          organization_id: string
         }
         Update: {
           email?: string
           id?: string
-          inviteByUserId?: string
-          invitedAt?: string | null
-          organizationId?: string
+          invite_by_user_id?: string
+          invited_at?: string | null
+          organization_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'MembershipInvites_inviteByUserId_fkey'
-            columns: ['inviteByUserId']
+            foreignKeyName: 'membership_invites_invite_by_user_id_fkey'
+            columns: ['invite_by_user_id']
             isOneToOne: false
-            referencedRelation: 'User'
+            referencedRelation: 'user'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'MembershipInvites_organizationId_fkey'
-            columns: ['organizationId']
+            foreignKeyName: 'membership_invites_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: 'Organization'
+            referencedRelation: 'organization'
             referencedColumns: ['id']
           },
         ]
       }
-      Migration: {
+      migration: {
         Row: {
-          createdAt: string
+          created_at: string
           id: string
-          pullRequestId: string
+          pull_request_id: string
           title: string
-          updatedAt: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          pullRequestId: string
+          pull_request_id: string
           title: string
-          updatedAt: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          pullRequestId?: string
+          pull_request_id?: string
           title?: string
-          updatedAt?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'Migration_pullRequestId_fkey'
-            columns: ['pullRequestId']
+            foreignKeyName: 'migration_pull_request_id_fkey'
+            columns: ['pull_request_id']
             isOneToOne: false
-            referencedRelation: 'PullRequest'
+            referencedRelation: 'pull_request'
             referencedColumns: ['id']
           },
         ]
       }
-      Organization: {
+      organization: {
         Row: {
           id: string
           name: string
@@ -285,393 +285,393 @@ export type Database = {
         }
         Relationships: []
       }
-      OrganizationMember: {
+      organization_member: {
         Row: {
           id: string
-          joinedAt: string | null
-          organizationId: string
-          userId: string
+          joined_at: string | null
+          organization_id: string
+          user_id: string
         }
         Insert: {
           id?: string
-          joinedAt?: string | null
-          organizationId: string
-          userId: string
+          joined_at?: string | null
+          organization_id: string
+          user_id: string
         }
         Update: {
           id?: string
-          joinedAt?: string | null
-          organizationId?: string
-          userId?: string
+          joined_at?: string | null
+          organization_id?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'OrganizationMember_organizationId_fkey'
-            columns: ['organizationId']
+            foreignKeyName: 'organization_member_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: 'Organization'
+            referencedRelation: 'organization'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'OrganizationMember_userId_fkey'
-            columns: ['userId']
+            foreignKeyName: 'organization_member_user_id_fkey'
+            columns: ['user_id']
             isOneToOne: false
-            referencedRelation: 'User'
+            referencedRelation: 'user'
             referencedColumns: ['id']
           },
         ]
       }
-      OverallReview: {
+      overall_review: {
         Row: {
-          branchName: string
-          createdAt: string
+          branch_name: string
+          created_at: string
           id: string
-          projectId: string | null
-          pullRequestId: string
-          reviewComment: string | null
-          reviewedAt: string
-          traceId: string | null
-          updatedAt: string
+          project_id: string | null
+          pull_request_id: string
+          review_comment: string | null
+          reviewed_at: string
+          trace_id: string | null
+          updated_at: string
         }
         Insert: {
-          branchName: string
-          createdAt?: string
+          branch_name: string
+          created_at?: string
           id?: string
-          projectId?: string | null
-          pullRequestId: string
-          reviewComment?: string | null
-          reviewedAt?: string
-          traceId?: string | null
-          updatedAt: string
+          project_id?: string | null
+          pull_request_id: string
+          review_comment?: string | null
+          reviewed_at?: string
+          trace_id?: string | null
+          updated_at: string
         }
         Update: {
-          branchName?: string
-          createdAt?: string
+          branch_name?: string
+          created_at?: string
           id?: string
-          projectId?: string | null
-          pullRequestId?: string
-          reviewComment?: string | null
-          reviewedAt?: string
-          traceId?: string | null
-          updatedAt?: string
+          project_id?: string | null
+          pull_request_id?: string
+          review_comment?: string | null
+          reviewed_at?: string
+          trace_id?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'OverallReview_projectId_fkey'
-            columns: ['projectId']
+            foreignKeyName: 'overall_review_project_id_fkey'
+            columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'Project'
+            referencedRelation: 'project'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'OverallReview_pullRequestId_fkey'
-            columns: ['pullRequestId']
+            foreignKeyName: 'overall_review_pull_request_id_fkey'
+            columns: ['pull_request_id']
             isOneToOne: false
-            referencedRelation: 'PullRequest'
+            referencedRelation: 'pull_request'
             referencedColumns: ['id']
           },
         ]
       }
-      OverallReviewKnowledgeSuggestionMapping: {
+      overall_review_knowledge_suggestion_mapping: {
         Row: {
-          createdAt: string
+          created_at: string
           id: string
-          knowledgeSuggestionId: string
-          overallReviewId: string
-          updatedAt: string
+          knowledge_suggestion_id: string
+          overall_review_id: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          knowledgeSuggestionId: string
-          overallReviewId: string
-          updatedAt: string
+          knowledge_suggestion_id: string
+          overall_review_id: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          knowledgeSuggestionId?: string
-          overallReviewId?: string
-          updatedAt?: string
+          knowledge_suggestion_id?: string
+          overall_review_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'OverallReviewKnowledgeSuggestionMapping_knowledgeSuggestionId_f'
-            columns: ['knowledgeSuggestionId']
+            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_knowledge_suggestio'
+            columns: ['knowledge_suggestion_id']
             isOneToOne: false
-            referencedRelation: 'KnowledgeSuggestion'
+            referencedRelation: 'knowledge_suggestion'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'OverallReviewKnowledgeSuggestionMapping_overallReviewId_fkey'
-            columns: ['overallReviewId']
+            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_overall_review_id_f'
+            columns: ['overall_review_id']
             isOneToOne: false
-            referencedRelation: 'OverallReview'
+            referencedRelation: 'overall_review'
             referencedColumns: ['id']
           },
         ]
       }
-      Project: {
+      project: {
         Row: {
-          createdAt: string
+          created_at: string
           id: string
           name: string
-          organizationId: string | null
-          updatedAt: string
+          organization_id: string | null
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           id?: string
           name: string
-          organizationId?: string | null
-          updatedAt: string
+          organization_id?: string | null
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           id?: string
           name?: string
-          organizationId?: string | null
-          updatedAt?: string
+          organization_id?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'Project_organizationId_fkey'
-            columns: ['organizationId']
+            foreignKeyName: 'project_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: 'Organization'
+            referencedRelation: 'organization'
             referencedColumns: ['id']
           },
         ]
       }
-      ProjectRepositoryMapping: {
+      project_repository_mapping: {
         Row: {
-          createdAt: string
+          created_at: string
           id: string
-          projectId: string
-          repositoryId: string
-          updatedAt: string
+          project_id: string
+          repository_id: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          projectId: string
-          repositoryId: string
-          updatedAt: string
+          project_id: string
+          repository_id: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          projectId?: string
-          repositoryId?: string
-          updatedAt?: string
+          project_id?: string
+          repository_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'ProjectRepositoryMapping_projectId_fkey'
-            columns: ['projectId']
+            foreignKeyName: 'project_repository_mapping_project_id_fkey'
+            columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'Project'
+            referencedRelation: 'project'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'ProjectRepositoryMapping_repositoryId_fkey'
-            columns: ['repositoryId']
+            foreignKeyName: 'project_repository_mapping_repository_id_fkey'
+            columns: ['repository_id']
             isOneToOne: false
-            referencedRelation: 'Repository'
+            referencedRelation: 'repository'
             referencedColumns: ['id']
           },
         ]
       }
-      PullRequest: {
+      pull_request: {
         Row: {
-          commentId: number | null
-          createdAt: string
+          comment_id: number | null
+          created_at: string
           id: string
-          pullNumber: number
-          repositoryId: string
-          updatedAt: string
+          pull_number: number
+          repository_id: string
+          updated_at: string
         }
         Insert: {
-          commentId?: number | null
-          createdAt?: string
+          comment_id?: number | null
+          created_at?: string
           id?: string
-          pullNumber: number
-          repositoryId: string
-          updatedAt: string
+          pull_number: number
+          repository_id: string
+          updated_at: string
         }
         Update: {
-          commentId?: number | null
-          createdAt?: string
+          comment_id?: number | null
+          created_at?: string
           id?: string
-          pullNumber?: number
-          repositoryId?: string
-          updatedAt?: string
+          pull_number?: number
+          repository_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'PullRequest_repositoryId_fkey'
-            columns: ['repositoryId']
+            foreignKeyName: 'pull_request_repository_id_fkey'
+            columns: ['repository_id']
             isOneToOne: false
-            referencedRelation: 'Repository'
+            referencedRelation: 'repository'
             referencedColumns: ['id']
           },
         ]
       }
-      Repository: {
+      repository: {
         Row: {
-          createdAt: string
+          created_at: string
           id: string
-          installationId: number
-          isActive: boolean
+          installation_id: number
+          is_active: boolean
           name: string
           owner: string
-          updatedAt: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          installationId: number
-          isActive?: boolean
+          installation_id: number
+          is_active?: boolean
           name: string
           owner: string
-          updatedAt: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           id?: string
-          installationId?: number
-          isActive?: boolean
+          installation_id?: number
+          is_active?: boolean
           name?: string
           owner?: string
-          updatedAt?: string
+          updated_at?: string
         }
         Relationships: []
       }
-      ReviewFeedback: {
+      review_feedback: {
         Row: {
-          category: Database['public']['Enums']['CategoryEnum']
-          createdAt: string
+          category: Database['public']['Enums']['category_enum']
+          created_at: string
           description: string
           id: string
-          overallReviewId: string
-          resolutionComment: string | null
-          resolvedAt: string | null
-          severity: Database['public']['Enums']['SeverityEnum']
+          overall_review_id: string
+          resolution_comment: string | null
+          resolved_at: string | null
+          severity: Database['public']['Enums']['severity_enum']
           suggestion: string
-          updatedAt: string
+          updated_at: string
         }
         Insert: {
-          category: Database['public']['Enums']['CategoryEnum']
-          createdAt?: string
+          category: Database['public']['Enums']['category_enum']
+          created_at?: string
           description: string
           id?: string
-          overallReviewId: string
-          resolutionComment?: string | null
-          resolvedAt?: string | null
-          severity: Database['public']['Enums']['SeverityEnum']
+          overall_review_id: string
+          resolution_comment?: string | null
+          resolved_at?: string | null
+          severity: Database['public']['Enums']['severity_enum']
           suggestion: string
-          updatedAt: string
+          updated_at: string
         }
         Update: {
-          category?: Database['public']['Enums']['CategoryEnum']
-          createdAt?: string
+          category?: Database['public']['Enums']['category_enum']
+          created_at?: string
           description?: string
           id?: string
-          overallReviewId?: string
-          resolutionComment?: string | null
-          resolvedAt?: string | null
-          severity?: Database['public']['Enums']['SeverityEnum']
+          overall_review_id?: string
+          resolution_comment?: string | null
+          resolved_at?: string | null
+          severity?: Database['public']['Enums']['severity_enum']
           suggestion?: string
-          updatedAt?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'ReviewFeedback_overallReviewId_fkey'
-            columns: ['overallReviewId']
+            foreignKeyName: 'review_feedback_overall_review_id_fkey'
+            columns: ['overall_review_id']
             isOneToOne: false
-            referencedRelation: 'OverallReview'
+            referencedRelation: 'overall_review'
             referencedColumns: ['id']
           },
         ]
       }
-      ReviewFeedbackComment: {
+      review_feedback_comment: {
         Row: {
           content: string
-          createdAt: string
+          created_at: string
           id: string
-          reviewFeedbackId: string
-          updatedAt: string
-          userId: string
+          review_feedback_id: string
+          updated_at: string
+          user_id: string
         }
         Insert: {
           content: string
-          createdAt?: string
+          created_at?: string
           id?: string
-          reviewFeedbackId: string
-          updatedAt: string
-          userId: string
+          review_feedback_id: string
+          updated_at: string
+          user_id: string
         }
         Update: {
           content?: string
-          createdAt?: string
+          created_at?: string
           id?: string
-          reviewFeedbackId?: string
-          updatedAt?: string
-          userId?: string
+          review_feedback_id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'ReviewFeedbackComment_reviewFeedbackId_fkey'
-            columns: ['reviewFeedbackId']
+            foreignKeyName: 'review_feedback_comment_review_feedback_id_fkey'
+            columns: ['review_feedback_id']
             isOneToOne: false
-            referencedRelation: 'ReviewFeedback'
+            referencedRelation: 'review_feedback'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'ReviewFeedbackComment_userId_fkey'
-            columns: ['userId']
+            foreignKeyName: 'review_feedback_comment_user_id_fkey'
+            columns: ['user_id']
             isOneToOne: false
-            referencedRelation: 'User'
+            referencedRelation: 'user'
             referencedColumns: ['id']
           },
         ]
       }
-      ReviewSuggestionSnippet: {
+      review_suggestion_snippet: {
         Row: {
-          createdAt: string
+          created_at: string
           filename: string
           id: string
-          reviewFeedbackId: string
+          review_feedback_id: string
           snippet: string
-          updatedAt: string
+          updated_at: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           filename: string
           id?: string
-          reviewFeedbackId: string
+          review_feedback_id: string
           snippet: string
-          updatedAt: string
+          updated_at: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           filename?: string
           id?: string
-          reviewFeedbackId?: string
+          review_feedback_id?: string
           snippet?: string
-          updatedAt?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'ReviewSuggestionSnippet_reviewFeedbackId_fkey'
-            columns: ['reviewFeedbackId']
+            foreignKeyName: 'review_suggestion_snippet_review_feedback_id_fkey'
+            columns: ['review_feedback_id']
             isOneToOne: false
-            referencedRelation: 'ReviewFeedback'
+            referencedRelation: 'review_feedback'
             referencedColumns: ['id']
           },
         ]
       }
-      User: {
+      user: {
         Row: {
           email: string
           id: string
@@ -700,15 +700,15 @@ export type Database = {
       }
     }
     Enums: {
-      CategoryEnum:
+      category_enum:
         | 'MIGRATION_SAFETY'
         | 'DATA_INTEGRITY'
         | 'PERFORMANCE_IMPACT'
         | 'PROJECT_RULES_CONSISTENCY'
         | 'SECURITY_OR_SCALABILITY'
-      KnowledgeType: 'SCHEMA' | 'DOCS'
-      SchemaFormatEnum: 'schemarb' | 'postgres' | 'prisma' | 'tbls'
-      SeverityEnum: 'CRITICAL' | 'WARNING' | 'POSITIVE' | 'QUESTION'
+      knowledge_type: 'SCHEMA' | 'DOCS'
+      schema_format_enum: 'schemarb' | 'postgres' | 'prisma' | 'tbls'
+      severity_enum: 'CRITICAL' | 'WARNING' | 'POSITIVE' | 'QUESTION'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -827,16 +827,16 @@ export const Constants = {
   },
   public: {
     Enums: {
-      CategoryEnum: [
+      category_enum: [
         'MIGRATION_SAFETY',
         'DATA_INTEGRITY',
         'PERFORMANCE_IMPACT',
         'PROJECT_RULES_CONSISTENCY',
         'SECURITY_OR_SCALABILITY',
       ],
-      KnowledgeType: ['SCHEMA', 'DOCS'],
-      SchemaFormatEnum: ['schemarb', 'postgres', 'prisma', 'tbls'],
-      SeverityEnum: ['CRITICAL', 'WARNING', 'POSITIVE', 'QUESTION'],
+      knowledge_type: ['SCHEMA', 'DOCS'],
+      schema_format_enum: ['schemarb', 'postgres', 'prisma', 'tbls'],
+      severity_enum: ['CRITICAL', 'WARNING', 'POSITIVE', 'QUESTION'],
     },
   },
 } as const
