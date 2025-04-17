@@ -1,7 +1,7 @@
-/* Main container */
 .container {
   display: flex;
-  width: 1548px;
+  width: 100%;
+  height: 100%;
   padding: var(--spacing-20) var(--spacing-4);
   flex-direction: column;
   align-items: center;
@@ -9,23 +9,22 @@
   margin: 0 auto;
 }
 
-/* Heading */
 .heading {
-  font-size: 20px;
+  font-size: var(--font-size-8);
   font-weight: 500;
   color: var(--global-foreground);
-  line-height: 1em;
+  line-height: 100%;
 }
 
-/* Content container */
 .contentContainer {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-7);
-  width: 1080px;
+  width: 100%;
+  height: 100%;
+  max-width: 1080px;
 }
 
-/* Projects container */
 .projectsContainer {
   display: flex;
   flex-direction: column;
@@ -35,7 +34,6 @@
   align-self: stretch;
 }
 
-/* Projects header */
 .projectsHeader {
   display: flex;
   flex-direction: row;
@@ -44,7 +42,6 @@
   width: 100%;
 }
 
-/* Search input container */
 .searchInput {
   display: flex;
   flex-direction: row;
@@ -52,33 +49,31 @@
   gap: var(--spacing-1);
   padding: var(--spacing-2) var(--spacing-3);
   background-color: var(--global-background);
-  border: 1px solid var(--global-border);
+  border: var(--border-width-base) solid var(--global-border);
   border-radius: var(--border-radius-md);
   flex: 1;
   height: 36px;
 }
 
-.searchInput input {
+.searchInput > input {
   background: transparent;
   border: none;
   outline: none;
   color: var(--global-foreground);
-  font-size: 13px;
+  font-size: var(--font-size-4);
   width: 100%;
 }
 
-.searchInput input::placeholder {
-  color: var(--global-mute-text);
+.searchInput > input::placeholder {
+  color: var(--overlay-30);
 }
 
 .searchIcon {
-  color: var(--global-foreground);
-  opacity: 0.5;
-  width: 16px;
-  height: 16px;
+  color: var(--overlay-50);
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
-/* Sort select */
 .sortSelect {
   display: flex;
   flex-direction: row;
@@ -86,10 +81,10 @@
   gap: var(--spacing-1);
   padding: var(--spacing-2) var(--spacing-3);
   background-color: var(--global-background);
-  border: 1px solid var(--global-border);
+  border: var(--border-width-base) solid var(--global-border);
   border-radius: var(--border-radius-md);
   color: var(--global-foreground);
-  font-size: 13px;
+  font-size: var(--font-size-4);
   width: 282px;
   height: 36px;
 }
@@ -97,12 +92,11 @@
 .sortSelectIcon {
   margin-left: auto;
   color: var(--global-foreground);
-  opacity: 0.7;
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
-/* New Project button */
+/* TODO: Ideally, we want to use the Button from @liam-hq/ui, but since the content is a link, we're implementing a custom version here. */
 .newProjectButton {
   display: flex;
   align-items: center;
@@ -110,9 +104,9 @@
   padding: var(--spacing-2) var(--spacing-3);
   background-color: var(--button-primary);
   color: var(--button-primary-foreground);
-  border: 1px solid var(--button-primary);
+  border: var(--border-width-base) solid var(--button-primary);
   border-radius: var(--border-radius-md);
-  font-size: 13px;
+  font-size: var(--font-size-4);
   font-weight: 500;
   text-decoration: none;
   transition: background-color 0.2s ease;
@@ -124,7 +118,14 @@
   border-color: var(--button-primary-background-hover);
 }
 
-/* Empty state */
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-4);
+  align-items: flex-start;
+  width: 100%;
+}
+
 .emptyState {
   display: flex;
   flex-direction: column;
@@ -137,125 +138,4 @@
   border: 1px solid var(--global-border);
   border-radius: var(--border-radius-md);
   width: 100%;
-}
-
-.emptyState p {
-  margin: var(--spacing-1) 0;
-}
-
-/* Projects grid */
-.projectsGrid {
-  display: flex;
-  height: 400px;
-  align-items: flex-start;
-  align-content: flex-start;
-  gap: var(--spacing-4);
-  align-self: stretch;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-/* Project item */
-.projectItem {
-  display: flex;
-  flex-direction: column;
-  padding: var(--spacing-5) var(--spacing-4) var(--spacing-4);
-  background-color: var(--pane-background);
-  border: 1px solid var(--global-border);
-  border-radius: var(--border-radius-md);
-  gap: var(--spacing-5);
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.projectItem:hover {
-  border-color: var(--pane-border-hover);
-  transform: translateY(-2px);
-}
-
-/* Project header */
-.projectHeader {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-3);
-  width: 100%;
-}
-
-/* Project icon */
-.projectIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--border-radius-lg);
-  background-color: var(--global-muted-background);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.projectIconImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.projectIconPlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--global-border);
-  color: var(--global-mute-text);
-  font-size: 16px;
-}
-
-/* Project name */
-.projectName {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--global-foreground);
-  line-height: 1.2em;
-}
-
-/* Project info */
-.projectInfo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-}
-
-/* Repository badge */
-.repositoryBadge {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-1);
-  padding: var(--spacing-1) var(--spacing-2) var(--spacing-1)
-    var(--spacing-1half);
-  background-color: var(--overlay-5);
-  border-radius: var(--border-radius-full);
-  width: fit-content;
-}
-
-.repositoryIcon {
-  width: 12px;
-  height: 12px;
-  color: var(--global-foreground);
-  opacity: 0.5;
-}
-
-.repositoryName {
-  font-size: 12px;
-  color: var(--global-foreground);
-}
-
-/* Commit info */
-.commitInfo {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-1);
-  font-size: 11px;
-  color: var(--global-mute-text);
 }

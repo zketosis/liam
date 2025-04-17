@@ -1,6 +1,6 @@
 'use client'
 
-import { SearchIcon } from '@liam-hq/ui'
+import { Search } from '@liam-hq/ui'
 import type { ChangeEvent, FC, FormEvent } from 'react'
 import { useState } from 'react'
 import styles from './SearchInput.module.css'
@@ -35,7 +35,7 @@ export const SearchInput: FC<SearchInputProps> = ({
   return (
     <form onSubmit={handleSubmit} className={styles.container}>
       <div className={styles.searchInput}>
-        <SearchIcon className={styles.searchIcon} />
+        <Search className={styles.searchIcon} />
         <input
           type="text"
           value={query}

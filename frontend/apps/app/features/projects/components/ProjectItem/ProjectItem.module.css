@@ -1,15 +1,14 @@
-/* Project item */
 .projectItem {
   display: flex;
   flex-direction: column;
   padding: var(--spacing-5) var(--spacing-4) var(--spacing-4);
   background-color: var(--pane-background);
-  border: 1px solid var(--global-border);
+  border: var(--border-width-base) solid var(--global-border);
   border-radius: var(--border-radius-md);
   gap: var(--spacing-5);
   transition: border-color 0.2s ease, transform 0.2s ease;
   text-decoration: none;
-  width: 349px;
+  width: 100%;
 }
 
 .projectItem:hover {
@@ -17,7 +16,6 @@
   transform: translateY(-2px);
 }
 
-/* Project header */
 .projectHeader {
   display: flex;
   flex-direction: row;
@@ -26,54 +24,31 @@
   width: 100%;
 }
 
-/* Project icon */
 .projectIcon {
-  width: 32px;
-  height: 32px;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: var(--border-radius-lg);
   background-color: var(--global-muted-background);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--overlay-20);
   overflow: hidden;
 }
 
-.projectIconImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.projectIconPlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.projectIconPlaceholder svg {
-  width: 100%;
-  height: 100%;
-}
-
-/* Project name */
 .projectName {
-  font-size: 15px;
+  font-size: var(--font-size-5);
   font-weight: 600;
   color: var(--global-foreground);
-  line-height: 1.2em;
+  line-height: normal;
 }
 
-/* Project info */
 .projectInfo {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
 }
 
-/* Repository badge */
 .repositoryBadge {
   display: flex;
   flex-direction: row;
@@ -87,29 +62,24 @@
 }
 
 .repositoryIcon {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.repositoryIcon svg {
-  width: 100%;
-  height: 100%;
+  color: var(--overlay-50);
 }
 
 .repositoryName {
-  font-size: 12px;
+  font-size: var(--font-size-3);
   color: var(--global-foreground);
 }
 
-/* Commit info */
 .commitInfo {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-1);
-  font-size: 11px;
-  color: var(--global-mute-text);
+  font-size: var(--font-size-2);
+  color: var(--overlay-50);
 }

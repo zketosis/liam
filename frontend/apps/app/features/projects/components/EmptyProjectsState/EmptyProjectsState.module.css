@@ -1,153 +1,65 @@
-/* Container */
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   align-self: stretch;
-  gap: 40px;
-  padding: 40px 12px;
-  width: 1056px;
-  height: 773px;
-  border: 1px solid #383a3b;
-  border-radius: 6px;
+  gap: var(--spacing-10);
+  padding: var(--spacing-10) var(--spacing-3);
+  width: 100%;
+  height: 100%;
+  border: var(--border-width-base) solid var(--global-border);
+  border-radius: var(--border-radius-md);
 }
 
-/* Content */
 .content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-4);
 }
 
-/* Illustration */
 .illustration {
   width: 200px;
   height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 }
 
-/* Jack in box container */
-.jackInBox {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Main box SVG */
-.mainBox {
-  width: 79.6px;
-  height: 86.161px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-}
-
-/* Cross SVG 1 */
-.cross1 {
-  width: 9.17px;
-  height: 9.17px;
-  position: absolute;
-  top: 17px;
-  left: 36.63px;
-  z-index: 2;
-}
-
-/* Plus SVG 1 */
-.plus1 {
-  width: 5.47px;
-  height: 5.47px;
-  position: absolute;
-  top: 46.8px;
-  left: 27px;
-  z-index: 2;
-}
-
-/* Plus SVG 2 */
-.plus2 {
-  width: 5.47px;
-  height: 5.47px;
-  position: absolute;
-  top: 13px;
-  left: 144px;
-  z-index: 2;
-}
-
-/* Cross SVG 2 */
-.cross2 {
-  width: 9.17px;
-  height: 9.17px;
-  position: absolute;
-  top: 27px;
-  left: 180px;
-  z-index: 2;
-}
-
-/* Large Cross SVG */
-.largeCross {
-  width: 13.43px;
-  height: 13.43px;
-  position: absolute;
-  top: 69px;
-  left: 156px;
-  z-index: 2;
-}
-
-/* Title */
 .title {
-  font-size: 16px;
+  color: var(--global-foreground, #fff);
+  font-family: var(--main-font, Inter);
+  font-size: var(--font-size-6, 1rem);
+  font-style: normal;
   font-weight: 400;
-  color: var(--global-foreground);
-  line-height: 1.21em;
-  margin: 0;
+  line-height: normal;
 }
 
-/* Description */
 .description {
-  font-size: 13px;
-  font-weight: 400;
-  color: #bebfc1;
-  line-height: 1.6em;
+  color: var(--global-mute-text, #bebfc1);
   text-align: center;
-  width: 375px;
-  margin: 0;
+  font-family: var(--main-font, Inter);
+  font-size: var(--font-size-4, 0.8125rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%;
 }
 
-.firstLine {
-  display: block;
-  margin-bottom: 8px;
-}
-
-.secondLine {
-  display: block;
-  white-space: nowrap;
-}
-
-/* Create button */
+/* TODO: Ideally, we want to use the Button from @liam-hq/ui, but since the content is a link, we're implementing a custom version here. */
 .createButton {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
   background-color: var(--button-primary);
-  color: #000000;
-  border: 1px solid var(--button-primary);
-  border-radius: 4px;
-  font-size: 16px;
+  color: var(--button-foreground);
+  border: var(--border-width-base) solid var(--button-primary);
+  border-radius: var(--border-radius-base);
+  font-size: var(--font-size-6);
   font-weight: 500;
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--default-hover-animation-duration)
+    var(--default-timing-function);
 }
 
 .createButton:hover {
