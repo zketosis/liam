@@ -5,14 +5,14 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
   try {
     // This is a mock implementation. In a real app, you would fetch projects from a database.
     const projects = await getProjects()
-    
+
     if (!Array.isArray(projects)) {
       return NextResponse.json(
         { error: 'Invalid projects data format' },
         { status: 500 },
       )
     }
-    
+
     return NextResponse.json(projects)
   } catch (error) {
     console.error('Error in projects API route:', error)
