@@ -4,19 +4,19 @@ export async function getProject(projectId: string) {
   try {
     const supabase = await createClient()
     const { data: project, error } = await supabase
-      .from('Project')
+      .from('projects')
       .select(`
         id,
         name,
-        createdAt,
-        organizationId,
-        updatedAt,
-        ProjectRepositoryMapping:ProjectRepositoryMapping(
-          repository:Repository(
-            pullRequests:PullRequest(
+        created_at,
+        organization_id,
+        updated_at,
+        project_repository_mappings(
+          repositories(
+            pull_requests(
               id,
-              pullNumber,
-              migration:Migration(
+              pull_number,
+              migrations(
                 id,
                 title
               )
@@ -33,18 +33,18 @@ export async function getProject(projectId: string) {
     }
 
     // Extract migrations from the nested structure
-    const migrations = project.ProjectRepositoryMapping.flatMap((mapping) =>
-      mapping.repository.pullRequests
-        .filter((pr) => pr.migration !== null)
+    const migrations = project.project_repository_mappings.flatMap((mapping) =>
+      mapping.repositories.pull_requests
+        .filter((pr) => pr.migrations !== null)
         .map((pr) => {
           // Handle case where migration might be an array due to Supabase's return format
-          const migration = Array.isArray(pr.migration)
-            ? pr.migration[0]
-            : pr.migration
+          const migration = Array.isArray(pr.migrations)
+            ? pr.migrations[0]
+            : pr.migrations
           return {
             id: migration.id,
             title: migration.title,
-            pullNumber: pr.pullNumber,
+            pullNumber: pr.pull_number,
           }
         }),
     )
@@ -52,9 +52,9 @@ export async function getProject(projectId: string) {
     return {
       id: project.id,
       name: project.name,
-      createdAt: project.createdAt,
-      updatedAt: project.updatedAt,
-      organizationId: project.organizationId,
+      createdAt: project.created_at,
+      updatedAt: project.updated_at,
+      organizationId: project.organization_id,
       migrations,
     }
   } catch (error) {

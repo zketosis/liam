@@ -13,9 +13,9 @@ async function getGithubSchemaFilePath(projectId: string) {
     const projectId_num = projectId
     const supabase = await createClient()
     const { data: gitHubSchemaFilePath, error } = await supabase
-      .from('GitHubSchemaFilePath')
+      .from('github_schema_file_paths')
       .select('*')
-      .eq('projectId', projectId_num)
+      .eq('project_id', projectId_num)
       .single()
 
     if (error || !gitHubSchemaFilePath) {
@@ -41,7 +41,8 @@ export const ContentForSchema: FC<Props> = async ({
   projectId,
   branchOrCommit,
 }) => {
-  const repository = suggestion.project.repositoryMappings[0]?.repository
+  const repository =
+    suggestion.projects.project_repository_mappings[0]?.repositories
   const repositoryFullName = `${repository.owner}/${repository.name}`
 
   const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)
@@ -52,7 +53,7 @@ export const ContentForSchema: FC<Props> = async ({
     repositoryFullName,
     filePath,
     branchOrCommit,
-    Number(repository.installationId),
+    Number(repository.installation_id),
   )
 
   const { value: schema, errors } =
@@ -69,15 +70,15 @@ export const ContentForSchema: FC<Props> = async ({
       suggestionContent={suggestion.content}
       suggestionId={suggestion.id}
       originalContent={
-        !suggestion.approvedAt
+        !suggestion.approved_at
           ? await getOriginalDocumentContent(
               projectId,
-              suggestion.branchName,
+              suggestion.branch_name,
               suggestion.path,
             )
           : null
       }
-      isApproved={!!suggestion.approvedAt}
+      isApproved={!!suggestion.approved_at}
       schema={schema}
       content={content}
       errors={errors || []}

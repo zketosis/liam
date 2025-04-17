@@ -11,8 +11,8 @@ export default async function Page() {
   }
 
   const { data: organizationMembers, error: orgError } = await supabase
-    .from('OrganizationMember')
-    .select('organizationId')
+    .from('organization_members')
+    .select('organization_id')
     .eq('userId', data.user.id)
     .limit(1)
 
@@ -24,10 +24,10 @@ export default async function Page() {
     redirect(urlgen('organizations/new'))
   }
 
-  const organizationId = organizationMembers[0].organizationId
+  const organizationId = organizationMembers[0].organization_id
 
   const { data: projects, error: projectsError } = await supabase
-    .from('Project')
+    .from('projects')
     .select('id')
     .eq('organizationId', organizationId)
     .limit(1)

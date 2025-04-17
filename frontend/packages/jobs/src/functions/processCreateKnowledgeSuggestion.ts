@@ -27,26 +27,30 @@ const getRepositoryInfo = async (projectId: string) => {
   const supabase = createClient()
 
   const { data: project, error } = await supabase
-    .from('Project')
+    .from('projects')
     .select(`
       *,
-      repositoryMappings:ProjectRepositoryMapping(
+      project_repository_mappings(
         *,
-        repository:Repository(*)
+        repositories(*)
       )
     `)
     .eq('id', projectId)
     .single()
 
-  if (error || !project || !project.repositoryMappings?.[0]?.repository) {
+  if (
+    error ||
+    !project ||
+    !project.project_repository_mappings?.[0]?.repositories
+  ) {
     throw new Error('Repository information not found for the project')
   }
 
-  const repository = project.repositoryMappings[0].repository
+  const repository = project.project_repository_mappings[0].repositories
   return {
     owner: repository.owner,
     name: repository.name,
-    installationId: repository.installationId,
+    installationId: repository.installation_id,
   }
 }
 
@@ -66,7 +70,7 @@ const hasContentChanged = async (
 ): Promise<ContentCheckResult> => {
   const supabase = createClient()
   const { data: docFilePath } = await supabase
-    .from('GitHubDocFilePath')
+    .from('github_doc_file_paths')
     .select('id')
     .eq('projectId', projectId)
     .eq('path', path)
@@ -101,11 +105,11 @@ const createDocMapping = async (
 ) => {
   const supabase = createClient()
   const { error } = await supabase
-    .from('KnowledgeSuggestionDocMapping')
+    .from('knowledge_suggestion_doc_mappings')
     .insert({
-      knowledgeSuggestionId,
-      gitHubDocFilePathId: docFilePathId,
-      updatedAt: timestamp,
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      github_doc_file_path_id: docFilePathId,
+      updated_at: timestamp,
     })
 
   if (error) {
@@ -123,11 +127,11 @@ const createOverallReviewMapping = async (
 ) => {
   const supabase = createClient()
   const { error } = await supabase
-    .from('OverallReviewKnowledgeSuggestionMapping')
+    .from('overall_review_knowledge_suggestion_mappings')
     .insert({
-      knowledgeSuggestionId,
-      overallReviewId,
-      updatedAt: timestamp,
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      overall_review_id: overallReviewId,
+      updated_at: timestamp,
     })
 
   if (error) {
@@ -194,18 +198,18 @@ export const processCreateKnowledgeSuggestion = async (
     const supabase = createClient()
     const now = new Date().toISOString()
     const { data: knowledgeSuggestion, error: createError } = await supabase
-      .from('KnowledgeSuggestion')
+      .from('knowledge_suggestions')
       .insert({
         type,
         title,
         path,
         content,
-        fileSha: existingFile.sha,
-        projectId,
-        branchName: branch,
-        traceId: traceId || null,
+        file_sha: existingFile.sha,
+        project_id: projectId,
+        branch_name: branch,
+        trace_id: traceId || null,
         reasoning: payload.reasoning || null,
-        updatedAt: now,
+        updated_at: now,
       })
       .select()
       .single()

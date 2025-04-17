@@ -59,8 +59,8 @@ export const processGenerateReview = async (
     const supabase = createClient()
 
     const { data: repository, error: repositoryError } = await supabase
-      .from('Repository')
-      .select('installationId')
+      .from('repositories')
+      .select('installation_id')
       .eq('id', payload.repositoryId)
       .single()
 
@@ -71,7 +71,7 @@ export const processGenerateReview = async (
     }
 
     const { data: docPaths, error: docPathsError } = await supabase
-      .from('GitHubDocFilePath')
+      .from('github_doc_file_paths')
       .select('*')
       .eq('projectId', payload.projectId)
       .eq('isReviewEnabled', true)
@@ -89,7 +89,7 @@ export const processGenerateReview = async (
             `${payload.owner}/${payload.name}`,
             docPath.path,
             payload.branchName,
-            Number(repository.installationId),
+            Number(repository.installation_id),
           )
 
           if (!fileData.content) {
@@ -110,14 +110,14 @@ export const processGenerateReview = async (
     const predefinedRunId = uuidv4()
 
     const prDetails = await getPullRequestDetails(
-      Number(repository.installationId),
+      Number(repository.installation_id),
       payload.owner,
       payload.name,
       payload.pullRequestNumber,
     )
 
     const prComments = await getIssueComments(
-      Number(repository.installationId),
+      Number(repository.installation_id),
       payload.owner,
       payload.name,
       payload.pullRequestNumber,
@@ -136,7 +136,7 @@ export const processGenerateReview = async (
       payload.projectId,
       payload.branchName,
       `${payload.owner}/${payload.name}`,
-      repository.installationId,
+      repository.installation_id,
     )
 
     const callbacks = [langfuseLangchainHandler]

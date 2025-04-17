@@ -16,7 +16,7 @@ type BreadcrumbItemProps = {
 }
 
 // Using the database type for Project
-type Project = Tables<'Project'>
+type Project = Tables<'projects'>
 
 type AppBarProps = {
   project?: Project

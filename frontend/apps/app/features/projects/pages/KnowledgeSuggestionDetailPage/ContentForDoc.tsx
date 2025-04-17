@@ -29,7 +29,7 @@ export const ContentForDoc: FC<Props> = ({ suggestion, originalContent }) => {
         suggestionId={suggestion.id}
         className={styles.codeContent}
         originalContent={originalContent}
-        isApproved={!!suggestion.approvedAt}
+        isApproved={!!suggestion.approved_at}
         onContentSaved={handleContentSaved}
       />
     </div>

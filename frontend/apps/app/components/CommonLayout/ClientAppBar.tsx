@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { AppBar } from '../AppBar/AppBar'
 
-type Project = Tables<'Project'>
+type Project = Tables<'projects'>
 
 type ClientAppBarProps = {
   project?: Project | null

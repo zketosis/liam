@@ -17,12 +17,12 @@ export const addProject = async (formData: FormData) => {
 
   // Create project
   const { data: project, error: projectError } = await supabase
-    .from('Project')
+    .from('projects')
     .insert({
       name: projectName,
-      createdAt: now,
-      updatedAt: now,
-      ...(organizationId ? { organizationId } : {}),
+      created_at: now,
+      updated_at: now,
+      ...(organizationId ? { organization_id: organizationId } : {}),
     })
     .select()
     .single()
@@ -33,13 +33,13 @@ export const addProject = async (formData: FormData) => {
 
   // Create repository
   const { data: repository, error: repositoryError } = await supabase
-    .from('Repository')
+    .from('repositories')
     .insert({
       name: repositoryName,
       owner: repositoryOwner,
-      installationId: Number(installationId),
-      isActive: true,
-      updatedAt: now,
+      installation_id: Number(installationId),
+      is_active: true,
+      updated_at: now,
     })
     .select()
     .single()
@@ -50,11 +50,11 @@ export const addProject = async (formData: FormData) => {
 
   // Create project-repository mapping
   const { error: mappingError } = await supabase
-    .from('ProjectRepositoryMapping')
+    .from('project_repository_mappings')
     .insert({
-      projectId: project.id,
-      repositoryId: repository.id,
-      updatedAt: now,
+      project_id: project.id,
+      repository_id: repository.id,
+      updated_at: now,
     })
 
   if (mappingError) {

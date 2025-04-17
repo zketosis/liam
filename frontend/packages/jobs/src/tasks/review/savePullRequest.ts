@@ -39,7 +39,7 @@ export type SavePullRequestResult = {
 
 type Repository = {
   id: string
-  installationId: number
+  installation_id: number
   owner: string
   name: string
 }
@@ -69,12 +69,12 @@ async function getRepositoryFromProjectId(
   projectId: string,
 ): Promise<Repository> {
   const { data: projectMapping, error: mappingError } = await supabase
-    .from('ProjectRepositoryMapping')
+    .from('project_repository_mappings')
     .select(`
       *,
-      repository:Repository(*)
+      repositories(*)
     `)
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .limit(1)
     .maybeSingle()
 
@@ -82,7 +82,7 @@ async function getRepositoryFromProjectId(
     throw new Error(`No repository found for project ID: ${projectId}`)
   }
 
-  return projectMapping.repository
+  return projectMapping.repositories
 }
 
 async function getSchemaPathForProject(
@@ -90,9 +90,9 @@ async function getSchemaPathForProject(
   projectId: string,
 ): Promise<string> {
   const { data, error } = await supabase
-    .from('GitHubSchemaFilePath')
+    .from('github_schema_file_paths')
     .select('path')
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .single()
 
   if (error) {
@@ -114,7 +114,7 @@ async function fetchSchemaFileContent(
       `${repository.owner}/${repository.name}`,
       schemaPath,
       branchRef,
-      Number(repository.installationId),
+      Number(repository.installation_id),
     )
 
     if (!content) {
@@ -150,10 +150,10 @@ async function getOrCreatePullRequestRecord(
   pullNumber: number,
 ): Promise<{ id: string }> {
   const { data: existingPR } = await supabase
-    .from('PullRequest')
+    .from('pull_requests')
     .select('id')
-    .eq('repositoryId', repositoryId)
-    .eq('pullNumber', pullNumber)
+    .eq('repository_id', repositoryId)
+    .eq('pull_number', pullNumber)
     .maybeSingle()
 
   if (existingPR) {
@@ -162,11 +162,11 @@ async function getOrCreatePullRequestRecord(
 
   const now = new Date().toISOString()
   const { data: newPR, error: createPRError } = await supabase
-    .from('PullRequest')
+    .from('pull_requests')
     .insert({
-      repositoryId,
-      pullNumber,
-      updatedAt: now,
+      repository_id: repositoryId,
+      pull_number: pullNumber,
+      updated_at: now,
     })
     .select()
     .single()
@@ -186,19 +186,19 @@ async function createOrUpdateMigrationRecord(
   title: string,
 ): Promise<void> {
   const { data: existingMigration } = await supabase
-    .from('Migration')
+    .from('migrations')
     .select('id')
-    .eq('pullRequestId', pullRequestId)
+    .eq('pull_request_id', pullRequestId)
     .maybeSingle()
 
   const now = new Date().toISOString()
 
   if (existingMigration) {
     const { error: updateMigrationError } = await supabase
-      .from('Migration')
+      .from('migrations')
       .update({
         title,
-        updatedAt: now,
+        updated_at: now,
       })
       .eq('id', existingMigration.id)
 
@@ -209,11 +209,11 @@ async function createOrUpdateMigrationRecord(
     }
   } else {
     const { error: createMigrationError } = await supabase
-      .from('Migration')
+      .from('migrations')
       .insert({
-        pullRequestId,
+        pull_request_id: pullRequestId,
         title,
-        updatedAt: now,
+        updated_at: now,
       })
 
     if (createMigrationError) {
@@ -235,7 +235,7 @@ export async function processSavePullRequest(
   )
 
   const fileChanges = await getPullRequestFiles(
-    Number(repository.installationId),
+    Number(repository.installation_id),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -244,7 +244,7 @@ export async function processSavePullRequest(
   const schemaPath = await getSchemaPathForProject(supabase, payload.projectId)
 
   const prDetails = await getPullRequestDetails(
-    Number(repository.installationId),
+    Number(repository.installation_id),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -287,7 +287,7 @@ export const savePullRequestTask = task({
 
       const supabase = createClient()
       const { data: repository, error: repositoryError } = await supabase
-        .from('Repository')
+        .from('repositories')
         .select('*')
         .eq('id', result.repositoryId)
         .single()

@@ -16,7 +16,7 @@ export const OrganizationNewPage: FC = () => {
 
   const createOrg = async (supabase: SupabaseClient) => {
     const { data, error } = await supabase
-      .from('Organization')
+      .from('organizations')
       .insert({ name })
       .select('id')
       .single()
@@ -30,9 +30,9 @@ export const OrganizationNewPage: FC = () => {
     userId: string,
     organizationId: string,
   ) => {
-    const { error } = await supabase.from('OrganizationMember').insert({
-      userId,
-      organizationId,
+    const { error } = await supabase.from('organization_members').insert({
+      user_id: userId,
+      organization_id: organizationId,
     })
 
     if (error) throw error

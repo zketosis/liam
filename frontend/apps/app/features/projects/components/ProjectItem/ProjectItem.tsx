@@ -8,7 +8,7 @@ import styles from './ProjectItem.module.css'
 interface Project {
   id: string
   name: string
-  createdAt: string
+  created_at: string
 }
 
 interface ProjectItemProps {
@@ -51,7 +51,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
         <div className={styles.commitInfo}>
           <span>User</span>
           <span>committed</span>
-          <span>on {formatDate(project.createdAt)}</span>
+          <span>on {formatDate(project.created_at)}</span>
         </div>
       </div>
     </Link>

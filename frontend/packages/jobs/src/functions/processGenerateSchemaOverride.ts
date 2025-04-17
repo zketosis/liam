@@ -16,13 +16,13 @@ export const processGenerateSchemaOverride = async (
 
     // Get the overall review from the database with nested relations
     const { data: overallReview, error } = await supabase
-      .from('OverallReview')
+      .from('overall_reviews')
       .select(`
         *,
-        pullRequest:PullRequest(*,
-          repository:Repository(*)
+        pull_requests(*,
+          repositories(*)
         ),
-        project:Project(*)
+        projects(*)
       `)
       .eq('id', payload.overallReviewId)
       .single()
@@ -33,39 +33,41 @@ export const processGenerateSchemaOverride = async (
       )
     }
 
-    const { pullRequest, project } = overallReview
-    if (!pullRequest) {
+    const { pull_requests, projects } = overallReview
+    if (!pull_requests) {
       throw new Error(
         `Pull request not found for overall review ${payload.overallReviewId}`,
       )
     }
 
-    if (!project) {
+    if (!projects) {
       throw new Error(
         `Project not found for overall review ${payload.overallReviewId}`,
       )
     }
 
-    const { repository } = pullRequest
-    if (!repository) {
-      throw new Error(`Repository not found for pull request ${pullRequest.id}`)
+    const repositories = pull_requests.repositories
+    if (!repositories) {
+      throw new Error(
+        `Repository not found for pull request ${pull_requests.id}`,
+      )
     }
 
     const predefinedRunId = uuidv4()
     const callbacks = [langfuseLangchainHandler]
 
     // Fetch schema information with overrides
-    const repositoryFullName = `${repository.owner}/${repository.name}`
+    const repositoryFullName = `${repositories.owner}/${repositories.name}`
     const { currentSchemaOverride, overriddenSchema } =
       await fetchSchemaInfoWithOverrides(
-        project.id,
-        overallReview.branchName,
+        projects.id,
+        overallReview.branch_name,
         repositoryFullName,
-        repository.installationId,
+        repositories.installation_id,
       )
 
     const schemaOverrideResult = await generateSchemaOverride(
-      overallReview.reviewComment || '',
+      overallReview.review_comment || '',
       callbacks,
       currentSchemaOverride,
       predefinedRunId,
@@ -83,10 +85,10 @@ export const processGenerateSchemaOverride = async (
     return {
       createNeeded: true,
       override: schemaOverrideResult.override,
-      projectId: project.id,
-      pullRequestNumber: Number(pullRequest.pullNumber), // Convert bigint to number
-      branchName: overallReview.branchName, // Get branchName from overallReview
-      title: `Schema meta update from PR #${Number(pullRequest.pullNumber)}`,
+      projectId: projects.id,
+      pullRequestNumber: Number(pull_requests.pull_number), // Convert bigint to number
+      branchName: overallReview.branch_name, // Get branchName from overallReview
+      title: `Schema meta update from PR #${Number(pull_requests.pull_number)}`,
       traceId: predefinedRunId,
       reasoning: schemaOverrideResult.reasoning,
       overallReviewId: payload.overallReviewId,

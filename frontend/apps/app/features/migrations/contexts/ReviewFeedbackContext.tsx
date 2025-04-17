@@ -9,8 +9,8 @@ import {
   useState,
 } from 'react'
 
-type ReviewFeedback = Tables<'ReviewFeedback'> & {
-  suggestionSnippets: Array<{
+type ReviewFeedback = Tables<'review_feedbacks'> & {
+  review_suggestion_snippets: Array<{
     id: string
     filename: string
     snippet: string
