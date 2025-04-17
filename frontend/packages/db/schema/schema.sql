@@ -469,6 +469,11 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 
 
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."ReviewFeedback"
     ADD CONSTRAINT "ReviewFeedback_pkey" PRIMARY KEY ("id");
 
@@ -518,6 +523,10 @@ CREATE UNIQUE INDEX "PullRequest_repositoryId_pullNumber_key" ON "public"."PullR
 
 
 CREATE UNIQUE INDEX "Repository_owner_name_key" ON "public"."Repository" USING "btree" ("owner", "name");
+
+
+
+CREATE UNIQUE INDEX "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_knowl" ON "public"."ReviewFeedbackKnowledgeSuggestionMapping" USING "btree" ("reviewFeedbackId", "knowledgeSuggestionId");
 
 
 
@@ -642,6 +651,16 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 ALTER TABLE ONLY "public"."ReviewFeedbackComment"
     ADD CONSTRAINT "ReviewFeedbackComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_knowledgeSuggestionId_" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
+    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
