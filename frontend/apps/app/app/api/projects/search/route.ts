@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 
   let dbQuery = supabase
     .from('Project')
-    .select('id, name, createdAt, organizationId')
+    .select('id, name, createdAt, updatedAt, organizationId')
     .order('id', { ascending: false })
 
   if (query) {
