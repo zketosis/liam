@@ -19,7 +19,12 @@ export const SearchInput: FC<SearchInputProps> = ({
   const [query, setQuery] = useState('')
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
+    const newValue = e.target.value
+    setQuery(newValue)
+    
+    if (newValue === '') {
+      onSearch('')
+    }
   }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
