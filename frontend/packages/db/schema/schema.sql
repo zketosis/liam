@@ -113,7 +113,7 @@ CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     SET "search_path" TO ''
     AS $$
 BEGIN
-  INSERT INTO public."user" (id, name, email)
+  INSERT INTO public."users" (id, name, email)
   VALUES (
     NEW.id, 
     COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
@@ -131,13 +131,13 @@ CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
 BEGIN
-  INSERT INTO public."user" (id, name, email)
+  INSERT INTO public."users" (id, name, email)
   SELECT 
     au.id,
     COALESCE(au.raw_user_meta_data->>'name', au.email),
     au.email
   FROM auth.users au
-  LEFT JOIN public."user" pu ON au.id = pu.id
+  LEFT JOIN public."users" pu ON au.id = pu.id
   WHERE pu.id IS NULL;
 END;
 $$;
@@ -150,7 +150,7 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 
-CREATE TABLE IF NOT EXISTS "public"."github_doc_file_path" (
+CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "path" "text" NOT NULL,
     "is_review_enabled" boolean DEFAULT true NOT NULL,
@@ -160,10 +160,10 @@ CREATE TABLE IF NOT EXISTS "public"."github_doc_file_path" (
 );
 
 
-ALTER TABLE "public"."github_doc_file_path" OWNER TO "postgres";
+ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."github_schema_file_path" (
+CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "path" "text" NOT NULL,
     "project_id" "uuid" NOT NULL,
@@ -173,10 +173,22 @@ CREATE TABLE IF NOT EXISTS "public"."github_schema_file_path" (
 );
 
 
-ALTER TABLE "public"."github_schema_file_path" OWNER TO "postgres";
+ALTER TABLE "public"."github_schema_file_paths" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion" (
+CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion_doc_mappings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "knowledge_suggestion_id" "uuid" NOT NULL,
+    "github_doc_file_path_id" "uuid" NOT NULL,
+    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."knowledge_suggestion_doc_mappings" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestions" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "type" "public"."knowledge_type" NOT NULL,
     "title" "text" NOT NULL,
@@ -193,19 +205,7 @@ CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion" (
 );
 
 
-ALTER TABLE "public"."knowledge_suggestion" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion_doc_mapping" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "knowledge_suggestion_id" "uuid" NOT NULL,
-    "github_doc_file_path_id" "uuid" NOT NULL,
-    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."knowledge_suggestion_doc_mapping" OWNER TO "postgres";
+ALTER TABLE "public"."knowledge_suggestions" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."membership_invites" (
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS "public"."membership_invites" (
 ALTER TABLE "public"."membership_invites" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."migration" (
+CREATE TABLE IF NOT EXISTS "public"."migrations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "title" "text" NOT NULL,
     "pull_request_id" "uuid" NOT NULL,
@@ -229,19 +229,10 @@ CREATE TABLE IF NOT EXISTS "public"."migration" (
 );
 
 
-ALTER TABLE "public"."migration" OWNER TO "postgres";
+ALTER TABLE "public"."migrations" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."organization" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL
-);
-
-
-ALTER TABLE "public"."organization" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."organization_member" (
+CREATE TABLE IF NOT EXISTS "public"."organization_members" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
     "organization_id" "uuid" NOT NULL,
@@ -249,10 +240,31 @@ CREATE TABLE IF NOT EXISTS "public"."organization_member" (
 );
 
 
-ALTER TABLE "public"."organization_member" OWNER TO "postgres";
+ALTER TABLE "public"."organization_members" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."overall_review" (
+CREATE TABLE IF NOT EXISTS "public"."organizations" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."organizations" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."overall_review_knowledge_suggestion_mappings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "overall_review_id" "uuid" NOT NULL,
+    "knowledge_suggestion_id" "uuid" NOT NULL,
+    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "project_id" "uuid",
     "pull_request_id" "uuid" NOT NULL,
@@ -265,34 +277,10 @@ CREATE TABLE IF NOT EXISTS "public"."overall_review" (
 );
 
 
-ALTER TABLE "public"."overall_review" OWNER TO "postgres";
+ALTER TABLE "public"."overall_reviews" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."overall_review_knowledge_suggestion_mapping" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "overall_review_id" "uuid" NOT NULL,
-    "knowledge_suggestion_id" "uuid" NOT NULL,
-    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."overall_review_knowledge_suggestion_mapping" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."project" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) without time zone NOT NULL,
-    "organization_id" "uuid"
-);
-
-
-ALTER TABLE "public"."project" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."project_repository_mapping" (
+CREATE TABLE IF NOT EXISTS "public"."project_repository_mappings" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "project_id" "uuid" NOT NULL,
     "repository_id" "uuid" NOT NULL,
@@ -301,10 +289,22 @@ CREATE TABLE IF NOT EXISTS "public"."project_repository_mapping" (
 );
 
 
-ALTER TABLE "public"."project_repository_mapping" OWNER TO "postgres";
+ALTER TABLE "public"."project_repository_mappings" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."pull_request" (
+CREATE TABLE IF NOT EXISTS "public"."projects" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) without time zone NOT NULL,
+    "organization_id" "uuid"
+);
+
+
+ALTER TABLE "public"."projects" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."pull_requests" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "pull_number" bigint NOT NULL,
     "comment_id" bigint,
@@ -314,10 +314,10 @@ CREATE TABLE IF NOT EXISTS "public"."pull_request" (
 );
 
 
-ALTER TABLE "public"."pull_request" OWNER TO "postgres";
+ALTER TABLE "public"."pull_requests" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."repository" (
+CREATE TABLE IF NOT EXISTS "public"."repositories" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
     "owner" "text" NOT NULL,
@@ -328,10 +328,23 @@ CREATE TABLE IF NOT EXISTS "public"."repository" (
 );
 
 
-ALTER TABLE "public"."repository" OWNER TO "postgres";
+ALTER TABLE "public"."repositories" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."review_feedback" (
+CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "review_feedback_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "content" "text" NOT NULL,
+    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."review_feedback_comments" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."review_feedbacks" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "overall_review_id" "uuid" NOT NULL,
     "category" "public"."category_enum" NOT NULL,
@@ -345,23 +358,10 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedback" (
 );
 
 
-ALTER TABLE "public"."review_feedback" OWNER TO "postgres";
+ALTER TABLE "public"."review_feedbacks" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."review_feedback_comment" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "review_feedback_id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "content" "text" NOT NULL,
-    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."review_feedback_comment" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippet" (
+CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippets" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "review_feedback_id" "uuid" NOT NULL,
     "filename" "text" NOT NULL,
@@ -371,40 +371,40 @@ CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippet" (
 );
 
 
-ALTER TABLE "public"."review_suggestion_snippet" OWNER TO "postgres";
+ALTER TABLE "public"."review_suggestion_snippets" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."user" (
+CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" NOT NULL,
     "name" "text" NOT NULL,
     "email" "text" NOT NULL
 );
 
 
-ALTER TABLE "public"."user" OWNER TO "postgres";
+ALTER TABLE "public"."users" OWNER TO "postgres";
 
 
-ALTER TABLE ONLY "public"."github_doc_file_path"
+ALTER TABLE ONLY "public"."github_doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_path"
+ALTER TABLE ONLY "public"."github_schema_file_paths"
     ADD CONSTRAINT "github_schema_file_path_path_project_id_key" UNIQUE ("path", "project_id");
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_path"
+ALTER TABLE ONLY "public"."github_schema_file_paths"
     ADD CONSTRAINT "github_schema_file_path_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mapping"
+ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
     ADD CONSTRAINT "knowledge_suggestion_doc_mapping_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."knowledge_suggestion"
+ALTER TABLE ONLY "public"."knowledge_suggestions"
     ADD CONSTRAINT "knowledge_suggestion_pkey" PRIMARY KEY ("id");
 
 
@@ -414,98 +414,98 @@ ALTER TABLE ONLY "public"."membership_invites"
 
 
 
-ALTER TABLE ONLY "public"."migration"
+ALTER TABLE ONLY "public"."migrations"
     ADD CONSTRAINT "migration_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."organization_member"
+ALTER TABLE ONLY "public"."organization_members"
     ADD CONSTRAINT "organization_member_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."organization_member"
+ALTER TABLE ONLY "public"."organization_members"
     ADD CONSTRAINT "organization_member_user_id_organization_id_key" UNIQUE ("user_id", "organization_id");
 
 
 
-ALTER TABLE ONLY "public"."organization"
+ALTER TABLE ONLY "public"."organizations"
     ADD CONSTRAINT "organization_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mapping"
+ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
     ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."overall_review"
+ALTER TABLE ONLY "public"."overall_reviews"
     ADD CONSTRAINT "overall_review_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."project"
+ALTER TABLE ONLY "public"."projects"
     ADD CONSTRAINT "project_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."project_repository_mapping"
+ALTER TABLE ONLY "public"."project_repository_mappings"
     ADD CONSTRAINT "project_repository_mapping_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."pull_request"
+ALTER TABLE ONLY "public"."pull_requests"
     ADD CONSTRAINT "pull_request_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."repository"
+ALTER TABLE ONLY "public"."repositories"
     ADD CONSTRAINT "repository_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."review_feedback_comment"
+ALTER TABLE ONLY "public"."review_feedback_comments"
     ADD CONSTRAINT "review_feedback_comment_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."review_feedback"
+ALTER TABLE ONLY "public"."review_feedbacks"
     ADD CONSTRAINT "review_feedback_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."review_suggestion_snippet"
+ALTER TABLE ONLY "public"."review_suggestion_snippets"
     ADD CONSTRAINT "review_suggestion_snippet_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."user"
+ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "user_email_key" UNIQUE ("email");
 
 
 
-ALTER TABLE ONLY "public"."user"
+ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "user_pkey" PRIMARY KEY ("id");
 
 
 
-CREATE UNIQUE INDEX "github_doc_file_path_path_project_id_key" ON "public"."github_doc_file_path" USING "btree" ("path", "project_id");
+CREATE UNIQUE INDEX "github_doc_file_path_path_project_id_key" ON "public"."github_doc_file_paths" USING "btree" ("path", "project_id");
 
 
 
-CREATE UNIQUE INDEX "github_schema_file_path_project_id_key" ON "public"."github_schema_file_path" USING "btree" ("project_id");
+CREATE UNIQUE INDEX "github_schema_file_path_project_id_key" ON "public"."github_schema_file_paths" USING "btree" ("project_id");
 
 
 
-CREATE INDEX "idx_project_organization_id" ON "public"."project" USING "btree" ("organization_id");
+CREATE INDEX "idx_project_organization_id" ON "public"."projects" USING "btree" ("organization_id");
 
 
 
-CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."review_feedback_comment" USING "btree" ("review_feedback_id");
+CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."review_feedback_comments" USING "btree" ("review_feedback_id");
 
 
 
-CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public"."knowledge_suggestion_doc_mapping" USING "btree" ("knowledge_suggestion_id", "github_doc_file_path_id");
+CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public"."knowledge_suggestion_doc_mappings" USING "btree" ("knowledge_suggestion_id", "github_doc_file_path_id");
 
 
 
@@ -517,218 +517,218 @@ CREATE INDEX "membership_invites_org_id_idx" ON "public"."membership_invites" US
 
 
 
-CREATE UNIQUE INDEX "migration_pull_request_id_key" ON "public"."migration" USING "btree" ("pull_request_id");
+CREATE UNIQUE INDEX "migration_pull_request_id_key" ON "public"."migrations" USING "btree" ("pull_request_id");
 
 
 
-CREATE INDEX "organization_member_organization_id_idx" ON "public"."organization_member" USING "btree" ("organization_id");
+CREATE INDEX "organization_member_organization_id_idx" ON "public"."organization_members" USING "btree" ("organization_id");
 
 
 
-CREATE INDEX "organization_member_user_id_idx" ON "public"."organization_member" USING "btree" ("user_id");
+CREATE INDEX "organization_member_user_id_idx" ON "public"."organization_members" USING "btree" ("user_id");
 
 
 
-CREATE UNIQUE INDEX "overall_review_knowledge_suggestion_mapping_unique_mapping" ON "public"."overall_review_knowledge_suggestion_mapping" USING "btree" ("overall_review_id", "knowledge_suggestion_id");
+CREATE UNIQUE INDEX "overall_review_knowledge_suggestion_mapping_unique_mapping" ON "public"."overall_review_knowledge_suggestion_mappings" USING "btree" ("overall_review_id", "knowledge_suggestion_id");
 
 
 
-CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON "public"."project_repository_mapping" USING "btree" ("project_id", "repository_id");
+CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON "public"."project_repository_mappings" USING "btree" ("project_id", "repository_id");
 
 
 
-CREATE UNIQUE INDEX "pull_request_repository_id_pull_number_key" ON "public"."pull_request" USING "btree" ("repository_id", "pull_number");
+CREATE UNIQUE INDEX "pull_request_repository_id_pull_number_key" ON "public"."pull_requests" USING "btree" ("repository_id", "pull_number");
 
 
 
-CREATE UNIQUE INDEX "repository_owner_name_key" ON "public"."repository" USING "btree" ("owner", "name");
+CREATE UNIQUE INDEX "repository_owner_name_key" ON "public"."repositories" USING "btree" ("owner", "name");
 
 
 
-ALTER TABLE ONLY "public"."github_doc_file_path"
-    ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."github_doc_file_paths"
+    ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_path"
-    ADD CONSTRAINT "github_schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."github_schema_file_paths"
+    ADD CONSTRAINT "github_schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mapping"
-    ADD CONSTRAINT "knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey" FOREIGN KEY ("github_doc_file_path_id") REFERENCES "public"."github_doc_file_path"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
+    ADD CONSTRAINT "knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey" FOREIGN KEY ("github_doc_file_path_id") REFERENCES "public"."github_doc_file_paths"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mapping"
-    ADD CONSTRAINT "knowledge_suggestion_doc_mapping_knowledge_suggestion_id_fkey" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
+    ADD CONSTRAINT "knowledge_suggestion_doc_mapping_knowledge_suggestion_id_fkey" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."knowledge_suggestion"
-    ADD CONSTRAINT "knowledge_suggestion_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."membership_invites"
-    ADD CONSTRAINT "membership_invites_invite_by_user_id_fkey" FOREIGN KEY ("invite_by_user_id") REFERENCES "public"."user"("id") ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."knowledge_suggestions"
+    ADD CONSTRAINT "knowledge_suggestion_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
 ALTER TABLE ONLY "public"."membership_invites"
-    ADD CONSTRAINT "membership_invites_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organization"("id") ON DELETE CASCADE;
+    ADD CONSTRAINT "membership_invites_invite_by_user_id_fkey" FOREIGN KEY ("invite_by_user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."migration"
-    ADD CONSTRAINT "migration_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_request"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."membership_invites"
+    ADD CONSTRAINT "membership_invites_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."organization_member"
-    ADD CONSTRAINT "organization_member_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organization"("id") ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."migrations"
+    ADD CONSTRAINT "migration_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."organization_member"
-    ADD CONSTRAINT "organization_member_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."organization_members"
+    ADD CONSTRAINT "organization_member_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mapping"
-    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_knowledge_suggestio" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestion"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."organization_members"
+    ADD CONSTRAINT "organization_member_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mapping"
-    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_overall_review_id_f" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_review"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
+    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_knowledge_suggestio" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."overall_review"
-    ADD CONSTRAINT "overall_review_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."project"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
+    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_overall_review_id_f" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."overall_review"
-    ADD CONSTRAINT "overall_review_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_request"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."overall_reviews"
+    ADD CONSTRAINT "overall_review_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
-ALTER TABLE ONLY "public"."project"
-    ADD CONSTRAINT "project_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organization"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."overall_reviews"
+    ADD CONSTRAINT "overall_review_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."project_repository_mapping"
-    ADD CONSTRAINT "project_repository_mapping_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."project"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."projects"
+    ADD CONSTRAINT "project_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."project_repository_mapping"
-    ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."project_repository_mappings"
+    ADD CONSTRAINT "project_repository_mapping_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."pull_request"
-    ADD CONSTRAINT "pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repository"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."project_repository_mappings"
+    ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."review_feedback_comment"
-    ADD CONSTRAINT "review_feedback_comment_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedback"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."pull_requests"
+    ADD CONSTRAINT "pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."review_feedback_comment"
-    ADD CONSTRAINT "review_feedback_comment_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."review_feedback_comments"
+    ADD CONSTRAINT "review_feedback_comment_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."review_feedback"
-    ADD CONSTRAINT "review_feedback_overall_review_id_fkey" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_review"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."review_feedback_comments"
+    ADD CONSTRAINT "review_feedback_comment_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-ALTER TABLE ONLY "public"."review_suggestion_snippet"
-    ADD CONSTRAINT "review_suggestion_snippet_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedback"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."review_feedbacks"
+    ADD CONSTRAINT "review_feedback_overall_review_id_fkey" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."project" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_member"."organization_id"
-   FROM "public"."organization_member"
-  WHERE ("organization_member"."user_id" = "auth"."uid"()))));
+ALTER TABLE ONLY "public"."review_suggestion_snippets"
+    ADD CONSTRAINT "review_suggestion_snippet_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
-COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."project" IS 'Authenticated users can only delete projects in organizations they are members of';
+CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
 
 
 
-CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."project" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_member"."organization_id"
-   FROM "public"."organization_member"
-  WHERE ("organization_member"."user_id" = "auth"."uid"()))));
+COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" IS 'Authenticated users can only delete projects in organizations they are members of';
 
 
 
-COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."project" IS 'Authenticated users can create any project';
+CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."projects" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
 
 
 
-CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."project" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_member"."organization_id"
-   FROM "public"."organization_member"
-  WHERE ("organization_member"."user_id" = "auth"."uid"()))));
+COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."projects" IS 'Authenticated users can create any project';
 
 
 
-COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."project" IS 'Authenticated users can only view projects belonging to organizations they are members of';
+CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
 
 
 
-CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."project" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_member"."organization_id"
-   FROM "public"."organization_member"
-  WHERE ("organization_member"."user_id" = "auth"."uid"())))) WITH CHECK (("organization_id" IN ( SELECT "organization_member"."organization_id"
-   FROM "public"."organization_member"
-  WHERE ("organization_member"."user_id" = "auth"."uid"()))));
+COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" IS 'Authenticated users can only view projects belonging to organizations they are members of';
 
 
 
-COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."project" IS 'Authenticated users can only update projects in organizations they are members of';
+CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."projects" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"())))) WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
 
 
 
-ALTER TABLE "public"."project" ENABLE ROW LEVEL SECURITY;
+COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."projects" IS 'Authenticated users can only update projects in organizations they are members of';
 
 
-CREATE POLICY "service_role_can_delete_all_projects" ON "public"."project" FOR DELETE TO "service_role" USING (true);
 
+ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 
 
-COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."project" IS 'Service role can delete any project (for jobs)';
+CREATE POLICY "service_role_can_delete_all_projects" ON "public"."projects" FOR DELETE TO "service_role" USING (true);
 
 
 
-CREATE POLICY "service_role_can_insert_all_projects" ON "public"."project" FOR INSERT TO "service_role" WITH CHECK (true);
+COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."projects" IS 'Service role can delete any project (for jobs)';
 
 
 
-COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."project" IS 'Service role can create any project (for jobs)';
+CREATE POLICY "service_role_can_insert_all_projects" ON "public"."projects" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
 
-CREATE POLICY "service_role_can_select_all_projects" ON "public"."project" FOR SELECT TO "service_role" USING (true);
+COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" IS 'Service role can create any project (for jobs)';
 
 
 
-COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."project" IS 'Service role can view all projects (for jobs)';
+CREATE POLICY "service_role_can_select_all_projects" ON "public"."projects" FOR SELECT TO "service_role" USING (true);
 
 
 
-CREATE POLICY "service_role_can_update_all_projects" ON "public"."project" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."projects" IS 'Service role can view all projects (for jobs)';
 
 
 
-COMMENT ON POLICY "service_role_can_update_all_projects" ON "public"."project" IS 'Service role can update any project (for jobs)';
+CREATE POLICY "service_role_can_update_all_projects" ON "public"."projects" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+COMMENT ON POLICY "service_role_can_update_all_projects" ON "public"."projects" IS 'Service role can update any project (for jobs)';
 
 
 
@@ -948,27 +948,27 @@ GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."github_doc_file_path" TO "anon";
-GRANT ALL ON TABLE "public"."github_doc_file_path" TO "authenticated";
-GRANT ALL ON TABLE "public"."github_doc_file_path" TO "service_role";
+GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "anon";
+GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."github_schema_file_path" TO "anon";
-GRANT ALL ON TABLE "public"."github_schema_file_path" TO "authenticated";
-GRANT ALL ON TABLE "public"."github_schema_file_path" TO "service_role";
+GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "anon";
+GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."knowledge_suggestion" TO "anon";
-GRANT ALL ON TABLE "public"."knowledge_suggestion" TO "authenticated";
-GRANT ALL ON TABLE "public"."knowledge_suggestion" TO "service_role";
+GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mapping" TO "anon";
-GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mapping" TO "authenticated";
-GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mapping" TO "service_role";
+GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "anon";
+GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "authenticated";
+GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "service_role";
 
 
 
@@ -978,81 +978,81 @@ GRANT ALL ON TABLE "public"."membership_invites" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."migration" TO "anon";
-GRANT ALL ON TABLE "public"."migration" TO "authenticated";
-GRANT ALL ON TABLE "public"."migration" TO "service_role";
+GRANT ALL ON TABLE "public"."migrations" TO "anon";
+GRANT ALL ON TABLE "public"."migrations" TO "authenticated";
+GRANT ALL ON TABLE "public"."migrations" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."organization" TO "anon";
-GRANT ALL ON TABLE "public"."organization" TO "authenticated";
-GRANT ALL ON TABLE "public"."organization" TO "service_role";
+GRANT ALL ON TABLE "public"."organization_members" TO "anon";
+GRANT ALL ON TABLE "public"."organization_members" TO "authenticated";
+GRANT ALL ON TABLE "public"."organization_members" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."organization_member" TO "anon";
-GRANT ALL ON TABLE "public"."organization_member" TO "authenticated";
-GRANT ALL ON TABLE "public"."organization_member" TO "service_role";
+GRANT ALL ON TABLE "public"."organizations" TO "anon";
+GRANT ALL ON TABLE "public"."organizations" TO "authenticated";
+GRANT ALL ON TABLE "public"."organizations" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."overall_review" TO "anon";
-GRANT ALL ON TABLE "public"."overall_review" TO "authenticated";
-GRANT ALL ON TABLE "public"."overall_review" TO "service_role";
+GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mapping" TO "anon";
-GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mapping" TO "authenticated";
-GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mapping" TO "service_role";
+GRANT ALL ON TABLE "public"."overall_reviews" TO "anon";
+GRANT ALL ON TABLE "public"."overall_reviews" TO "authenticated";
+GRANT ALL ON TABLE "public"."overall_reviews" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."project" TO "anon";
-GRANT ALL ON TABLE "public"."project" TO "authenticated";
-GRANT ALL ON TABLE "public"."project" TO "service_role";
+GRANT ALL ON TABLE "public"."project_repository_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."project_repository_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."project_repository_mappings" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."project_repository_mapping" TO "anon";
-GRANT ALL ON TABLE "public"."project_repository_mapping" TO "authenticated";
-GRANT ALL ON TABLE "public"."project_repository_mapping" TO "service_role";
+GRANT ALL ON TABLE "public"."projects" TO "anon";
+GRANT ALL ON TABLE "public"."projects" TO "authenticated";
+GRANT ALL ON TABLE "public"."projects" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."pull_request" TO "anon";
-GRANT ALL ON TABLE "public"."pull_request" TO "authenticated";
-GRANT ALL ON TABLE "public"."pull_request" TO "service_role";
+GRANT ALL ON TABLE "public"."pull_requests" TO "anon";
+GRANT ALL ON TABLE "public"."pull_requests" TO "authenticated";
+GRANT ALL ON TABLE "public"."pull_requests" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."repository" TO "anon";
-GRANT ALL ON TABLE "public"."repository" TO "authenticated";
-GRANT ALL ON TABLE "public"."repository" TO "service_role";
+GRANT ALL ON TABLE "public"."repositories" TO "anon";
+GRANT ALL ON TABLE "public"."repositories" TO "authenticated";
+GRANT ALL ON TABLE "public"."repositories" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."review_feedback" TO "anon";
-GRANT ALL ON TABLE "public"."review_feedback" TO "authenticated";
-GRANT ALL ON TABLE "public"."review_feedback" TO "service_role";
+GRANT ALL ON TABLE "public"."review_feedback_comments" TO "anon";
+GRANT ALL ON TABLE "public"."review_feedback_comments" TO "authenticated";
+GRANT ALL ON TABLE "public"."review_feedback_comments" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."review_feedback_comment" TO "anon";
-GRANT ALL ON TABLE "public"."review_feedback_comment" TO "authenticated";
-GRANT ALL ON TABLE "public"."review_feedback_comment" TO "service_role";
+GRANT ALL ON TABLE "public"."review_feedbacks" TO "anon";
+GRANT ALL ON TABLE "public"."review_feedbacks" TO "authenticated";
+GRANT ALL ON TABLE "public"."review_feedbacks" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."review_suggestion_snippet" TO "anon";
-GRANT ALL ON TABLE "public"."review_suggestion_snippet" TO "authenticated";
-GRANT ALL ON TABLE "public"."review_suggestion_snippet" TO "service_role";
+GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "anon";
+GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "authenticated";
+GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user" TO "anon";
-GRANT ALL ON TABLE "public"."user" TO "authenticated";
-GRANT ALL ON TABLE "public"."user" TO "service_role";
+GRANT ALL ON TABLE "public"."users" TO "anon";
+GRANT ALL ON TABLE "public"."users" TO "authenticated";
+GRANT ALL ON TABLE "public"."users" TO "service_role";
 
 
 

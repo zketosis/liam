@@ -34,7 +34,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      github_doc_file_path: {
+      github_doc_file_paths: {
         Row: {
           created_at: string
           id: string
@@ -64,12 +64,12 @@ export type Database = {
             foreignKeyName: 'github_doc_file_path_project_id_fkey'
             columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'project'
+            referencedRelation: 'projects'
             referencedColumns: ['id']
           },
         ]
       }
-      github_schema_file_path: {
+      github_schema_file_paths: {
         Row: {
           created_at: string
           format: Database['public']['Enums']['schema_format_enum']
@@ -99,12 +99,51 @@ export type Database = {
             foreignKeyName: 'github_schema_file_path_project_id_fkey'
             columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'project'
+            referencedRelation: 'projects'
             referencedColumns: ['id']
           },
         ]
       }
-      knowledge_suggestion: {
+      knowledge_suggestion_doc_mappings: {
+        Row: {
+          created_at: string
+          github_doc_file_path_id: string
+          id: string
+          knowledge_suggestion_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          github_doc_file_path_id: string
+          id?: string
+          knowledge_suggestion_id: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          github_doc_file_path_id?: string
+          id?: string
+          knowledge_suggestion_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey'
+            columns: ['github_doc_file_path_id']
+            isOneToOne: false
+            referencedRelation: 'github_doc_file_paths'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'knowledge_suggestion_doc_mapping_knowledge_suggestion_id_fkey'
+            columns: ['knowledge_suggestion_id']
+            isOneToOne: false
+            referencedRelation: 'knowledge_suggestions'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      knowledge_suggestions: {
         Row: {
           approved_at: string | null
           branch_name: string
@@ -155,46 +194,7 @@ export type Database = {
             foreignKeyName: 'knowledge_suggestion_project_id_fkey'
             columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'project'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      knowledge_suggestion_doc_mapping: {
-        Row: {
-          created_at: string
-          github_doc_file_path_id: string
-          id: string
-          knowledge_suggestion_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          github_doc_file_path_id: string
-          id?: string
-          knowledge_suggestion_id: string
-          updated_at: string
-        }
-        Update: {
-          created_at?: string
-          github_doc_file_path_id?: string
-          id?: string
-          knowledge_suggestion_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey'
-            columns: ['github_doc_file_path_id']
-            isOneToOne: false
-            referencedRelation: 'github_doc_file_path'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'knowledge_suggestion_doc_mapping_knowledge_suggestion_id_fkey'
-            columns: ['knowledge_suggestion_id']
-            isOneToOne: false
-            referencedRelation: 'knowledge_suggestion'
+            referencedRelation: 'projects'
             referencedColumns: ['id']
           },
         ]
@@ -226,19 +226,19 @@ export type Database = {
             foreignKeyName: 'membership_invites_invite_by_user_id_fkey'
             columns: ['invite_by_user_id']
             isOneToOne: false
-            referencedRelation: 'user'
+            referencedRelation: 'users'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'membership_invites_organization_id_fkey'
             columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: 'organization'
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
       }
-      migration: {
+      migrations: {
         Row: {
           created_at: string
           id: string
@@ -265,27 +265,12 @@ export type Database = {
             foreignKeyName: 'migration_pull_request_id_fkey'
             columns: ['pull_request_id']
             isOneToOne: false
-            referencedRelation: 'pull_request'
+            referencedRelation: 'pull_requests'
             referencedColumns: ['id']
           },
         ]
       }
-      organization: {
-        Row: {
-          id: string
-          name: string
-        }
-        Insert: {
-          id?: string
-          name: string
-        }
-        Update: {
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      organization_member: {
+      organization_members: {
         Row: {
           id: string
           joined_at: string | null
@@ -309,19 +294,73 @@ export type Database = {
             foreignKeyName: 'organization_member_organization_id_fkey'
             columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: 'organization'
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'organization_member_user_id_fkey'
             columns: ['user_id']
             isOneToOne: false
-            referencedRelation: 'user'
+            referencedRelation: 'users'
             referencedColumns: ['id']
           },
         ]
       }
-      overall_review: {
+      organizations: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      overall_review_knowledge_suggestion_mappings: {
+        Row: {
+          created_at: string
+          id: string
+          knowledge_suggestion_id: string
+          overall_review_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          knowledge_suggestion_id: string
+          overall_review_id: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          knowledge_suggestion_id?: string
+          overall_review_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_knowledge_suggestio'
+            columns: ['knowledge_suggestion_id']
+            isOneToOne: false
+            referencedRelation: 'knowledge_suggestions'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_overall_review_id_f'
+            columns: ['overall_review_id']
+            isOneToOne: false
+            referencedRelation: 'overall_reviews'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      overall_reviews: {
         Row: {
           branch_name: string
           created_at: string
@@ -360,90 +399,19 @@ export type Database = {
             foreignKeyName: 'overall_review_project_id_fkey'
             columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'project'
+            referencedRelation: 'projects'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'overall_review_pull_request_id_fkey'
             columns: ['pull_request_id']
             isOneToOne: false
-            referencedRelation: 'pull_request'
+            referencedRelation: 'pull_requests'
             referencedColumns: ['id']
           },
         ]
       }
-      overall_review_knowledge_suggestion_mapping: {
-        Row: {
-          created_at: string
-          id: string
-          knowledge_suggestion_id: string
-          overall_review_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          knowledge_suggestion_id: string
-          overall_review_id: string
-          updated_at: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          knowledge_suggestion_id?: string
-          overall_review_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_knowledge_suggestio'
-            columns: ['knowledge_suggestion_id']
-            isOneToOne: false
-            referencedRelation: 'knowledge_suggestion'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_overall_review_id_f'
-            columns: ['overall_review_id']
-            isOneToOne: false
-            referencedRelation: 'overall_review'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      project: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          organization_id: string | null
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          organization_id?: string | null
-          updated_at: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          organization_id?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'project_organization_id_fkey'
-            columns: ['organization_id']
-            isOneToOne: false
-            referencedRelation: 'organization'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      project_repository_mapping: {
+      project_repository_mappings: {
         Row: {
           created_at: string
           id: string
@@ -470,19 +438,51 @@ export type Database = {
             foreignKeyName: 'project_repository_mapping_project_id_fkey'
             columns: ['project_id']
             isOneToOne: false
-            referencedRelation: 'project'
+            referencedRelation: 'projects'
             referencedColumns: ['id']
           },
           {
             foreignKeyName: 'project_repository_mapping_repository_id_fkey'
             columns: ['repository_id']
             isOneToOne: false
-            referencedRelation: 'repository'
+            referencedRelation: 'repositories'
             referencedColumns: ['id']
           },
         ]
       }
-      pull_request: {
+      projects: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          organization_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          organization_id?: string | null
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          organization_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'project_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      pull_requests: {
         Row: {
           comment_id: number | null
           created_at: string
@@ -512,12 +512,12 @@ export type Database = {
             foreignKeyName: 'pull_request_repository_id_fkey'
             columns: ['repository_id']
             isOneToOne: false
-            referencedRelation: 'repository'
+            referencedRelation: 'repositories'
             referencedColumns: ['id']
           },
         ]
       }
-      repository: {
+      repositories: {
         Row: {
           created_at: string
           id: string
@@ -547,7 +547,49 @@ export type Database = {
         }
         Relationships: []
       }
-      review_feedback: {
+      review_feedback_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          review_feedback_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          review_feedback_id: string
+          updated_at: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          review_feedback_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'review_feedback_comment_review_feedback_id_fkey'
+            columns: ['review_feedback_id']
+            isOneToOne: false
+            referencedRelation: 'review_feedbacks'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'review_feedback_comment_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      review_feedbacks: {
         Row: {
           category: Database['public']['Enums']['category_enum']
           created_at: string
@@ -589,54 +631,12 @@ export type Database = {
             foreignKeyName: 'review_feedback_overall_review_id_fkey'
             columns: ['overall_review_id']
             isOneToOne: false
-            referencedRelation: 'overall_review'
+            referencedRelation: 'overall_reviews'
             referencedColumns: ['id']
           },
         ]
       }
-      review_feedback_comment: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          review_feedback_id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          review_feedback_id: string
-          updated_at: string
-          user_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          review_feedback_id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'review_feedback_comment_review_feedback_id_fkey'
-            columns: ['review_feedback_id']
-            isOneToOne: false
-            referencedRelation: 'review_feedback'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'review_feedback_comment_user_id_fkey'
-            columns: ['user_id']
-            isOneToOne: false
-            referencedRelation: 'user'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      review_suggestion_snippet: {
+      review_suggestion_snippets: {
         Row: {
           created_at: string
           filename: string
@@ -666,12 +666,12 @@ export type Database = {
             foreignKeyName: 'review_suggestion_snippet_review_feedback_id_fkey'
             columns: ['review_feedback_id']
             isOneToOne: false
-            referencedRelation: 'review_feedback'
+            referencedRelation: 'review_feedbacks'
             referencedColumns: ['id']
           },
         ]
       }
-      user: {
+      users: {
         Row: {
           email: string
           id: string
