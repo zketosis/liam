@@ -1,4 +1,4 @@
-import { SCHEMA_OVERRIDE_FILE_PATH } from '@/app/(app)/app/projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]/constants'
+import { SCHEMA_OVERRIDE_FILE_PATH } from '@/features/schemas/constants'
 import { createClient } from '@/libs/db/server'
 import { schemaOverrideSchema, tableGroupsSchema } from '@liam-hq/db-structure'
 import { createOrUpdateFileContent, getFileContent } from '@liam-hq/github'
