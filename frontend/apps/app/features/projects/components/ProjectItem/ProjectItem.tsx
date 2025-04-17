@@ -1,4 +1,5 @@
 import { urlgen } from '@/utils/routes'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { GithubLogo, ProjectIcon } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
@@ -6,22 +7,14 @@ import { LastCommitInfo } from './LastCommitInfo'
 import { OrganizationIcon } from './OrganizationIcon'
 import styles from './ProjectItem.module.css'
 
-interface Project {
-  id: number
-  name: string
-  createdAt: string
+type ProjectWithRepositories = Tables<'Project'> & {
   ProjectRepositoryMapping?: Array<{
-    repository: {
-      id: number
-      name: string
-      owner: string
-      installationId: number
-    }
+    repository: Tables<'Repository'>
   }>
 }
 
 interface ProjectItemProps {
-  project: Project
+  project: ProjectWithRepositories
 }
 
 export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
