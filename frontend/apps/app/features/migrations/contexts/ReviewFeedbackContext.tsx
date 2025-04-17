@@ -11,7 +11,7 @@ import {
 
 type ReviewFeedback = Tables<'ReviewFeedback'> & {
   suggestionSnippets: Array<{
-    id: number
+    id: string
     filename: string
     snippet: string
   }>
@@ -19,7 +19,7 @@ type ReviewFeedback = Tables<'ReviewFeedback'> & {
 
 type ReviewFeedbackContextType = {
   feedbacks: ReviewFeedback[]
-  updateFeedback: (feedbackId: number, updates: Partial<ReviewFeedback>) => void
+  updateFeedback: (feedbackId: string, updates: Partial<ReviewFeedback>) => void
 }
 
 const ReviewFeedbackContext = createContext<
@@ -53,7 +53,7 @@ export const ReviewFeedbackProvider = ({
   }, [initialFeedbacks])
 
   const updateFeedback = (
-    feedbackId: number,
+    feedbackId: string,
     updates: Partial<ReviewFeedback>,
   ) => {
     setFeedbacks((prevFeedbacks) =>

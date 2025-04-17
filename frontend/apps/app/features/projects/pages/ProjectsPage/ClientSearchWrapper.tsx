@@ -11,7 +11,7 @@ import styles from './ProjectsPage.module.css'
 
 interface ClientSearchWrapperProps {
   initialProjects: Tables<'Project'>[] | null
-  organizationId?: number
+  organizationId?: string
 }
 
 export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({

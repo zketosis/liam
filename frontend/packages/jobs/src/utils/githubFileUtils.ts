@@ -13,7 +13,7 @@ import { createClient } from '../libs/supabase'
  * @throws Error if schema path, format, or content cannot be retrieved
  */
 export const fetchSchemaFileContent = async (
-  projectId: number,
+  projectId: string,
   branchName: string,
   repositoryFullName: string,
   installationId: number,

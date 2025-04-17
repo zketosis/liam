@@ -13,9 +13,9 @@ import { fetchSchemaInfoWithOverrides } from '../../utils/schemaUtils'
 import { saveReviewTask } from './saveReview'
 
 export type GenerateReviewPayload = {
-  pullRequestId: number
-  projectId: number
-  repositoryId: number
+  pullRequestId: string
+  projectId: string
+  repositoryId: string
   branchName: string
   owner: string
   name: string
@@ -42,9 +42,9 @@ export type GenerateReviewPayload = {
 
 export type ReviewResponse = {
   review: Review
-  projectId: number
-  pullRequestId: number
-  repositoryId: number
+  projectId: string
+  pullRequestId: string
+  repositoryId: string
   branchName: string
   traceId: string
   pullRequestNumber: number
@@ -136,7 +136,7 @@ export const processGenerateReview = async (
       payload.projectId,
       payload.branchName,
       `${payload.owner}/${payload.name}`,
-      Number(repository.installationId),
+      repository.installationId,
     )
 
     const callbacks = [langfuseLangchainHandler]

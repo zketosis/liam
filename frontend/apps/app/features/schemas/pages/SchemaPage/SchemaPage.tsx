@@ -39,13 +39,13 @@ async function getERDEditorContent({
           )
         )
       `)
-    .eq('id', Number(projectId))
+    .eq('id', projectId)
     .single()
 
   const { data: gitHubSchemaFilePath } = await supabase
     .from('GitHubSchemaFilePath')
     .select('path, format')
-    .eq('projectId', Number(projectId))
+    .eq('projectId', projectId)
     .eq('path', schemaFilePath)
     .single()
 

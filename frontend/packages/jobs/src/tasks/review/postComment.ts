@@ -9,9 +9,9 @@ import { createClient } from '../../libs/supabase'
 
 export type PostCommentPayload = {
   reviewComment: string
-  projectId: number
-  pullRequestId: number
-  repositoryId: number
+  projectId: string
+  pullRequestId: string
+  repositoryId: string
   branchName: string
   traceId: string
 }
@@ -27,11 +27,11 @@ async function generateERDLink({
   projectId,
   branchRef,
 }: {
-  installationId: string | number
+  installationId: number
   owner: string
   repo: string
   pullNumber: string | number
-  projectId: number
+  projectId: string
   branchRef: string
 }): Promise<string> {
   const supabase = createClient()

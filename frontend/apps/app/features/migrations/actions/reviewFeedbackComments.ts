@@ -6,13 +6,13 @@ import * as v from 'valibot'
 
 // Schema for adding a comment
 const addCommentSchema = v.object({
-  feedbackId: v.pipe(v.number()),
+  feedbackId: v.pipe(v.string()),
   content: v.pipe(v.string(), v.minLength(1, 'Comment cannot be empty')),
 })
 
 // Schema for fetching comments
 const getCommentsSchema = v.object({
-  feedbackId: v.pipe(v.number()),
+  feedbackId: v.pipe(v.string()),
 })
 
 // Type for a comment with user information
@@ -24,7 +24,7 @@ export type CommentWithUser = Tables<'ReviewFeedbackComment'> & {
  * Add a comment to a review feedback
  */
 export async function addReviewFeedbackComment(data: {
-  feedbackId: number
+  feedbackId: string
   content: string
 }) {
   // Validate input data
@@ -72,7 +72,7 @@ export async function addReviewFeedbackComment(data: {
  * Get comments for a review feedback with user information
  */
 export async function getReviewFeedbackComments(data: {
-  feedbackId: number
+  feedbackId: string
 }): Promise<CommentWithUser[]> {
   // Validate input data
   const parsedData = v.safeParse(getCommentsSchema, data)
