@@ -1,111 +1,13 @@
 import { logger, task } from '@trigger.dev/sdk/v3'
 import { SCHEMA_OVERRIDE_FILE_PATH } from '../constants'
-import { getInstallationIdFromRepositoryId } from '../functions/getInstallationIdFromRepositoryId'
-import { postComment } from '../functions/postComment'
 import { processCreateKnowledgeSuggestion } from '../functions/processCreateKnowledgeSuggestion'
 import {
   DOC_FILES,
   processGenerateDocsSuggestion,
 } from '../functions/processGenerateDocsSuggestion'
-import { processGenerateReview } from '../functions/processGenerateReview'
-import { processGenerateSchemaMeta } from '../functions/processGenerateSchemaMeta'
-import { processSaveReview } from '../functions/processSaveReview'
-import type {
-  GenerateReviewPayload,
-  GenerateSchemaMetaPayload,
-  PostCommentPayload,
-  Review,
-  ReviewResponse,
-} from '../types'
+import { processGenerateSchemaOverride } from '../functions/processGenerateSchemaOverride'
+import type { GenerateSchemaOverridePayload, Review } from '../types'
 import { helloWorldTask } from './helloworld'
-
-export const generateReviewTask = task({
-  id: 'generate-review',
-  run: async (payload: GenerateReviewPayload) => {
-    const { review, traceId } = await processGenerateReview(payload)
-    logger.log('Generated review:', { review })
-    await saveReviewTask.trigger({
-      review,
-      traceId,
-      ...payload,
-    })
-    return { review }
-  },
-})
-
-export const saveReviewTask = task({
-  id: 'save-review',
-  run: async (payload: ReviewResponse & GenerateReviewPayload) => {
-    logger.log('Executing review save task:', { payload })
-    try {
-      const { overallReviewId } = await processSaveReview(payload)
-
-      logger.log('Creating knowledge suggestions for docs')
-
-      const installationId = await getInstallationIdFromRepositoryId(
-        payload.repositoryId,
-      )
-
-      await postCommentTask.trigger({
-        reviewComment: payload.review.bodyMarkdown,
-        projectId: payload.projectId,
-        pullRequestId: payload.pullRequestId,
-        repositoryId: payload.repositoryId,
-        branchName: payload.branchName,
-        traceId: payload.traceId,
-      })
-
-      // Trigger docs suggestion generation after review is saved
-      await generateDocsSuggestionTask.trigger({
-        review: payload.review,
-        projectId: payload.projectId,
-        pullRequestNumber: payload.pullRequestNumber,
-        owner: payload.owner,
-        name: payload.name,
-        installationId,
-        type: 'DOCS',
-        branchName: payload.branchName,
-        overallReviewId,
-      })
-
-      // Trigger schema meta suggestion generation after review is saved
-      await generateSchemaMetaSuggestionTask.trigger({
-        overallReviewId,
-      })
-
-      return { success: true }
-    } catch (error) {
-      console.error('Error in review process:', error)
-
-      if (error instanceof Error) {
-        return {
-          success: false,
-          error: {
-            message: error.message,
-            type: error.constructor.name,
-          },
-        }
-      }
-
-      return {
-        success: false,
-        error: {
-          message: 'An unexpected error occurred',
-          type: 'UnknownError',
-        },
-      }
-    }
-  },
-})
-
-export const postCommentTask = task({
-  id: 'post-comment',
-  run: async (payload: PostCommentPayload) => {
-    logger.log('Executing comment post task:', { payload })
-    const result = await postComment(payload)
-    return result
-  },
-})
 
 export const generateDocsSuggestionTask = task({
   id: 'generate-docs-suggestion',
@@ -152,11 +54,11 @@ export const generateDocsSuggestionTask = task({
   },
 })
 
-export const generateSchemaMetaSuggestionTask = task({
+export const generateSchemaOverrideSuggestionTask = task({
   id: 'generate-schema-meta-suggestion',
-  run: async (payload: GenerateSchemaMetaPayload) => {
+  run: async (payload: GenerateSchemaOverridePayload) => {
     logger.log('Executing schema meta suggestion task:', { payload })
-    const result = await processGenerateSchemaMeta(payload)
+    const result = await processGenerateSchemaOverride(payload)
     logger.info('Generated schema meta suggestion:', { result })
 
     if (result.createNeeded) {

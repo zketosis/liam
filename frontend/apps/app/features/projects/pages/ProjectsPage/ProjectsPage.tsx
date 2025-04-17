@@ -1,18 +1,14 @@
-import { OrganizationSwitcher } from '@/features/organizations/components/OrganizationSwitcher'
 import { urlgen } from '@/utils/routes'
+import { ChevronDown, SearchIcon } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
+import { EmptyProjectsState, ProjectItem } from '../../components'
 import styles from './ProjectsPage.module.css'
 import {
   getCurrentOrganization,
   getUserOrganizations,
 } from './getCurrentOrganization'
 import { getProjects } from './getProjects'
-
-interface Organization {
-  id: number
-  name: string
-}
 
 interface ProjectsPageProps {
   organizationId?: number
@@ -24,56 +20,61 @@ export const ProjectsPage: FC<ProjectsPageProps> = async ({
   const currentOrganization = organizationId
     ? await getCurrentOrganization(organizationId)
     : await getCurrentOrganization()
-  const organizations = await getUserOrganizations()
+  await getUserOrganizations() // Fetch for future use
   const projects = await getProjects(currentOrganization?.id)
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.titleContainer}>
-          <h1 className={styles.title}>Projects</h1>
-          {currentOrganization && organizations && (
-            <OrganizationSwitcher
-              currentOrganization={currentOrganization as Organization}
-              organizations={organizations as Organization[]}
-            />
-          )}
-        </div>
-        <Link
-          href={
-            currentOrganization
-              ? urlgen('organizations/[organizationId]/projects/new', {
-                  organizationId: currentOrganization.id.toString(),
-                })
-              : urlgen('organizations/new')
-          }
-          className={styles.createButton}
-        >
-          Create New Project
-        </Link>
-      </div>
+      <div className={styles.contentContainer}>
+        <h1 className={styles.heading}>Projects</h1>
+        {projects === null || projects.length === 0 ? (
+          <EmptyProjectsState
+            createProjectHref={
+              currentOrganization
+                ? urlgen('organizations/[organizationId]/projects/new', {
+                    organizationId: currentOrganization.id.toString(),
+                  })
+                : urlgen('organizations/new')
+            }
+          />
+        ) : (
+          <div className={styles.projectsContainer}>
+            <div className={styles.projectsHeader}>
+              <div className={styles.searchInput}>
+                <SearchIcon className={styles.searchIcon} />
+                <input type="text" placeholder="Search Projects..." />
+              </div>
 
-      {projects === null || projects.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p>No projects found.</p>
-          <p>Create a new project to get started.</p>
-        </div>
-      ) : (
-        <div className={styles.projectGrid}>
-          {projects.map((project) => (
-            <Link
-              key={project.id}
-              href={urlgen('projects/[projectId]', {
-                projectId: `${project.id}`,
-              })}
-              className={styles.projectCard}
-            >
-              <h2>{project.name || 'Untitled Project'}</h2>
-              <p className={styles.createdAt}>Created: {project.createdAt}</p>
-            </Link>
-          ))}
-        </div>
-      )}
+              <div className={styles.sortSelect}>
+                <span>Sort by activity</span>
+                <ChevronDown
+                  className={styles.sortSelectIcon}
+                  aria-hidden="true"
+                />
+              </div>
+
+              <Link
+                href={
+                  currentOrganization
+                    ? urlgen('organizations/[organizationId]/projects/new', {
+                        organizationId: currentOrganization.id.toString(),
+                      })
+                    : urlgen('organizations/new')
+                }
+                className={styles.newProjectButton}
+              >
+                New Project
+              </Link>
+            </div>
+
+            <div className={styles.projectsGrid}>
+              {projects.map((project) => (
+                <ProjectItem key={project.id} project={project} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

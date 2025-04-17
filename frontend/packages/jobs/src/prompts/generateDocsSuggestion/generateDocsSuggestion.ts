@@ -136,7 +136,7 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 </docs>
 
-## Current Database Structure
+## Current Schema
 <json>
 
 {schema}
@@ -194,7 +194,7 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 
 </docs>
 
-## Current Database Structure
+## Current Schema
 <json>
 
 {schema}
