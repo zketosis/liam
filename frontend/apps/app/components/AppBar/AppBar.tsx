@@ -1,8 +1,8 @@
 'use client'
 
+import { ChevronRight, ChevronsUpDown } from '@/icons'
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { Avatar } from '@liam-hq/ui'
-import { ChevronRight, ChevronsUpDown } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
 import styles from './AppBar.module.css'
 

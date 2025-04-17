@@ -46,4 +46,5 @@ export {
   XCircle,
   LayoutGrid,
   Settings,
+  ChevronRight,
 } from 'lucide-react'
