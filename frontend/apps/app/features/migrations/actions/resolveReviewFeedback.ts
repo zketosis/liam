@@ -71,9 +71,6 @@ export const resolveReviewFeedback = async (data: {
 
     // Create a knowledge suggestion based on the feedback
     const overallReviewId = feedbackData.overallReviewId
-    if (!overallReviewId) {
-      throw new Error('Overall review ID not found for the feedback')
-    }
 
     // Get the complete OverallReview object
     const { data: completeOverallReview, error: overallReviewError } =
