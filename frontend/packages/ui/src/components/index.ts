@@ -1,3 +1,4 @@
+export * from './Avatar'
 export * from './Button'
 export * from './CookieConsent'
 export * from './Drawer'

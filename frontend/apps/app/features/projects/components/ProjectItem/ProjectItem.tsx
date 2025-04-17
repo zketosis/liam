@@ -2,7 +2,7 @@
 
 import { urlgen } from '@/utils/routes'
 import type { Tables } from '@liam-hq/db/supabase/database.types'
-import { GithubLogo, ProjectIcon } from '@liam-hq/ui'
+import { GithubLogo } from '@liam-hq/ui'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { FC } from 'react'
@@ -10,6 +10,7 @@ import { getLastCommitData } from './LastCommitInfo'
 import { LastCommitInfoClient } from './LastCommitInfoClient'
 import { getOrganizationData } from './OrganizationIcon'
 import { OrganizationIconClient } from './OrganizationIconClient'
+import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
 type ProjectWithRepositories = Tables<'Project'> & {
@@ -101,16 +102,12 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
             )}
           </div>
         </div>
-        <h2 className={styles.projectName}>
-          {project.name || 'Untitled Project'}
-        </h2>
+        <h2 className={styles.projectName}>{project.name}</h2>
       </div>
 
       <div className={styles.projectInfo}>
         <div className={styles.repositoryBadge}>
-          <div className={styles.repositoryIcon}>
-            <GithubLogo className={styles.icon} opacity={0.5} />
-          </div>
+          <GithubLogo className={styles.repositoryIcon} />
           <span className={styles.repositoryName}>
             {repository
               ? `${repository.owner}/${repository.name}`

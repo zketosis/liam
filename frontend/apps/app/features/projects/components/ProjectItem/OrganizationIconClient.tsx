@@ -1,7 +1,7 @@
 'use client'
 
-import { ProjectIcon } from '@liam-hq/ui'
 import Image from 'next/image'
+import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
 interface OrganizationIconClientProps {
