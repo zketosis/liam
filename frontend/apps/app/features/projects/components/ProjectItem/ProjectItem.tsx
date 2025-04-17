@@ -3,8 +3,8 @@ import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { GithubLogo } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
-import { LastCommitInfo } from './LastCommitInfo'
-import { OrganizationIcon } from './OrganizationIcon'
+import { LastCommitDataWrapper } from './LastCommitDataWrapper'
+import { OrganizationDataWrapper } from './OrganizationDataWrapper'
 import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
@@ -43,7 +43,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
         <div className={styles.projectIcon}>
           <div className={styles.projectIconPlaceholder}>
             {repository ? (
-              <OrganizationIcon
+              <OrganizationDataWrapper
                 installationId={repository.installationId}
                 owner={repository.owner}
                 repo={repository.name}
@@ -68,7 +68,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
 
         <div className={styles.commitInfo}>
           {repository ? (
-            <LastCommitInfo
+            <LastCommitDataWrapper
               installationId={repository.installationId}
               owner={repository.owner}
               repo={repository.name}
