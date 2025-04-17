@@ -1,7 +1,8 @@
 import { urlgen } from '@/utils/routes'
-import { GithubLogo, ProjectIcon } from '@liam-hq/ui'
+import { GithubLogo } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
+import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
 interface Project {
@@ -33,21 +34,13 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
       className={styles.projectItem}
     >
       <div className={styles.projectHeader}>
-        <div className={styles.projectIcon}>
-          <div className={styles.projectIconPlaceholder}>
-            <ProjectIcon className={styles.icon} />
-          </div>
-        </div>
-        <h2 className={styles.projectName}>
-          {project.name || 'Untitled Project'}
-        </h2>
+        <ProjectIcon className={styles.projectIcon} />
+        <h2 className={styles.projectName}>{project.name}</h2>
       </div>
 
       <div className={styles.projectInfo}>
         <div className={styles.repositoryBadge}>
-          <div className={styles.repositoryIcon}>
-            <GithubLogo className={styles.icon} opacity={0.5} />
-          </div>
+          <GithubLogo className={styles.repositoryIcon} />
           <span className={styles.repositoryName}>
             {project.name
               ? `${project.name.toLowerCase()}`
