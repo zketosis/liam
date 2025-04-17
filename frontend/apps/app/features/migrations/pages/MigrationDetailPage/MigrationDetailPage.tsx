@@ -239,13 +239,13 @@ export const MigrationDetailPage: FC<Props> = async ({
                   {overallReview.reviewComment}
                 </pre>
                 {overallReview.traceId && (
-                  <div className={styles.feedbackSection}>
+                  <div>
                     <UserFeedbackClient traceId={overallReview.traceId} />
                   </div>
                 )}
               </>
             ) : (
-              <p className={styles.noContent}>No review content found.</p>
+              <p>No review content found.</p>
             )}
           </div>
           <div className={styles.box}>

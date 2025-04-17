@@ -9,14 +9,14 @@ import { processGenerateSchemaOverride } from '../functions/processGenerateSchem
 import type {
   GenerateSchemaOverridePayload,
   OverallReview,
-  ReviewFeedback,
+  Review,
 } from '../types'
 import { helloWorldTask } from './helloworld'
 
 export const generateDocsSuggestionTask = task({
   id: 'generate-docs-suggestion',
   run: async (payload: {
-    reviewComment: string
+    review: Review
     projectId: number
     pullRequestNumber: number
     owner: string
@@ -25,10 +25,9 @@ export const generateDocsSuggestionTask = task({
     type: 'DOCS'
     branchName: string
     overallReviewId: number
-    reviewFeedbackId?: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
-      reviewComment: payload.reviewComment,
+      review: payload.review,
       projectId: payload.projectId,
       branchOrCommit: payload.branchName,
     })
@@ -52,7 +51,6 @@ export const generateDocsSuggestionTask = task({
         traceId,
         reasoning: suggestion.reasoning || '',
         overallReviewId: payload.overallReviewId,
-        reviewFeedbackId: payload.reviewFeedbackId || null,
       })
     }
 
@@ -79,9 +77,6 @@ export const generateSchemaOverrideSuggestionTask = task({
         traceId: result.traceId,
         reasoning: result.reasoning || '',
         overallReviewId: result.overallReviewId,
-        reviewFeedbackId: payload.reviewFeedback
-          ? payload.reviewFeedback.id
-          : null,
       })
       logger.info('Knowledge suggestion creation triggered')
     } else {
@@ -106,7 +101,6 @@ export const createKnowledgeSuggestionTask = task({
     traceId?: string
     reasoning: string
     overallReviewId: number
-    reviewFeedbackId?: number | null
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
     try {
@@ -129,20 +123,19 @@ export const generateKnowledgeFromFeedbackTask = task({
   id: 'generate-knowledge-from-feedback',
   run: async (payload: {
     projectId: number
-    reviewFeedback: ReviewFeedback
     title: string
     branch: string
     traceId?: string
     reasoning: string
     overallReview: OverallReview
+    review: Review
   }) => {
     logger.log('Executing generate knowledge from feedback task:', { payload })
     try {
       const { suggestions, traceId } = await processGenerateDocsSuggestion({
-        reviewComment: payload.overallReview.reviewComment || '',
+        review: payload.review,
         projectId: payload.projectId,
         branchOrCommit: payload.branch,
-        reviewFeedback: payload.reviewFeedback,
       })
       logger.log('Generated docs suggestions:', { suggestions, traceId })
 
@@ -156,20 +149,19 @@ export const generateKnowledgeFromFeedbackTask = task({
         await createKnowledgeSuggestionTask.trigger({
           projectId: payload.projectId,
           type: 'DOCS',
-          title: `Docs update related to feedback #${payload.reviewFeedback.id}`,
+          title: 'Docs update related to feedback',
           path: `docs/${key}`,
           content: suggestion.content,
           branch: payload.branch,
           traceId,
           reasoning: suggestion.reasoning || '',
           overallReviewId: payload.overallReview.id,
-          reviewFeedbackId: payload.reviewFeedback.id,
         })
       }
 
       const result = await processGenerateSchemaOverride({
         overallReviewId: payload.overallReview.id,
-        reviewFeedback: payload.reviewFeedback,
+        review: payload.review,
       })
       logger.info('Generated schema meta suggestion:', { result })
 
@@ -185,9 +177,6 @@ export const generateKnowledgeFromFeedbackTask = task({
           traceId: result.traceId,
           reasoning: result.reasoning || '',
           overallReviewId: result.overallReviewId,
-          reviewFeedbackId: payload.reviewFeedback
-            ? payload.reviewFeedback.id
-            : null,
         })
         logger.info('Knowledge suggestion creation triggered')
       } else {

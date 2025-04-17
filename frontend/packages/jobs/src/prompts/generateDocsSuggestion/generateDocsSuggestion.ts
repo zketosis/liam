@@ -5,7 +5,7 @@ import { ChatOpenAI } from '@langchain/openai'
 import type { Schema } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { parse } from 'valibot'
-import type { ReviewFeedback } from '../../types'
+import type { Review } from '../../types'
 import {
   type DocFileContentMap,
   type DocsSuggestion,
@@ -64,6 +64,50 @@ const updateResponseExample = {
   migrationPatterns: 'Full updated content for migrationPatterns.md',
 }
 
+// Helper to format review for the prompt
+const formatReview = (review: Review): string => {
+  const { bodyMarkdown, feedbacks } = review
+
+  if (!feedbacks || feedbacks.length === 0) {
+    return bodyMarkdown
+  }
+
+  const feedbackSections = feedbacks
+    .map(
+      (feedback) => `
+## Feedback: ${feedback.kind}
+**Severity:** ${feedback.severity}
+**Description:** ${feedback.description}
+**Suggestion:** ${feedback.suggestion}
+${
+  feedback.suggestionSnippets && feedback.suggestionSnippets.length > 0
+    ? `
+**Code Snippets:**
+${feedback.suggestionSnippets
+  .map(
+    (snippet) => `
+\`\`\`
+File: ${snippet.filename}
+${snippet.snippet}
+\`\`\`
+`,
+  )
+  .join('')}
+`
+    : ''
+}
+`,
+    )
+    .join('\n')
+
+  return `
+${bodyMarkdown}
+
+# Detailed Feedback
+${feedbackSections}
+`
+}
+
 // Step 1: Evaluation template to determine which files need updates
 const EVALUATION_TEMPLATE = ChatPromptTemplate.fromTemplate(`
 You are Liam, an expert in schema design and migration strategy for this project.
@@ -83,8 +127,6 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 {reviewResult}
 
 </text>
-
-{reviewFeedbackInfo}
 
 ## Current Documentation
 
@@ -119,6 +161,9 @@ Guidelines:
 - For files that need updates, include detailed suggestedChanges with specific content to add or modify
 - Focus on project-specific insights that would improve documentation
 - Consider if the migration review contains new patterns or constraints not already documented
+- Consider the severity level of each feedback in the review
+- For WARNING level issues, suggest minimal and focused changes
+- For ERROR/CRITICAL level issues, be more thorough with your suggested changes
 `)
 
 // Step 2: Update template for generating content for files that need updates
@@ -140,8 +185,6 @@ ${DOCS_STRUCTURE_DESCRIPTION}
 {reviewResult}
 
 </text>
-
-{reviewFeedbackInfo}
 
 ## Current Documentation
 
@@ -180,20 +223,22 @@ Return your updates as a JSON object with the following structure:
 
 Guidelines:
 - Only include files marked as needing updates in the evaluation results
-- For each included file, provide the complete updated content
+- For each included file, provide only the necessary changes, not a complete rewrite
+- For issues marked as WARNING, make minimal changes that preserve existing content
+- For issues marked as ERROR/CRITICAL, be more thorough but still try to preserve useful existing content
 - Omit files that don't need changes
 - Be precise and intentional in your updates
+- Format changes to be easy to review and apply
 - Focus on reusable knowledge
 - Maintain accuracy and clarity
 `)
 
 export const generateDocsSuggestion = async (
-  reviewResult: string,
+  review: Review,
   formattedDocsContent: string,
   callbacks: Callbacks,
   predefinedRunId: string,
   schema: Schema,
-  reviewFeedback?: ReviewFeedback,
 ): Promise<DocFileContentMap> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -203,22 +248,7 @@ export const generateDocsSuggestion = async (
     model: 'o3-mini-2025-01-31',
   })
 
-  // Format review feedback if available
-  let reviewFeedbackInfo = ''
-  if (reviewFeedback) {
-    reviewFeedbackInfo = `
-## Review Feedback Information
-
-<feedback>
-- **Category**: ${reviewFeedback.category}
-- **Severity**: ${reviewFeedback.severity}
-- **Description**: ${reviewFeedback.description}
-- **Suggestion**: ${reviewFeedback.suggestion}
-${reviewFeedback.resolvedAt ? `- **Resolution Date**: ${reviewFeedback.resolvedAt}` : ''}
-${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback.resolutionComment}` : ''}
-</feedback>
-`
-  }
+  const formattedReviewResult = formatReview(review)
 
   // Convert example objects to JSON strings for template use
   const evaluationResponseExampleJson = JSON.stringify(
@@ -249,7 +279,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
     evaluationResults: string
     updateResponseExampleJson: string
     schema: string
-    reviewFeedbackInfo: string
   }
 
   // Helper function to collect suggested changes for files that need updates
@@ -298,7 +327,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
       evaluationResponseExampleJson: string
       updateResponseExampleJson: string
       schema: string
-      reviewFeedbackInfo: string
     },
     config?: { callbacks?: Callbacks; runId?: string; tags?: string[] },
   ): Promise<DocFileContentMap> => {
@@ -309,7 +337,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
         formattedDocsContent: inputs.formattedDocsContent,
         evaluationResponseExampleJson: inputs.evaluationResponseExampleJson,
         schema: inputs.schema,
-        reviewFeedbackInfo: inputs.reviewFeedbackInfo,
       },
       config,
     )
@@ -324,7 +351,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
       evaluationResults: JSON.stringify(suggestedChanges, null, 2),
       updateResponseExampleJson: inputs.updateResponseExampleJson,
       schema: inputs.schema,
-      reviewFeedbackInfo: inputs.reviewFeedbackInfo,
     }
 
     const updateResult = await updateChain.invoke(updateInput, {
@@ -345,12 +371,11 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
 
   // Prepare the inputs
   const inputs = {
-    reviewResult,
+    reviewResult: formattedReviewResult,
     formattedDocsContent,
     evaluationResponseExampleJson,
     updateResponseExampleJson,
     schema: JSON.stringify(schema, null, 2),
-    reviewFeedbackInfo,
   }
 
   // Execute the router chain

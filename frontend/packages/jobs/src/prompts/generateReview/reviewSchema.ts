@@ -1,6 +1,6 @@
 import { array, enum as enumType, strictObject, string } from 'valibot'
 
-const KindEnum = enumType({
+export const KindEnum = enumType({
   'Migration Safety': 'Migration Safety',
   'Data Integrity': 'Data Integrity',
   'Performance Impact': 'Performance Impact',

@@ -9,7 +9,6 @@ import {
 } from '@liam-hq/db-structure'
 import { toJsonSchema } from '@valibot/to-json-schema'
 import { type InferOutput, boolean, object, parse, string } from 'valibot'
-import type { ReviewFeedback } from '../../types'
 
 // Define evaluation schema using valibot
 const evaluationSchema = object({
@@ -77,8 +76,6 @@ schema-override.yml is a documentation-only enhancement layer on top of the actu
 
 </comment>
 
-{reviewFeedbackInfo}
-
 ## Current Schema Override
 <json>
 
@@ -140,8 +137,6 @@ It is NOT for:
 
 </comment>
 
-{reviewFeedbackInfo}
-
 ## Evaluation Results
 <evaluationResults>
 
@@ -196,7 +191,6 @@ export const generateSchemaOverride = async (
   currentSchemaOverride: SchemaOverride | null,
   runId: string,
   schema: Schema,
-  reviewFeedback?: ReviewFeedback,
 ): Promise<GenerateSchemaOverrideResult> => {
   const evaluationModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
@@ -205,23 +199,6 @@ export const generateSchemaOverride = async (
   const updateModel = new ChatOpenAI({
     model: 'o3-mini-2025-01-31',
   })
-
-  // Format review feedback if available
-  let reviewFeedbackInfo = ''
-  if (reviewFeedback) {
-    reviewFeedbackInfo = `
-## Review Feedback Information
-
-<feedback>
-- **Category**: ${reviewFeedback.category}
-- **Severity**: ${reviewFeedback.severity}
-- **Description**: ${reviewFeedback.description}
-- **Suggestion**: ${reviewFeedback.suggestion}
-${reviewFeedback.resolvedAt ? `- **Resolution Date**: ${reviewFeedback.resolvedAt}` : ''}
-${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback.resolutionComment}` : ''}
-</feedback>
-`
-  }
 
   // Create evaluation chain
   const evaluationChain = EVALUATION_TEMPLATE.pipe(
@@ -238,7 +215,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
     reviewComment: string
     currentSchemaOverride: string
     schema: string
-    reviewFeedbackInfo: string
   }
 
   type UpdateInput = EvaluationInput & {
@@ -258,7 +234,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
         currentSchemaOverride: inputs.currentSchemaOverride,
         schema: inputs.schema,
         evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
-        reviewFeedbackInfo: inputs.reviewFeedbackInfo,
       },
       config,
     )
@@ -271,7 +246,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
         schema: inputs.schema,
         schemaOverrideJsonSchema: inputs.schemaOverrideJsonSchema,
         evaluationResults: evaluationResult.suggestedChanges,
-        reviewFeedbackInfo: inputs.reviewFeedbackInfo,
       }
 
       const updateResult = await updateChain.invoke(updateInput, {
@@ -318,7 +292,6 @@ ${reviewFeedback.resolutionComment ? `- **Resolution Comment**: ${reviewFeedback
         2,
       ),
       evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
-      reviewFeedbackInfo,
     }
 
     // Execute the router chain

@@ -5,7 +5,7 @@ export const getProjects = async (organizationId?: number) => {
 
   let query = supabase
     .from('Project')
-    .select('id, name, createdAt, organizationId')
+    .select('id, name, createdAt, updatedAt, organizationId')
     .order('id', { ascending: false })
 
   if (organizationId) {

@@ -53,7 +53,7 @@ export type PostCommentPayload = {
 
 export type GenerateSchemaOverridePayload = {
   overallReviewId: number
-  reviewFeedback?: ReviewFeedback
+  review: Review
 }
 
 export type SchemaOverrideResult =
