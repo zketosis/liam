@@ -37,7 +37,6 @@ export * from './Eye'
 export * from './EyeClosed'
 export * from './FileText'
 export * from './ProjectIcon'
-export * from './SearchIcon'
 
 export {
   Copy,
@@ -49,4 +48,5 @@ export {
   XCircle,
   LayoutGrid,
   Settings,
+  Search,
 } from 'lucide-react'

@@ -16,24 +16,23 @@
   position: relative;
 }
 
-.searchInput input {
+.searchInput > input {
   background: transparent;
   border: none;
   outline: none;
   color: var(--global-foreground);
-  font-size: 13px;
+  font-size: var(--font-size-4);
   width: 100%;
 }
 
-.searchInput input::placeholder {
-  color: var(--global-mute-text);
+.searchInput > input::placeholder {
+  color: var(--overlay-30);
 }
 
 .searchIcon {
-  color: var(--global-foreground);
-  opacity: 0.5;
-  width: 16px;
-  height: 16px;
+  color: var(--overlay-50);
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .loading {
