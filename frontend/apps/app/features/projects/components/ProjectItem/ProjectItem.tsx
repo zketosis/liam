@@ -1,15 +1,10 @@
-'use client'
-
 import { urlgen } from '@/utils/routes'
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { GithubLogo } from '@liam-hq/ui'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import type { FC } from 'react'
-import { getLastCommitData } from './LastCommitInfo'
-import { LastCommitInfoClient } from './LastCommitInfoClient'
-import { getOrganizationData } from './OrganizationIcon'
-import { OrganizationIconClient } from './OrganizationIconClient'
+import { LastCommitInfo } from './LastCommitInfo'
+import { OrganizationIcon } from './OrganizationIcon'
 import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
@@ -24,14 +19,6 @@ interface ProjectItemProps {
 }
 
 export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
-  // State for organization avatar and commit info
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const [commitInfo, setCommitInfo] = useState<{
-    author: string
-    date: string
-  } | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
   // Format date to "MMM DD, YYYY" format
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -45,39 +32,6 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
   const repositoryName = project.name?.toLowerCase() || 'untitled-project'
   const repository = project.ProjectRepositoryMapping?.[0]?.repository
 
-  // Fetch organization and commit data
-  useEffect(() => {
-    if (repository) {
-      const fetchData = async () => {
-        setIsLoading(true)
-
-        try {
-          // Fetch organization data
-          const orgData = await getOrganizationData({
-            installationId: repository.installationId,
-            owner: repository.owner,
-            repo: repository.name,
-          })
-          setAvatarUrl(orgData)
-
-          // Fetch commit data
-          const commitData = await getLastCommitData({
-            installationId: repository.installationId,
-            owner: repository.owner,
-            repo: repository.name,
-          })
-          setCommitInfo(commitData)
-        } catch (error) {
-          console.error('Error fetching data:', error)
-        } finally {
-          setIsLoading(false)
-        }
-      }
-
-      fetchData()
-    }
-  }, [repository])
-
   return (
     <Link
       href={urlgen('projects/[projectId]', {
@@ -89,14 +43,11 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
         <div className={styles.projectIcon}>
           <div className={styles.projectIconPlaceholder}>
             {repository ? (
-              isLoading ? (
-                <ProjectIcon className={styles.projectIcon} />
-              ) : (
-                <OrganizationIconClient
-                  avatarUrl={avatarUrl || undefined}
-                  owner={repository.owner}
-                />
-              )
+              <OrganizationIcon
+                installationId={repository.installationId}
+                owner={repository.owner}
+                repo={repository.name}
+              />
             ) : (
               <ProjectIcon className={styles.projectIcon} />
             )}
@@ -117,18 +68,12 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
 
         <div className={styles.commitInfo}>
           {repository ? (
-            isLoading ? (
-              <>
-                <span>Loading</span>
-                <span>commit</span>
-                <span>info...</span>
-              </>
-            ) : (
-              <LastCommitInfoClient
-                author={commitInfo?.author}
-                date={commitInfo?.date || project.createdAt}
-              />
-            )
+            <LastCommitInfo
+              installationId={repository.installationId}
+              owner={repository.owner}
+              repo={repository.name}
+              defaultDate={project.createdAt}
+            />
           ) : (
             <>
               <span>User</span>
