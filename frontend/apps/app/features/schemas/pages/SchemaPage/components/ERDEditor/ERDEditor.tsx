@@ -1,36 +1,32 @@
 'use client'
 
-import { CookieConsent } from '@/components/CookieConsent'
-import type { Schema } from '@liam-hq/db-structure'
-import type { TableGroup } from '@liam-hq/db-structure'
+import { Button } from '@/components'
+import { ERDRenderer } from '@/features'
+import { useTableGroups } from '@/hooks'
+import { VersionProvider } from '@/providers'
+import { versionSchema } from '@/schemas'
+import { initSchemaStore } from '@/stores'
+import type { Schema, TableGroup } from '@liam-hq/db-structure'
 import {
-  ERDRenderer,
-  VersionProvider,
-  initSchemaStore,
-  useTableGroups,
-  versionSchema,
-} from '@liam-hq/erd-core'
-import { Button } from '@liam-hq/ui'
-import { useCallback, useEffect, useState } from 'react'
-import * as v from 'valibot'
+  type ComponentProps,
+  type FC,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+import { parse } from 'valibot'
 
-type ErrorObject = {
-  name: string
-  message: string
-  instruction?: string
-}
-
-export type ERDViewerProps = {
+type Props = {
   schema: Schema
   tableGroups?: Record<string, TableGroup>
-  errorObjects: ErrorObject[]
+  errorObjects: ComponentProps<typeof ERDRenderer>['errorObjects']
   defaultSidebarOpen: boolean
   defaultPanelSizes?: number[]
   projectId?: string
   branchOrCommit?: string
 }
 
-export default function ERDViewer({
+export const ERDEditor: FC<Props> = ({
   schema,
   tableGroups: initialTableGroups = {},
   errorObjects,
@@ -38,15 +34,13 @@ export default function ERDViewer({
   defaultPanelSizes = [20, 80],
   projectId,
   branchOrCommit,
-}: ERDViewerProps) {
-  const [isShowCookieConsent, setShowCookieConsent] = useState(false)
+}) => {
   const { tableGroups, addTableGroup } = useTableGroups(initialTableGroups)
   const [isUpdating, setIsUpdating] = useState(false)
   const [updateMessage, setUpdateMessage] = useState('')
 
   useEffect(() => {
     initSchemaStore(schema)
-    setShowCookieConsent(window === window.parent)
   }, [schema])
 
   // Handler for commit & push button
@@ -92,7 +86,7 @@ export default function ERDViewer({
     date: process.env.NEXT_PUBLIC_RELEASE_DATE,
     displayedOn: 'web',
   }
-  const version = v.parse(versionSchema, versionData)
+  const version = parse(versionSchema, versionData)
 
   const canUpdateFile = Boolean(projectId && branchOrCommit)
 
@@ -137,7 +131,6 @@ export default function ERDViewer({
           </div>
         )}
       </VersionProvider>
-      {isShowCookieConsent && <CookieConsent />}
     </div>
   )
 }

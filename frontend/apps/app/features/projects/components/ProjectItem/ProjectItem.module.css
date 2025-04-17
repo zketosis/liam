@@ -1,0 +1,85 @@
+.projectItem {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-5) var(--spacing-4) var(--spacing-4);
+  background-color: var(--pane-background);
+  border: var(--border-width-base) solid var(--global-border);
+  border-radius: var(--border-radius-md);
+  gap: var(--spacing-5);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.projectItem:hover {
+  border-color: var(--pane-border-hover);
+  transform: translateY(-2px);
+}
+
+.projectHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.projectIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--border-radius-lg);
+  background-color: var(--global-muted-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--overlay-20);
+  overflow: hidden;
+}
+
+.projectName {
+  font-size: var(--font-size-5);
+  font-weight: 600;
+  color: var(--global-foreground);
+  line-height: normal;
+}
+
+.projectInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.repositoryBadge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2) var(--spacing-1)
+    var(--spacing-1half);
+  background-color: var(--overlay-5);
+  border-radius: var(--border-radius-full);
+  width: fit-content;
+}
+
+.repositoryIcon {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--overlay-50);
+}
+
+.repositoryName {
+  font-size: var(--font-size-3);
+  color: var(--global-foreground);
+}
+
+.commitInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-2);
+  color: var(--overlay-50);
+}

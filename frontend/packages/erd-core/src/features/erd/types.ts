@@ -21,3 +21,9 @@ export type NonRelatedTableGroupNodeType = Node<
 >
 
 export type DisplayArea = 'main' | 'relatedTables'
+
+export type TableGroupNodeData = {
+  name: string
+}
+
+export type TableGroupNodeType = Node<TableGroupNodeData, 'tableGroup'>

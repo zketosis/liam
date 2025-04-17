@@ -18,6 +18,7 @@ export * from './Group'
 export * from './Lock'
 export * from './Megaphone'
 export * from './MessagesSquare'
+export * from './MessageSquareText'
 export * from './Minus'
 export * from './Menu'
 export * from './Plus'
@@ -47,4 +48,5 @@ export {
   LayoutGrid,
   Settings,
   ChevronRight,
+  Search,
 } from 'lucide-react'

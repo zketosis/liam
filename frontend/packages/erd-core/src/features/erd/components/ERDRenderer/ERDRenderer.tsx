@@ -10,7 +10,13 @@ import {
   ToastProvider,
 } from '@liam-hq/ui'
 import { ReactFlowProvider } from '@xyflow/react'
-import { type FC, createRef, useCallback, useState } from 'react'
+import {
+  type ComponentProps,
+  type FC,
+  createRef,
+  useCallback,
+  useState,
+} from 'react'
 import { AppBar } from './AppBar'
 import styles from './ERDRenderer.module.css'
 import '@/styles/globals.css'
@@ -26,14 +32,9 @@ import { RelationshipEdgeParticleMarker } from './RelationshipEdgeParticleMarker
 import { TableDetailDrawer, TableDetailDrawerRoot } from './TableDetailDrawer'
 import { Toolbar } from './Toolbar'
 
-type ErrorObject = {
-  name: string
-  message: string
-}
-
 type Props = {
   defaultSidebarOpen?: boolean | undefined
-  errorObjects?: ErrorObject[] | undefined
+  errorObjects?: ComponentProps<typeof ErrorDisplay>['errors']
   defaultPanelSizes?: number[]
   withAppBar?: boolean
   tableGroups?: Record<string, TableGroup>

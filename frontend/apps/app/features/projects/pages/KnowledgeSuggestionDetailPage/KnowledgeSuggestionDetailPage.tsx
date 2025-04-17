@@ -129,13 +129,11 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
         </div>
 
         {suggestion.reasoning && (
-          <div className={styles.reasoningSection}>
+          <div>
             <div className={styles.header}>
               <h2 className={styles.sectionTitle}>Reasoning</h2>
             </div>
-            <div className={styles.reasoningContent}>
-              {suggestion.reasoning}
-            </div>
+            <div>{suggestion.reasoning}</div>
           </div>
         )}
 
