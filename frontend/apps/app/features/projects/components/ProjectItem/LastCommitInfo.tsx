@@ -1,4 +1,7 @@
+'use server'
+
 import { getLastCommit } from '@liam-hq/github'
+import { LastCommitInfoClient } from './LastCommitInfoClient'
 
 interface LastCommitInfoProps {
   installationId: number
@@ -7,42 +10,47 @@ interface LastCommitInfoProps {
   defaultDate: string
 }
 
+export async function getLastCommitData({
+  installationId,
+  owner,
+  repo,
+}: Omit<LastCommitInfoProps, 'defaultDate'>) {
+  try {
+    const commitInfo = await getLastCommit(installationId, owner, repo)
+
+    if (commitInfo) {
+      return {
+        author: commitInfo.author,
+        date: commitInfo.date,
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch last commit info:', error)
+  }
+
+  return null
+}
+
 export async function LastCommitInfo({
   installationId,
   owner,
   repo,
   defaultDate,
 }: LastCommitInfoProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  }
-
   try {
     const commitInfo = await getLastCommit(installationId, owner, repo)
 
     if (commitInfo) {
       return (
-        <>
-          <span>{commitInfo.author}</span>
-          <span>committed</span>
-          <span>on {formatDate(commitInfo.date)}</span>
-        </>
+        <LastCommitInfoClient
+          author={commitInfo.author}
+          date={commitInfo.date}
+        />
       )
     }
   } catch (error) {
     console.error('Failed to fetch last commit info:', error)
   }
 
-  return (
-    <>
-      <span>User</span>
-      <span>committed</span>
-      <span>on {formatDate(defaultDate)}</span>
-    </>
-  )
+  return <LastCommitInfoClient date={defaultDate} />
 }

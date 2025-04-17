@@ -1,12 +1,26 @@
+'use server'
+
 import { getOrganizationInfo } from '@liam-hq/github'
-import { ProjectIcon } from '@liam-hq/ui'
-import Image from 'next/image'
-import styles from './ProjectItem.module.css'
+import { OrganizationIconClient } from './OrganizationIconClient'
 
 interface OrganizationIconProps {
   installationId: number
   owner: string
   repo: string
+}
+
+export async function getOrganizationData({
+  installationId,
+  owner,
+  repo,
+}: OrganizationIconProps) {
+  try {
+    const orgInfo = await getOrganizationInfo(installationId, owner, repo)
+    return orgInfo?.avatar_url || null
+  } catch (error) {
+    console.error('Failed to fetch organization info:', error)
+    return null
+  }
 }
 
 export async function OrganizationIcon({
@@ -19,18 +33,12 @@ export async function OrganizationIcon({
 
     if (orgInfo?.avatar_url) {
       return (
-        <Image
-          src={orgInfo.avatar_url}
-          alt={`${owner} organization icon`}
-          width={32}
-          height={32}
-          className={styles.icon}
-        />
+        <OrganizationIconClient avatarUrl={orgInfo.avatar_url} owner={owner} />
       )
     }
   } catch (error) {
     console.error('Failed to fetch organization info:', error)
   }
 
-  return <ProjectIcon className={styles.icon} />
+  return <OrganizationIconClient owner={owner} />
 }
