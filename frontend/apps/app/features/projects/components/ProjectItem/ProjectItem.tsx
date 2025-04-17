@@ -90,7 +90,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
           <div className={styles.projectIconPlaceholder}>
             {repository ? (
               isLoading ? (
-                <ProjectIcon className={styles.icon} />
+                <ProjectIcon className={styles.projectIcon} />
               ) : (
                 <OrganizationIconClient
                   avatarUrl={avatarUrl || undefined}
@@ -98,7 +98,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
                 />
               )
             ) : (
-              <ProjectIcon className={styles.icon} />
+              <ProjectIcon className={styles.projectIcon} />
             )}
           </div>
         </div>

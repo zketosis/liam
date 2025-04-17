@@ -20,10 +20,9 @@ export function OrganizationIconClient({
         alt={`${owner} organization icon`}
         width={32}
         height={32}
-        className={styles.icon}
       />
     )
   }
 
-  return <ProjectIcon className={styles.icon} />
+  return <ProjectIcon className={styles.projectIcon} />
 }
