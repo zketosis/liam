@@ -1,23 +1,17 @@
 'use client'
 
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { useState } from 'react'
 
-type Project = {
-  id: number
-  name: string
-  createdAt: string
-  organizationId: number | null
-}
-
 type SearchResult = {
-  projects: Project[] | null
+  projects: Tables<'Project'>[] | null
   loading: boolean
   error: Error | null
 }
 
 export const useProjectSearch = (
   organizationId?: number,
-  initialProjects?: Project[] | null,
+  initialProjects?: Tables<'Project'>[] | null,
 ) => {
   const [searchResult, setSearchResult] = useState<SearchResult>({
     projects: initialProjects || null,

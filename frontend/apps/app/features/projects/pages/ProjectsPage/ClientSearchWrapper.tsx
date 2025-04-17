@@ -1,6 +1,7 @@
 'use client'
 
 import { urlgen } from '@/utils/routes'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { ChevronDown } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC } from 'react'
@@ -8,15 +9,8 @@ import { ProjectItem, SearchInput } from '../../components'
 import { useProjectSearch } from '../../hooks/useProjectSearch'
 import styles from './ProjectsPage.module.css'
 
-interface Project {
-  id: number
-  name: string
-  createdAt: string
-  organizationId: number | null
-}
-
 interface ClientSearchWrapperProps {
-  initialProjects: Project[] | null
+  initialProjects: Tables<'Project'>[] | null
   organizationId?: number
 }
 
