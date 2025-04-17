@@ -3,9 +3,9 @@ import type { DisplayArea } from '@/features/erd/types'
 import { selectTableLogEvent } from '@/features/gtm/utils'
 import { repositionTableLogEvent } from '@/features/gtm/utils/repositionTableLogEvent'
 import { MAX_ZOOM, MIN_ZOOM } from '@/features/reactflow/constants'
-import { useIsTouchDevice } from '@/hooks'
 import { useVersion } from '@/providers'
-import { useUserEditingActiveStore } from '@/stores'
+import { useUserEditingActiveStore, useUserEditingStore } from '@/stores'
+import type { TableGroup } from '@liam-hq/db-structure'
 import {
   Background,
   BackgroundVariant,
@@ -17,6 +17,7 @@ import {
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
+import clsx from 'clsx'
 import { type FC, useCallback } from 'react'
 import { highlightNodesAndEdges, isTableNode } from '../../utils'
 import styles from './ERDContent.module.css'
@@ -25,10 +26,12 @@ import {
   NonRelatedTableGroupNode,
   RelationshipEdge,
   Spinner,
+  TableGroupBoundingBox,
   TableGroupNode,
   TableNode,
 } from './components'
 import { useInitialAutoLayout, usePopStateListener } from './hooks'
+import { useTableGroupBoundingBox } from './hooks/useTableGroupBoundingBox'
 
 const nodeTypes = {
   table: TableNode,
@@ -44,12 +47,14 @@ type Props = {
   nodes: Node[]
   edges: Edge[]
   displayArea: DisplayArea
+  onAddTableGroup?: ((props: TableGroup) => void) | undefined
 }
 
 export const ERDContentInner: FC<Props> = ({
   nodes: _nodes,
   edges: _edges,
   displayArea,
+  onAddTableGroup,
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(
     displayArea === 'relatedTables'
@@ -65,7 +70,9 @@ export const ERDContentInner: FC<Props> = ({
   const {
     state: { loading },
   } = useERDContentContext()
+  const { isTableGroupEditMode } = useUserEditingStore()
   const { tableName: activeTableName } = useUserEditingActiveStore()
+
   const { selectTable, deselectTable } = useTableSelection()
 
   useInitialAutoLayout({
@@ -74,8 +81,18 @@ export const ERDContentInner: FC<Props> = ({
   })
   usePopStateListener({ displayArea })
 
+  const {
+    containerRef,
+    currentBox,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+  } = useTableGroupBoundingBox({
+    nodes,
+    onAddTableGroup,
+  })
+
   const { version } = useVersion()
-  const isTouchDevice = useIsTouchDevice()
   const handleNodeClick = useCallback(
     (tableId: string) => {
       selectTable({
@@ -148,9 +165,16 @@ export const ERDContentInner: FC<Props> = ({
   const panOnDrag = [1, 2]
 
   return (
-    <div className={styles.wrapper} data-loading={loading}>
+    <div
+      className={clsx(
+        styles.wrapper,
+        isTableGroupEditMode && styles.groupEditMode,
+      )}
+      data-loading={loading}
+    >
       {loading && <Spinner className={styles.loading} />}
       <ReactFlow
+        ref={containerRef}
         colorMode="dark"
         nodes={nodes}
         edges={edges}
@@ -167,9 +191,11 @@ export const ERDContentInner: FC<Props> = ({
         onNodeMouseEnter={handleMouseEnterNode}
         onNodeMouseLeave={handleMouseLeaveNode}
         onNodeDragStop={handleDragStopNode}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
         panOnScroll
         panOnDrag={panOnDrag}
-        selectionOnDrag={!isTouchDevice}
         deleteKeyCode={null} // Turn off because it does not want to be deleted
         attributionPosition="bottom-left"
         nodesConnectable={false}
@@ -180,6 +206,14 @@ export const ERDContentInner: FC<Props> = ({
           size={1}
           gap={16}
         />
+        {currentBox && (
+          <TableGroupBoundingBox
+            left={Math.min(currentBox.x, currentBox.x + currentBox.width)}
+            top={Math.min(currentBox.y, currentBox.y + currentBox.height)}
+            width={Math.abs(currentBox.width)}
+            height={Math.abs(currentBox.height)}
+          />
+        )}
       </ReactFlow>
     </div>
   )
