@@ -1,14 +1,9 @@
 'use client'
 
 import type { Tables } from '@liam-hq/db/supabase/database.types'
-import { Avatar, IconButton } from '@liam-hq/ui'
-import { Bell, ChevronRight, ChevronsUpDown, Search } from 'lucide-react'
-import type {
-  ChangeEvent,
-  ComponentProps,
-  KeyboardEvent,
-  ReactNode,
-} from 'react'
+import { Avatar } from '@liam-hq/ui'
+import { ChevronRight, ChevronsUpDown } from 'lucide-react'
+import type { ComponentProps, ReactNode } from 'react'
 import styles from './AppBar.module.css'
 
 type BreadcrumbItemProps = {
@@ -29,8 +24,6 @@ type AppBarProps = {
   branchTag: string
   onProjectClick?: () => void
   onBranchClick?: () => void
-  onSearchChange?: (value: string) => void
-  onNotificationClick?: () => void
   onAvatarClick?: () => void
   avatarInitial?: string
   avatarColor?: string
@@ -43,35 +36,16 @@ export const AppBar = ({
   branchTag = 'production',
   onProjectClick,
   onBranchClick,
-  onSearchChange,
-  onNotificationClick,
   onAvatarClick,
   avatarInitial = 'L',
   avatarColor = 'var(--avatar-background)',
   minimal = false,
   ...props
 }: AppBarProps) => {
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onSearchChange?.(e.target.value)
-  }
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && onSearchChange) {
-      onSearchChange((e.target as HTMLInputElement).value)
-    }
-  }
-
   if (minimal) {
     return (
       <div className={`${styles.appBar} ${styles.minimal}`} {...props}>
         <div className={styles.rightSection}>
-          <IconButton
-            icon={<Bell size={16} strokeWidth={1.5} />}
-            tooltipContent="Notifications"
-            onClick={onNotificationClick}
-            aria-label="Notifications"
-          />
-
           <Avatar
             initial={avatarInitial}
             size="sm"
@@ -106,30 +80,6 @@ export const AppBar = ({
       </div>
 
       <div className={styles.rightSection}>
-        <div className={styles.searchContainer}>
-          <div className={styles.searchIcon}>
-            <Search size={16} />
-          </div>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search"
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-          />
-          <div className={styles.shortcutContainer}>
-            <div className={styles.shortcutKey}>⌘</div>
-            <div className={styles.shortcutKey}>K</div>
-          </div>
-        </div>
-
-        <IconButton
-          icon={<Bell size={16} strokeWidth={1.5} />}
-          tooltipContent="Notifications"
-          onClick={onNotificationClick}
-          aria-label="Notifications"
-        />
-
         <Avatar
           initial={avatarInitial}
           size="sm"
