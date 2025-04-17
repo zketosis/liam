@@ -18,7 +18,14 @@ export async function GET(request: Request) {
   }
 
   if (organizationId) {
-    dbQuery = dbQuery.eq('organizationId', Number.parseInt(organizationId))
+    const parsedId = Number.parseInt(organizationId, 10)
+    if (isNaN(parsedId)) {
+      return NextResponse.json(
+        { error: 'Invalid organizationId parameter' },
+        { status: 400 },
+      )
+    }
+    dbQuery = dbQuery.eq('organizationId', parsedId)
   }
 
   const { data: projects, error } = await dbQuery
