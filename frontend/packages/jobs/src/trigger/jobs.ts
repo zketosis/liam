@@ -6,13 +6,13 @@ import {
   processGenerateDocsSuggestion,
 } from '../functions/processGenerateDocsSuggestion'
 import { processGenerateSchemaOverride } from '../functions/processGenerateSchemaOverride'
-import type { GenerateSchemaOverridePayload } from '../types'
+import type { GenerateSchemaOverridePayload, Review } from '../types'
 import { helloWorldTask } from './helloworld'
 
 export const generateDocsSuggestionTask = task({
   id: 'generate-docs-suggestion',
   run: async (payload: {
-    reviewComment: string
+    review: Review
     projectId: number
     pullRequestNumber: number
     owner: string
@@ -23,7 +23,7 @@ export const generateDocsSuggestionTask = task({
     overallReviewId: number
   }) => {
     const { suggestions, traceId } = await processGenerateDocsSuggestion({
-      reviewComment: payload.reviewComment,
+      review: payload.review,
       projectId: payload.projectId,
       branchOrCommit: payload.branchName,
     })
