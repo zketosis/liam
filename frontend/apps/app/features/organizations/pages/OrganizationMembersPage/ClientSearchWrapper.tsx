@@ -93,7 +93,9 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
           loading={loading}
           placeholder="Search Members.."
         />
-        <Button onClick={handleInvite}>Invite</Button>
+        <Button size="md" onClick={handleInvite}>
+          Invite
+        </Button>
       </div>
 
       <div className={styles.section}>

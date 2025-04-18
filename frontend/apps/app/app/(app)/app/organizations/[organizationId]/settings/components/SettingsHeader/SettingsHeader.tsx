@@ -9,15 +9,19 @@ export const SettingsHeader: FC = () => {
   return (
     <div className={styles.wrapper}>
       <TabsList className={styles.tabsList}>
-        {SETTINGS_TABS.map((tab) => (
-          <TabsTrigger
-            key={tab.value}
-            value={tab.value}
-            className={styles.tabsTrigger}
-          >
-            {tab.label}
-          </TabsTrigger>
-        ))}
+        {SETTINGS_TABS.map((tab) => {
+          const Icon = tab.icon
+          return (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className={styles.tabsTrigger}
+            >
+              <Icon size={16} />
+              {tab.label}
+            </TabsTrigger>
+          )
+        })}
       </TabsList>
     </div>
   )
