@@ -2,7 +2,6 @@
 
 import {
   Avatar,
-  Button,
   Ellipsis,
   IconButton,
   getAvatarUserFromColor,
@@ -15,7 +14,6 @@ interface MemberItemProps {
   email: string
   initial: string
   avatarColor?: number
-  onManageAccess?: () => void
   onMoreOptions?: () => void
 }
 
@@ -24,7 +22,6 @@ export const MemberItem: FC<MemberItemProps> = ({
   email,
   initial,
   avatarColor = 1,
-  onManageAccess,
   onMoreOptions,
 }) => {
   return (
@@ -41,14 +38,6 @@ export const MemberItem: FC<MemberItemProps> = ({
             <span className={styles.email}>{email}</span>
           </div>
           <div className={styles.spacer} />
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={onManageAccess}
-            className={styles.manageButton}
-          >
-            Manage Access
-          </Button>
           <div className={styles.moreButton}>
             <IconButton
               icon={<Ellipsis />}

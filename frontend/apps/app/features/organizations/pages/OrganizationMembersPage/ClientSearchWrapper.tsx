@@ -64,12 +64,6 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
     setTimeout(() => setLoading(false), 500)
   }
 
-  // TODO: Implement manage access functionality
-  const handleManageAccess = (_id: string) => {
-    setLoading(true)
-    setTimeout(() => setLoading(false), 300)
-  }
-
   // TODO: Implement more options functionality
   const handleMoreOptions = (_id: string) => {
     setLoading(true)
@@ -113,7 +107,6 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
                 email={member.user.email}
                 initial={getInitial(member.user.name)}
                 avatarColor={getAvatarColor(member.user.id)}
-                onManageAccess={() => handleManageAccess(member.id)}
                 onMoreOptions={() => handleMoreOptions(member.id)}
               />
             ))
@@ -134,7 +127,6 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
                 email={invite.email}
                 initial={invite.email.charAt(0).toUpperCase()}
                 avatarColor={getAvatarColor(invite.email)}
-                onManageAccess={() => handleManageAccess(invite.id)}
                 onMoreOptions={() => handleMoreOptions(invite.id)}
               />
             ))
