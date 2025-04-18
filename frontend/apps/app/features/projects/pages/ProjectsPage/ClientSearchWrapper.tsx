@@ -12,8 +12,8 @@ import {
 } from '../../components'
 import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData'
 import { useProjectSearch } from '../../hooks/useProjectSearch'
-import styles from './ProjectsPage.module.css'
 import type { ProjectWithLastCommit } from '../../types'
+import styles from './ProjectsPage.module.css'
 
 interface ClientSearchWrapperProps {
   initialProjects: Tables<'projects'>[] | null

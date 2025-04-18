@@ -2,8 +2,8 @@
 
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData'
-import { ClientProjectsView } from './ClientProjectsView'
 import type { ProjectWithLastCommit } from '../../types'
+import { ClientProjectsView } from './ClientProjectsView'
 
 interface ProjectsWithCommitDataProps {
   projects: Tables<'projects'>[] | null
