@@ -17,7 +17,7 @@ export const SchemaLink: FC<SchemaLinkProps> = ({
   return (
     <button
       className={styles.schemaLink}
-      onClick={onClick}
+      onClick={onClick || (() => {})}
       type="button"
       aria-label={`Open schema ${schemaName}`}
     >
