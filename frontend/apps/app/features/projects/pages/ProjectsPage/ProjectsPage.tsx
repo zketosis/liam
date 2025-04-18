@@ -1,5 +1,4 @@
 import { createClient } from '@/libs/db/server'
-import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { redirect } from 'next/navigation'
 import styles from './ProjectsPage.module.css'
 import { ProjectsWithCommitData } from './ProjectsWithCommitData'
@@ -7,12 +6,27 @@ import { ProjectsWithCommitData } from './ProjectsWithCommitData'
 export const runtime = 'edge'
 
 export async function ProjectsPage({
-  projects,
   organizationId,
 }: {
-  projects: Tables<'projects'>[] | null
   organizationId?: string
 }) {
+  const supabase = await createClient()
+  let baseQuery = supabase.from('projects').select(
+    `
+      *,
+      project_repository_mappings (
+        *,
+        repository:repositories(*)
+      )
+    `,
+  )
+
+  if (organizationId) {
+    baseQuery = baseQuery.eq('organization_id', organizationId)
+  }
+
+  const { data: projects } = await baseQuery
+
   return (
     <div className={styles.container}>
       <div className={styles.contentContainer}>
@@ -42,21 +56,5 @@ export default async function ProjectsPageRoute({
     return redirect('/login')
   }
 
-  let baseQuery = supabase.from('projects').select(
-    `
-      *,
-      project_repository_mappings (
-        *,
-        repository:repositories(*)
-      )
-    `,
-  )
-
-  if (organizationId) {
-    baseQuery = baseQuery.eq('organization_id', organizationId)
-  }
-
-  const { data: projects } = await baseQuery
-
-  return <ProjectsPage projects={projects} organizationId={organizationId} />
+  return <ProjectsPage organizationId={organizationId} />
 }
