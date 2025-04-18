@@ -24,7 +24,7 @@ export function LastCommitDataWrapper({
   const [commitInfo, setCommitInfo] = useState<CommitInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // 日付のフォーマット関数
+  // Date formatting function
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
@@ -53,7 +53,7 @@ export function LastCommitDataWrapper({
     return <span>Loading commit info...</span>
   }
 
-  // コミット情報が取得できた場合
+  // When commit information is available
   if (commitInfo) {
     return (
       <>
@@ -64,7 +64,7 @@ export function LastCommitDataWrapper({
     )
   }
 
-  // デフォルト表示（取得失敗時）
+  // Default display (when fetch fails)
   return (
     <>
       <span>User</span>
