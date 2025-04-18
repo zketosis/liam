@@ -9,7 +9,7 @@ import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
 type ProjectWithRepositories = Tables<'projects'> & {
-  ProjectRepositoryMapping?: Array<{
+  project_repository_mappings?: Array<{
     repository: Tables<'repositories'>
   }>
 }
@@ -30,7 +30,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
   }
 
   const repositoryName = project.name?.toLowerCase() || 'untitled-project'
-  const repository = project.ProjectRepositoryMapping?.[0]?.repository
+  const repository = project.project_repository_mappings?.[0]?.repository
 
   return (
     <Link
