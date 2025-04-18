@@ -15,7 +15,7 @@ interface OrganizationDetailPageProps {
   }
   members: Array<{
     id: string
-    user: {
+    users: {
       id: string
       name: string
       email: string
@@ -24,7 +24,7 @@ interface OrganizationDetailPageProps {
   invites: Array<{
     id: string
     email: string
-    inviteBy: {
+    invite_by_user_id: {
       id: string
       name: string
       email: string
@@ -58,7 +58,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
       const supabase = await createClient()
 
       const { error: updateError } = await supabase
-        .from('Organization')
+        .from('organizations')
         .update({ name })
         .eq('id', organization.id)
 
@@ -141,8 +141,8 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                       {members && members.length > 0 ? (
                         members.map((member) => (
                           <tr key={member.id}>
-                            <td>{member.user.name}</td>
-                            <td>{member.user.email}</td>
+                            <td>{member.users.name}</td>
+                            <td>{member.users.email}</td>
                             <td>ACTIVE</td>
                             <td>-</td>
                           </tr>
@@ -171,7 +171,7 @@ export const OrganizationDetailPage: FC<OrganizationDetailPageProps> = ({
                         invites.map((invite) => (
                           <tr key={invite.id}>
                             <td>{invite.email}</td>
-                            <td>{invite.inviteBy.name}</td>
+                            <td>{invite.invite_by_user_id.name}</td>
                             <td>-</td>
                           </tr>
                         ))

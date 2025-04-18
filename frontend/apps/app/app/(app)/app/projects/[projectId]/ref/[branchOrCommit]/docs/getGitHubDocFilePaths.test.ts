@@ -8,10 +8,10 @@ describe('getGitHubDocFilePaths', () => {
 
     // Create test project
     const { data: project } = await supabase
-      .from('Project')
+      .from('projects')
       .insert({
         name: 'Test Project',
-        updatedAt: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single()
@@ -25,12 +25,12 @@ describe('getGitHubDocFilePaths', () => {
 
     // Create test doc file path
     const { data: docFilePath } = await supabase
-      .from('GitHubDocFilePath')
+      .from('github_doc_file_paths')
       .insert({
         path: 'test/path.md',
-        projectId: project.id,
-        isReviewEnabled: true,
-        updatedAt: new Date().toISOString(),
+        project_id: project.id,
+        is_review_enabled: true,
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single()
@@ -42,8 +42,8 @@ describe('getGitHubDocFilePaths', () => {
     expect(paths).not.toBeNull()
     expect(paths.length).toBeGreaterThan(0)
     expect(paths[0]).toHaveProperty('path', 'test/path.md')
-    expect(paths[0]).toHaveProperty('isReviewEnabled', true)
-    expect(paths[0]).toHaveProperty('projectId', project.id)
+    expect(paths[0]).toHaveProperty('is_review_enabled', true)
+    expect(paths[0]).toHaveProperty('project_id', project.id)
   })
 
   it('should return empty array when no paths exist', async () => {

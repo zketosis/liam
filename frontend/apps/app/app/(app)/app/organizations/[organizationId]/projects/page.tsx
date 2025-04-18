@@ -28,10 +28,10 @@ export default async function Page({ params }: PageProps) {
   }
 
   const { data: organizationMembers, error: orgError } = await supabase
-    .from('OrganizationMember')
+    .from('organization_members')
     .select('id')
-    .eq('userId', data.session.user.id)
-    .eq('organizationId', organizationId)
+    .eq('user_id', data.session.user.id)
+    .eq('organization_id', organizationId)
     .limit(1)
 
   if (orgError) {

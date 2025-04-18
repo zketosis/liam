@@ -72,5 +72,5 @@ export type SchemaOverrideResult =
       createNeeded: false
     }
 
-export type OverallReview = Tables<'OverallReview'>
-export type ReviewFeedback = Tables<'ReviewFeedback'>
+export type OverallReview = Tables<'overall_reviews'>
+export type ReviewFeedback = Tables<'review_feedbacks'>

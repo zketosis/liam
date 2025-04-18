@@ -28,11 +28,11 @@ const createMapping = async (
   updatedAt: string,
 ) => {
   const { error: mappingError } = await supabase
-    .from('KnowledgeSuggestionDocMapping')
+    .from('knowledge_suggestion_doc_mappings')
     .insert({
-      knowledgeSuggestionId,
-      gitHubDocFilePathId,
-      updatedAt,
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      github_doc_file_path_id: gitHubDocFilePathId,
+      updated_at: updatedAt,
     })
 
   if (mappingError) {
@@ -45,14 +45,14 @@ const createMapping = async (
  */
 const handleDocFilePath = async (
   supabase: SupabaseClient,
-  suggestion: { projectId: string; path: string; type: string },
+  suggestion: { project_id: string; path: string; type: string },
   suggestionId: string,
 ) => {
   // Check if there's a GitHubDocFilePath entry for this path
   const { data: docFilePath } = await supabase
-    .from('GitHubDocFilePath')
+    .from('github_doc_file_paths')
     .select('id')
-    .eq('projectId', suggestion.projectId)
+    .eq('project_id', suggestion.project_id)
     .eq('path', suggestion.path)
     .maybeSingle()
 
@@ -60,12 +60,12 @@ const handleDocFilePath = async (
     // Create a new GitHubDocFilePath entry
     const now = new Date().toISOString()
     const { data: newDocFilePath, error: createDocError } = await supabase
-      .from('GitHubDocFilePath')
+      .from('github_doc_file_paths')
       .insert({
         path: suggestion.path,
-        isReviewEnabled: true,
-        projectId: suggestion.projectId,
-        updatedAt: now,
+        is_review_enabled: true,
+        project_id: suggestion.project_id,
+        updated_at: now,
       })
       .select()
       .single()
@@ -79,10 +79,10 @@ const handleDocFilePath = async (
   } else {
     // Create a mapping if it doesn't exist
     const { data: existingMapping } = await supabase
-      .from('KnowledgeSuggestionDocMapping')
+      .from('knowledge_suggestion_doc_mappings')
       .select('id')
-      .eq('knowledgeSuggestionId', suggestionId)
-      .eq('gitHubDocFilePathId', docFilePath.id)
+      .eq('knowledge_suggestion_id', suggestionId)
+      .eq('github_doc_file_path_id', docFilePath.id)
       .maybeSingle()
 
     if (!existingMapping) {
@@ -119,7 +119,7 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     // Get the knowledge suggestion
     const { data: suggestion, error: findError } = await supabase
-      .from('KnowledgeSuggestion')
+      .from('knowledge_suggestions')
       .select('*')
       .eq('id', suggestionId)
       .single()
@@ -136,8 +136,8 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
       suggestion.content,
       suggestion.title, // Use title as commit message
       installationId,
-      suggestion.branchName,
-      suggestion.fileSha || undefined,
+      suggestion.branch_name,
+      suggestion.file_sha || undefined,
     )
 
     if (!result.success) {
@@ -146,8 +146,8 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
 
     // Update the knowledge suggestion with approvedAt
     const { error: updateError } = await supabase
-      .from('KnowledgeSuggestion')
-      .update({ approvedAt: new Date().toISOString() })
+      .from('knowledge_suggestions')
+      .update({ approved_at: new Date().toISOString() })
       .eq('id', suggestionId)
 
     if (updateError) {
@@ -164,8 +164,8 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
       urlgen(
         'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
         {
-          projectId: `${suggestion.projectId}`,
-          branchOrCommit: suggestion.branchName,
+          projectId: `${suggestion.project_id}`,
+          branchOrCommit: suggestion.branch_name,
           id: `${suggestionId}`,
         },
       ),

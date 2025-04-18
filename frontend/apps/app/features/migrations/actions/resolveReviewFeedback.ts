@@ -16,7 +16,7 @@ const requestSchema = v.object({
  */
 async function getFeedbackData(supabase: SupabaseClient, feedbackId: string) {
   const { data, error } = await supabase
-    .from('ReviewFeedback')
+    .from('review_feedbacks')
     .select(`
       *,
       overallReview:overallReviewId(
@@ -56,11 +56,11 @@ async function updateFeedbackAsResolved(
   resolutionComment?: string | null,
 ) {
   const { data, error } = await supabase
-    .from('ReviewFeedback')
+    .from('review_feedbacks')
     .update({
-      resolvedAt: new Date().toISOString(),
-      resolutionComment: resolutionComment || null,
-      updatedAt: new Date().toISOString(),
+      resolved_at: new Date().toISOString(),
+      resolution_comment: resolutionComment || null,
+      updated_at: new Date().toISOString(),
     })
     .eq('id', feedbackId)
     .select()
@@ -80,7 +80,7 @@ async function getCompleteOverallReview(
   overallReviewId: string,
 ) {
   const { data, error } = await supabase
-    .from('OverallReview')
+    .from('overall_reviews')
     .select('*')
     .eq('id', overallReviewId)
     .single()
@@ -91,7 +91,7 @@ async function getCompleteOverallReview(
     )
   }
 
-  if (!data.projectId) {
+  if (!data.project_id) {
     throw new Error('Project ID not found in OverallReview')
   }
 
@@ -125,7 +125,7 @@ async function addSnippetsToReview(
   review: Review,
 ): Promise<Review> {
   const { data, error } = await supabase
-    .from('ReviewSuggestionSnippet')
+    .from('review_suggestion_snippets')
     .select('*')
     .eq('reviewFeedbackId', feedbackId)
 
@@ -183,7 +183,7 @@ export const resolveReviewFeedback = async (data: {
     // Get complete OverallReview data
     const completeOverallReview = await getCompleteOverallReview(
       supabase,
-      feedbackData.overallReviewId,
+      feedbackData.overall_review_id,
     )
 
     // Format review from feedback
@@ -198,12 +198,12 @@ export const resolveReviewFeedback = async (data: {
 
     // Trigger knowledge generation task
     const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId: completeOverallReview.projectId || '',
+      projectId: completeOverallReview.project_id || '',
       review: reviewFormatted,
       title: `Knowledge from resolved feedback #${feedbackId}`,
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
       overallReview: completeOverallReview,
-      branch: completeOverallReview.branchName,
+      branch: completeOverallReview.branch_name,
       reviewFeedbackId: feedbackId,
     })
 

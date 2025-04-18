@@ -5,9 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { AppBar, type Project } from '../AppBar/AppBar'
 
-// Database Project type
-type DBProject = Tables<'Project'>
-
+type DBProject = Tables<'projects'>
 type ClientAppBarProps = {
   project?: DBProject | null
   branchName?: string

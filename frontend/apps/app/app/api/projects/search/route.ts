@@ -9,8 +9,8 @@ export async function GET(request: Request) {
   const supabase = await createClient()
 
   let dbQuery = supabase
-    .from('Project')
-    .select('id, name, createdAt, updatedAt, organizationId')
+    .from('projects')
+    .select('id, name, created_at, updated_at, organization_id')
     .order('id', { ascending: false })
 
   if (query) {
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   }
 
   if (organizationId) {
-    dbQuery = dbQuery.eq('organizationId', organizationId)
+    dbQuery = dbQuery.eq('organization_id', organizationId)
   }
 
   const { data: projects, error } = await dbQuery

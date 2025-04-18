@@ -18,35 +18,35 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Updated package.json to replace @langchain/anthropic with @langchain/openai v0.5.5
    - This change standardizes the AI model usage across the application and potentially improves performance and cost-efficiency
 
-2. **Added Reasoning Field to KnowledgeSuggestion**: Enhanced the KnowledgeSuggestion table to store the rationale behind schema override update suggestions:
+2. **Added Reasoning Field to knowledge_suggestions**: Enhanced the knowledge_suggestions table to store the rationale behind schema override update suggestions:
    - Created a migration to add a `reasoning` TEXT field with a default empty string value
    - Updated the database.types.ts file to include the new field in the type definitions
    - Modified the KnowledgeSuggestionDetailPage.tsx component to display the reasoning field when available
    - This enhancement helps users understand the context and rationale behind schema override update suggestions, enabling more informed decisions when approving suggestions
 
-2. **OverallReview to KnowledgeSuggestion Relationship**: Implemented a relationship between OverallReview and KnowledgeSuggestion tables:
-   - Created a new intermediate table `OverallReviewKnowledgeSuggestionMapping` to link OverallReview and KnowledgeSuggestion
-   - Modified `processCreateKnowledgeSuggestion.ts` to accept an optional `overallReviewId` parameter
-   - Implemented `createOverallReviewMapping` function to create mappings in the OverallReviewKnowledgeSuggestionMapping table
-   - Enhanced the MigrationDetailPage to fetch and display related KnowledgeSuggestions
-   - Updated UI to show KnowledgeSuggestions in a dedicated section on the MigrationDetailPage
+2. **overall_reviews to knowledge_suggestions Relationship**: Implemented a relationship between overall_reviews and knowledge_suggestions tables:
+   - Created a new intermediate table `overall_review_knowledge_suggestion_mappings` to link overall_reviews and knowledge_suggestions
+   - Modified `processCreateKnowledgeSuggestion.ts` to accept an optional `overall_review_id` parameter
+   - Implemented `createOverallReviewMapping` function to create mappings in the overall_review_knowledge_suggestion_mappings table
+   - Enhanced the MigrationDetailPage to fetch and display related knowledge_suggestions
+   - Updated UI to show knowledge_suggestions in a dedicated section on the MigrationDetailPage
    - Implemented proper navigation using the urlgen utility for type-safe route generation
-   - This allows users to track and navigate to KnowledgeSuggestions from the MigrationDetailPage
+   - This allows users to track and navigate to knowledge_suggestions from the MigrationDetailPage
 
-2. **Optimized KnowledgeSuggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
+2. **Optimized knowledge_suggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
    - Implemented content comparison to check if document content has changed before creating a suggestion
    - Refactored the function into smaller, focused helper functions to reduce cognitive complexity
    - Improved type safety with proper type definitions and return types
-   - Optimized database queries by caching the GitHubDocFilePath query result
+   - Optimized database queries by caching the github_doc_file_paths query result
    - Enhanced error handling with more specific error messages
    - This optimization prevents duplicate suggestions when content hasn't changed
 
-2. **KnowledgeSuggestion and GitHubDocFilePath Integration**: Implemented a connection between KnowledgeSuggestion and GitHubDocFilePath tables:
-   - Created a new intermediate table `KnowledgeSuggestionDocMapping` to link KnowledgeSuggestion and GitHubDocFilePath
+2. **knowledge_suggestions and github_doc_file_paths Integration**: Implemented a connection between knowledge_suggestions and github_doc_file_paths tables:
+   - Created a new intermediate table `knowledge_suggestion_doc_mappings` to link knowledge_suggestions and github_doc_file_paths
    - Modified `processCreateKnowledgeSuggestion.ts` to create mappings for existing docs when creating a Doc Suggestion
-   - Updated `approveKnowledgeSuggestion.ts` to create GitHubDocFilePath entries and mappings for new docs
+   - Updated `approveKnowledgeSuggestion.ts` to create github_doc_file_paths entries and mappings for new docs
    - Refactored code to reduce cognitive complexity and improve type safety
-   - This ensures that newly created Knowledge suggestions are properly included in reviews
+   - This ensures that newly created knowledge suggestions are properly included in reviews
 
 3. **Database Migration Documentation**: Created comprehensive documentation for the Supabase migration workflow:
    - Added detailed migration guidelines in `docs/migrationOpsContext.md`
@@ -80,7 +80,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 
 7. **Database Schema Optimization**:
    - Removed unused Doc and DocVersion models
-   - Renamed `WatchSchemaFilePattern` table to `GitHubSchemaFilePath`
+   - Renamed `watch_schema_file_patterns` table to `github_schema_file_paths`
    - Changed from pattern matching to direct path comparison for schema file management
 
 8. **Supabase JS Integration**:
@@ -137,7 +137,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 4. **Schema File Management**:
    - Using direct path comparison instead of pattern matching
    - Providing more precise and efficient approach
-   - Aligning with existing GitHubDocFilePath model
+   - Aligning with existing github_doc_file_paths model
 
 5. **Function Organization**:
    - Breaking down complex functions into smaller, focused helper functions

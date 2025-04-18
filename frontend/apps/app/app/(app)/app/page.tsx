@@ -11,9 +11,9 @@ export default async function Page() {
   }
 
   const { data: organizationMembers, error: orgError } = await supabase
-    .from('OrganizationMember')
-    .select('organizationId')
-    .eq('userId', data.user.id)
+    .from('organization_members')
+    .select('organization_id')
+    .eq('user_id', data.user.id)
     .limit(1)
 
   if (orgError) {
@@ -24,12 +24,12 @@ export default async function Page() {
     redirect(urlgen('organizations/new'))
   }
 
-  const organizationId = organizationMembers[0].organizationId
+  const organizationId = organizationMembers[0].organization_id
 
   const { data: projects, error: projectsError } = await supabase
-    .from('Project')
+    .from('projects')
     .select('id')
-    .eq('organizationId', organizationId)
+    .eq('organization_id', organizationId)
     .limit(1)
 
   if (projectsError) {

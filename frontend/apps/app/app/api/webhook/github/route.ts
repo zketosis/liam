@@ -45,9 +45,9 @@ const getProjectInfo = async (
   const supabase = await createClient()
 
   const { data: repository, error: repositoryError } = await supabase
-    .from('Repository')
+    .from('repositories')
     .select('*')
-    .eq('installationId', installationId)
+    .eq('installation_id', installationId)
     .limit(1)
     .single()
 
@@ -56,9 +56,9 @@ const getProjectInfo = async (
   }
 
   const { data: projectRepositoryMapping, error: mappingError } = await supabase
-    .from('ProjectRepositoryMapping')
+    .from('project_repository_mappings')
     .select('*')
-    .eq('repositoryId', repository.id)
+    .eq('repository_id', repository.id)
     .limit(1)
     .single()
 
@@ -66,7 +66,7 @@ const getProjectInfo = async (
     return null
   }
 
-  return { projectId: projectRepositoryMapping.projectId }
+  return { projectId: projectRepositoryMapping.project_id }
 }
 
 // Handle pull request events

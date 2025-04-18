@@ -4,12 +4,12 @@ export const getProjects = async (organizationId?: string) => {
   const supabase = await createClient()
 
   let query = supabase
-    .from('Project')
-    .select('id, name, createdAt, updatedAt, organizationId')
+    .from('projects')
+    .select('id, name, created_at, updated_at, organization_id')
     .order('id', { ascending: false })
 
   if (organizationId) {
-    query = query.eq('organizationId', organizationId)
+    query = query.eq('organization_id', organizationId)
   }
 
   const { data: projects, error } = await query

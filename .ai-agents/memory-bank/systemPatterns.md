@@ -13,7 +13,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **TypeScript-First**: All components and functions are written in TypeScript to ensure type safety and improve developer experience.
 - **Database Access Strategy**: Using Supabase JS for database access to leverage Supabase's optimized query capabilities and standardize the data access layer. This requires careful handling of type compatibility issues, particularly with bigint fields and nested relationships.
 - **Type Safety Approach**: When working with Supabase, we use type assertions carefully to bridge the gap between the Supabase types and our application's expected types, particularly for nested queries and bigint fields.
-- **Schema File Management Strategy**: Using direct path comparison instead of pattern matching for schema file detection, with the GitHubSchemaFilePath table (renamed from WatchSchemaFilePattern) to store exact file paths.
+- **Schema File Management Strategy**: Using direct path comparison instead of pattern matching for schema file detection, with the github_schema_file_paths table (renamed from watch_schema_file_patterns) to store exact file paths.
 - **Standardized Supabase Client Usage**: Using a shared createClient function across the codebase to ensure consistent Supabase client creation and usage.
 
 ## Design Patterns
@@ -25,10 +25,10 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Server-Client Separation**: Clear separation of server and client components in Next.js, with appropriate data fetching responsibilities.
 - **Efficient Data Access**: The system uses Supabase JS for database access with optimized queries using nested joins for efficient data retrieval.
 - **Type-Safe Database Access**: When using Supabase, we implement type-safe queries by using type assertions to bridge the gap between Supabase's types and our application's expected types. This includes handling bigint to number conversions and properly typing nested relationship data.
-- **Intermediate Mapping Tables**: For many-to-many relationships between entities, we use intermediate mapping tables (e.g., OverallReviewKnowledgeSuggestionMapping, KnowledgeSuggestionDocMapping) to maintain clean separation of concerns and enable flexible relationship management.
+- **Intermediate Mapping Tables**: For many-to-many relationships between entities, we use intermediate mapping tables (e.g., overall_review_knowledge_suggestion_mappings, knowledge_suggestion_doc_mappings) to maintain clean separation of concerns and enable flexible relationship management.
 - **Transaction Management**: Moving away from manual rollback processing in server actions to a more robust approach using Supabase RPC for transaction management. This will provide a consistent and reliable way to handle database transactions across the application.
 - **Direct Path Comparison**: Using direct path comparison instead of pattern matching for schema file detection, providing a more precise and efficient approach to schema file management.
-- **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as GitHubSchemaFilePath and GitHubDocFilePath for GitHub-integrated file management.
+- **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as github_schema_file_paths and github_doc_file_paths for GitHub-integrated file management.
 - **Context-Enriched AI Prompts**: The AI review generation incorporates multiple sources of context (PR descriptions, comments, documentation, schema files, and code changes) to provide more comprehensive and relevant analysis.
 
 ## Component Relationships
