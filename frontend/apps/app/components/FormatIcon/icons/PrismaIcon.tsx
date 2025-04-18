@@ -1,8 +1,5 @@
 import type { FC } from 'react'
-
-interface IconProps {
-  size?: number
-}
+import type { IconProps } from './types'
 
 export const PrismaIcon: FC<IconProps> = ({ size = 16 }) => {
   return (

@@ -1,27 +1,36 @@
 import type { FC } from 'react'
-import { PostgresIcon } from './icons/PostgresIcon'
-import { PrismaIcon } from './icons/PrismaIcon'
-import { SchemaRbIcon } from './icons/SchemaRbIcon'
-import { TblsIcon } from './icons/TblsIcon'
+import { match } from 'ts-pattern'
+import {
+  type IconProps,
+  PostgresIcon,
+  PrismaIcon,
+  SchemaRbIcon,
+  TblsIcon,
+} from './icons'
 
+/**
+ * Supported database schema format types
+ */
 export type FormatType = 'postgres' | 'prisma' | 'schemarb' | 'tbls'
 
-interface FormatIconProps {
+/**
+ * Props for the FormatIcon component
+ */
+interface FormatIconProps extends Omit<IconProps, 'size'> {
+  /** The format type to display an icon for */
   format: FormatType
+  /** The size of the icon in pixels (default: 16) */
   size?: number
 }
 
+/**
+ * Displays an icon representing a database schema format
+ */
 export const FormatIcon: FC<FormatIconProps> = ({ format, size = 16 }) => {
-  switch (format) {
-    case 'postgres':
-      return <PostgresIcon size={size} />
-    case 'prisma':
-      return <PrismaIcon size={size} />
-    case 'schemarb':
-      return <SchemaRbIcon size={size} />
-    case 'tbls':
-      return <TblsIcon size={size} />
-    default:
-      return <PostgresIcon size={size} />
-  }
+  return match(format)
+    .with('postgres', () => <PostgresIcon size={size} />)
+    .with('prisma', () => <PrismaIcon size={size} />)
+    .with('schemarb', () => <SchemaRbIcon size={size} />)
+    .with('tbls', () => <TblsIcon size={size} />)
+    .otherwise(() => <PostgresIcon size={size} />)
 }
