@@ -18,13 +18,7 @@ export const SchemaHeader: FC = () => {
             className={styles.tabsTrigger}
           >
             {tab.label === 'Override' ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--spacing-2, 0.5rem)',
-                }}
-              >
+              <div className={styles.tabWithDiff}>
                 <span>{tab.label}</span>
                 <DiffCounts additions={5} deletions={1} />
               </div>
