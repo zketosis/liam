@@ -1,7 +1,7 @@
 import { createClient } from '@/libs/db/server'
 
 export const getCurrentOrganization = async (
-  specificOrganizationId?: number,
+  specificOrganizationId?: string,
 ) => {
   const supabase = await createClient()
 
@@ -12,17 +12,17 @@ export const getCurrentOrganization = async (
   }
 
   let query = supabase
-    .from('OrganizationMember')
+    .from('organization_members')
     .select(`
-      organization:organizationId(
+      organizations(
         id,
         name
       )
     `)
-    .eq('userId', userData.user.id)
+    .eq('user_id', userData.user.id)
 
   if (specificOrganizationId) {
-    query = query.eq('organizationId', specificOrganizationId)
+    query = query.eq('organization_id', specificOrganizationId)
   }
 
   const { data: organizationMembers, error } = await query
@@ -36,7 +36,7 @@ export const getCurrentOrganization = async (
     return null
   }
 
-  return organizationMembers[0].organization
+  return organizationMembers[0].organizations
 }
 
 export const getUserOrganizations = async () => {
@@ -49,19 +49,19 @@ export const getUserOrganizations = async () => {
   }
 
   const { data: organizationMembers, error } = await supabase
-    .from('OrganizationMember')
+    .from('organization_members')
     .select(`
-      organization:organizationId(
+      organizations(
         id,
         name
       )
     `)
-    .eq('userId', userData.user.id)
+    .eq('user_id', userData.user.id)
 
   if (error) {
     console.error('Error fetching organizations:', error)
     return null
   }
 
-  return organizationMembers.map((item) => item.organization)
+  return organizationMembers.map((item) => item.organizations)
 }

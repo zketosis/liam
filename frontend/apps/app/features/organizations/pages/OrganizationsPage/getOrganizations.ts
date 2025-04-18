@@ -10,19 +10,19 @@ export const getOrganizations = async () => {
   }
 
   const { data: organizations, error } = await supabase
-    .from('OrganizationMember')
+    .from('organization_members')
     .select(`
-      organization:organizationId(
+      organizations(
         id,
         name
       )
     `)
-    .eq('userId', userData.user.id)
+    .eq('user_id', userData.user.id)
 
   if (error) {
     console.error('Error fetching organizations:', error)
     return null
   }
 
-  return organizations.map((item) => item.organization)
+  return organizations.map((item) => item.organizations)
 }

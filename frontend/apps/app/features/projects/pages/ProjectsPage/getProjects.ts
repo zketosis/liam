@@ -1,29 +1,29 @@
 import { createClient } from '@/libs/db/server'
 
-export const getProjects = async (organizationId?: number) => {
+export const getProjects = async (organizationId?: string) => {
   const supabase = await createClient()
 
   let query = supabase
-    .from('Project')
+    .from('projects')
     .select(`
       id,
       name,
-      createdAt,
-      updatedAt,
-      organizationId,
-      ProjectRepositoryMapping:ProjectRepositoryMapping(
-        repository:Repository(
+      created_at,
+      updated_at,
+      organization_id,
+      project_repository_mappings:project_repository_mappings(
+        repository:repositories(
           id,
           name,
           owner,
-          installationId
+          installation_id
         )
       )
     `)
     .order('id', { ascending: false })
 
   if (organizationId) {
-    query = query.eq('organizationId', organizationId)
+    query = query.eq('organization_id', organizationId)
   }
 
   const { data: projects, error } = await query

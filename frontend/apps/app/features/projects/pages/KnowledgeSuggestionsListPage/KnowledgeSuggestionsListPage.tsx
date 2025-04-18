@@ -14,17 +14,17 @@ async function getKnowledgeSuggestions(
   projectId: string,
   branchOrCommit: string,
 ) {
-  const projectId_num = Number(projectId)
+  const projectId_num = projectId
   const supabase = await createClient()
 
   const { data: knowledgeSuggestions, error } = await supabase
-    .from('KnowledgeSuggestion')
+    .from('knowledge_suggestions')
     .select(
-      'id, type, title, path, approvedAt, createdAt, updatedAt, branchName',
+      'id, type, title, path, approved_at, created_at, updated_at, branch_name',
     )
-    .eq('projectId', projectId_num)
-    .eq('branchName', branchOrCommit)
-    .order('createdAt', { ascending: false })
+    .eq('project_id', projectId_num)
+    .eq('branch_name', branchOrCommit)
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching knowledge suggestions:', error)
@@ -95,14 +95,16 @@ export const KnowledgeSuggestionsListPage: FC<Props> = async ({
                     </span>
                     <span
                       className={
-                        suggestion.approvedAt ? styles.approved : styles.pending
+                        suggestion.approved_at
+                          ? styles.approved
+                          : styles.pending
                       }
                     >
-                      Status: {suggestion.approvedAt ? 'Approved' : 'Pending'}
+                      Status: {suggestion.approved_at ? 'Approved' : 'Pending'}
                     </span>
                     <span className={styles.metaItem}>
                       Created:{' '}
-                      {new Date(suggestion.createdAt).toLocaleString('en-US', {
+                      {new Date(suggestion.created_at).toLocaleString('en-US', {
                         dateStyle: 'medium',
                         timeStyle: 'short',
                         hour12: false,

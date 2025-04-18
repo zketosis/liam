@@ -10,7 +10,7 @@ import {
 import { getProjects } from './getProjects'
 
 interface ProjectsPageProps {
-  organizationId?: number
+  organizationId?: string
 }
 
 export const ProjectsPage: FC<ProjectsPageProps> = async ({

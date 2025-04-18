@@ -4,14 +4,14 @@ import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { useState } from 'react'
 
 type SearchResult = {
-  projects: Tables<'Project'>[] | null
+  projects: Tables<'projects'>[] | null
   loading: boolean
   error: Error | null
 }
 
 export const useProjectSearch = (
-  organizationId?: number,
-  initialProjects?: Tables<'Project'>[] | null,
+  organizationId?: string,
+  initialProjects?: Tables<'projects'>[] | null,
 ) => {
   const [searchResult, setSearchResult] = useState<SearchResult>({
     projects: initialProjects || null,

@@ -18,7 +18,7 @@ export type DocFile = (typeof DOC_FILES)[number]
 
 export async function processGenerateDocsSuggestion(payload: {
   review: Review
-  projectId: number
+  projectId: string
   branchOrCommit?: string
 }): Promise<{
   suggestions: Record<DocFile, FileContent>
@@ -29,20 +29,20 @@ export async function processGenerateDocsSuggestion(payload: {
 
     // Get repository information from supabase
     const { data: projectRepo, error } = await supabase
-      .from('ProjectRepositoryMapping')
+      .from('project_repository_mappings')
       .select(`
         *,
-        repository:Repository(*)
+        repositories(*)
       `)
-      .eq('projectId', payload.projectId)
+      .eq('project_id', payload.projectId)
       .limit(1)
       .maybeSingle()
 
-    if (error || !projectRepo?.repository) {
+    if (error || !projectRepo?.repositories) {
       throw new Error('Repository information not found')
     }
 
-    const { repository } = projectRepo
+    const repository = projectRepo.repositories
     const repositoryFullName = `${repository.owner}/${repository.name}`
     const branch = payload.branchOrCommit || 'main'
 
@@ -54,7 +54,7 @@ export async function processGenerateDocsSuggestion(payload: {
           repositoryFullName,
           filePath,
           branch,
-          Number(repository.installationId),
+          Number(repository.installation_id),
         )
 
         return {
@@ -97,7 +97,7 @@ export async function processGenerateDocsSuggestion(payload: {
       payload.projectId,
       branch,
       repositoryFullName,
-      Number(repository.installationId),
+      repository.installation_id,
     )
 
     const result = await generateDocsSuggestion(

@@ -40,7 +40,7 @@ export const DocsListPage = async ({
             >
               {docFilePath.path}
             </Link>
-            {!docFilePath.isReviewEnabled && <span> (Review disabled)</span>}
+            {!docFilePath.is_review_enabled && <span> (Review disabled)</span>}
           </li>
         ))}
       </ul>

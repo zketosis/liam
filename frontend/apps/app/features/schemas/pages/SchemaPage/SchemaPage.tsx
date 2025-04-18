@@ -29,28 +29,28 @@ async function getERDEditorContent({
   const supabase = await createClient()
 
   const { data: project } = await supabase
-    .from('Project')
+    .from('projects')
     .select(`
         *,
-        ProjectRepositoryMapping:ProjectRepositoryMapping(
+        project_repository_mappings(
           *,
-          Repository:Repository(
-            name, owner, installationId
+          repositories(
+            name, owner, installation_id
           )
         )
       `)
-    .eq('id', Number(projectId))
+    .eq('id', projectId)
     .single()
 
   const { data: gitHubSchemaFilePath } = await supabase
-    .from('GitHubSchemaFilePath')
+    .from('github_schema_file_paths')
     .select('path, format')
-    .eq('projectId', Number(projectId))
+    .eq('project_id', projectId)
     .eq('path', schemaFilePath)
     .single()
 
-  const repository = project?.ProjectRepositoryMapping[0].Repository
-  if (!repository?.installationId || !repository.owner || !repository.name) {
+  const repository = project?.project_repository_mappings[0].repositories
+  if (!repository?.installation_id || !repository.owner || !repository.name) {
     console.error('Repository information not found')
     return notFound()
   }
@@ -60,7 +60,7 @@ async function getERDEditorContent({
     repositoryFullName,
     schemaFilePath,
     branchOrCommit,
-    Number(repository.installationId),
+    repository.installation_id,
   )
 
   if (!content) {
@@ -104,7 +104,7 @@ async function getERDEditorContent({
   const { result, error: overrideError } = await safeApplySchemaOverride(
     repositoryFullName,
     branchOrCommit,
-    Number(repository.installationId),
+    repository.installation_id,
     schema,
   )
 

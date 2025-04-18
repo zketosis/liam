@@ -8,9 +8,9 @@ import { OrganizationDataWrapper } from './OrganizationDataWrapper'
 import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
-type ProjectWithRepositories = Tables<'Project'> & {
+type ProjectWithRepositories = Tables<'projects'> & {
   ProjectRepositoryMapping?: Array<{
-    repository: Tables<'Repository'>
+    repository: Tables<'repositories'>
   }>
 }
 
@@ -44,7 +44,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
           <div className={styles.projectIconPlaceholder}>
             {repository ? (
               <OrganizationDataWrapper
-                installationId={repository.installationId}
+                installationId={repository.installation_id}
                 owner={repository.owner}
                 repo={repository.name}
               />
@@ -69,16 +69,16 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
         <div className={styles.commitInfo}>
           {repository ? (
             <LastCommitDataWrapper
-              installationId={repository.installationId}
+              installationId={repository.installation_id}
               owner={repository.owner}
               repo={repository.name}
-              defaultDate={project.createdAt}
+              defaultDate={project.created_at}
             />
           ) : (
             <>
               <span>User</span>
               <span>committed</span>
-              <span>on {formatDate(project.createdAt)}</span>
+              <span>on {formatDate(project.created_at)}</span>
             </>
           )}
         </div>

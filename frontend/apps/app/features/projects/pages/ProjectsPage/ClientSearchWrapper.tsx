@@ -10,8 +10,8 @@ import { useProjectSearch } from '../../hooks/useProjectSearch'
 import styles from './ProjectsPage.module.css'
 
 interface ClientSearchWrapperProps {
-  initialProjects: Tables<'Project'>[] | null
-  organizationId?: number
+  initialProjects: Tables<'projects'>[] | null
+  organizationId?: string
 }
 
 export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({

@@ -4,10 +4,7 @@ import { createClient } from '@/libs/db/server'
 import * as v from 'valibot'
 
 const formDataSchema = v.object({
-  suggestionId: v.pipe(
-    v.string(),
-    v.transform((value) => Number(value)),
-  ),
+  suggestionId: v.pipe(v.string()),
   content: v.string(),
 })
 
@@ -29,7 +26,7 @@ export const updateKnowledgeSuggestionContent = async (formData: FormData) => {
     const supabase = await createClient()
 
     const { error: updateError } = await supabase
-      .from('KnowledgeSuggestion')
+      .from('knowledge_suggestions')
       .update({ content, updatedAt: new Date().toISOString() })
       .eq('id', suggestionId)
 

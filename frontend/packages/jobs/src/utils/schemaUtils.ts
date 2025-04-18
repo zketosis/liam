@@ -28,7 +28,7 @@ export type SchemaInfo = {
  * @returns The schema information including original and overridden schema
  */
 export const fetchSchemaInfoWithOverrides = async (
-  projectId: number,
+  projectId: string,
   branchName: string,
   repositoryFullName: string,
   installationId: number,

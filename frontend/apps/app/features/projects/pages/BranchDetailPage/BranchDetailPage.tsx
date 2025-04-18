@@ -5,18 +5,18 @@ import { notFound } from 'next/navigation'
 import styles from './BranchDetailPage.module.css'
 
 type Props = {
-  projectId: number
+  projectId: string
   branchOrCommit: string
 }
 
-async function getBranchDetails(projectId: number) {
+async function getBranchDetails(projectId: string) {
   const supabase = await createClient()
   const { data: project, error } = await supabase
-    .from('Project')
+    .from('projects')
     .select(`
       *,
-      ProjectRepositoryMapping!inner (
-        Repository (
+      project_repository_mappings!inner (
+        repositories (
           id,
           name,
           owner
@@ -32,9 +32,9 @@ async function getBranchDetails(projectId: number) {
   }
 
   const { data: schemaPath, error: schemaPathError } = await supabase
-    .from('GitHubSchemaFilePath')
+    .from('github_schema_file_paths')
     .select('path')
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .single()
 
   if (schemaPathError) {
@@ -44,9 +44,9 @@ async function getBranchDetails(projectId: number) {
   }
 
   const { data: docPaths, error: docPathsError } = await supabase
-    .from('GitHubDocFilePath')
+    .from('github_doc_file_paths')
     .select('path')
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
 
   if (docPathsError) {
     console.error('Error fetching doc paths:', docPathsError)
@@ -61,7 +61,7 @@ async function getBranchDetails(projectId: number) {
 
   return {
     ...project,
-    repository: project.ProjectRepositoryMapping[0].Repository,
+    repository: project.project_repository_mappings[0].repositories,
     schemaPath: transformedSchemaPath,
     docPaths: transformedDocPaths,
   }

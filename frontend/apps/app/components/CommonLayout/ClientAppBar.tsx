@@ -5,9 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { AppBar, type Project } from '../AppBar/AppBar'
 
-// Database Project type
-type DBProject = Tables<'Project'>
-
+type DBProject = Tables<'projects'>
 type ClientAppBarProps = {
   project?: DBProject | null
   branchName?: string
@@ -128,7 +126,7 @@ export function ClientAppBar({
     ]
 
     return dummyNames.map((name, index) => ({
-      id: -index - 1,
+      id: (-index - 1).toString(),
       name,
     }))
   }
@@ -140,7 +138,7 @@ export function ClientAppBar({
       projects.length > 0 ? projects.map(toUIProject) : createDummyProjects(),
     onProjectSelect: (selectedProject: Project) => {
       // Only update the current project if it's a real project (id > 0, not a dummy project)
-      if (selectedProject.id > 0) {
+      if (Number.parseInt(selectedProject.id) > 0) {
         handleProjectSelect(selectedProject)
       }
     },
