@@ -13,14 +13,7 @@ import {
 import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData'
 import { useProjectSearch } from '../../hooks/useProjectSearch'
 import styles from './ProjectsPage.module.css'
-
-// Extended project type with last commit date
-type ProjectWithLastCommit = Tables<'projects'> & {
-  lastCommitDate?: string
-  project_repository_mappings?: Array<{
-    repository: Tables<'repositories'>
-  }>
-}
+import type { ProjectWithLastCommit } from '../../types'
 
 interface ClientSearchWrapperProps {
   initialProjects: Tables<'projects'>[] | null
@@ -58,7 +51,12 @@ export const ClientSearchWrapper = ({
         // Fetch commit data for all projects in parallel
         const projectsWithDates = await Promise.all(
           unsortedProjects.map(async (project) => {
-            const projectWithLastCommit = project as ProjectWithLastCommit
+            // Create a new object with the ProjectWithLastCommit shape
+            const projectWithLastCommit: ProjectWithLastCommit = {
+              ...project,
+              lastCommitDate: undefined,
+            }
+
             const repository =
               projectWithLastCommit.project_repository_mappings?.[0]?.repository
 
@@ -96,7 +94,12 @@ export const ClientSearchWrapper = ({
         setProjectsWithCommitData(projectsWithDates)
       } catch (error) {
         console.error('Error fetching commit data:', error)
-        setProjectsWithCommitData(unsortedProjects as ProjectWithLastCommit[])
+        // Create ProjectWithLastCommit objects for each project
+        const fallbackProjects = unsortedProjects.map((project) => ({
+          ...project,
+          lastCommitDate: project.updated_at || project.created_at,
+        }))
+        setProjectsWithCommitData(fallbackProjects)
       } finally {
         setIsLoadingCommitData(false)
       }

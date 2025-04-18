@@ -47,21 +47,16 @@ export default async function ProjectsPageRoute({
       *,
       project_repository_mappings (
         *,
-        repository:Repository(*)
+        repository:repositories(*)
       )
     `,
   )
 
   if (organizationId) {
-    baseQuery = baseQuery.eq('organizationId', organizationId)
+    baseQuery = baseQuery.eq('organization_id', organizationId)
   }
 
   const { data: projects } = await baseQuery
 
-  return (
-    <ProjectsPage
-      projects={projects as Tables<'projects'>[] | null}
-      organizationId={organizationId}
-    />
-  )
+  return <ProjectsPage projects={projects} organizationId={organizationId} />
 }

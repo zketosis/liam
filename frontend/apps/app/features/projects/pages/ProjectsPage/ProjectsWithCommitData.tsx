@@ -3,14 +3,7 @@
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData'
 import { ClientProjectsView } from './ClientProjectsView'
-
-// Extended project type with last commit date
-export type ProjectWithLastCommit = Tables<'projects'> & {
-  lastCommitDate?: string
-  project_repository_mappings?: Array<{
-    repository: Tables<'repositories'>
-  }>
-}
+import type { ProjectWithLastCommit } from '../../types'
 
 interface ProjectsWithCommitDataProps {
   projects: Tables<'projects'>[] | null
@@ -35,7 +28,12 @@ export async function ProjectsWithCommitData({
     // Fetch commit data for all projects in parallel
     const projectsWithDates = await Promise.all(
       projects.map(async (project) => {
-        const projectWithLastCommit = project as ProjectWithLastCommit
+        // Create a new object with the ProjectWithLastCommit shape
+        const projectWithLastCommit: ProjectWithLastCommit = {
+          ...project,
+          lastCommitDate: undefined,
+        }
+
         const repository =
           projectWithLastCommit.project_repository_mappings?.[0]?.repository
 

@@ -11,8 +11,11 @@ import {
   type SortOption,
 } from '../../components'
 import { useProjectSearch } from '../../hooks/useProjectSearch'
+import {
+  type ProjectWithLastCommit,
+  isProjectWithLastCommit,
+} from '../../types'
 import styles from './ProjectsPage.module.css'
-import type { ProjectWithLastCommit } from './ProjectsWithCommitData'
 
 interface ClientProjectsViewProps {
   initialProjects: (Tables<'projects'> | ProjectWithLastCommit)[] | null
@@ -39,21 +42,19 @@ export function ClientProjectsView({
         }
 
         // Use lastCommitDate if available (from server pre-processing)
-        const projectA = a as ProjectWithLastCommit
-        const projectB = b as ProjectWithLastCommit
+        const aLastCommitDate = isProjectWithLastCommit(a)
+          ? a.lastCommitDate
+          : undefined
+        const bLastCommitDate = isProjectWithLastCommit(b)
+          ? b.lastCommitDate
+          : undefined
 
         return (
           new Date(
-            projectB.lastCommitDate ||
-              projectB.updated_at ||
-              projectB.created_at ||
-              0,
+            bLastCommitDate || b.updated_at || b.created_at || 0,
           ).getTime() -
           new Date(
-            projectA.lastCommitDate ||
-              projectA.updated_at ||
-              projectA.created_at ||
-              0,
+            aLastCommitDate || a.updated_at || a.created_at || 0,
           ).getTime()
         )
       })
