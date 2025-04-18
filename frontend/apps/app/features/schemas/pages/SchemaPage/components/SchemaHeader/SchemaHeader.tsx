@@ -1,4 +1,5 @@
 import { TabsList, TabsTrigger } from '@/components'
+import { DiffCounts } from '@/components/DiffCount/DiffCounts'
 import { SchemaLink } from '@/components/SchemaLink'
 import type { FC } from 'react'
 import { SCHEMA_TABS } from '../../constants'
@@ -16,7 +17,20 @@ export const SchemaHeader: FC = () => {
             value={tab.value}
             className={styles.tabsTrigger}
           >
-            {tab.label}
+            {tab.label === 'Override' ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--spacing-2, 0.5rem)',
+                }}
+              >
+                <span>{tab.label}</span>
+                <DiffCounts additions={5} deletions={1} />
+              </div>
+            ) : (
+              tab.label
+            )}
           </TabsTrigger>
         ))}
       </TabsList>
