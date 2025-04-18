@@ -2,6 +2,8 @@ import type { DMMF } from '@prisma/generator-helper'
 import pkg from '@prisma/internals'
 import type {
   Columns,
+  Constraints,
+  ForeignKeyConstraint,
   ForeignKeyConstraintReferenceOption,
   Index,
   Relationship,
@@ -71,6 +73,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
 
   for (const model of dmmf.datamodel.models) {
     const columns: Columns = {}
+    const constraints: Constraints = {}
     for (const field of model.fields) {
       if (field.relationName) continue
       const defaultValue = extractDefaultValue(field)
@@ -90,6 +93,23 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         comment: field.documentation ?? null,
         check: null,
       }
+
+      if (field.isId) {
+        const constraintName = `PRIMARY_${fieldName}`
+        constraints[constraintName] = {
+          type: 'PRIMARY KEY',
+          name: constraintName,
+          columnName: fieldName,
+        }
+      } else if (field.isUnique) {
+        // to avoid duplicate with PRIMARY KEY constraint, it doesn't create constraint object with `field.isId`
+        const constraintName = `UNIQUE_${fieldName}`
+        constraints[constraintName] = {
+          type: 'UNIQUE',
+          name: constraintName,
+          columnName: fieldName,
+        }
+      }
     }
 
     tables[model.name] = {
@@ -97,7 +117,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       columns,
       comment: model.documentation ?? null,
       indexes: {},
-      constraints: {},
+      constraints,
     }
   }
   for (const model of dmmf.datamodel.models) {
@@ -111,7 +131,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         field.relationFromFields?.[0] &&
         (field.relationFromFields?.length ?? 0) > 0
 
-      const relationship: Relationship = isTargetField
+      const _relationship: Relationship = isTargetField
         ? ({
             name: field.relationName,
             primaryTableName: field.type,
@@ -135,10 +155,25 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             deleteConstraint: 'NO_ACTION',
           } as const)
 
-      relationships[relationship.name] = getFieldRenamedRelationship(
-        relationship,
+      const relationship = getFieldRenamedRelationship(
+        _relationship,
         tableFieldRenaming,
       )
+      relationships[relationship.name] = relationship
+
+      const constraint: ForeignKeyConstraint = {
+        type: 'FOREIGN KEY',
+        name: relationship.name,
+        columnName: relationship.foreignColumnName,
+        targetTableName: relationship.primaryTableName,
+        targetColumnName: relationship.primaryColumnName,
+        updateConstraint: relationship.updateConstraint,
+        deleteConstraint: relationship.deleteConstraint,
+      }
+      const table = tables[relationship.foreignTableName]
+      if (table) {
+        table.constraints[constraint.name] = constraint
+      }
     }
   }
   for (const index of dmmf.datamodel.indexes) {
