@@ -2,6 +2,7 @@
 
 import { createClient } from '@/libs/db/server'
 import type { SupabaseClient } from '@/libs/db/server'
+import { revalidatePath } from 'next/cache'
 import * as v from 'valibot'
 
 // Define schema for form data validation
@@ -109,7 +110,7 @@ export const inviteMember = async (formData: FormData) => {
   if (!parsedData.success) {
     return {
       success: false,
-      error: `Invalid form data: ${JSON.stringify(parsedData.issues)}`,
+      error: `Invalid form data: ${parsedData.issues.map((issue) => issue.message).join(', ')}`,
     }
   }
 
@@ -170,6 +171,11 @@ export const inviteMember = async (formData: FormData) => {
   }
 
   // TODO: Send email to user
+
+  revalidatePath(
+    '/(app)/app/organizations/[organizationId]/settings/members/page.tsx',
+    'page',
+  )
 
   return { success: true }
 }

@@ -142,14 +142,16 @@ export const InviteMemberModal: FC<InviteMemberModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className={styles.cancelButton}
+                variant="outline-secondary"
+                size="md"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading || !email.trim()}
-                className={styles.inviteButton}
+                variant="solid-primary"
+                size="md"
               >
                 {loading ? 'Sending...' : 'Invite'}
               </Button>
