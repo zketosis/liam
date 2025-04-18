@@ -2,42 +2,143 @@
 
 import { urlgen } from '@/utils/routes'
 import type { Tables } from '@liam-hq/db/supabase/database.types'
-import { ChevronDown } from '@liam-hq/ui'
 import Link from 'next/link'
-import type { FC } from 'react'
-import { ProjectItem, SearchInput } from '../../components'
+import { useEffect, useState } from 'react'
+import {
+  ProjectItem,
+  SearchInput,
+  SortDropdown,
+  type SortOption,
+} from '../../components'
+import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData'
 import { useProjectSearch } from '../../hooks/useProjectSearch'
 import styles from './ProjectsPage.module.css'
+
+// Extended project type with last commit date
+type ProjectWithLastCommit = Tables<'Project'> & {
+  lastCommitDate?: string
+  ProjectRepositoryMapping?: Array<{
+    repository: Tables<'Repository'>
+  }>
+}
 
 interface ClientSearchWrapperProps {
   initialProjects: Tables<'Project'>[] | null
   organizationId?: number
 }
 
-export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
+export const ClientSearchWrapper = ({
   initialProjects,
   organizationId,
-}) => {
+}: ClientSearchWrapperProps) => {
+  const [sortOption, setSortOption] = useState<SortOption>('activity')
+  const [isLoadingCommitData, setIsLoadingCommitData] = useState(false)
+  const [projectsWithCommitData, setProjectsWithCommitData] = useState<
+    ProjectWithLastCommit[] | null
+  >(null)
+
   const { searchResult, searchProjects } = useProjectSearch(
     organizationId,
     initialProjects,
   )
 
-  const { projects, loading } = searchResult
+  const { projects: unsortedProjects, loading } = searchResult
+
+  // Fetch commit data when projects change
+  useEffect(() => {
+    async function fetchCommitData() {
+      if (!unsortedProjects || unsortedProjects.length === 0) {
+        setProjectsWithCommitData(null)
+        return
+      }
+
+      setIsLoadingCommitData(true)
+
+      try {
+        // Fetch commit data for all projects in parallel
+        const projectsWithDates = await Promise.all(
+          unsortedProjects.map(async (project) => {
+            const projectWithLastCommit = project as ProjectWithLastCommit
+            const repository =
+              projectWithLastCommit.ProjectRepositoryMapping?.[0]?.repository
+
+            if (repository) {
+              try {
+                const commitData = await fetchLastCommitData(
+                  repository.installationId,
+                  repository.owner,
+                  repository.name,
+                )
+
+                if (commitData?.date) {
+                  return {
+                    ...projectWithLastCommit,
+                    lastCommitDate: commitData.date,
+                  }
+                }
+              } catch (error) {
+                console.error(
+                  'Error fetching commit data for project:',
+                  project.id,
+                  error,
+                )
+              }
+            }
+
+            // Use project update/creation date as fallback
+            return {
+              ...projectWithLastCommit,
+              lastCommitDate: project.updatedAt || project.createdAt,
+            }
+          }),
+        )
+
+        setProjectsWithCommitData(projectsWithDates)
+      } catch (error) {
+        console.error('Error fetching commit data:', error)
+        setProjectsWithCommitData(unsortedProjects as ProjectWithLastCommit[])
+      } finally {
+        setIsLoadingCommitData(false)
+      }
+    }
+
+    fetchCommitData()
+  }, [unsortedProjects])
+
+  // Sort projects based on the selected sort option
+  const projects = projectsWithCommitData
+    ? [...projectsWithCommitData].sort((a, b) => {
+        if (sortOption === 'name') {
+          return a.name.localeCompare(b.name)
+        }
+        // Sort by activity using actual commit dates when available
+        return (
+          new Date(
+            b.lastCommitDate || b.updatedAt || b.createdAt || 0,
+          ).getTime() -
+          new Date(
+            a.lastCommitDate || a.updatedAt || a.createdAt || 0,
+          ).getTime()
+        )
+      })
+    : unsortedProjects
+
+  // Calculate if we're in a loading state
+  const isLoading = loading || isLoadingCommitData
 
   return (
     <div className={styles.projectsContainer}>
       <div className={styles.projectsHeader}>
         <SearchInput
           onSearch={searchProjects}
-          loading={loading}
+          loading={isLoading}
           placeholder="Search Projects..."
         />
 
-        <div className={styles.sortSelect}>
-          <span>Sort by activity</span>
-          <ChevronDown className={styles.sortSelectIcon} aria-hidden="true" />
-        </div>
+        <SortDropdown
+          initialSortOption={sortOption}
+          onSortChange={setSortOption}
+        />
 
         <Link
           href={
@@ -60,9 +161,15 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
         </div>
       ) : (
         <div className={styles.projectsGrid}>
-          {projects.map((project) => (
-            <ProjectItem key={project.id} project={project} />
-          ))}
+          {isLoadingCommitData && !projectsWithCommitData ? (
+            <div className={styles.emptyState}>
+              Loading project activity data...
+            </div>
+          ) : (
+            projects.map((project) => (
+              <ProjectItem key={project.id} project={project} />
+            ))
+          )}
         </div>
       )}
     </div>

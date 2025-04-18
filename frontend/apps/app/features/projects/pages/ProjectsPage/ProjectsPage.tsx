@@ -1,48 +1,67 @@
-import { urlgen } from '@/utils/routes'
-import type { FC } from 'react'
-import { EmptyProjectsState } from '../../components'
-import { ClientSearchWrapper } from './ClientSearchWrapper'
+import { createClient } from '@/libs/db/server'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
+import { redirect } from 'next/navigation'
 import styles from './ProjectsPage.module.css'
-import {
-  getCurrentOrganization,
-  getUserOrganizations,
-} from './getCurrentOrganization'
-import { getProjects } from './getProjects'
+import { ProjectsWithCommitData } from './ProjectsWithCommitData'
 
-interface ProjectsPageProps {
-  organizationId?: number
-}
+export const runtime = 'edge'
 
-export const ProjectsPage: FC<ProjectsPageProps> = async ({
+export async function ProjectsPage({
+  projects,
   organizationId,
-}) => {
-  const currentOrganization = organizationId
-    ? await getCurrentOrganization(organizationId)
-    : await getCurrentOrganization()
-  await getUserOrganizations() // Fetch for future use
-  const projects = await getProjects(currentOrganization?.id)
-
+}: {
+  projects: Tables<'Project'>[] | null
+  organizationId?: number
+}) {
   return (
     <div className={styles.container}>
       <div className={styles.contentContainer}>
         <h1 className={styles.heading}>Projects</h1>
-        {projects === null || projects.length === 0 ? (
-          <EmptyProjectsState
-            createProjectHref={
-              currentOrganization
-                ? urlgen('organizations/[organizationId]/projects/new', {
-                    organizationId: currentOrganization.id.toString(),
-                  })
-                : urlgen('organizations/new')
-            }
-          />
-        ) : (
-          <ClientSearchWrapper
-            initialProjects={projects}
-            organizationId={currentOrganization?.id}
-          />
-        )}
+        <ProjectsWithCommitData
+          projects={projects}
+          organizationId={organizationId}
+        />
       </div>
     </div>
+  )
+}
+
+export default async function ProjectsPageRoute({
+  params,
+}: {
+  params: { organizationId?: string }
+}) {
+  const organizationId = params.organizationId
+    ? Number.parseInt(params.organizationId)
+    : undefined
+
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getSession()
+
+  if (data.session === null) {
+    return redirect('/login')
+  }
+
+  let baseQuery = supabase.from('Project').select(
+    `
+      *,
+      ProjectRepositoryMapping (
+        *,
+        repository:Repository(*)
+      )
+    `,
+  )
+
+  if (organizationId) {
+    baseQuery = baseQuery.eq('organizationId', organizationId)
+  }
+
+  const { data: projects } = await baseQuery
+
+  return (
+    <ProjectsPage
+      projects={projects as Tables<'Project'>[] | null}
+      organizationId={organizationId}
+    />
   )
 }
