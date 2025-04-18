@@ -90,6 +90,20 @@ Follow these rules when you write code:
   - If data should be fetched on the server, delegate it to a server component.
   - Use client-side fetching only when necessary, ensuring performance and UX considerations.
 
+### Supabase Error Handling Guidelines
+
+- Avoid wrapping standard Supabase.js calls in try-catch blocks unnecessarily:
+
+  ```typescript
+  // Preferred approach - check error property
+  const { data, error } = await supabase.from("table").select("*");
+  if (error) {
+    // Handle error appropriately
+    return;
+  }
+  // Continue with data
+  ```
+
 #### Component Implementation Guidelines
 
 - Avoid using `default export`; always use `named export`.
