@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-5);
+  font-weight: 500;
+  color: var(--global-foreground);
+  margin: 0;
+}
+
+.membersList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10);
+  background-color: var(--pane-background);
+  border: 1px solid var(--global-border);
+  border-radius: var(--border-radius-md);
+  color: var(--global-mute-text);
+  text-align: center;
+  margin: 0;
+}

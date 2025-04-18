@@ -10,7 +10,22 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 
 ## Recent Changes
 
-1. **Switched AI Model from Anthropic to OpenAI**: Changed the AI model used in prompt generators from ChatAnthropic to ChatOpenAI:
+1. **Updated SettingsHeader Component with Figma Design**: Enhanced the SettingsHeader component to match Figma design specifications:
+   - Created three new icon components in the UI package: `BookMarked`, `Users`, and `GitPullRequestArrow`
+   - Updated the UI package's index.ts to export the new icons
+   - Modified the SettingsHeader component to use the specified icons:
+     - general tab: BookMarked icon
+     - members tab: Users icon
+     - billing tab: GitPullRequestArrow icon
+     - projects tab: LayoutGrid icon (already exported from lucide-react)
+   - Updated the CSS styling to match the Figma design, including proper spacing, font weights, and active tab indicator
+   - This implementation follows the project's pattern of using Lucide React icons with a standardized strokeWidth of 1.5
+   - Refactored the component to use a more maintainable approach:
+     - Updated the SettingsTab interface to include an icon property
+     - Created a function to initialize tab icons at runtime
+     - Removed the need for a separate switch statement by storing icons with their respective tabs
+
+2. **Switched AI Model from Anthropic to OpenAI**: Changed the AI model used in prompt generators from ChatAnthropic to ChatOpenAI:
    - Updated all three prompt generator files (generateDocsSuggestion, generateReview, generateSchemaOverride) to use ChatOpenAI
    - Changed the model from 'claude-3-7-sonnet-latest' to 'o3-mini-2025-01-31'
    - Created index.ts files for the generateSchemaOverride and generateDocsSuggestion directories

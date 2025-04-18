@@ -6,7 +6,7 @@ import styles from './Avatar.module.css'
 import { UserAvatarIcon } from './UserAvatarIcon'
 
 type AvatarSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
-type AvatarUser =
+export type AvatarUser =
   | 'you'
   | 'collaborator-1'
   | 'collaborator-2'
@@ -20,6 +20,24 @@ type AvatarUser =
   | 'collaborator-10'
   | 'collaborator-11'
   | 'jack'
+
+/**
+ * Maps a color number to the corresponding AvatarUser type
+ * @param colorNum - A number between 1 and 7
+ * @returns The corresponding AvatarUser value
+ */
+export const getAvatarUserFromColor = (colorNum: number): AvatarUser => {
+  const colorMap: Record<number, AvatarUser> = {
+    1: 'you',
+    2: 'collaborator-1',
+    3: 'collaborator-2',
+    4: 'collaborator-3',
+    5: 'collaborator-4',
+    6: 'collaborator-5',
+    7: 'collaborator-6',
+  }
+  return colorMap[colorNum] || 'you'
+}
 
 type AvatarProps = {
   initial: string

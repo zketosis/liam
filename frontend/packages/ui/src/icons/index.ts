@@ -1,5 +1,6 @@
-export * from './Building'
+export * from './BookMarked'
 export * from './BookText'
+export * from './Building'
 export * from './Check'
 export * from './ChevronDown'
 export * from './ChevronLeft'
@@ -36,6 +37,8 @@ export * from './CardinalityZeroOrOneLeftIcon'
 export * from './Eye'
 export * from './EyeClosed'
 export * from './FileText'
+export * from './GitPullRequestArrow'
+export * from './Users'
 
 export {
   Copy,
