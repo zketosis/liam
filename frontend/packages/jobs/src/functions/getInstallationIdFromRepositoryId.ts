@@ -1,7 +1,7 @@
 import { createClient } from '../libs/supabase'
 
 export const getInstallationIdFromRepositoryId = async (
-  repositoryId: number,
+  repositoryId: string,
 ): Promise<number> => {
   const supabase = createClient()
   const { data: repository, error } = await supabase
@@ -16,5 +16,5 @@ export const getInstallationIdFromRepositoryId = async (
     )
   }
 
-  return Number(repository.installationId)
+  return repository.installationId
 }

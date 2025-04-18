@@ -20,7 +20,7 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
   // Use the shared context instead of local state
   const { feedbacks, updateFeedback } = useReviewFeedbacks()
 
-  const handleResolve = async (feedbackId: number, comment: string) => {
+  const handleResolve = async (feedbackId: string, comment: string) => {
     try {
       // Call the server action to update the database
       await resolveReviewFeedback({
@@ -107,7 +107,7 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
               </div>
             )}
             {feedback.suggestionSnippets?.map(
-              (snippet: { filename: string; snippet: string; id: number }) => (
+              (snippet: { filename: string; snippet: string; id: string }) => (
                 <div key={snippet.filename} className={styles.snippetContainer}>
                   <div className={styles.snippetHeader}>
                     <span className={styles.fileIcon}>📄</span>

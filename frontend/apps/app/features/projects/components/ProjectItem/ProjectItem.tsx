@@ -6,7 +6,7 @@ import { ProjectIcon } from './ProjectIcon'
 import styles from './ProjectItem.module.css'
 
 interface Project {
-  id: number
+  id: string
   name: string
   createdAt: string
 }

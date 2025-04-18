@@ -18,7 +18,7 @@ export type DocFile = (typeof DOC_FILES)[number]
 
 export async function processGenerateDocsSuggestion(payload: {
   review: Review
-  projectId: number
+  projectId: string
   branchOrCommit?: string
 }): Promise<{
   suggestions: Record<DocFile, FileContent>
@@ -97,7 +97,7 @@ export async function processGenerateDocsSuggestion(payload: {
       payload.projectId,
       branch,
       repositoryFullName,
-      Number(repository.installationId),
+      repository.installationId,
     )
 
     const result = await generateDocsSuggestion(

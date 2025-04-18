@@ -9,10 +9,7 @@ import * as v from 'valibot'
 
 // Define schema for form data validation with transforms
 const formDataSchema = v.object({
-  suggestionId: v.pipe(
-    v.string(),
-    v.transform((value) => Number(value)),
-  ),
+  suggestionId: v.pipe(v.string()),
   repositoryOwner: v.string(),
   repositoryName: v.string(),
   installationId: v.pipe(
@@ -26,8 +23,8 @@ const formDataSchema = v.object({
  */
 const createMapping = async (
   supabase: SupabaseClient,
-  knowledgeSuggestionId: number,
-  gitHubDocFilePathId: number,
+  knowledgeSuggestionId: string,
+  gitHubDocFilePathId: string,
   updatedAt: string,
 ) => {
   const { error: mappingError } = await supabase
@@ -48,8 +45,8 @@ const createMapping = async (
  */
 const handleDocFilePath = async (
   supabase: SupabaseClient,
-  suggestion: { projectId: number; path: string; type: string },
-  suggestionId: number,
+  suggestion: { projectId: string; path: string; type: string },
+  suggestionId: string,
 ) => {
   // Check if there's a GitHubDocFilePath entry for this path
   const { data: docFilePath } = await supabase

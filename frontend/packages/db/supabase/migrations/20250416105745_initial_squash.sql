@@ -1,5 +1,3 @@
-
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -151,10 +149,10 @@ SET default_table_access_method = "heap";
 
 
 CREATE TABLE IF NOT EXISTS "public"."GitHubDocFilePath" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "path" "text" NOT NULL,
     "isReviewEnabled" boolean DEFAULT true NOT NULL,
-    "projectId" "uuid" NOT NULL,
+    "projectId" uuid NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL
 );
@@ -163,10 +161,17 @@ CREATE TABLE IF NOT EXISTS "public"."GitHubDocFilePath" (
 ALTER TABLE "public"."GitHubDocFilePath" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."GitHubSchemaFilePath" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "path" "text" NOT NULL,
-    "projectId" "uuid" NOT NULL,
+    "projectId" uuid NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
     "format" "public"."SchemaFormatEnum" NOT NULL
@@ -176,14 +181,21 @@ CREATE TABLE IF NOT EXISTS "public"."GitHubSchemaFilePath" (
 ALTER TABLE "public"."GitHubSchemaFilePath" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestion" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "type" "public"."KnowledgeType" NOT NULL,
     "title" "text" NOT NULL,
     "path" "text" NOT NULL,
     "content" "text" NOT NULL,
     "fileSha" "text",
-    "projectId" "uuid" NOT NULL,
+    "projectId" uuid NOT NULL,
     "approvedAt" timestamp(3) without time zone,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
@@ -197,9 +209,9 @@ ALTER TABLE "public"."KnowledgeSuggestion" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestionDocMapping" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "knowledgeSuggestionId" "uuid" NOT NULL,
-    "gitHubDocFilePathId" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "knowledgeSuggestionId" uuid NOT NULL,
+    "gitHubDocFilePathId" uuid NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL
 );
@@ -208,11 +220,25 @@ CREATE TABLE IF NOT EXISTS "public"."KnowledgeSuggestionDocMapping" (
 ALTER TABLE "public"."KnowledgeSuggestionDocMapping" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."MembershipInvites" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "email" "text" NOT NULL,
     "inviteByUserId" "uuid" NOT NULL,
-    "organizationId" "uuid" NOT NULL,
+    "organizationId" uuid NOT NULL,
     "invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -221,9 +247,9 @@ ALTER TABLE "public"."MembershipInvites" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."Migration" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "title" "text" NOT NULL,
-    "pullRequestId" "uuid" NOT NULL,
+    "pullRequestId" uuid NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL
 );
@@ -232,8 +258,15 @@ CREATE TABLE IF NOT EXISTS "public"."Migration" (
 ALTER TABLE "public"."Migration" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."Organization" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "name" "text" NOT NULL
 );
 
@@ -242,9 +275,9 @@ ALTER TABLE "public"."Organization" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "userId" "uuid" NOT NULL,
-    "organizationId" "uuid" NOT NULL,
+    "organizationId" uuid NOT NULL,
     "joinedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -252,10 +285,12 @@ CREATE TABLE IF NOT EXISTS "public"."OrganizationMember" (
 ALTER TABLE "public"."OrganizationMember" OWNER TO "postgres";
 
 
+
+
 CREATE TABLE IF NOT EXISTS "public"."OverallReview" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "projectId" "uuid",
-    "pullRequestId" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "projectId" uuid,
+    "pullRequestId" uuid NOT NULL,
     "reviewComment" "text",
     "reviewedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -269,9 +304,9 @@ ALTER TABLE "public"."OverallReview" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "overallReviewId" "uuid" NOT NULL,
-    "knowledgeSuggestionId" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "overallReviewId" uuid NOT NULL,
+    "knowledgeSuggestionId" uuid NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL
 );
@@ -280,22 +315,35 @@ CREATE TABLE IF NOT EXISTS "public"."OverallReviewKnowledgeSuggestionMapping" (
 ALTER TABLE "public"."OverallReviewKnowledgeSuggestionMapping" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."Project" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "name" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "organizationId" "uuid"
-);
+    "organizationId" uuid );
 
 
 ALTER TABLE "public"."Project" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."ProjectRepositoryMapping" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "projectId" "uuid" NOT NULL,
-    "repositoryId" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "projectId" uuid NOT NULL,
+    "repositoryId" uuid NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL
 );
@@ -304,21 +352,42 @@ CREATE TABLE IF NOT EXISTS "public"."ProjectRepositoryMapping" (
 ALTER TABLE "public"."ProjectRepositoryMapping" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."PullRequest" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "pullNumber" bigint NOT NULL,
     "commentId" bigint,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp(3) without time zone NOT NULL,
-    "repositoryId" "uuid" NOT NULL
+    "repositoryId" uuid NOT NULL
 );
 
 
 ALTER TABLE "public"."PullRequest" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."Repository" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "name" "text" NOT NULL,
     "owner" "text" NOT NULL,
     "installationId" integer NOT NULL,
@@ -331,9 +400,16 @@ CREATE TABLE IF NOT EXISTS "public"."Repository" (
 ALTER TABLE "public"."Repository" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."ReviewFeedback" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "overallReviewId" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "overallReviewId" uuid NOT NULL,
     "category" "public"."CategoryEnum" NOT NULL,
     "severity" "public"."SeverityEnum" NOT NULL,
     "description" "text" NOT NULL,
@@ -348,9 +424,13 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewFeedback" (
 ALTER TABLE "public"."ReviewFeedback" OWNER TO "postgres";
 
 
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackComment" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "reviewFeedbackId" "uuid" NOT NULL,
+    "id" uuid  DEFAULT gen_random_uuid(),
+    "reviewFeedbackId" uuid NOT NULL,
     "userId" "uuid" NOT NULL,
     "content" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -361,21 +441,20 @@ CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackComment" (
 ALTER TABLE "public"."ReviewFeedbackComment" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."ReviewFeedbackKnowledgeSuggestionMapping" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "reviewFeedbackId" "uuid",
-    "knowledgeSuggestionId" "uuid",
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
-);
 
 
-ALTER TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" OWNER TO "postgres";
+
+
+
+
+
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."ReviewSuggestionSnippet" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "reviewFeedbackId" "uuid" NOT NULL,
+    "id" uuid  DEFAULT gen_random_uuid(),
+    "reviewFeedbackId" uuid NOT NULL,
     "filename" "text" NOT NULL,
     "snippet" "text" NOT NULL,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -394,6 +473,42 @@ CREATE TABLE IF NOT EXISTS "public"."User" (
 
 
 ALTER TABLE "public"."User" OWNER TO "postgres";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ALTER TABLE ONLY "public"."GitHubDocFilePath"
@@ -654,16 +769,6 @@ ALTER TABLE ONLY "public"."ReviewFeedbackComment"
 
 ALTER TABLE ONLY "public"."ReviewFeedbackComment"
     ADD CONSTRAINT "ReviewFeedbackComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
-    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMap_knowledgeSuggestionId_fkey" FOREIGN KEY ("knowledgeSuggestionId") REFERENCES "public"."KnowledgeSuggestion"("id");
-
-
-
-ALTER TABLE ONLY "public"."ReviewFeedbackKnowledgeSuggestionMapping"
-    ADD CONSTRAINT "ReviewFeedbackKnowledgeSuggestionMapping_reviewFeedbackId_fkey" FOREIGN KEY ("reviewFeedbackId") REFERENCES "public"."ReviewFeedback"("id");
 
 
 
@@ -976,9 +1081,15 @@ GRANT ALL ON TABLE "public"."GitHubDocFilePath" TO "service_role";
 
 
 
+
+
+
 GRANT ALL ON TABLE "public"."GitHubSchemaFilePath" TO "anon";
 GRANT ALL ON TABLE "public"."GitHubSchemaFilePath" TO "authenticated";
 GRANT ALL ON TABLE "public"."GitHubSchemaFilePath" TO "service_role";
+
+
+
 
 
 
@@ -994,15 +1105,27 @@ GRANT ALL ON TABLE "public"."KnowledgeSuggestionDocMapping" TO "service_role";
 
 
 
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."MembershipInvites" TO "anon";
 GRANT ALL ON TABLE "public"."MembershipInvites" TO "authenticated";
 GRANT ALL ON TABLE "public"."MembershipInvites" TO "service_role";
 
 
 
+
+
+
 GRANT ALL ON TABLE "public"."Migration" TO "anon";
 GRANT ALL ON TABLE "public"."Migration" TO "authenticated";
 GRANT ALL ON TABLE "public"."Migration" TO "service_role";
+
+
+
 
 
 
@@ -1018,6 +1141,12 @@ GRANT ALL ON TABLE "public"."OrganizationMember" TO "service_role";
 
 
 
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."OverallReview" TO "anon";
 GRANT ALL ON TABLE "public"."OverallReview" TO "authenticated";
 GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
@@ -1027,6 +1156,12 @@ GRANT ALL ON TABLE "public"."OverallReview" TO "service_role";
 GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "anon";
 GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "authenticated";
 GRANT ALL ON TABLE "public"."OverallReviewKnowledgeSuggestionMapping" TO "service_role";
+
+
+
+
+
+
 
 
 
@@ -1042,9 +1177,18 @@ GRANT ALL ON TABLE "public"."ProjectRepositoryMapping" TO "service_role";
 
 
 
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."PullRequest" TO "anon";
 GRANT ALL ON TABLE "public"."PullRequest" TO "authenticated";
 GRANT ALL ON TABLE "public"."PullRequest" TO "service_role";
+
+
+
 
 
 
@@ -1054,9 +1198,15 @@ GRANT ALL ON TABLE "public"."Repository" TO "service_role";
 
 
 
+
+
+
 GRANT ALL ON TABLE "public"."ReviewFeedback" TO "anon";
 GRANT ALL ON TABLE "public"."ReviewFeedback" TO "authenticated";
 GRANT ALL ON TABLE "public"."ReviewFeedback" TO "service_role";
+
+
+
 
 
 
@@ -1066,9 +1216,9 @@ GRANT ALL ON TABLE "public"."ReviewFeedbackComment" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "anon";
-GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "authenticated";
-GRANT ALL ON TABLE "public"."ReviewFeedbackKnowledgeSuggestionMapping" TO "service_role";
+
+
+
 
 
 
@@ -1145,3 +1295,9 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 
 
 RESET ALL;
+
+--
+-- Dumped schema changes for auth and storage
+--
+
+CREATE OR REPLACE TRIGGER "on_auth_user_created" AFTER INSERT ON "auth"."users" FOR EACH ROW EXECUTE FUNCTION "public"."handle_new_user"();

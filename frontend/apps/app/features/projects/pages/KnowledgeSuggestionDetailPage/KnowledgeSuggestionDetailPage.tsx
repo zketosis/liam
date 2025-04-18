@@ -11,8 +11,8 @@ import { ContentForSchema } from './ContentForSchema'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
 
 async function getSuggestionWithProject(
-  suggestionId: number,
-  projectId: number,
+  suggestionId: string,
+  projectId: string,
 ) {
   const supabase = await createClient()
 
@@ -53,10 +53,7 @@ async function getKnowledgeSuggestionDetail(
 ) {
   try {
     // Get the knowledge suggestion with project info
-    const suggestion = await getSuggestionWithProject(
-      Number(suggestionId),
-      Number(projectId),
-    )
+    const suggestion = await getSuggestionWithProject(suggestionId, projectId)
 
     if (!suggestion) {
       console.error('Error fetching knowledge suggestion')

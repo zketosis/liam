@@ -10,7 +10,7 @@ type SearchResult = {
 }
 
 export const useProjectSearch = (
-  organizationId?: number,
+  organizationId?: string,
   initialProjects?: Tables<'Project'>[] | null,
 ) => {
   const [searchResult, setSearchResult] = useState<SearchResult>({

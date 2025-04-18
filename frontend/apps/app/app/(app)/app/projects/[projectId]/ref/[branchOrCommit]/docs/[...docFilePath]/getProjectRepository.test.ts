@@ -48,7 +48,7 @@ describe('getProjectRepository', () => {
     expect(result).not.toBeNull()
     expect(result?.repository).toHaveProperty('name', 'test-repo')
     expect(result?.repository).toHaveProperty('owner', 'test-owner')
-    expect(result?.repository).toHaveProperty('installationId', 12345)
+    expect(result?.repository).toHaveProperty('installationId', '12345')
   })
 
   it('should return null when project does not exist', async () => {
