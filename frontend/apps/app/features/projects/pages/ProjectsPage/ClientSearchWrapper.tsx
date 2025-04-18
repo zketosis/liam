@@ -15,16 +15,16 @@ import { useProjectSearch } from '../../hooks/useProjectSearch'
 import styles from './ProjectsPage.module.css'
 
 // Extended project type with last commit date
-type ProjectWithLastCommit = Tables<'Project'> & {
+type ProjectWithLastCommit = Tables<'projects'> & {
   lastCommitDate?: string
-  ProjectRepositoryMapping?: Array<{
-    repository: Tables<'Repository'>
+  project_repository_mappings?: Array<{
+    repository: Tables<'repositories'>
   }>
 }
 
 interface ClientSearchWrapperProps {
-  initialProjects: Tables<'Project'>[] | null
-  organizationId?: number
+  initialProjects: Tables<'projects'>[] | null
+  organizationId?: string
 }
 
 export const ClientSearchWrapper = ({
@@ -60,12 +60,12 @@ export const ClientSearchWrapper = ({
           unsortedProjects.map(async (project) => {
             const projectWithLastCommit = project as ProjectWithLastCommit
             const repository =
-              projectWithLastCommit.ProjectRepositoryMapping?.[0]?.repository
+              projectWithLastCommit.project_repository_mappings?.[0]?.repository
 
             if (repository) {
               try {
                 const commitData = await fetchLastCommitData(
-                  repository.installationId,
+                  repository.installation_id,
                   repository.owner,
                   repository.name,
                 )
@@ -88,7 +88,7 @@ export const ClientSearchWrapper = ({
             // Use project update/creation date as fallback
             return {
               ...projectWithLastCommit,
-              lastCommitDate: project.updatedAt || project.createdAt,
+              lastCommitDate: project.updated_at || project.created_at,
             }
           }),
         )
@@ -114,10 +114,10 @@ export const ClientSearchWrapper = ({
         // Sort by activity using actual commit dates when available
         return (
           new Date(
-            b.lastCommitDate || b.updatedAt || b.createdAt || 0,
+            b.lastCommitDate || b.updated_at || b.created_at || 0,
           ).getTime() -
           new Date(
-            a.lastCommitDate || a.updatedAt || a.createdAt || 0,
+            a.lastCommitDate || a.updated_at || a.created_at || 0,
           ).getTime()
         )
       })

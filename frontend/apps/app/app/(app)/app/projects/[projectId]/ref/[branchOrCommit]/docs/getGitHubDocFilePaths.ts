@@ -4,9 +4,9 @@ export const getGitHubDocFilePaths = async (projectId: string) => {
   try {
     const supabase = await createClient()
     const { data } = await supabase
-      .from('GitHubDocFilePath')
+      .from('github_doc_file_paths')
       .select('*')
-      .eq('projectId', Number.parseInt(projectId, 10))
+      .eq('project_id', projectId)
 
     return data || []
   } catch (error) {

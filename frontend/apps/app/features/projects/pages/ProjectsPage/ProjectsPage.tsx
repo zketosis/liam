@@ -10,8 +10,8 @@ export async function ProjectsPage({
   projects,
   organizationId,
 }: {
-  projects: Tables<'Project'>[] | null
-  organizationId?: number
+  projects: Tables<'projects'>[] | null
+  organizationId?: string
 }) {
   return (
     <div className={styles.container}>
@@ -32,7 +32,7 @@ export default async function ProjectsPageRoute({
   params: { organizationId?: string }
 }) {
   const organizationId = params.organizationId
-    ? Number.parseInt(params.organizationId)
+    ? params.organizationId
     : undefined
 
   const supabase = await createClient()
@@ -42,10 +42,10 @@ export default async function ProjectsPageRoute({
     return redirect('/login')
   }
 
-  let baseQuery = supabase.from('Project').select(
+  let baseQuery = supabase.from('projects').select(
     `
       *,
-      ProjectRepositoryMapping (
+      project_repository_mappings (
         *,
         repository:Repository(*)
       )
@@ -60,7 +60,7 @@ export default async function ProjectsPageRoute({
 
   return (
     <ProjectsPage
-      projects={projects as Tables<'Project'>[] | null}
+      projects={projects as Tables<'projects'>[] | null}
       organizationId={organizationId}
     />
   )

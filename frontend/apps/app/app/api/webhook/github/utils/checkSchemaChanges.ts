@@ -5,7 +5,7 @@ type CheckSchemaChangesParams = {
   installationId: number
   pullRequestNumber: number
   pullRequestTitle: string
-  projectId: number
+  projectId: string
   owner: string
   name: string
 }
@@ -26,9 +26,9 @@ export const checkSchemaChanges = async (
 
   const supabase = await createClient()
   const { data: schemaPath, error } = await supabase
-    .from('GitHubSchemaFilePath')
+    .from('github_schema_file_paths')
     .select('path')
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .single()
 
   if (error) {

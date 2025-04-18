@@ -11,25 +11,25 @@ import { ContentForSchema } from './ContentForSchema'
 import styles from './KnowledgeSuggestionDetailPage.module.css'
 
 async function getSuggestionWithProject(
-  suggestionId: number,
-  projectId: number,
+  suggestionId: string,
+  projectId: string,
 ) {
   const supabase = await createClient()
 
   const { data, error } = await supabase
-    .from('KnowledgeSuggestion')
+    .from('knowledge_suggestions')
     .select(`
       *,
-      project:Project(
+      projects(
         id,
         name,
-        repositoryMappings:ProjectRepositoryMapping(
-          repository:Repository(*)
+        project_repository_mappings(
+          repositories(*)
         )
       )
     `)
     .eq('id', suggestionId)
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .single()
 
   if (error) throw error
@@ -53,10 +53,7 @@ async function getKnowledgeSuggestionDetail(
 ) {
   try {
     // Get the knowledge suggestion with project info
-    const suggestion = await getSuggestionWithProject(
-      Number(suggestionId),
-      Number(projectId),
-    )
+    const suggestion = await getSuggestionWithProject(suggestionId, projectId)
 
     if (!suggestion) {
       console.error('Error fetching knowledge suggestion')
@@ -76,7 +73,8 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
   branchOrCommit,
 }) => {
   const suggestion = await getKnowledgeSuggestionDetail(projectId, suggestionId)
-  const repository = suggestion.project.repositoryMappings[0]?.repository
+  const repository =
+    suggestion.projects.project_repository_mappings[0]?.repositories
 
   return (
     <div className={styles.container}>
@@ -87,7 +85,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
               'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions',
               {
                 projectId,
-                branchOrCommit: suggestion.branchName,
+                branchOrCommit: suggestion.branch_name,
               },
             )}
             className={styles.backLink}
@@ -104,22 +102,24 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           <span className={styles.metaItem}>Type: {suggestion.type}</span>
           <span className={styles.metaItem}>Path: {suggestion.path}</span>
           <span
-            className={suggestion.approvedAt ? styles.approved : styles.pending}
+            className={
+              suggestion.approved_at ? styles.approved : styles.pending
+            }
           >
-            Status: {suggestion.approvedAt ? 'Approved' : 'Pending'}
+            Status: {suggestion.approved_at ? 'Approved' : 'Pending'}
           </span>
           <span className={styles.metaItem}>
             Created:{' '}
-            {new Date(suggestion.createdAt).toLocaleString('en-US', {
+            {new Date(suggestion.created_at).toLocaleString('en-US', {
               dateStyle: 'medium',
               timeStyle: 'short',
               hour12: false,
             })}
           </span>
-          {suggestion.approvedAt && (
+          {suggestion.approved_at && (
             <span className={styles.metaItem}>
               Approved:{' '}
-              {new Date(suggestion.createdAt).toLocaleString('en-US', {
+              {new Date(suggestion.created_at).toLocaleString('en-US', {
                 dateStyle: 'medium',
                 timeStyle: 'short',
                 hour12: false,
@@ -149,10 +149,10 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
             <ContentForDoc
               suggestion={suggestion}
               originalContent={
-                !suggestion.approvedAt
+                !suggestion.approved_at
                   ? await getOriginalDocumentContent(
                       projectId,
-                      suggestion.branchName,
+                      suggestion.branch_name,
                       suggestion.path,
                     )
                   : null
@@ -161,7 +161,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
           ))
           .exhaustive()}
 
-        {!suggestion.approvedAt && repository && (
+        {!suggestion.approved_at && repository && (
           <div className={styles.actionSection}>
             <form action={approveKnowledgeSuggestion}>
               <input type="hidden" name="suggestionId" value={suggestion.id} />
@@ -178,7 +178,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
               <input
                 type="hidden"
                 name="installationId"
-                value={repository.installationId.toString()}
+                value={repository.installation_id.toString()}
               />
               <button type="submit" className={styles.approveButton}>
                 Approve

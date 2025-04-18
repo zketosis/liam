@@ -9,9 +9,9 @@ import { createClient } from '../../libs/supabase'
 
 export type PostCommentPayload = {
   reviewComment: string
-  projectId: number
-  pullRequestId: number
-  repositoryId: number
+  projectId: string
+  pullRequestId: string
+  repositoryId: string
   branchName: string
   traceId: string
 }
@@ -27,19 +27,19 @@ async function generateERDLink({
   projectId,
   branchRef,
 }: {
-  installationId: string | number
+  installationId: number
   owner: string
   repo: string
   pullNumber: string | number
-  projectId: number
+  projectId: string
   branchRef: string
 }): Promise<string> {
   const supabase = createClient()
 
   const { data: schemaPath, error } = await supabase
-    .from('GitHubSchemaFilePath')
+    .from('github_schema_file_paths')
     .select('path')
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .single()
 
   if (error) {
@@ -80,7 +80,7 @@ export async function postComment(
     const supabase = createClient()
 
     const { data: repository, error: repoError } = await supabase
-      .from('Repository')
+      .from('repositories')
       .select('*')
       .eq('id', repositoryId)
       .single()
@@ -91,15 +91,15 @@ export async function postComment(
       )
     }
 
-    const installationId = repository.installationId
+    const installationId = repository.installation_id
     const owner = repository.owner
     const repo = repository.name
 
     const { data: prRecord, error: prError } = await supabase
-      .from('PullRequest')
+      .from('pull_requests')
       .select(`
         *,
-        Migration!Migration_pullRequestId_fkey (
+        migrations (
           id
         )
       `)
@@ -112,39 +112,39 @@ export async function postComment(
       )
     }
 
-    if (!prRecord.Migration || !prRecord.Migration[0]) {
+    if (!prRecord.migrations || !prRecord.migrations[0]) {
       throw new Error(
         `Migration for Pull request with ID ${pullRequestId} not found`,
       )
     }
 
-    const migration = prRecord.Migration[0]
+    const migration = prRecord.migrations[0]
     const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodeURIComponent(branchName)}/migrations/${migration.id}`
 
     const prDetails = await getPullRequestDetails(
       Number(installationId),
       owner,
       repo,
-      Number(prRecord.pullNumber),
+      Number(prRecord.pull_number),
     )
 
     const erdLinkText = await generateERDLink({
       installationId,
       owner,
       repo,
-      pullNumber: prRecord.pullNumber,
+      pullNumber: prRecord.pull_number,
       projectId,
       branchRef: prDetails.head.ref,
     })
 
     const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinkText}`
 
-    if (prRecord.commentId) {
+    if (prRecord.comment_id) {
       await updatePullRequestComment(
         Number(installationId),
         owner,
         repo,
-        Number(prRecord.commentId),
+        Number(prRecord.comment_id),
         fullComment,
       )
     } else {
@@ -152,13 +152,13 @@ export async function postComment(
         Number(installationId),
         owner,
         repo,
-        Number(prRecord.pullNumber),
+        Number(prRecord.pull_number),
         fullComment,
       )
 
       const { error: updateError } = await supabase
-        .from('PullRequest')
-        .update({ commentId: commentResponse.id })
+        .from('pull_requests')
+        .update({ comment_id: commentResponse.id })
         .eq('id', pullRequestId)
 
       if (updateError) {

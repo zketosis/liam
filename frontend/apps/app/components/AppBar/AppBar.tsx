@@ -18,7 +18,7 @@ type BreadcrumbItemProps = {
 
 // Define a simple Project interface that matches ProjectItem from UI package
 export interface Project {
-  id: number
+  id: string
   name: string
 }
 
@@ -117,20 +117,26 @@ export const AppBar = ({
 
   // Create dummy projects data if not provided
   const dummyProjects: Project[] = [
-    { id: 1, name: 'Liam HQ' },
-    { id: 2, name: 'Dashboard' },
-    { id: 3, name: 'API Service' },
-    { id: 4, name: 'Mobile App' },
-    { id: 5, name: 'Analytics Platform' },
+    { id: '1', name: 'Liam HQ' },
+    { id: '2', name: 'Dashboard' },
+    { id: '3', name: 'API Service' },
+    { id: '4', name: 'Mobile App' },
+    { id: '5', name: 'Analytics Platform' },
     // Longer project names for testing
-    { id: 6, name: 'Enterprise Resource Planning System Development Project' },
-    { id: 7, name: 'Customer Relationship Management Platform Integration' },
     {
-      id: 8,
+      id: '6',
+      name: 'Enterprise Resource Planning System Development Project',
+    },
+    { id: '7', name: 'Customer Relationship Management Platform Integration' },
+    {
+      id: '8',
       name: 'Mobile Application Development for Cross-Platform Deployment',
     },
-    { id: 9, name: 'Data Analytics and Business Intelligence Dashboard' },
-    { id: 10, name: 'Cloud Infrastructure Migration and Optimization Project' },
+    { id: '9', name: 'Data Analytics and Business Intelligence Dashboard' },
+    {
+      id: '10',
+      name: 'Cloud Infrastructure Migration and Optimization Project',
+    },
   ]
 
   // Use provided branches list or dummy data

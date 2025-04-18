@@ -5,16 +5,16 @@ import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData
 import { ClientProjectsView } from './ClientProjectsView'
 
 // Extended project type with last commit date
-export type ProjectWithLastCommit = Tables<'Project'> & {
+export type ProjectWithLastCommit = Tables<'projects'> & {
   lastCommitDate?: string
-  ProjectRepositoryMapping?: Array<{
-    repository: Tables<'Repository'>
+  project_repository_mappings?: Array<{
+    repository: Tables<'repositories'>
   }>
 }
 
 interface ProjectsWithCommitDataProps {
-  projects: Tables<'Project'>[] | null
-  organizationId?: number
+  projects: Tables<'projects'>[] | null
+  organizationId?: string
 }
 
 export async function ProjectsWithCommitData({
@@ -37,12 +37,12 @@ export async function ProjectsWithCommitData({
       projects.map(async (project) => {
         const projectWithLastCommit = project as ProjectWithLastCommit
         const repository =
-          projectWithLastCommit.ProjectRepositoryMapping?.[0]?.repository
+          projectWithLastCommit.project_repository_mappings?.[0]?.repository
 
         if (repository) {
           try {
             const commitData = await fetchLastCommitData(
-              repository.installationId,
+              repository.installation_id,
               repository.owner,
               repository.name,
             )
@@ -65,7 +65,7 @@ export async function ProjectsWithCommitData({
         // Use project update/creation date as fallback
         return {
           ...projectWithLastCommit,
-          lastCommitDate: project.updatedAt || project.createdAt,
+          lastCommitDate: project.updated_at || project.created_at,
         }
       }),
     )

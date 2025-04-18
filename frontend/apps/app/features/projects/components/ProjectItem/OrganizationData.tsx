@@ -11,7 +11,7 @@ interface OrganizationDataProps {
   repo: string
 }
 
-// サーバーアクションとしてデータ取得関数を分離
+// Separating data fetching function as a server action
 export async function fetchOrganizationData(
   installationId: number,
   owner: string,
@@ -29,7 +29,7 @@ export async function fetchOrganizationData(
   }
 }
 
-// サーバーコンポーネント
+// Server component
 export async function OrganizationData({
   installationId,
   owner,

@@ -15,8 +15,8 @@ import styles from './ProjectsPage.module.css'
 import type { ProjectWithLastCommit } from './ProjectsWithCommitData'
 
 interface ClientProjectsViewProps {
-  initialProjects: (Tables<'Project'> | ProjectWithLastCommit)[] | null
-  organizationId?: number
+  initialProjects: (Tables<'projects'> | ProjectWithLastCommit)[] | null
+  organizationId?: string
 }
 
 export function ClientProjectsView({
@@ -45,14 +45,14 @@ export function ClientProjectsView({
         return (
           new Date(
             projectB.lastCommitDate ||
-              projectB.updatedAt ||
-              projectB.createdAt ||
+              projectB.updated_at ||
+              projectB.created_at ||
               0,
           ).getTime() -
           new Date(
             projectA.lastCommitDate ||
-              projectA.updatedAt ||
-              projectA.createdAt ||
+              projectA.updated_at ||
+              projectA.created_at ||
               0,
           ).getTime()
         )

@@ -1,5 +1,3 @@
-
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -151,10 +149,10 @@ SET default_table_access_method = "heap";
 
 
 CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "path" "text" NOT NULL,
     "is_review_enabled" boolean DEFAULT true NOT NULL,
-    "project_id" "uuid" NOT NULL,
+    "project_id" uuid NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
@@ -163,10 +161,17 @@ CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
 ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "path" "text" NOT NULL,
-    "project_id" "uuid" NOT NULL,
+    "project_id" uuid NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
     "format" "public"."schema_format_enum" NOT NULL
@@ -176,26 +181,21 @@ CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
 ALTER TABLE "public"."github_schema_file_paths" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion_doc_mappings" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "knowledge_suggestion_id" "uuid" NOT NULL,
-    "github_doc_file_path_id" "uuid" NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
-);
 
 
-ALTER TABLE "public"."knowledge_suggestion_doc_mappings" OWNER TO "postgres";
+
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestions" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "type" "public"."knowledge_type" NOT NULL,
     "title" "text" NOT NULL,
     "path" "text" NOT NULL,
     "content" "text" NOT NULL,
     "file_sha" "text",
-    "project_id" "uuid" NOT NULL,
+    "project_id" uuid NOT NULL,
     "approved_at" timestamp(3) with time zone,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
@@ -208,11 +208,37 @@ CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestions" (
 ALTER TABLE "public"."knowledge_suggestions" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion_doc_mappings" (
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "knowledge_suggestion_id" uuid NOT NULL,
+    "github_doc_file_path_id" uuid NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."knowledge_suggestion_doc_mappings" OWNER TO "postgres";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."membership_invites" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "email" "text" NOT NULL,
     "invite_by_user_id" "uuid" NOT NULL,
-    "organization_id" "uuid" NOT NULL,
+    "organization_id" uuid NOT NULL,
     "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -221,9 +247,9 @@ ALTER TABLE "public"."membership_invites" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."migrations" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "title" "text" NOT NULL,
-    "pull_request_id" "uuid" NOT NULL,
+    "pull_request_id" uuid NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
@@ -232,19 +258,15 @@ CREATE TABLE IF NOT EXISTS "public"."migrations" (
 ALTER TABLE "public"."migrations" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."organization_members" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "organization_id" "uuid" NOT NULL,
-    "joined_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
-);
 
 
-ALTER TABLE "public"."organization_members" OWNER TO "postgres";
+
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."organizations" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "name" "text" NOT NULL
 );
 
@@ -252,22 +274,23 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
 ALTER TABLE "public"."organizations" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."overall_review_knowledge_suggestion_mappings" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "overall_review_id" "uuid" NOT NULL,
-    "knowledge_suggestion_id" "uuid" NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+CREATE TABLE IF NOT EXISTS "public"."organization_members" (
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "user_id" "uuid" NOT NULL,
+    "organization_id" uuid NOT NULL,
+    "joined_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
-ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" OWNER TO "postgres";
+ALTER TABLE "public"."organization_members" OWNER TO "postgres";
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "project_id" "uuid",
-    "pull_request_id" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "project_id" uuid,
+    "pull_request_id" uuid NOT NULL,
     "review_comment" "text",
     "reviewed_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -280,10 +303,47 @@ CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
 ALTER TABLE "public"."overall_reviews" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."overall_review_knowledge_suggestion_mappings" (
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "overall_review_id" uuid NOT NULL,
+    "knowledge_suggestion_id" uuid NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" OWNER TO "postgres";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."projects" (
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "name" "text" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" uuid );
+
+
+ALTER TABLE "public"."projects" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."project_repository_mappings" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "project_id" "uuid" NOT NULL,
-    "repository_id" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "project_id" uuid NOT NULL,
+    "repository_id" uuid NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
@@ -292,33 +352,42 @@ CREATE TABLE IF NOT EXISTS "public"."project_repository_mappings" (
 ALTER TABLE "public"."project_repository_mappings" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."projects" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    "organization_id" "uuid"
-);
 
 
-ALTER TABLE "public"."projects" OWNER TO "postgres";
+
+
+
+
+
+
+
+
+
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."pull_requests" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "pull_number" bigint NOT NULL,
     "comment_id" bigint,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "repository_id" "uuid" NOT NULL
+    "repository_id" uuid NOT NULL
 );
 
 
 ALTER TABLE "public"."pull_requests" OWNER TO "postgres";
 
 
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."repositories" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
     "name" "text" NOT NULL,
     "owner" "text" NOT NULL,
     "installation_id" integer NOT NULL,
@@ -331,34 +400,16 @@ CREATE TABLE IF NOT EXISTS "public"."repositories" (
 ALTER TABLE "public"."repositories" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "review_feedback_id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "content" "text" NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
-);
 
 
-ALTER TABLE "public"."review_feedback_comments" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."review_feedback_knowledge_suggestion_mappings" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "review_feedback_id" "uuid",
-    "knowledge_suggestion_id" "uuid",
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
-);
 
-
-ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."review_feedbacks" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "overall_review_id" "uuid" NOT NULL,
+    "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+    "overall_review_id" uuid NOT NULL,
     "category" "public"."category_enum" NOT NULL,
     "severity" "public"."severity_enum" NOT NULL,
     "description" "text" NOT NULL,
@@ -373,9 +424,37 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedbacks" (
 ALTER TABLE "public"."review_feedbacks" OWNER TO "postgres";
 
 
+
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
+    "id" uuid  DEFAULT gen_random_uuid(),
+    "review_feedback_id" uuid NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "content" "text" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."review_feedback_comments" OWNER TO "postgres";
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippets" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "review_feedback_id" "uuid" NOT NULL,
+    "id" uuid  DEFAULT gen_random_uuid(),
+    "review_feedback_id" uuid NOT NULL,
     "filename" "text" NOT NULL,
     "snippet" "text" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -394,6 +473,42 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
 
 
 ALTER TABLE "public"."users" OWNER TO "postgres";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ALTER TABLE ONLY "public"."github_doc_file_paths"
@@ -456,13 +571,13 @@ ALTER TABLE ONLY "public"."overall_reviews"
 
 
 
-ALTER TABLE ONLY "public"."projects"
-    ADD CONSTRAINT "project_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."project_repository_mappings"
     ADD CONSTRAINT "project_repository_mapping_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."projects"
+    ADD CONSTRAINT "project_pkey" PRIMARY KEY ("id");
 
 
 
@@ -509,35 +624,11 @@ CREATE UNIQUE INDEX "github_schema_file_path_project_id_key" ON "public"."github
 
 
 
-CREATE INDEX "idx_project_organization_id" ON "public"."projects" USING "btree" ("organization_id");
-
-
-
-CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."review_feedback_comments" USING "btree" ("review_feedback_id");
-
-
-
 CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public"."knowledge_suggestion_doc_mappings" USING "btree" ("knowledge_suggestion_id", "github_doc_file_path_id");
 
 
 
-CREATE INDEX "membership_invites_email_idx" ON "public"."membership_invites" USING "btree" ("email");
-
-
-
-CREATE INDEX "membership_invites_org_id_idx" ON "public"."membership_invites" USING "btree" ("organization_id");
-
-
-
 CREATE UNIQUE INDEX "migration_pull_request_id_key" ON "public"."migrations" USING "btree" ("pull_request_id");
-
-
-
-CREATE INDEX "organization_member_organization_id_idx" ON "public"."organization_members" USING "btree" ("organization_id");
-
-
-
-CREATE INDEX "organization_member_user_id_idx" ON "public"."organization_members" USING "btree" ("user_id");
 
 
 
@@ -554,6 +645,30 @@ CREATE UNIQUE INDEX "pull_request_repository_id_pull_number_key" ON "public"."pu
 
 
 CREATE UNIQUE INDEX "repository_owner_name_key" ON "public"."repositories" USING "btree" ("owner", "name");
+
+
+
+CREATE INDEX "idx_project_organization_id" ON "public"."projects" USING "btree" ("organization_id");
+
+
+
+CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."review_feedback_comments" USING "btree" ("review_feedback_id");
+
+
+
+CREATE INDEX "membership_invites_email_idx" ON "public"."membership_invites" USING "btree" ("email");
+
+
+
+CREATE INDEX "membership_invites_org_id_idx" ON "public"."membership_invites" USING "btree" ("organization_id");
+
+
+
+CREATE INDEX "organization_member_organization_id_idx" ON "public"."organization_members" USING "btree" ("organization_id");
+
+
+
+CREATE INDEX "organization_member_user_id_idx" ON "public"."organization_members" USING "btree" ("user_id");
 
 
 
@@ -608,12 +723,12 @@ ALTER TABLE ONLY "public"."organization_members"
 
 
 ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
-    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_knowledge_suggestio" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_knowledge_suggestion_id_f" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
 ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
-    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_overall_review_id_f" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "overall_review_knowledge_suggestion_mapping_overall_review_id_fkey" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -627,11 +742,6 @@ ALTER TABLE ONLY "public"."overall_reviews"
 
 
 
-ALTER TABLE ONLY "public"."projects"
-    ADD CONSTRAINT "project_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
-
 ALTER TABLE ONLY "public"."project_repository_mappings"
     ADD CONSTRAINT "project_repository_mapping_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -639,6 +749,11 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 ALTER TABLE ONLY "public"."project_repository_mappings"
     ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."projects"
+    ADD CONSTRAINT "project_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -657,16 +772,6 @@ ALTER TABLE ONLY "public"."review_feedback_comments"
 
 
 
-ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
-    ADD CONSTRAINT "review_feedback_knowledge_suggesti_knowledge_suggestion_id_fkey" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id");
-
-
-
-ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
-    ADD CONSTRAINT "review_feedback_knowledge_suggestion_ma_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id");
-
-
-
 ALTER TABLE ONLY "public"."review_feedbacks"
     ADD CONSTRAINT "review_feedback_overall_review_id_fkey" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -675,6 +780,9 @@ ALTER TABLE ONLY "public"."review_feedbacks"
 ALTER TABLE ONLY "public"."review_suggestion_snippets"
     ADD CONSTRAINT "review_suggestion_snippet_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
+
+
+ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
@@ -717,9 +825,6 @@ CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."project
 
 COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."projects" IS 'Authenticated users can only update projects in organizations they are members of';
 
-
-
-ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "service_role_can_delete_all_projects" ON "public"."projects" FOR DELETE TO "service_role" USING (true);
@@ -976,15 +1081,15 @@ GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "service_role";
 
 
 
+
+
+
 GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "anon";
 GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "authenticated";
 GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "anon";
-GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "authenticated";
-GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "service_role";
 
 
 
@@ -994,9 +1099,24 @@ GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "service_role";
+
+
+
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."membership_invites" TO "anon";
 GRANT ALL ON TABLE "public"."membership_invites" TO "authenticated";
 GRANT ALL ON TABLE "public"."membership_invites" TO "service_role";
+
+
+
 
 
 
@@ -1006,9 +1126,6 @@ GRANT ALL ON TABLE "public"."migrations" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."organization_members" TO "anon";
-GRANT ALL ON TABLE "public"."organization_members" TO "authenticated";
-GRANT ALL ON TABLE "public"."organization_members" TO "service_role";
 
 
 
@@ -1018,9 +1135,15 @@ GRANT ALL ON TABLE "public"."organizations" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "anon";
-GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "authenticated";
-GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "service_role";
+GRANT ALL ON TABLE "public"."organization_members" TO "anon";
+GRANT ALL ON TABLE "public"."organization_members" TO "authenticated";
+GRANT ALL ON TABLE "public"."organization_members" TO "service_role";
+
+
+
+
+
+
 
 
 
@@ -1030,9 +1153,15 @@ GRANT ALL ON TABLE "public"."overall_reviews" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."project_repository_mappings" TO "anon";
-GRANT ALL ON TABLE "public"."project_repository_mappings" TO "authenticated";
-GRANT ALL ON TABLE "public"."project_repository_mappings" TO "service_role";
+GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "service_role";
+
+
+
+
+
+
 
 
 
@@ -1042,9 +1171,24 @@ GRANT ALL ON TABLE "public"."projects" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."project_repository_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."project_repository_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."project_repository_mappings" TO "service_role";
+
+
+
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."pull_requests" TO "anon";
 GRANT ALL ON TABLE "public"."pull_requests" TO "authenticated";
 GRANT ALL ON TABLE "public"."pull_requests" TO "service_role";
+
+
+
 
 
 
@@ -1054,21 +1198,27 @@ GRANT ALL ON TABLE "public"."repositories" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."review_feedback_comments" TO "anon";
-GRANT ALL ON TABLE "public"."review_feedback_comments" TO "authenticated";
-GRANT ALL ON TABLE "public"."review_feedback_comments" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."review_feedback_knowledge_suggestion_mappings" TO "anon";
-GRANT ALL ON TABLE "public"."review_feedback_knowledge_suggestion_mappings" TO "authenticated";
-GRANT ALL ON TABLE "public"."review_feedback_knowledge_suggestion_mappings" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."review_feedbacks" TO "anon";
 GRANT ALL ON TABLE "public"."review_feedbacks" TO "authenticated";
 GRANT ALL ON TABLE "public"."review_feedbacks" TO "service_role";
+
+
+
+
+
+
+GRANT ALL ON TABLE "public"."review_feedback_comments" TO "anon";
+GRANT ALL ON TABLE "public"."review_feedback_comments" TO "authenticated";
+GRANT ALL ON TABLE "public"."review_feedback_comments" TO "service_role";
+
+
+
+
+
+
 
 
 
@@ -1095,53 +1245,20 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQ
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
 
-
-
-
-
-
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
-
-
-
-
-
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 RESET ALL;
+
+--
+-- Dumped schema changes for auth and storage
+--
+
+CREATE OR REPLACE TRIGGER "on_auth_user_created" AFTER INSERT ON "auth"."users" FOR EACH ROW EXECUTE FUNCTION "public"."handle_new_user"();

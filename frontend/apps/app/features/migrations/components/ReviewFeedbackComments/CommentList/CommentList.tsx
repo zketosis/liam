@@ -6,7 +6,7 @@ import { getReviewFeedbackComments } from '../../../actions/reviewFeedbackCommen
 import styles from './CommentList.module.css'
 
 interface CommentListProps {
-  reviewFeedbackId: number
+  reviewFeedbackId: string
   refreshTrigger: number
   onCommentsLoaded?: (count: number) => void
 }
@@ -79,7 +79,7 @@ export const CommentList = ({
               <span>👤 {comment.user.name}</span>
             </div>
             <div className={styles.commentDate}>
-              {new Date(comment.createdAt).toLocaleString('en-US', {
+              {new Date(comment.created_at).toLocaleString('en-US', {
                 dateStyle: 'medium',
                 timeStyle: 'short',
                 hour12: false,

@@ -2,7 +2,7 @@
 
 import { getLastCommit } from '@liam-hq/github'
 
-// サーバーアクションとしてデータ取得関数を定義
+// define the data fetching function as a server action
 export async function fetchLastCommitData(
   installationId: number,
   owner: string,

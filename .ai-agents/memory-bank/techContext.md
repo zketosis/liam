@@ -53,7 +53,7 @@ These documents should be consulted when creating or reviewing database migratio
 
 Recent schema enhancements include:
 
-1. **KnowledgeSuggestion Reasoning Field**: Added a `reasoning` TEXT field to the KnowledgeSuggestion table to store the rationale behind schema override update suggestions. This helps users understand the context and reasoning behind suggestions, enabling more informed decisions when approving them.
+1. **knowledge_suggestions Reasoning Field**: Added a `reasoning` TEXT field to the knowledge_suggestions table to store the rationale behind schema override update suggestions. This helps users understand the context and reasoning behind suggestions, enabling more informed decisions when approving them.
 
 ### Supabase Migration Workflow
 

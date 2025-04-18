@@ -4,12 +4,12 @@ import { createClient } from '@/libs/db/server'
 import * as v from 'valibot'
 
 const requestSchema = v.object({
-  issueId: v.pipe(v.number()),
+  issueId: v.pipe(v.string()),
   resolutionComment: v.optional(v.nullable(v.string())),
 })
 
 export const resolveReviewFeedback = async (data: {
-  issueId: number
+  issueId: string
   resolutionComment?: string | null
 }) => {
   const parsedData = v.safeParse(requestSchema, data)
@@ -24,11 +24,11 @@ export const resolveReviewFeedback = async (data: {
     const supabase = await createClient()
 
     const { data: updatedIssue, error } = await supabase
-      .from('ReviewFeedback')
+      .from('review_feedbacks')
       .update({
-        resolvedAt: new Date().toISOString(),
-        resolutionComment: resolutionComment || null,
-        updatedAt: new Date().toISOString(),
+        resolved_at: new Date().toISOString(),
+        resolution_comment: resolutionComment || null,
+        updated_at: new Date().toISOString(),
       })
       .eq('id', issueId)
       .select()

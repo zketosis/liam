@@ -20,7 +20,7 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
   // Use the shared context instead of local state
   const { feedbacks, updateFeedback } = useReviewFeedbacks()
 
-  const handleResolve = async (feedbackId: number, comment: string) => {
+  const handleResolve = async (feedbackId: string, comment: string) => {
     try {
       // Call the server action to update the database
       await resolveReviewFeedback({
@@ -30,8 +30,8 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
 
       // Update the feedback in the shared context for immediate UI update
       updateFeedback(feedbackId, {
-        resolvedAt: new Date().toISOString(),
-        resolutionComment: comment,
+        resolved_at: new Date().toISOString(),
+        resolution_comment: comment,
       })
     } catch (err) {
       console.error('Error resolving feedback:', err)
@@ -40,8 +40,8 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
 
   const sortedFeedbacks = [...feedbacks].sort((a, b) => {
     // First sort by resolved status (unresolved first)
-    if (a.resolvedAt && !b.resolvedAt) return 1
-    if (!a.resolvedAt && b.resolvedAt) return -1
+    if (a.resolved_at && !b.resolved_at) return 1
+    if (!a.resolved_at && b.resolved_at) return -1
 
     // Then sort by severity
     const severityOrder = {
@@ -64,7 +64,7 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
             className={clsx(
               styles.reviewFeedback,
               styles[`severity${feedback.severity}`],
-              feedback.resolvedAt && styles.resolved,
+              feedback.resolved_at && styles.resolved,
             )}
           >
             <div className={styles.feedbackHeader}>
@@ -82,7 +82,7 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
                     description: feedback.description || '',
                     suggestion: feedback.suggestion || '',
                     snippets:
-                      feedback.suggestionSnippets?.map(
+                      feedback.review_suggestion_snippets?.map(
                         (snippet: { filename: string; snippet: string }) => ({
                           filename: snippet.filename,
                           snippet: snippet.snippet,
@@ -93,8 +93,8 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
                 />
                 <ResolveButton
                   feedbackId={feedback.id}
-                  isResolved={!!feedback.resolvedAt}
-                  resolutionComment={feedback.resolutionComment}
+                  isResolved={!!feedback.resolved_at}
+                  resolutionComment={feedback.resolution_comment}
                   onResolve={(comment) => handleResolve(feedback.id, comment)}
                 />
               </div>
@@ -106,8 +106,8 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
                 <p>{feedback.suggestion}</p>
               </div>
             )}
-            {feedback.suggestionSnippets?.map(
-              (snippet: { filename: string; snippet: string; id: number }) => (
+            {feedback.review_suggestion_snippets?.map(
+              (snippet: { filename: string; snippet: string; id: string }) => (
                 <div key={snippet.filename} className={styles.snippetContainer}>
                   <div className={styles.snippetHeader}>
                     <span className={styles.fileIcon}>📄</span>
@@ -119,24 +119,24 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
                 </div>
               ),
             )}
-            {feedback.resolvedAt && (
+            {feedback.resolved_at && (
               <div className={styles.resolvedInfo}>
                 <span className={styles.resolvedIcon}>✓</span>
                 <span className={styles.resolvedText}>
                   Resolved on{' '}
-                  {new Date(feedback.resolvedAt).toLocaleString('en-US', {
+                  {new Date(feedback.resolved_at).toLocaleString('en-US', {
                     dateStyle: 'medium',
                     timeStyle: 'short',
                     hour12: false,
                   })}
                 </span>
-                {feedback.resolutionComment && (
+                {feedback.resolution_comment && (
                   <div className={styles.resolutionComment}>
                     <p className={styles.resolutionCommentTitle}>
                       Resolution Comment:
                     </p>
                     <p className={styles.resolutionCommentText}>
-                      {feedback.resolutionComment}
+                      {feedback.resolution_comment}
                     </p>
                   </div>
                 )}
