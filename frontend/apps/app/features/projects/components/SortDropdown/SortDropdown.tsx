@@ -31,11 +31,17 @@ export const SortDropdown: FC<SortDropdownProps> = ({
 }) => {
   const [sortOption, setSortOption] = useState<SortOption>(initialSortOption)
 
+  // Type guard to check if a string is a valid SortOption
+  const isSortOption = (value: string): value is SortOption => {
+    return SORT_OPTIONS.some((option) => option.value === value)
+  }
+
   const handleSortChange = (value: string) => {
-    const option = value as SortOption
-    setSortOption(option)
-    if (onSortChange) {
-      onSortChange(option)
+    if (isSortOption(value)) {
+      setSortOption(value)
+      if (onSortChange) {
+        onSortChange(value)
+      }
     }
   }
 
