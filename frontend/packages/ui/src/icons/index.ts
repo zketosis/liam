@@ -50,4 +50,5 @@ export {
   ChevronRight,
   Search,
   GitBranch,
+  ArrowUpRight,
 } from 'lucide-react'
