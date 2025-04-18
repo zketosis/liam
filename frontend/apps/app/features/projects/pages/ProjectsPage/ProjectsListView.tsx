@@ -17,15 +17,19 @@ import {
 } from '../../types'
 import styles from './ProjectsPage.module.css'
 
-interface ClientProjectsViewProps {
+interface ProjectsListViewProps {
   initialProjects: (Tables<'projects'> | ProjectWithLastCommit)[] | null
   organizationId?: string
 }
 
-export function ClientProjectsView({
+/**
+ * Client component for displaying, searching, and sorting projects
+ * Receives projects with commit data from the server component
+ */
+export function ProjectsListView({
   initialProjects,
   organizationId,
-}: ClientProjectsViewProps) {
+}: ProjectsListViewProps) {
   const [sortOption, setSortOption] = useState<SortOption>('activity')
   const { searchResult, searchProjects } = useProjectSearch(
     organizationId,

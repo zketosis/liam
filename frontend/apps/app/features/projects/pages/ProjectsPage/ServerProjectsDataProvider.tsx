@@ -3,21 +3,25 @@
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { fetchLastCommitData } from '../../components/ProjectItem/LastCommitData'
 import type { ProjectWithLastCommit } from '../../types'
-import { ClientProjectsView } from './ClientProjectsView'
+import { ProjectsListView } from './ProjectsListView'
 
-interface ProjectsWithCommitDataProps {
+interface ServerProjectsDataProviderProps {
   projects: Tables<'projects'>[] | null
   organizationId?: string
 }
 
-export async function ProjectsWithCommitData({
+/**
+ * Server component that enhances projects with commit data before passing to the client
+ * This allows us to fetch commit data on the server for better performance
+ */
+export async function ServerProjectsDataProvider({
   projects,
   organizationId,
-}: ProjectsWithCommitDataProps) {
+}: ServerProjectsDataProviderProps) {
   if (!projects || projects.length === 0) {
     // Pass null/empty projects directly to client component
     return (
-      <ClientProjectsView
+      <ProjectsListView
         initialProjects={projects}
         organizationId={organizationId}
       />
@@ -70,7 +74,7 @@ export async function ProjectsWithCommitData({
 
     // Return client component with enhanced project data
     return (
-      <ClientProjectsView
+      <ProjectsListView
         initialProjects={projectsWithDates}
         organizationId={organizationId}
       />
@@ -79,7 +83,7 @@ export async function ProjectsWithCommitData({
     console.error('Error processing projects with commit data:', error)
     // Fallback to original projects if there's an error
     return (
-      <ClientProjectsView
+      <ProjectsListView
         initialProjects={projects}
         organizationId={organizationId}
       />

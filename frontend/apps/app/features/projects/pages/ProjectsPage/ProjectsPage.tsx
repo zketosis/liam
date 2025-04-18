@@ -1,7 +1,7 @@
 import { urlgen } from '@/utils/routes'
 import { EmptyProjectsState } from '../../components/EmptyProjectsState'
 import styles from './ProjectsPage.module.css'
-import { ProjectsWithCommitData } from './ProjectsWithCommitData'
+import { ServerProjectsDataProvider } from './ServerProjectsDataProvider'
 import {
   getCurrentOrganization,
   getUserOrganizations,
@@ -36,7 +36,7 @@ export async function ProjectsPage({
             }
           />
         ) : (
-          <ProjectsWithCommitData
+          <ServerProjectsDataProvider
             projects={projects}
             organizationId={organizationId}
           />
