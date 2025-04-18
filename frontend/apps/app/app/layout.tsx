@@ -4,6 +4,7 @@ import type React from 'react'
 import './globals.css'
 import { GTMConsent, GtagScript } from '@/libs/gtm'
 import { GTM_ID } from '@/libs/gtm'
+import { ToastProvider } from '@liam-hq/ui'
 import { GoogleTagManager } from '@next/third-parties/google'
 
 const montserrat = Montserrat({
@@ -40,7 +41,9 @@ export default function RootLayout({
         <GtagScript />
         <GTMConsent />
       </>
-      <body className={montserrat.className}>{children}</body>
+      <body className={montserrat.className}>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   )
 }

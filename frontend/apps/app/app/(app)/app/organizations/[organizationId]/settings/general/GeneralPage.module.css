@@ -5,6 +5,13 @@
   width: 100%;
 }
 
+.heading {
+  font-size: var(--font-size-3);
+  font-weight: 500;
+  color: var(--global-foreground);
+  margin-bottom: var(--spacing-4);
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -66,6 +73,18 @@
   font-size: var(--font-size-2);
   color: var(--global-mute-text);
   margin: 0;
+}
+
+.errorText {
+  font-size: var(--font-size-2);
+  color: var(--color-red-500);
+  margin: 4px 0 0;
+}
+
+.successText {
+  font-size: var(--font-size-2);
+  color: var(--primary-color);
+  margin: 4px 0 0;
 }
 
 .dangerText {
