@@ -411,6 +411,11 @@ ALTER TABLE ONLY "public"."github_schema_file_paths"
 
 
 
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
     ADD CONSTRAINT "knowledge_suggestion_doc_mapping_pkey" PRIMARY KEY ("id");
 
@@ -418,11 +423,6 @@ ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
 
 ALTER TABLE ONLY "public"."knowledge_suggestions"
     ADD CONSTRAINT "knowledge_suggestion_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."invitations"
-    ADD CONSTRAINT "membership_invites_pkey" PRIMARY KEY ("id");
 
 
 
@@ -517,15 +517,15 @@ CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."revie
 
 
 
+CREATE INDEX "invitations_email_idx" ON "public"."invitations" USING "btree" ("email");
+
+
+
+CREATE INDEX "invitations_organization_id_idx" ON "public"."invitations" USING "btree" ("organization_id");
+
+
+
 CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public"."knowledge_suggestion_doc_mappings" USING "btree" ("knowledge_suggestion_id", "github_doc_file_path_id");
-
-
-
-CREATE INDEX "membership_invites_email_idx" ON "public"."invitations" USING "btree" ("email");
-
-
-
-CREATE INDEX "membership_invites_org_id_idx" ON "public"."invitations" USING "btree" ("organization_id");
 
 
 
@@ -567,6 +567,16 @@ ALTER TABLE ONLY "public"."github_schema_file_paths"
 
 
 
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_invite_by_user_id_fkey" FOREIGN KEY ("invite_by_user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
     ADD CONSTRAINT "knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey" FOREIGN KEY ("github_doc_file_path_id") REFERENCES "public"."github_doc_file_paths"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -579,16 +589,6 @@ ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
 
 ALTER TABLE ONLY "public"."knowledge_suggestions"
     ADD CONSTRAINT "knowledge_suggestion_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."invitations"
-    ADD CONSTRAINT "membership_invites_invite_by_user_id_fkey" FOREIGN KEY ("invite_by_user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."invitations"
-    ADD CONSTRAINT "membership_invites_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
 
 
 

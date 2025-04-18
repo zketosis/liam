@@ -128,14 +128,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'membership_invites_invite_by_user_id_fkey'
+            foreignKeyName: 'invitations_invite_by_user_id_fkey'
             columns: ['invite_by_user_id']
             isOneToOne: false
             referencedRelation: 'users'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'membership_invites_organization_id_fkey'
+            foreignKeyName: 'invitations_organization_id_fkey'
             columns: ['organization_id']
             isOneToOne: false
             referencedRelation: 'organizations'
