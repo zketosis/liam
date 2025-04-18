@@ -8,8 +8,6 @@ import {
 } from './getCurrentOrganization'
 import { getProjects } from './getProjects'
 
-export const runtime = 'edge'
-
 export async function ProjectsPage({
   organizationId,
 }: {
