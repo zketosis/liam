@@ -5,7 +5,21 @@ export const getProjects = async (organizationId?: string) => {
 
   let query = supabase
     .from('projects')
-    .select('id, name, created_at, updated_at, organization_id')
+    .select(`
+      id,
+      name,
+      created_at,
+      updated_at,
+      organization_id,
+      project_repository_mappings:project_repository_mappings(
+        repository:repositories(
+          id,
+          name,
+          owner,
+          installation_id
+        )
+      )
+    `)
     .order('id', { ascending: false })
 
   if (organizationId) {

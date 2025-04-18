@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
   // NOTE: Exclude Prisma-related packages from the bundle
   // These packages are installed separately in the node_modules/@prisma directory
   // Excluding them prevents `Error: Cannot find module 'fs'` errors in the build process
+  images: {
+    domains: ['avatars.githubusercontent.com'],
+  },
   webpack: (config) => {
     if (Array.isArray(config.externals)) {
       config.externals.push(
