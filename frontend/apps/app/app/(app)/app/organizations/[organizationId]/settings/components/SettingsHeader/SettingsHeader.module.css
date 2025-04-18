@@ -1,0 +1,32 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4) 0;
+  border-bottom: 1px solid var(--global-border);
+}
+
+.tabsList {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.tabsTrigger {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-4);
+  color: var(--global-mute-text);
+  background: transparent;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabsTrigger:hover {
+  color: var(--global-foreground);
+  background-color: var(--global-muted-background);
+}
+
+.tabsTrigger[data-state='active'] {
+  color: var(--global-foreground);
+  background-color: var(--global-muted-background);
+}
