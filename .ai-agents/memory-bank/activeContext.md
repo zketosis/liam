@@ -4,49 +4,64 @@
 
 The current focus is on enhancing the Reviewer User experience with AI-driven analysis and suggestions integrated into the migration review process. Key areas of active development include:
 
-1. **Schema Metadata Generation Pipeline**: Improving the pipeline that creates and stores metadata suggestions based on PR reviews.
+1. **Schema Override Generation Pipeline**: Improving the pipeline that creates and stores schema override suggestions based on PR reviews.
 2. **Schema Change Detection**: Enhancing the detection system to better identify and analyze database migrations.
 3. **Review Prompt Template**: Refining the template to provide more detailed and contextual analysis.
 
 ## Recent Changes
 
-1. **Switched AI Model from Anthropic to OpenAI**: Changed the AI model used in prompt generators from ChatAnthropic to ChatOpenAI:
-   - Updated all three prompt generator files (generateDocsSuggestion, generateReview, generateSchemaMeta) to use ChatOpenAI
+1. **Updated SettingsHeader Component with Figma Design**: Enhanced the SettingsHeader component to match Figma design specifications:
+   - Created three new icon components in the UI package: `BookMarked`, `Users`, and `GitPullRequestArrow`
+   - Updated the UI package's index.ts to export the new icons
+   - Modified the SettingsHeader component to use the specified icons:
+     - general tab: BookMarked icon
+     - members tab: Users icon
+     - billing tab: GitPullRequestArrow icon
+     - projects tab: LayoutGrid icon (already exported from lucide-react)
+   - Updated the CSS styling to match the Figma design, including proper spacing, font weights, and active tab indicator
+   - This implementation follows the project's pattern of using Lucide React icons with a standardized strokeWidth of 1.5
+   - Refactored the component to use a more maintainable approach:
+     - Updated the SettingsTab interface to include an icon property
+     - Created a function to initialize tab icons at runtime
+     - Removed the need for a separate switch statement by storing icons with their respective tabs
+
+2. **Switched AI Model from Anthropic to OpenAI**: Changed the AI model used in prompt generators from ChatAnthropic to ChatOpenAI:
+   - Updated all three prompt generator files (generateDocsSuggestion, generateReview, generateSchemaOverride) to use ChatOpenAI
    - Changed the model from 'claude-3-7-sonnet-latest' to 'o3-mini-2025-01-31'
-   - Created index.ts files for the generateSchemaMeta and generateDocsSuggestion directories
+   - Created index.ts files for the generateSchemaOverride and generateDocsSuggestion directories
    - Updated the main prompts/index.ts file to export all three prompt generators
    - Updated package.json to replace @langchain/anthropic with @langchain/openai v0.5.5
    - This change standardizes the AI model usage across the application and potentially improves performance and cost-efficiency
 
-2. **Added Reasoning Field to KnowledgeSuggestion**: Enhanced the KnowledgeSuggestion table to store the rationale behind schema metadata update suggestions:
+2. **Added Reasoning Field to knowledge_suggestions**: Enhanced the knowledge_suggestions table to store the rationale behind schema override update suggestions:
    - Created a migration to add a `reasoning` TEXT field with a default empty string value
    - Updated the database.types.ts file to include the new field in the type definitions
    - Modified the KnowledgeSuggestionDetailPage.tsx component to display the reasoning field when available
-   - This enhancement helps users understand the context and rationale behind schema metadata update suggestions, enabling more informed decisions when approving suggestions
+   - This enhancement helps users understand the context and rationale behind schema override update suggestions, enabling more informed decisions when approving suggestions
 
-2. **OverallReview to KnowledgeSuggestion Relationship**: Implemented a relationship between OverallReview and KnowledgeSuggestion tables:
-   - Created a new intermediate table `OverallReviewKnowledgeSuggestionMapping` to link OverallReview and KnowledgeSuggestion
-   - Modified `processCreateKnowledgeSuggestion.ts` to accept an optional `overallReviewId` parameter
-   - Implemented `createOverallReviewMapping` function to create mappings in the OverallReviewKnowledgeSuggestionMapping table
-   - Enhanced the MigrationDetailPage to fetch and display related KnowledgeSuggestions
-   - Updated UI to show KnowledgeSuggestions in a dedicated section on the MigrationDetailPage
+2. **overall_reviews to knowledge_suggestions Relationship**: Implemented a relationship between overall_reviews and knowledge_suggestions tables:
+   - Created a new intermediate table `overall_review_knowledge_suggestion_mappings` to link overall_reviews and knowledge_suggestions
+   - Modified `processCreateKnowledgeSuggestion.ts` to accept an optional `overall_review_id` parameter
+   - Implemented `createOverallReviewMapping` function to create mappings in the overall_review_knowledge_suggestion_mappings table
+   - Enhanced the MigrationDetailPage to fetch and display related knowledge_suggestions
+   - Updated UI to show knowledge_suggestions in a dedicated section on the MigrationDetailPage
    - Implemented proper navigation using the urlgen utility for type-safe route generation
-   - This allows users to track and navigate to KnowledgeSuggestions from the MigrationDetailPage
+   - This allows users to track and navigate to knowledge_suggestions from the MigrationDetailPage
 
-2. **Optimized KnowledgeSuggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
+2. **Optimized knowledge_suggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
    - Implemented content comparison to check if document content has changed before creating a suggestion
    - Refactored the function into smaller, focused helper functions to reduce cognitive complexity
    - Improved type safety with proper type definitions and return types
-   - Optimized database queries by caching the GitHubDocFilePath query result
+   - Optimized database queries by caching the github_doc_file_paths query result
    - Enhanced error handling with more specific error messages
    - This optimization prevents duplicate suggestions when content hasn't changed
 
-2. **KnowledgeSuggestion and GitHubDocFilePath Integration**: Implemented a connection between KnowledgeSuggestion and GitHubDocFilePath tables:
-   - Created a new intermediate table `KnowledgeSuggestionDocMapping` to link KnowledgeSuggestion and GitHubDocFilePath
+2. **knowledge_suggestions and github_doc_file_paths Integration**: Implemented a connection between knowledge_suggestions and github_doc_file_paths tables:
+   - Created a new intermediate table `knowledge_suggestion_doc_mappings` to link knowledge_suggestions and github_doc_file_paths
    - Modified `processCreateKnowledgeSuggestion.ts` to create mappings for existing docs when creating a Doc Suggestion
-   - Updated `approveKnowledgeSuggestion.ts` to create GitHubDocFilePath entries and mappings for new docs
+   - Updated `approveKnowledgeSuggestion.ts` to create github_doc_file_paths entries and mappings for new docs
    - Refactored code to reduce cognitive complexity and improve type safety
-   - This ensures that newly created Knowledge suggestions are properly included in reviews
+   - This ensures that newly created knowledge suggestions are properly included in reviews
 
 3. **Database Migration Documentation**: Created comprehensive documentation for the Supabase migration workflow:
    - Added detailed migration guidelines in `docs/migrationOpsContext.md`
@@ -69,18 +84,18 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Enhanced prompt templates to include PR description and comments sections
    - Updated all related files for consistent terminology
 
-6. **Schema Metadata Generation**: Implemented a new pipeline that creates and stores metadata suggestions based on PR reviews, including:
-   - New task (`generateSchemaMetaSuggestionTask`) triggered after a review is saved
-   - Processing function (`processGenerateSchemaMeta`) for generating schema metadata suggestions
-   - Integration with `createKnowledgeSuggestionTask` to store generated metadata
-   - Enhanced prompt with current schema metadata context for more informed suggestions
+6. **Schema Override Generation**: Implemented a new pipeline that creates and stores schema override suggestions based on PR reviews, including:
+   - New task (`generateSchemaOverrideSuggestionTask`) triggered after a review is saved
+   - Processing function (`processGenerateSchemaOverride`) for generating schema override suggestions
+   - Integration with `createKnowledgeSuggestionTask` to store generated schema override
+   - Enhanced prompt with current schema override context for more informed suggestions
    - Added schema files content to the AI prompt for better context and more accurate suggestions
    - Created reusable utility function for fetching schema files content
-   - Type-safe validation of existing schema metadata using Valibot
+   - Type-safe validation of existing schema override using Valibot
 
 7. **Database Schema Optimization**:
    - Removed unused Doc and DocVersion models
-   - Renamed `WatchSchemaFilePattern` table to `GitHubSchemaFilePath`
+   - Renamed `watch_schema_file_patterns` table to `github_schema_file_paths`
    - Changed from pattern matching to direct path comparison for schema file management
 
 8. **Supabase JS Integration**:
@@ -137,7 +152,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 4. **Schema File Management**:
    - Using direct path comparison instead of pattern matching
    - Providing more precise and efficient approach
-   - Aligning with existing GitHubDocFilePath model
+   - Aligning with existing github_doc_file_paths model
 
 5. **Function Organization**:
    - Breaking down complex functions into smaller, focused helper functions
@@ -218,7 +233,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 4. **AI Components**:
    - Review prompt template quality directly impacts analysis quality
    - Continuous learning is essential for improving accuracy
-   - Schema metadata generation requires accurate analysis of changes
+   - Schema override generation requires accurate analysis of changes
 
 5. **Document Management**:
    - GitHub integration provides more direct document handling

@@ -140,6 +140,7 @@
   --spacing-20: 80px;
   --spacing-30: 120px;
   --spacing-275: 275px;
+  --spacing-3half: 14px;
   --spacing-2half: 10px;
   --spacing-1half: 6px;
   --spacing-half: 2px;
@@ -155,6 +156,8 @@
   --primary-accent-overlay: rgba(29, 237, 131, 0.1);
   --primary-on-white-shape: #36c271;
   --primary-on-white-text: #008543;
+  --primary-overlay-10: rgba(29, 237, 131, 0.1);
+  --primary-overlay-40: rgba(29, 237, 131, 0.4);
   --info-background: #ffffff;
   --info-foreground: #003f45;
   --error-background: #ffffff;

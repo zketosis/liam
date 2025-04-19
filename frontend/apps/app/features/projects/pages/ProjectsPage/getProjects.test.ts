@@ -5,9 +5,9 @@ import { getProjects } from './getProjects'
 describe('getProjects', () => {
   it.skip('should return projects with the correct structure', async () => {
     const supabase = await createClient()
-    await supabase.from('Project').insert({
+    await supabase.from('projects').insert({
       name: 'Test Project',
-      updatedAt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
 
     const projects = await getProjects()
@@ -16,6 +16,6 @@ describe('getProjects', () => {
     const project = projects?.[0]
     expect(project).toHaveProperty('id')
     expect(project).toHaveProperty('name')
-    expect(project).toHaveProperty('createdAt')
+    expect(project).toHaveProperty('created_at')
   })
 })

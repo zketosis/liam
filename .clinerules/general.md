@@ -44,7 +44,7 @@ Follow these rules when you write code:
 
   // Better: Use valibot for runtime type validation
   const UserSchema = object({
-    id: number(),
+    id: string(),
     name: string(),
     email: string(),
   });
@@ -56,14 +56,15 @@ Follow these rules when you write code:
   ```typescript
   // Avoid defining database types manually
   type ReviewIssue = {
-    id: number;
+    id: string;
     description: string;
     // ...
   };
 
   // Better: Import types from database.types
-  import type { Tables } from '@liam-hq/db/supabase/database.types';
-  type ReviewIssue = Tables<'ReviewIssue'>;
+  import type { Tables } from "@liam-hq/db/supabase/database.types";
+  type ReviewIssue = Tables<"ReviewIssue">;
+  ```
 
 - Use type predicates or `instanceof` checks for DOM element type narrowing:
 
@@ -89,6 +90,20 @@ Follow these rules when you write code:
   - If data should be fetched on the server, delegate it to a server component.
   - Use client-side fetching only when necessary, ensuring performance and UX considerations.
 
+### Supabase Error Handling Guidelines
+
+- Avoid wrapping standard Supabase.js calls in try-catch blocks unnecessarily:
+
+  ```typescript
+  // Preferred approach - check error property
+  const { data, error } = await supabase.from("table").select("*");
+  if (error) {
+    // Handle error appropriately
+    return;
+  }
+  // Continue with data
+  ```
+
 #### Component Implementation Guidelines
 
 - Avoid using `default export`; always use `named export`.
@@ -97,6 +112,8 @@ Follow these rules when you write code:
 - When using icons, always import them from `@liam-hq/ui`.
 - When implementing designs from Figma using the Figma MCP tool, always reference 'frontend/packages/ui/src/styles/Dark/variables.css' for colors, padding, gap, spacing, and borderRadius values.
 - When specifying colors, prioritize semantic color definitions (e.g., --primary-accent, --global-foreground) and avoid using --color- prefixed variables whenever possible.
+- When specifying font sizes, use the font-size variables from 'frontend/packages/ui/src/styles/Mode 1/variables.css' (e.g., --font-size-3, --font-size-4) instead of hardcoded pixel values.
+- When specifying font families, use the font-family variables (e.g., --main-font, --code-font) instead of hardcoded font names. Use --main-font for regular text, --code-font for monospace text, and --main-font-ja for Japanese text.
 
 ### Documentation Guidelines
 

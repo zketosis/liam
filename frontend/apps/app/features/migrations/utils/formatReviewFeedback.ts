@@ -47,14 +47,14 @@ export function formatReviewFeedback({
  */
 export function formatAllReviewFeedbacks(
   feedbacks: Array<{
-    id: number
+    id: string
     category: string
     severity: string
     description: string
     suggestion: string
-    resolvedAt?: string | null
-    suggestionSnippets: Array<{
-      id: number
+    resolved_at?: string | null
+    review_suggestion_snippets: Array<{
+      id: string
       filename: string
       snippet: string
     }>
@@ -62,7 +62,7 @@ export function formatAllReviewFeedbacks(
 ): string {
   // Filter feedbacks to only include critical severity and unresolved feedbacks
   const filteredFeedbacks = feedbacks.filter(
-    (feedback) => feedback.severity === 'CRITICAL' && !feedback.resolvedAt,
+    (feedback) => feedback.severity === 'CRITICAL' && !feedback.resolved_at,
   )
 
   if (filteredFeedbacks.length === 0) {
@@ -76,7 +76,7 @@ export function formatAllReviewFeedbacks(
         severity: feedback.severity,
         description: feedback.description,
         suggestion: feedback.suggestion,
-        snippets: feedback.suggestionSnippets.map((snippet) => ({
+        snippets: feedback.review_suggestion_snippets.map((snippet) => ({
           filename: snippet.filename,
           snippet: snippet.snippet,
         })),

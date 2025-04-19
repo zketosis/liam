@@ -3,18 +3,19 @@ import { getInstallationIdFromRepositoryId } from '../../functions/getInstallati
 import { createClient } from '../../libs/supabase'
 import {
   generateDocsSuggestionTask,
-  generateSchemaMetaSuggestionTask,
+  generateSchemaOverrideSuggestionTask,
 } from '../../trigger/jobs'
+import { kindToCategory } from '../../utils/categoryUtils'
 import type { ReviewResponse } from './generateReview'
 import { postCommentTask } from './postComment'
 
 export const processSaveReview = async (
   payload: ReviewResponse,
-): Promise<{ success: boolean; overallReviewId: number }> => {
+): Promise<{ success: boolean; overallReviewId: string }> => {
   try {
     const supabase = createClient()
     const { data: pullRequest, error: pullRequestError } = await supabase
-      .from('PullRequest')
+      .from('pull_requests')
       .select('*')
       .eq('id', payload.pullRequestId)
       .single()
@@ -28,14 +29,14 @@ export const processSaveReview = async (
     const now = new Date().toISOString()
 
     const { data: overallReview, error: overallReviewError } = await supabase
-      .from('OverallReview')
+      .from('overall_reviews')
       .insert({
-        projectId: payload.projectId,
-        pullRequestId: pullRequest.id,
-        reviewComment: payload.review.bodyMarkdown,
-        branchName: payload.branchName,
-        traceId: payload.traceId,
-        updatedAt: now,
+        project_id: payload.projectId,
+        pull_request_id: pullRequest.id,
+        review_comment: payload.review.bodyMarkdown,
+        branch_name: payload.branchName,
+        trace_id: payload.traceId,
+        updated_at: now,
       })
       .select()
       .single()
@@ -47,16 +48,19 @@ export const processSaveReview = async (
     }
 
     const reviewFeedbacks = payload.review.feedbacks.map((feedback) => ({
-      overallReviewId: overallReview.id,
+      overall_review_id: overallReview.id,
       category: mapCategoryEnum(feedback.kind),
       severity: mapSeverityEnum(feedback.severity),
       description: feedback.description,
       suggestion: feedback.suggestion,
-      updatedAt: now,
+      updated_at: now,
     }))
 
     const { data: insertedFeedbacks, error: reviewFeedbacksError } =
-      await supabase.from('ReviewFeedback').insert(reviewFeedbacks).select('id')
+      await supabase
+        .from('review_feedbacks')
+        .insert(reviewFeedbacks)
+        .select('id')
 
     if (reviewFeedbacksError || !insertedFeedbacks) {
       throw new Error(
@@ -70,7 +74,7 @@ export const processSaveReview = async (
         return reviewFeedback
           ? {
               feedback,
-              reviewFeedbackId: reviewFeedback.id,
+              review_feedback_id: reviewFeedback.id,
             }
           : null
       })
@@ -79,25 +83,25 @@ export const processSaveReview = async (
           item,
         ): item is {
           feedback: (typeof payload.review.feedbacks)[0]
-          reviewFeedbackId: number
+          review_feedback_id: string
         } => item !== null && item.feedback.severity !== 'POSITIVE',
       )
-      .flatMap(({ feedback, reviewFeedbackId }) =>
+      .flatMap(({ feedback, review_feedback_id }) =>
         feedback.suggestionSnippets.map((snippet) => ({
           ...snippet,
-          reviewFeedbackId,
-          updatedAt: now,
+          review_feedback_id,
+          updated_at: now,
         })),
       ) as Array<{
       filename: string
       snippet: string
-      reviewFeedbackId: number
-      updatedAt: string
+      review_feedback_id: string
+      updated_at: string
     }>
 
     const { data: insertedSuggestionSnippets, error: suggestionSnippetError } =
       await supabase
-        .from('ReviewSuggestionSnippet')
+        .from('review_suggestion_snippets')
         .insert(suggestionSnippet)
         .select('id')
 
@@ -117,38 +121,7 @@ export const processSaveReview = async (
   }
 }
 
-const mapCategoryEnum = (
-  category: string,
-):
-  | 'MIGRATION_SAFETY'
-  | 'DATA_INTEGRITY'
-  | 'PERFORMANCE_IMPACT'
-  | 'PROJECT_RULES_CONSISTENCY'
-  | 'SECURITY_OR_SCALABILITY' => {
-  const mapping: Record<
-    string,
-    | 'MIGRATION_SAFETY'
-    | 'DATA_INTEGRITY'
-    | 'PERFORMANCE_IMPACT'
-    | 'PROJECT_RULES_CONSISTENCY'
-    | 'SECURITY_OR_SCALABILITY'
-  > = {
-    'Migration Safety': 'MIGRATION_SAFETY',
-    'Data Integrity': 'DATA_INTEGRITY',
-    'Performance Impact': 'PERFORMANCE_IMPACT',
-    'Project Rules Consistency': 'PROJECT_RULES_CONSISTENCY',
-    'Security or Scalability': 'SECURITY_OR_SCALABILITY',
-    Unknown: 'MIGRATION_SAFETY', // Default to MIGRATION_SAFETY for unknown categories
-  }
-  const result = mapping[category]
-  if (!result) {
-    console.warn(
-      `Unknown category: ${category}, defaulting to MIGRATION_SAFETY`,
-    )
-    return 'MIGRATION_SAFETY'
-  }
-  return result
-}
+const mapCategoryEnum = kindToCategory
 
 const mapSeverityEnum = (
   severity:
@@ -198,7 +171,7 @@ export const saveReviewTask = task({
       })
 
       await generateDocsSuggestionTask.trigger({
-        reviewComment: payload.review.bodyMarkdown,
+        review: payload.review,
         projectId: payload.projectId,
         pullRequestNumber: payload.pullRequestNumber,
         owner: payload.owner,
@@ -209,8 +182,9 @@ export const saveReviewTask = task({
         overallReviewId,
       })
 
-      await generateSchemaMetaSuggestionTask.trigger({
+      await generateSchemaOverrideSuggestionTask.trigger({
         overallReviewId,
+        review: payload.review,
       })
 
       return { success: true }

@@ -1,5 +1,6 @@
-export * from './Building'
+export * from './BookMarked'
 export * from './BookText'
+export * from './Building'
 export * from './Check'
 export * from './ChevronDown'
 export * from './ChevronLeft'
@@ -18,6 +19,7 @@ export * from './Group'
 export * from './Lock'
 export * from './Megaphone'
 export * from './MessagesSquare'
+export * from './MessageSquareText'
 export * from './Minus'
 export * from './Menu'
 export * from './Plus'
@@ -35,6 +37,8 @@ export * from './CardinalityZeroOrOneLeftIcon'
 export * from './Eye'
 export * from './EyeClosed'
 export * from './FileText'
+export * from './GitPullRequestArrow'
+export * from './Users'
 
 export {
   Copy,
@@ -46,4 +50,8 @@ export {
   XCircle,
   LayoutGrid,
   Settings,
+  ChevronRight,
+  Search,
+  GitBranch,
+  ArrowUpRight,
 } from 'lucide-react'

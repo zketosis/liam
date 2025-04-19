@@ -4,7 +4,7 @@ export interface ProjectRepository {
   repository: {
     name: string
     owner: string
-    installationId: number
+    installation_id: number
   }
 }
 
@@ -14,25 +14,25 @@ export const getProjectRepository = async (
   try {
     const supabase = await createClient()
     const { data: project, error } = await supabase
-      .from('Project')
+      .from('projects')
       .select(`
         *,
-        ProjectRepositoryMapping:ProjectRepositoryMapping(
+        project_repository_mappings(
           *,
-          Repository:Repository(
-            name, owner, installationId
+          repositories(
+            name, owner, installation_id
           )
         )
       `)
-      .eq('id', Number(projectId))
+      .eq('id', projectId)
       .single()
 
     if (error) {
       return null
     }
 
-    const repository = project?.ProjectRepositoryMapping[0]?.Repository
-    if (!repository?.installationId || !repository.owner || !repository.name) {
+    const repository = project?.project_repository_mappings[0]?.repositories
+    if (!repository?.installation_id || !repository.owner || !repository.name) {
       console.error('Repository information not found')
       return null
     }
@@ -41,7 +41,7 @@ export const getProjectRepository = async (
       repository: {
         name: repository.name,
         owner: repository.owner,
-        installationId: Number(repository.installationId),
+        installation_id: repository.installation_id,
       },
     }
   } catch (error) {

@@ -1,4 +1,4 @@
-import { SCHEMA_OVERRIDE_FILE_PATH } from '@/app/(app)/app/projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]/constants'
+import { SCHEMA_OVERRIDE_FILE_PATH } from '@/features/schemas/constants'
 import { createClient } from '@/libs/db/server'
 import { schemaOverrideSchema, tableGroupsSchema } from '@liam-hq/db-structure'
 import { createOrUpdateFileContent, getFileContent } from '@liam-hq/github'
@@ -29,21 +29,21 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient()
     const { data: project } = await supabase
-      .from('Project')
+      .from('projects')
       .select(`
         *,
-        ProjectRepositoryMapping:ProjectRepositoryMapping(
+        project_repository_mappings(
           *,
-          Repository:Repository(
-            name, owner, installationId
+          repositories(
+            name, owner, installation_id
           )
         )
       `)
-      .eq('id', Number(projectId))
+      .eq('id', projectId)
       .single()
 
-    const repository = project?.ProjectRepositoryMapping[0].Repository
-    if (!repository?.installationId || !repository.owner || !repository.name) {
+    const repository = project?.project_repository_mappings[0].repositories
+    if (!repository?.installation_id || !repository.owner || !repository.name) {
       return NextResponse.json(
         { error: 'Repository information not found' },
         { status: 404 },
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       repositoryFullName,
       SCHEMA_OVERRIDE_FILE_PATH,
       branchOrCommit,
-      Number(repository.installationId),
+      Number(repository.installation_id),
     )
 
     const rawSchemaOverride = content
@@ -82,14 +82,14 @@ export async function POST(request: NextRequest) {
       SCHEMA_OVERRIDE_FILE_PATH,
       JSON.stringify(schemaOverride, null, 2),
       `Update ${SCHEMA_OVERRIDE_FILE_PATH}`,
-      Number(repository.installationId),
+      Number(repository.installation_id),
       branchOrCommit,
       sha || undefined,
     )
 
     if (!success) {
       return NextResponse.json(
-        { error: 'Failed to update schema metadata' },
+        { error: 'Failed to update schema override' },
         { status: 500 },
       )
     }

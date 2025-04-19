@@ -14,17 +14,17 @@ async function getProjectAndBranches(projectId: string) {
   try {
     const supabase = await createClient()
     const { data: project, error } = await supabase
-      .from('Project')
+      .from('projects')
       .select(`
         id,
         name,
-        ProjectRepositoryMapping:ProjectRepositoryMapping(
-          Repository:Repository(
-            id, name, owner, installationId
+        project_repository_mappings(
+          repositories(
+            id, name, owner, installation_id
           )
         )
       `)
-      .eq('id', Number(projectId))
+      .eq('id', projectId)
       .single()
 
     if (error || !project) {
@@ -32,10 +32,10 @@ async function getProjectAndBranches(projectId: string) {
     }
 
     const branchesByRepo = await Promise.all(
-      project.ProjectRepositoryMapping.map(async (mapping) => {
-        const repository = mapping.Repository
+      project.project_repository_mappings.map(async (mapping) => {
+        const repository = mapping.repositories
         const branches = await getRepositoryBranches(
-          Number(repository.installationId),
+          Number(repository.installation_id),
           repository.owner,
           repository.name,
         )

@@ -4,7 +4,7 @@ import { createClient } from '../libs/supabase'
 type KnowledgeType = 'SCHEMA' | 'DOCS'
 
 type CreateKnowledgeSuggestionPayload = {
-  projectId: number
+  projectId: string
   type: KnowledgeType
   title: string
   path: string
@@ -12,63 +12,68 @@ type CreateKnowledgeSuggestionPayload = {
   branch: string
   traceId?: string
   reasoning?: string
-  overallReviewId?: number
+  overallReviewId?: string
+  reviewFeedbackId?: string | null
 }
 
 type CreateKnowledgeSuggestionResult = {
-  suggestionId: number | null
+  suggestionId: string | null
   success: boolean
 }
 
 /**
  * Get repository information for a project
  */
-const getRepositoryInfo = async (projectId: number) => {
+const getRepositoryInfo = async (projectId: string) => {
   const supabase = createClient()
 
   const { data: project, error } = await supabase
-    .from('Project')
+    .from('projects')
     .select(`
       *,
-      repositoryMappings:ProjectRepositoryMapping(
+      project_repository_mappings(
         *,
-        repository:Repository(*)
+        repositories(*)
       )
     `)
     .eq('id', projectId)
     .single()
 
-  if (error || !project || !project.repositoryMappings?.[0]?.repository) {
+  if (
+    error ||
+    !project ||
+    !project.project_repository_mappings?.[0]?.repositories
+  ) {
     throw new Error('Repository information not found for the project')
   }
 
-  const repository = project.repositoryMappings[0].repository
+  const repository = project.project_repository_mappings[0].repositories
   return {
     owner: repository.owner,
     name: repository.name,
-    installationId: Number(repository.installationId),
+    installationId: repository.installation_id,
   }
 }
 
 type ContentCheckResult = {
   hasChanged: boolean
-  docFilePath: { id: number } | null
+  docFilePath: { id: string } | null
 }
 
 /**
  * Check if content has changed for a DOCS type suggestion
  */
 const hasContentChanged = async (
-  projectId: number,
+  projectId: string,
   path: string,
   existingContent: string | null,
   newContent: string,
 ): Promise<ContentCheckResult> => {
   const supabase = createClient()
   const { data: docFilePath } = await supabase
-    .from('GitHubDocFilePath')
+    .from('github_doc_file_paths')
     .select('id')
-    .eq('projectId', projectId)
+    .eq('project_id', projectId)
     .eq('path', path)
     .maybeSingle()
 
@@ -95,17 +100,17 @@ const hasContentChanged = async (
  * Create a knowledge suggestion doc mapping
  */
 const createDocMapping = async (
-  knowledgeSuggestionId: number,
-  docFilePathId: number,
+  knowledgeSuggestionId: string,
+  docFilePathId: string,
   timestamp: string,
 ) => {
   const supabase = createClient()
   const { error } = await supabase
-    .from('KnowledgeSuggestionDocMapping')
+    .from('knowledge_suggestion_doc_mappings')
     .insert({
-      knowledgeSuggestionId,
-      gitHubDocFilePathId: docFilePathId,
-      updatedAt: timestamp,
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      github_doc_file_path_id: docFilePathId,
+      updated_at: timestamp,
     })
 
   if (error) {
@@ -117,21 +122,44 @@ const createDocMapping = async (
  * Create a mapping between OverallReview and KnowledgeSuggestion
  */
 const createOverallReviewMapping = async (
-  knowledgeSuggestionId: number,
-  overallReviewId: number,
+  knowledgeSuggestionId: string,
+  overallReviewId: string,
   timestamp: string,
 ) => {
   const supabase = createClient()
   const { error } = await supabase
-    .from('OverallReviewKnowledgeSuggestionMapping')
+    .from('overall_review_knowledge_suggestion_mappings')
     .insert({
-      knowledgeSuggestionId,
-      overallReviewId,
-      updatedAt: timestamp,
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      overall_review_id: overallReviewId,
+      updated_at: timestamp,
     })
 
   if (error) {
     console.error('Failed to create OverallReview mapping:', error.message)
+  }
+}
+
+/**
+ * Create a mapping between ReviewFeedback and KnowledgeSuggestion
+ */
+const createReviewFeedbackMapping = async (
+  knowledgeSuggestionId: string,
+  reviewFeedbackId: string,
+  timestamp: string,
+) => {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('review_feedback_knowledge_suggestion_mappings')
+    .insert({
+      knowledge_suggestion_id: knowledgeSuggestionId,
+      review_feedback_id: reviewFeedbackId,
+      created_at: timestamp,
+      updated_at: timestamp,
+    })
+
+  if (error) {
+    console.error('Failed to create ReviewFeedback mapping:', error.message)
   }
 }
 
@@ -163,11 +191,11 @@ export const processCreateKnowledgeSuggestion = async (
       repositoryFullName,
       path,
       branch,
-      repo.installationId,
+      Number(repo.installationId),
     )
 
     // Default to no docFilePath
-    let docFilePath: { id: number } | null = null
+    let docFilePath: { id: string } | null = null
 
     // For DOCS type, check if content has changed
     if (type === 'DOCS') {
@@ -194,18 +222,18 @@ export const processCreateKnowledgeSuggestion = async (
     const supabase = createClient()
     const now = new Date().toISOString()
     const { data: knowledgeSuggestion, error: createError } = await supabase
-      .from('KnowledgeSuggestion')
+      .from('knowledge_suggestions')
       .insert({
         type,
         title,
         path,
         content,
-        fileSha: existingFile.sha,
-        projectId,
-        branchName: branch,
-        traceId: traceId || null,
+        file_sha: existingFile.sha,
+        project_id: projectId,
+        branch_name: branch,
+        trace_id: traceId || null,
         reasoning: payload.reasoning || null,
-        updatedAt: now,
+        updated_at: now,
       })
       .select()
       .single()
@@ -226,6 +254,15 @@ export const processCreateKnowledgeSuggestion = async (
       await createOverallReviewMapping(
         knowledgeSuggestion.id,
         overallReviewId,
+        now,
+      )
+    }
+
+    // Create ReviewFeedback mapping if reviewFeedbackId is provided
+    if (payload.reviewFeedbackId) {
+      await createReviewFeedbackMapping(
+        knowledgeSuggestion.id,
+        payload.reviewFeedbackId,
         now,
       )
     }

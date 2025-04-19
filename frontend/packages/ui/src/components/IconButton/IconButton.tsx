@@ -1,3 +1,5 @@
+'use client'
+
 import clsx from 'clsx'
 import { type ComponentProps, type ReactNode, forwardRef } from 'react'
 import { match } from 'ts-pattern'

@@ -9,57 +9,57 @@ describe.skip('processSaveReview', () => {
   const supabase = createClient()
 
   const testRepository = {
-    id: 9999,
+    id: '9999',
     name: 'test-repo',
     owner: 'test-owner',
-    installationId: 12345,
-    isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    installation_id: 12345,
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   }
 
   const testPullRequest = {
-    id: 9999,
-    pullNumber: 9999,
-    repositoryId: 9999,
-    commentId: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    id: '9999',
+    pull_number: 9999,
+    repository_id: '9999',
+    comment_id: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   }
 
   const testProject = {
-    id: 9999,
+    id: '9999',
     name: 'test-project',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   }
 
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    await supabase.from('Repository').insert(testRepository)
-    await supabase.from('PullRequest').insert(testPullRequest)
-    await supabase.from('Project').insert(testProject)
+    await supabase.from('repositories').insert(testRepository)
+    await supabase.from('pull_requests').insert(testPullRequest)
+    await supabase.from('projects').insert(testProject)
   })
 
   afterEach(async () => {
     const { data: reviews } = await supabase
-      .from('OverallReview')
+      .from('overall_reviews')
       .select('id')
-      .eq('pullRequestId', testPullRequest.id)
+      .eq('pull_request_id', testPullRequest.id)
 
     if (reviews && reviews.length > 0) {
       const reviewIds = reviews.map((r) => r.id)
       await supabase
-        .from('ReviewFeedback')
+        .from('review_feedbacks')
         .delete()
-        .in('overallReviewId', reviewIds)
-      await supabase.from('OverallReview').delete().in('id', reviewIds)
+        .in('overall_review_id', reviewIds)
+      await supabase.from('overall_reviews').delete().in('id', reviewIds)
     }
 
-    await supabase.from('PullRequest').delete().eq('id', testPullRequest.id)
-    await supabase.from('Project').delete().eq('id', testProject.id)
-    await supabase.from('Repository').delete().eq('id', testRepository.id)
+    await supabase.from('pull_requests').delete().eq('id', testPullRequest.id)
+    await supabase.from('projects').delete().eq('id', testProject.id)
+    await supabase.from('repositories').delete().eq('id', testRepository.id)
   })
 
   it('should save review successfully', async () => {
@@ -69,7 +69,7 @@ describe.skip('processSaveReview', () => {
       repositoryId: testRepository.id,
       branchName: 'test-branch',
       traceId: 'test-trace-id-123',
-      pullRequestNumber: testPullRequest.pullNumber,
+      pullRequestNumber: testPullRequest.pull_number,
       owner: testRepository.owner,
       name: testRepository.name,
       review: {
@@ -90,19 +90,19 @@ describe.skip('processSaveReview', () => {
     expect(result.success).toBe(true)
 
     const { data: review, error } = await supabase
-      .from('OverallReview')
+      .from('overall_reviews')
       .select('*')
-      .eq('pullRequestId', testPullRequest.id)
+      .eq('pull_request_id', testPullRequest.id)
       .single()
 
     if (error) throw error
     expect(review).toBeTruthy()
-    expect(review.projectId).toBe(testProject.id)
+    expect(review.project_id).toBe(testProject.id)
 
     const { data: issues, error: issuesError } = await supabase
-      .from('ReviewFeedback')
+      .from('review_feedbacks')
       .select('*')
-      .eq('overallReviewId', review.id)
+      .eq('overall_review_id', review.id)
     if (issuesError) throw issuesError
     expect(issues).toBeTruthy()
     expect(issues.length).toBeGreaterThanOrEqual(1)
@@ -110,9 +110,9 @@ describe.skip('processSaveReview', () => {
 
   it('should throw error when pull request not found', async () => {
     const testPayload: ReviewResponse = {
-      pullRequestId: 999999,
-      projectId: 9999,
-      repositoryId: 9999,
+      pullRequestId: '999999',
+      projectId: '9999',
+      repositoryId: '9999',
       branchName: 'test-branch',
       traceId: 'test-trace-id-123',
       pullRequestNumber: 999,
@@ -131,9 +131,9 @@ describe.skip('processSaveReview', () => {
 
   it('should throw error when creating overall review fails', async () => {
     const testPayload: ReviewResponse = {
-      pullRequestId: 9999,
-      projectId: 999999,
-      repositoryId: 9999,
+      pullRequestId: '9999',
+      projectId: '999999',
+      repositoryId: '9999',
       branchName: 'test-branch',
       traceId: 'test-trace-id-123',
       pullRequestNumber: 999,

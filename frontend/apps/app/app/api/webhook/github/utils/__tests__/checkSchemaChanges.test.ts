@@ -15,7 +15,7 @@ describe('checkSchemaChanges', () => {
   const mockSchemaParams = {
     pullRequestNumber: 1,
     pullRequestTitle: 'Update schema',
-    projectId: 100,
+    projectId: '100',
     owner: 'user',
     name: 'repo',
     installationId: 1,
@@ -78,10 +78,10 @@ describe('checkSchemaChanges', () => {
     // Create a test project
     const now = new Date().toISOString()
     const { data: project, error: projectError } = await supabase
-      .from('Project')
+      .from('projects')
       .insert({
         name: 'Test Project for Schema Changes Test',
-        updatedAt: now,
+        updated_at: now,
       })
       .select()
       .single()
@@ -94,12 +94,12 @@ describe('checkSchemaChanges', () => {
     try {
       // Create a test schema path for the project
       const { data: schemaPath, error: schemaPathError } = await supabase
-        .from('GitHubSchemaFilePath')
+        .from('github_schema_file_paths')
         .insert({
           path: 'migrations/2024_update.sql',
-          projectId: project.id,
+          project_id: project.id,
           format: 'postgres',
-          updatedAt: now,
+          updated_at: now,
         })
         .select()
         .single()
@@ -143,12 +143,12 @@ describe('checkSchemaChanges', () => {
 
       // Clean up the schema path
       await supabase
-        .from('GitHubSchemaFilePath')
+        .from('github_schema_file_paths')
         .delete()
         .eq('id', schemaPath.id)
     } finally {
       // Clean up the project
-      await supabase.from('Project').delete().eq('id', project.id)
+      await supabase.from('projects').delete().eq('id', project.id)
     }
   })
 })

@@ -8,13 +8,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { langfuseLangchainHandler } from '../../functions/langfuseLangchainHandler'
 import { createClient } from '../../libs/supabase'
 import { generateReview } from '../../prompts/generateReview/generateReview'
+import type { Review } from '../../types'
 import { fetchSchemaInfoWithOverrides } from '../../utils/schemaUtils'
 import { saveReviewTask } from './saveReview'
 
 export type GenerateReviewPayload = {
-  pullRequestId: number
-  projectId: number
-  repositoryId: number
+  pullRequestId: string
+  projectId: string
+  repositoryId: string
   branchName: string
   owner: string
   name: string
@@ -39,32 +40,11 @@ export type GenerateReviewPayload = {
   }>
 }
 
-export type Review = {
-  bodyMarkdown: string
-  feedbacks: Array<{
-    kind: string
-    severity:
-      | 'POSITIVE'
-      | 'CRITICAL'
-      | 'WARNING'
-      | 'QUESTION'
-      | 'HIGH'
-      | 'MEDIUM'
-      | 'LOW'
-    description: string
-    suggestion: string
-    suggestionSnippets: Array<{
-      filename: string
-      snippet: string
-    }>
-  }>
-}
-
 export type ReviewResponse = {
   review: Review
-  projectId: number
-  pullRequestId: number
-  repositoryId: number
+  projectId: string
+  pullRequestId: string
+  repositoryId: string
   branchName: string
   traceId: string
   pullRequestNumber: number
@@ -79,8 +59,8 @@ export const processGenerateReview = async (
     const supabase = createClient()
 
     const { data: repository, error: repositoryError } = await supabase
-      .from('Repository')
-      .select('installationId')
+      .from('repositories')
+      .select('installation_id')
       .eq('id', payload.repositoryId)
       .single()
 
@@ -91,10 +71,10 @@ export const processGenerateReview = async (
     }
 
     const { data: docPaths, error: docPathsError } = await supabase
-      .from('GitHubDocFilePath')
+      .from('github_doc_file_paths')
       .select('*')
-      .eq('projectId', payload.projectId)
-      .eq('isReviewEnabled', true)
+      .eq('project_id', payload.projectId)
+      .eq('is_review_enabled', true)
 
     if (docPathsError) {
       throw new Error(
@@ -109,7 +89,7 @@ export const processGenerateReview = async (
             `${payload.owner}/${payload.name}`,
             docPath.path,
             payload.branchName,
-            Number(repository.installationId),
+            Number(repository.installation_id),
           )
 
           if (!fileData.content) {
@@ -130,14 +110,14 @@ export const processGenerateReview = async (
     const predefinedRunId = uuidv4()
 
     const prDetails = await getPullRequestDetails(
-      Number(repository.installationId),
+      Number(repository.installation_id),
       payload.owner,
       payload.name,
       payload.pullRequestNumber,
     )
 
     const prComments = await getIssueComments(
-      Number(repository.installationId),
+      Number(repository.installation_id),
       payload.owner,
       payload.name,
       payload.pullRequestNumber,
@@ -156,7 +136,7 @@ export const processGenerateReview = async (
       payload.projectId,
       payload.branchName,
       `${payload.owner}/${payload.name}`,
-      Number(repository.installationId),
+      repository.installation_id,
     )
 
     const callbacks = [langfuseLangchainHandler]

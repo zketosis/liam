@@ -4,9 +4,9 @@ export const getOrganizationDetails = async (organizationId: string) => {
   const supabase = await createClient()
 
   const { data: organization, error } = await supabase
-    .from('Organization')
+    .from('organizations')
     .select('*')
-    .eq('id', Number.parseInt(organizationId, 10))
+    .eq('id', organizationId)
     .single()
 
   if (error) {
@@ -21,17 +21,17 @@ export const getOrganizationMembers = async (organizationId: string) => {
   const supabase = await createClient()
 
   const { data: members, error } = await supabase
-    .from('OrganizationMember')
+    .from('organization_members')
     .select(`
       id,
 
-      user:userId(
+      users(
         id,
         name,
         email
       )
     `)
-    .eq('organizationId', Number.parseInt(organizationId, 10))
+    .eq('organization_id', organizationId)
 
   if (error) {
     console.error('Error fetching organization members:', error)
@@ -45,18 +45,18 @@ export const getOrganizationInvites = async (organizationId: string) => {
   const supabase = await createClient()
 
   const { data: invites, error } = await supabase
-    .from('MembershipInvites')
+    .from('membership_invites')
     .select(`
       id,
       email,
 
-      inviteBy:inviteByUserId(
+      invite_by_user_id(
         id,
         name,
         email
       )
     `)
-    .eq('organizationId', Number.parseInt(organizationId, 10))
+    .eq('organization_id', organizationId)
 
   if (error) {
     console.error('Error fetching organization invites:', error)

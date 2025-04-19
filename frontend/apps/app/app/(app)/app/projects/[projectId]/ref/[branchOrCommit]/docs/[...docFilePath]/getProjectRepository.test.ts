@@ -8,22 +8,22 @@ describe('getProjectRepository', () => {
 
     // Create test repository
     const { data: repository } = await supabase
-      .from('Repository')
+      .from('repositories')
       .insert({
         name: 'test-repo',
         owner: 'test-owner',
-        installationId: 12345,
-        updatedAt: new Date().toISOString(),
+        installation_id: 12345,
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single()
 
     // Create test project
     const { data: project } = await supabase
-      .from('Project')
+      .from('projects')
       .insert({
         name: 'Test Project',
-        updatedAt: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single()
@@ -37,10 +37,10 @@ describe('getProjectRepository', () => {
     }
 
     // Create mapping between project and repository
-    await supabase.from('ProjectRepositoryMapping').insert({
-      projectId: project.id,
-      repositoryId: repository.id,
-      updatedAt: new Date().toISOString(),
+    await supabase.from('project_repository_mappings').insert({
+      project_id: project.id,
+      repository_id: repository.id,
+      updated_at: new Date().toISOString(),
     })
 
     const result = await getProjectRepository(project.id.toString())
@@ -48,7 +48,7 @@ describe('getProjectRepository', () => {
     expect(result).not.toBeNull()
     expect(result?.repository).toHaveProperty('name', 'test-repo')
     expect(result?.repository).toHaveProperty('owner', 'test-owner')
-    expect(result?.repository).toHaveProperty('installationId', 12345)
+    expect(result?.repository).toHaveProperty('installation_id', '12345')
   })
 
   it('should return null when project does not exist', async () => {

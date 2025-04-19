@@ -22,25 +22,25 @@ async function getMigrationContents(migrationId: string) {
   const supabase = await createClient()
 
   const { data: migration, error: migrationError } = await supabase
-    .from('Migration')
+    .from('migrations')
     .select(`
       id,
       title,
-      createdAt,
-      pullRequestId,
-      PullRequest:pullRequestId (
+      created_at,
+      pull_request_id,
+      pull_requests (
         id,
-        pullNumber,
-        repositoryId,
-        Repository:repositoryId (
+        pull_number,
+        repository_id,
+        repositories (
           id,
-          installationId,
+          installation_id,
           name,
           owner
         )
       )
     `)
-    .eq('id', Number(migrationId))
+    .eq('id', migrationId)
     .single()
 
   if (migrationError || !migration) {
@@ -48,48 +48,48 @@ async function getMigrationContents(migrationId: string) {
     return notFound()
   }
 
-  const pullRequest = migration.PullRequest
-  const repository = pullRequest.Repository
+  const pullRequest = migration.pull_requests
+  const repository = pullRequest.repositories
 
   const { data: overallReview, error: reviewError } = await supabase
-    .from('OverallReview')
+    .from('overall_reviews')
     .select(`
       *,
-      reviewFeedbacks:ReviewFeedback (
+      review_feedbacks (
         id,
         category,
         severity,
         description,
         suggestion,
-        resolvedAt,
-        resolutionComment,
-        createdAt,
-        updatedAt,
-        overallReviewId,
-        suggestionSnippets:ReviewSuggestionSnippet (
+        resolved_at,
+        resolution_comment,
+        created_at,
+        updated_at,
+        overall_review_id,
+        review_suggestion_snippets (
           id,
           filename,
           snippet
         )
       )
     `)
-    .eq('pullRequestId', pullRequest.id)
-    .order('createdAt', { ascending: false })
+    .eq('pull_request_id', pullRequest.id)
+    .order('created_at', { ascending: false })
     .limit(1)
     .single()
 
   const prDetails = await getPullRequestDetails(
-    Number(repository.installationId),
+    repository.installation_id,
     repository.owner,
     repository.name,
-    Number(pullRequest.pullNumber),
+    pullRequest.pull_number,
   )
 
   const files = await getPullRequestFiles(
-    Number(repository.installationId),
+    repository.installation_id,
     repository.owner,
     repository.name,
-    Number(pullRequest.pullNumber),
+    pullRequest.pull_number,
   )
 
   // If there's no overallReview, return with empty review data
@@ -99,10 +99,10 @@ async function getMigrationContents(migrationId: string) {
       migration,
       overallReview: {
         id: null,
-        projectId: null,
-        reviewComment: null,
-        reviewedAt: null,
-        reviewFeedbacks: [],
+        project_id: null,
+        review_comment: null,
+        reviewed_at: null,
+        review_feedbacks: [],
       },
       erdLinks: [],
       knowledgeSuggestions: [],
@@ -110,14 +110,14 @@ async function getMigrationContents(migrationId: string) {
   }
 
   const { data: schemaPath, error: pathError } = await supabase
-    .from('GitHubSchemaFilePath')
+    .from('github_schema_file_paths')
     .select('path')
-    .eq('projectId', overallReview.projectId || 0)
+    .eq('project_id', overallReview.project_id || '')
     .single()
 
   if (pathError) {
     console.warn(
-      `No schema path found for project ${overallReview.projectId}: ${JSON.stringify(pathError)}`,
+      `No schema path found for project ${overallReview.project_id}: ${JSON.stringify(pathError)}`,
     )
     return {
       migration,
@@ -135,7 +135,7 @@ async function getMigrationContents(migrationId: string) {
     path: urlgen(
       'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]',
       {
-        projectId: `${overallReview.projectId}`,
+        projectId: `${overallReview.project_id}`,
         branchOrCommit: prDetails.head.ref,
         schemaFilePath: filename,
       },
@@ -145,30 +145,30 @@ async function getMigrationContents(migrationId: string) {
 
   // Fetch related KnowledgeSuggestions through the mapping table
   const { data: knowledgeSuggestions = [] } = await supabase
-    .from('OverallReviewKnowledgeSuggestionMapping')
+    .from('overall_review_knowledge_suggestion_mappings')
     .select(`
-      knowledgeSuggestionId,
-      knowledgeSuggestion:knowledgeSuggestionId (
+      knowledge_suggestion_id,
+      knowledge_suggestions (
         id,
         type,
         title,
         path,
         content,
-        projectId,
-        branchName,
-        createdAt,
-        updatedAt,
-        approvedAt,
-        fileSha,
-        traceId
+        project_id,
+        branch_name,
+        created_at,
+        updated_at,
+        approved_at,
+        file_sha,
+        trace_id
       )
     `)
-    .eq('overallReviewId', overallReview.id)
-    .order('createdAt', { ascending: false })
+    .eq('overall_review_id', overallReview.id)
+    .order('created_at', { ascending: false })
 
   // Map the result to extract the knowledgeSuggestion property from each item
   const mappedKnowledgeSuggestions = (knowledgeSuggestions || [])
-    .map((item) => item.knowledgeSuggestion)
+    .map((item) => item.knowledge_suggestions)
     .filter((suggestion) => !!suggestion)
 
   return {
@@ -191,8 +191,8 @@ export const MigrationDetailPage: FC<Props> = async ({
     knowledgeSuggestions = [],
   } = await getMigrationContents(migrationId)
 
-  const formattedReviewDate = overallReview.reviewedAt
-    ? new Date(overallReview.reviewedAt).toLocaleDateString('en-US')
+  const formattedReviewDate = overallReview.reviewed_at
+    ? new Date(overallReview.reviewed_at).toLocaleDateString('en-US')
     : 'Not reviewed yet'
 
   return (
@@ -209,11 +209,13 @@ export const MigrationDetailPage: FC<Props> = async ({
 
       <div className={styles.heading}>
         <h1 className={styles.title}>{migration.title}</h1>
-        <p className={styles.subTitle}>#{migration.PullRequest.pullNumber}</p>
+        <p className={styles.subTitle}>
+          #{migration.pull_requests.pull_number}
+        </p>
       </div>
       <div className={styles.twoColumns}>
         <ReviewFeedbackProvider
-          initialFeedbacks={overallReview.reviewFeedbacks}
+          initialFeedbacks={overallReview.review_feedbacks}
         >
           <div className={styles.box}>
             <h2 className={styles.h2}>Migration Health</h2>
@@ -233,30 +235,32 @@ export const MigrationDetailPage: FC<Props> = async ({
           </div>
           <div className={styles.box}>
             <h2 className={styles.h2}>Review Content</h2>
-            {overallReview.reviewComment ? (
+            {overallReview.review_comment ? (
               <>
                 <pre className={styles.reviewContent}>
-                  {overallReview.reviewComment}
+                  {overallReview.review_comment}
                 </pre>
-                {overallReview.traceId && (
-                  <div className={styles.feedbackSection}>
-                    <UserFeedbackClient traceId={overallReview.traceId} />
+                {overallReview.trace_id && (
+                  <div>
+                    <UserFeedbackClient traceId={overallReview.trace_id} />
                   </div>
                 )}
               </>
             ) : (
-              <p className={styles.noContent}>No review content found.</p>
+              <p>No review content found.</p>
             )}
           </div>
           <div className={styles.box}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.h2}>Review Feedbacks</h2>
-              {overallReview.reviewFeedbacks.filter(
+              {overallReview.review_feedbacks.filter(
                 (feedback) =>
-                  feedback.severity === 'CRITICAL' && !feedback.resolvedAt,
+                  feedback.severity === 'CRITICAL' && !feedback.resolved_at,
               ).length > 0 && (
                 <CopyButton
-                  text={formatAllReviewFeedbacks(overallReview.reviewFeedbacks)}
+                  text={formatAllReviewFeedbacks(
+                    overallReview.review_feedbacks,
+                  )}
                   className={styles.headerCopyButton}
                 />
               )}
@@ -290,7 +294,7 @@ export const MigrationDetailPage: FC<Props> = async ({
                           'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
                           {
                             projectId: `${projectId}`,
-                            branchOrCommit: suggestion.branchName || 'main',
+                            branchOrCommit: suggestion.branch_name || 'main',
                             id: `${suggestion.id}`,
                           },
                         )}

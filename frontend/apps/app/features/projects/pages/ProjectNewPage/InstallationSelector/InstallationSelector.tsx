@@ -18,7 +18,7 @@ import styles from './InstallationSelector.module.css'
 
 type Props = {
   installations: Installation[]
-  organizationId?: number
+  organizationId?: string
 }
 
 export const InstallationSelector: FC<Props> = ({
@@ -99,12 +99,7 @@ export const InstallationSelector: FC<Props> = ({
     <>
       <div className={styles.installationSelector}>
         <Button size="lg" variant="ghost-secondary">
-          <a
-            href={githubAppUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.installLink}
-          >
+          <a href={githubAppUrl} target="_blank" rel="noopener noreferrer">
             Install GitHub App
           </a>
         </Button>
