@@ -492,7 +492,7 @@ describe(_processor, () => {
         }
       `)
 
-      const expectedDBStructure = aDBStructure({
+      const expectedSchema = aSchema({
         tables: {
           Post: aTable({
             name: 'Post',
@@ -596,7 +596,7 @@ describe(_processor, () => {
         },
       })
 
-      expect(value).toEqual(expectedDBStructure)
+      expect(value).toEqual(expectedSchema)
     })
   })
 })

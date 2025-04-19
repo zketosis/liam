@@ -329,6 +329,7 @@ function createManyToManyJoinTable(
 ): Table {
   return {
     name: joinTableName,
+    constraints: {},
     columns: {
       A: {
         name: 'A',
