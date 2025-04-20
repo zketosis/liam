@@ -25,12 +25,13 @@ describe(processor, () => {
             ...override?.indexes,
           },
           comment: override?.comment ?? null,
-          constraints: override?.constraints ?? {
+          constraints: {
             PRIMARY_id: {
               type: 'PRIMARY KEY',
               name: 'PRIMARY_id',
               columnName: 'id',
             },
+            ...override?.constraints,
           },
         }),
       },

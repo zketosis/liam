@@ -114,6 +114,13 @@ export const createParserTestCases = (
           columns: ['email'],
         }),
       },
+      constraints: {
+        UNIQUE_email: {
+          type: 'UNIQUE',
+          name: 'UNIQUE_email',
+          columnName: 'email',
+        },
+      },
     }),
   'foreign key': (name: string) => ({
     relationships: {

@@ -29,6 +29,7 @@ import type {
   Schema,
   Table,
   Tables,
+  UniqueConstraint,
 } from '../../schema/index.js'
 import {
   aCheckConstraint,
@@ -157,6 +158,14 @@ function extractTableDetails(
           if (node.name === 'index') {
             const index = extractIndexDetails(node)
             indexes.push(index)
+            if (index.unique && index.columns[0]) {
+              const uniqueConstraint: UniqueConstraint = {
+                type: 'UNIQUE',
+                name: `UNIQUE_${index.columns[0]}`,
+                columnName: index.columns[0],
+              }
+              constraints.push(uniqueConstraint)
+            }
             continue
           }
 
