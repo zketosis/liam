@@ -22,6 +22,7 @@ import type {
   ForeignKeyConstraintReferenceOption,
   Index,
   Indexes,
+  PrimaryKeyConstraint,
   Relationship,
   Schema,
   Table,
@@ -85,7 +86,9 @@ function extractTableComment(argNodes: Node[]): string | null {
   return null
 }
 
-function extractIdColumn(argNodes: Node[]): Column | null {
+function extractIdColumnAndConstraint(
+  argNodes: Node[],
+): [Column, PrimaryKeyConstraint] | [null, null] {
   const keywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
 
   const idColumn = aColumn({
@@ -95,6 +98,11 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     primary: true,
     unique: true,
   })
+  const idPrimaryKeyConstraint: PrimaryKeyConstraint = {
+    type: 'PRIMARY KEY',
+    name: 'PRIMARY_id',
+    columnName: 'id',
+  }
 
   if (keywordHash) {
     const idAssoc = keywordHash.elements.find(
@@ -105,21 +113,21 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     )
 
     if (idAssoc && idAssoc instanceof AssocNode) {
-      if (idAssoc.value instanceof FalseNode) return null
+      if (idAssoc.value instanceof FalseNode) return [null, null]
       if (
         idAssoc.value instanceof StringNode ||
         idAssoc.value instanceof SymbolNode
       )
         idColumn.type = idAssoc.value.unescaped.value
 
-      return idColumn
+      return [idColumn, idPrimaryKeyConstraint]
     }
   }
 
   // Since 5.1 PostgreSQL adapter uses bigserial type for primary key in default
   // See:https://github.com/rails/rails/blob/v8.0.0/activerecord/lib/active_record/migration/compatibility.rb#L377
   idColumn.type = 'bigserial'
-  return idColumn
+  return [idColumn, idPrimaryKeyConstraint]
 }
 
 function extractTableDetails(
@@ -403,8 +411,11 @@ class SchemaFinder extends Visitor {
     const indexes: Index[] = []
     const constraints: Constraint[] = []
 
-    const idColumn = extractIdColumn(argNodes)
-    if (idColumn) columns.push(idColumn)
+    const [idColumn, idConstraint] = extractIdColumnAndConstraint(argNodes)
+    if (idColumn) {
+      columns.push(idColumn)
+      constraints.push(idConstraint)
+    }
 
     const blockNodes = node.block?.compactChildNodes() || []
     const [extractColumns, extractIndexes, extractConstraints] =
