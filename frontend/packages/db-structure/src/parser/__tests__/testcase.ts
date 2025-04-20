@@ -199,4 +199,16 @@ export const createParserTestCases = (
       },
     },
   },
+  'check constraint': {
+    PRIMARY_id: {
+      type: 'PRIMARY KEY',
+      name: 'PRIMARY_id',
+      columnName: 'id',
+    },
+    age_range_check: {
+      type: 'CHECK',
+      name: 'age_range_check',
+      detail: 'age >= 20 and age < 20',
+    },
+  },
 })

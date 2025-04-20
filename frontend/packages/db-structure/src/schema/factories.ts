@@ -1,4 +1,5 @@
 import type {
+  CheckConstraint,
   Column,
   ForeignKeyConstraint,
   Index,
@@ -53,6 +54,15 @@ export const aForeignKeyConstraint = (
   targetColumnName: '',
   updateConstraint: 'NO_ACTION',
   deleteConstraint: 'NO_ACTION',
+  ...override,
+})
+
+export const aCheckConstraint = (
+  override?: Partial<CheckConstraint>,
+): CheckConstraint => ({
+  type: 'CHECK',
+  name: '',
+  detail: '',
   ...override,
 })
 

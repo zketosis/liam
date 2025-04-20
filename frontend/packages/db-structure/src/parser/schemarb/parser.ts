@@ -15,6 +15,7 @@ import {
 } from '@ruby/prism'
 import { type Result, err, ok } from 'neverthrow'
 import type {
+  CheckConstraint,
   Column,
   Columns,
   Constraint,
@@ -30,6 +31,7 @@ import type {
   Tables,
 } from '../../schema/index.js'
 import {
+  aCheckConstraint,
   aColumn,
   aForeignKeyConstraint,
   aRelationship,
@@ -298,6 +300,51 @@ function extractRelationshipTableNames(
   return ok([primaryTableName, foreignTableName])
 }
 
+function extractCheckConstraint(
+  argNodes: Node[],
+): Result<
+  { tableName: string; constraint: CheckConstraint },
+  UnexpectedTokenWarningError
+> {
+  const stringNodes = argNodes.filter((node) => node instanceof StringNode)
+  if (stringNodes.length !== 2) {
+    return err(
+      new UnexpectedTokenWarningError(
+        'Check constraint must have one table name and its detail',
+      ),
+    )
+  }
+
+  const [tableName, detail] = stringNodes.map((node): string => {
+    if (node instanceof StringNode) return node.unescaped.value
+    return ''
+  }) as [string, string]
+
+  const constraint = aCheckConstraint({
+    detail,
+  })
+
+  for (const node of argNodes) {
+    if (node instanceof KeywordHashNode) {
+      for (const argElement of node.elements) {
+        if (!(argElement instanceof AssocNode)) continue
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        const key = argElement.key.unescaped.value
+        const value = argElement.value
+
+        switch (key) {
+          case 'name':
+            if (value instanceof StringNode || value instanceof SymbolNode) {
+              constraint.name = value.unescaped.value
+            }
+        }
+      }
+    }
+  }
+
+  return ok({ tableName, constraint })
+}
+
 function normalizeConstraintName(
   constraint: string,
 ): ForeignKeyConstraintReferenceOption {
@@ -489,9 +536,26 @@ class SchemaFinder extends Visitor {
     }
   }
 
+  handleAddCheckConstraint(node: CallNode): void {
+    const argNodes = node.arguments_?.compactChildNodes() || []
+
+    const constraintResult = extractCheckConstraint(argNodes)
+    if (constraintResult.isErr()) {
+      this.errors.push(constraintResult.error)
+      return
+    }
+    const { tableName, constraint } = constraintResult.value
+    const table = this.tables.find((table) => table.name === tableName)
+    if (table) {
+      table.constraints[constraint.name] = constraint
+    }
+  }
+
   override visitCallNode(node: CallNode): void {
     if (node.name === 'create_table') this.handleCreateTable(node)
     if (node.name === 'add_foreign_key') this.handleAddForeignKey(node)
+    if (node.name === 'add_check_constraint')
+      this.handleAddCheckConstraint(node)
 
     super.visitCallNode(node)
   }

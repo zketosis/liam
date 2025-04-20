@@ -305,6 +305,20 @@ describe(processor, () => {
         parserTestCases['foreign key with action'].constraints,
       )
     })
+
+    it('check constraint', async () => {
+      const { value } = await processor(/* Ruby */ `
+        create_table "users" do |t|
+          t.integer "age"
+        end
+
+        add_check_constraint "users", "age >= 20 and age < 20", name: "age_range_check"
+      `)
+
+      expect(value.tables['users']?.constraints).toEqual(
+        parserTestCases['check constraint'],
+      )
+    })
   })
 
   describe('abnormal cases', () => {
