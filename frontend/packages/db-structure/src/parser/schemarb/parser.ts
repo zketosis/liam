@@ -19,6 +19,7 @@ import type {
   Columns,
   Constraint,
   Constraints,
+  ForeignKeyConstraint,
   ForeignKeyConstraintReferenceOption,
   Index,
   Indexes,
@@ -28,7 +29,13 @@ import type {
   Table,
   Tables,
 } from '../../schema/index.js'
-import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
+import {
+  aColumn,
+  aForeignKeyConstraint,
+  aRelationship,
+  aTable,
+  anIndex,
+} from '../../schema/index.js'
 import {
   type ProcessError,
   UnexpectedTokenWarningError,
@@ -311,6 +318,7 @@ function normalizeConstraintName(
 function extractForeignKeyOptions(
   argNodes: Node[],
   relation: Relationship,
+  foreignKeyConstraint: ForeignKeyConstraint,
 ): void {
   for (const argNode of argNodes) {
     if (argNode instanceof KeywordHashNode) {
@@ -324,25 +332,31 @@ function extractForeignKeyOptions(
           case 'column':
             if (value instanceof StringNode || value instanceof SymbolNode) {
               relation.foreignColumnName = value.unescaped.value
+              foreignKeyConstraint.columnName = value.unescaped.value
             }
             break
           case 'name':
             if (value instanceof StringNode || value instanceof SymbolNode) {
               relation.name = value.unescaped.value
+              foreignKeyConstraint.name = value.unescaped.value
             }
             break
           case 'on_update':
             if (value instanceof SymbolNode) {
-              relation.updateConstraint = normalizeConstraintName(
+              const updateConstraint = normalizeConstraintName(
                 value.unescaped.value,
               )
+              relation.updateConstraint = updateConstraint
+              foreignKeyConstraint.updateConstraint = updateConstraint
             }
             break
           case 'on_delete':
             if (value instanceof SymbolNode) {
-              relation.deleteConstraint = normalizeConstraintName(
+              const deleteConstraint = normalizeConstraintName(
                 value.unescaped.value,
               )
+              relation.deleteConstraint = deleteConstraint
+              foreignKeyConstraint.deleteConstraint = deleteConstraint
             }
             break
         }
@@ -459,10 +473,20 @@ class SchemaFinder extends Visitor {
       primaryColumnName: 'id',
       foreignTableName: foreignTableName,
     })
+    const foreignKeyConstraint = aForeignKeyConstraint({
+      targetTableName: primaryTableName,
+      targetColumnName: 'id',
+    })
 
-    extractForeignKeyOptions(argNodes, relationship)
+    extractForeignKeyOptions(argNodes, relationship, foreignKeyConstraint)
 
     this.relationships.push(relationship)
+    const foreignTable = this.tables.find(
+      (table) => table.name === foreignTableName,
+    )
+    if (foreignTable) {
+      foreignTable.constraints[foreignKeyConstraint.name] = foreignKeyConstraint
+    }
   }
 
   override visitCallNode(node: CallNode): void {

@@ -29,6 +29,7 @@ export {
   aSchema,
   anIndex,
   aRelationship,
+  aForeignKeyConstraint,
 } from './factories.js'
 export {
   overrideSchema,

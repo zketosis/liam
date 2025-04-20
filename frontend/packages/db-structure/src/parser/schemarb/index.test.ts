@@ -220,43 +220,62 @@ describe(processor, () => {
       expect(value).toEqual(parserTestCases['index (unique: true)'](''))
     })
 
-    it('foreign key (one-to-many)', async () => {
+    it('foreign key', async () => {
       const keyName = 'fk_posts_user_id'
       const { value } = await processor(/* Ruby */ `
+        create_table "posts" do |t|
+          t.bigint "user_id"
+        end
+
         add_foreign_key "posts", "users", column: "user_id", name: "${keyName}"
       `)
 
       expect(value.relationships).toEqual(
-        parserTestCases['foreign key (one-to-many)'](keyName),
+        parserTestCases['foreign key'](keyName).relationships,
+      )
+      expect(value.tables['posts']?.constraints).toEqual(
+        parserTestCases['foreign key'](keyName).constraints,
       )
     })
 
-    it('foreign key with omit column name', async () => {
-      const keyName = 'fk_posts_user_id'
-      const { value } = await processor(/* Ruby */ `
+    describe('foreign key cardinality', () => {
+      it('foreign key (one-to-many)', async () => {
+        const keyName = 'fk_posts_user_id'
+        const { value } = await processor(/* Ruby */ `
+        add_foreign_key "posts", "users", column: "user_id", name: "${keyName}"
+      `)
+
+        expect(value.relationships).toEqual(
+          parserTestCases['foreign key (one-to-many)'](keyName),
+        )
+      })
+
+      it('foreign key with omit column name', async () => {
+        const keyName = 'fk_posts_user_id'
+        const { value } = await processor(/* Ruby */ `
         add_foreign_key "posts", "users", name: "${keyName}"
       `)
 
-      expect(value.relationships).toEqual(
-        parserTestCases['foreign key (one-to-many)'](keyName),
-      )
-    })
+        expect(value.relationships).toEqual(
+          parserTestCases['foreign key (one-to-many)'](keyName),
+        )
+      })
 
-    it('foreign key with omit key name', async () => {
-      const { value } = await processor(/* Ruby */ `
+      it('foreign key with omit key name', async () => {
+        const { value } = await processor(/* Ruby */ `
         add_foreign_key "posts", "users", column: "user_id"
       `)
 
-      expect(value.relationships).toEqual(
-        parserTestCases['foreign key (one-to-many)'](
-          'users_id_to_posts_user_id',
-        ),
-      )
-    })
+        expect(value.relationships).toEqual(
+          parserTestCases['foreign key (one-to-many)'](
+            'users_id_to_posts_user_id',
+          ),
+        )
+      })
 
-    it('foreign key (one-to-one)', async () => {
-      const keyName = 'users_id_to_posts_user_id'
-      const { value } = await processor(/* Ruby */ `
+      it('foreign key (one-to-one)', async () => {
+        const keyName = 'users_id_to_posts_user_id'
+        const { value } = await processor(/* Ruby */ `
         create_table "posts" do |t|
           t.bigint "user_id", unique: true
         end
@@ -264,18 +283,26 @@ describe(processor, () => {
         add_foreign_key "posts", "users", column: "user_id"
       `)
 
-      expect(value.relationships).toEqual(
-        parserTestCases['foreign key (one-to-one)'](keyName),
-      )
+        expect(value.relationships).toEqual(
+          parserTestCases['foreign key (one-to-one)'](keyName),
+        )
+      })
     })
 
     it('foreign keys with action', async () => {
       const { value } = await processor(/* Ruby */ `
+        create_table "posts" do |t|
+          t.bigint "user_id"
+        end
+
         add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
       `)
 
       expect(value.relationships).toEqual(
-        parserTestCases['foreign key with action'],
+        parserTestCases['foreign key with action'].relationships,
+      )
+      expect(value.tables['posts']?.constraints).toEqual(
+        parserTestCases['foreign key with action'].constraints,
       )
     })
   })

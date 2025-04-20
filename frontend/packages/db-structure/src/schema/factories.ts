@@ -1,5 +1,6 @@
 import type {
   Column,
+  ForeignKeyConstraint,
   Index,
   Relationship,
   Schema,
@@ -39,6 +40,19 @@ export const anIndex = (override?: Partial<Index>): Index => ({
   unique: false,
   columns: [],
   type: '',
+  ...override,
+})
+
+export const aForeignKeyConstraint = (
+  override?: Partial<ForeignKeyConstraint>,
+): ForeignKeyConstraint => ({
+  type: 'FOREIGN KEY',
+  name: '',
+  columnName: '',
+  targetTableName: '',
+  targetColumnName: '',
+  updateConstraint: 'NO_ACTION',
+  deleteConstraint: 'NO_ACTION',
   ...override,
 })
 
