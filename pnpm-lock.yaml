@@ -36,8 +36,8 @@ importers:
         specifier: 2.5.0
         version: 2.5.0
       vercel:
-        specifier: 41.6.0
-        version: 41.6.0(rollup@4.40.0)
+        specifier: 41.6.1
+        version: 41.6.1(rollup@4.40.0)
 
   frontend/apps/app:
     dependencies:
@@ -4700,6 +4700,7 @@ packages:
 
   formidable@2.1.2:
     resolution: {integrity: sha512-CM3GuJ57US06mlpQ47YcunuUZ9jpm8Vx+P2CGt2j7HpgkKZO/DJYQ0Bobim8G6PFQmK5lOqOOdUXboU+h73A4g==}
+    deprecated: 'ACTION REQUIRED: SWITCH TO v3 - v1 and v2 are VULNERABLE! v1 is DEPRECATED FOR OVER 2 YEARS! Use formidable@latest or try formidable-mini for fresh projects'
 
   forwarded-parse@2.1.2:
     resolution: {integrity: sha512-alTFZZQDKMporBH77856pXgzhEzaUVmLCDk+egLgIgHst3Tpndzz8MnKe+GzRJRfvVdn69HhpW7cmXzvtLvJAw==}
@@ -5994,6 +5995,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.6:
     resolution: {integrity: sha512-8Mc2HhqPdlIfedsuZoc3yioPuzp6b+L5jRCRY1QzuWZh2EGJVQrGppC6V6cF0bLdbW0+O2YpqCA25aF/1lvipQ==}
@@ -7587,8 +7589,8 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
 
-  vercel@41.6.0:
-    resolution: {integrity: sha512-wig7fUZqU6Xb5/CdW49NUrwssA5GuG18WUP5vxl84KZigUcmQM5CKySyxgeFcugBtqelQSlg1+4ytfjcfQxQuw==}
+  vercel@41.6.1:
+    resolution: {integrity: sha512-Xly6uozzOHm6VT2nB6l0IydEyhRNGvxU7aBnIA5CD2rt+HjLq+Dz9qIYC6XmcpBbR1EWkG2uCyM11k7pt+uHXA==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -15904,7 +15906,7 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  vercel@41.6.0(rollup@4.40.0):
+  vercel@41.6.1(rollup@4.40.0):
     dependencies:
       '@vercel/build-utils': 10.5.1
       '@vercel/fun': 1.1.5
