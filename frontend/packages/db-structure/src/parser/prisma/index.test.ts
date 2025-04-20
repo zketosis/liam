@@ -600,6 +600,13 @@ describe(_processor, () => {
                 unique: true,
               }),
             },
+            constraints: {
+              PRIMARY_id: {
+                type: 'PRIMARY KEY',
+                name: 'PRIMARY_id',
+                columnName: 'id',
+              },
+            },
           }),
           Category: aTable({
             name: 'Category',
@@ -624,6 +631,13 @@ describe(_processor, () => {
                 columns: ['id'],
                 unique: true,
               }),
+            },
+            constraints: {
+              PRIMARY_id: {
+                type: 'PRIMARY KEY',
+                name: 'PRIMARY_id',
+                columnName: 'id',
+              },
             },
           }),
           _CategoryToPost: aTable({
