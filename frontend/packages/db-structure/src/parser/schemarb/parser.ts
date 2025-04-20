@@ -17,6 +17,8 @@ import { type Result, err, ok } from 'neverthrow'
 import type {
   Column,
   Columns,
+  Constraint,
+  Constraints,
   ForeignKeyConstraintReferenceOption,
   Index,
   Indexes,
@@ -120,9 +122,12 @@ function extractIdColumn(argNodes: Node[]): Column | null {
   return idColumn
 }
 
-function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
+function extractTableDetails(
+  blockNodes: Node[],
+): [Column[], Index[], Constraint[]] {
   const columns: Column[] = []
   const indexes: Index[] = []
+  const constraints: Constraint[] = []
 
   for (const blockNode of blockNodes) {
     if (blockNode instanceof StatementsNode) {
@@ -145,7 +150,7 @@ function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
     }
   }
 
-  return [columns, indexes]
+  return [columns, indexes, constraints]
 }
 
 function extractColumnDetails(node: CallNode): Column {
@@ -396,15 +401,18 @@ class SchemaFinder extends Visitor {
 
     const columns: Column[] = []
     const indexes: Index[] = []
+    const constraints: Constraint[] = []
 
     const idColumn = extractIdColumn(argNodes)
     if (idColumn) columns.push(idColumn)
 
     const blockNodes = node.block?.compactChildNodes() || []
-    const [extractColumns, extractIndexes] = extractTableDetails(blockNodes)
+    const [extractColumns, extractIndexes, extractConstraints] =
+      extractTableDetails(blockNodes)
 
     columns.push(...extractColumns)
     indexes.push(...extractIndexes)
+    constraints.push(...extractConstraints)
 
     table.columns = columns.reduce((acc, column) => {
       acc[column.name] = column
@@ -415,6 +423,11 @@ class SchemaFinder extends Visitor {
       acc[index.name] = index
       return acc
     }, {} as Indexes)
+
+    table.constraints = constraints.reduce((acc, constraint) => {
+      acc[constraint.name] = constraint
+      return acc
+    }, {} as Constraints)
 
     this.tables.push(table)
   }
