@@ -157,7 +157,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       const primaryColumnName = field.relationToFields?.[0] ?? ''
       const foreignColumnName = field.relationFromFields?.[0] ?? ''
       const _relationship: Relationship = isTargetField
-        ? ({
+        ? {
             name: field.relationName,
             primaryTableName: field.type,
             primaryColumnName,
@@ -441,6 +441,61 @@ function createManyToManyRelationships(
 /**
  * Detects if a field is part of a many-to-many relation and stores it for later processing
  */
+function isManyToManyField(field: DMMF.Field): boolean {
+  return (
+    field.isList &&
+    (!field.relationFromFields || field.relationFromFields.length === 0) &&
+    (!field.relationToFields || field.relationToFields.length === 0)
+  )
+}
+
+function findRelatedField(
+  field: DMMF.Field,
+  model: DMMF.Model,
+  models: readonly DMMF.Model[],
+): DMMF.Field | undefined {
+  const relatedModel = models.find((m) => m.name === field.type)
+  if (!relatedModel) return undefined
+
+  return relatedModel.fields.find(
+    (f) =>
+      f.relationName === field.relationName &&
+      f.isList &&
+      f.type === model.name,
+  )
+}
+
+function getSortedModelPair(model1: string, model2: string): [string, string] {
+  return model1.localeCompare(model2) < 0 ? [model1, model2] : [model2, model1]
+}
+
+function storeManyToManyRelation(
+  model1: string,
+  model2: string,
+  field1: DMMF.Field,
+  field2: DMMF.Field,
+  processedRelations: Set<string>,
+  manyToManyRelations: Array<{
+    model1: string
+    model2: string
+    field1: DMMF.Field
+    field2: DMMF.Field
+  }>,
+): void {
+  const [sortedModel1, sortedModel2] = getSortedModelPair(model1, model2)
+  const relationId = `${sortedModel1}_${sortedModel2}`
+
+  if (!processedRelations.has(relationId)) {
+    processedRelations.add(relationId)
+    manyToManyRelations.push({
+      model1: sortedModel1,
+      model2: sortedModel2,
+      field1: field1,
+      field2: field2,
+    })
+  }
+}
+
 function detectAndStoreManyToManyRelation(
   field: DMMF.Field,
   model: DMMF.Model,
@@ -453,47 +508,21 @@ function detectAndStoreManyToManyRelation(
     field2: DMMF.Field
   }>,
 ): boolean {
-  // Check if this is a many-to-many relation (list field with no relation fields)
-  if (
-    field.isList &&
-    (!field.relationFromFields || field.relationFromFields.length === 0) &&
-    (!field.relationToFields || field.relationToFields.length === 0)
-  ) {
-    // Find the corresponding field in the related model
-    const relatedModel = models.find((m) => m.name === field.type)
-    if (relatedModel) {
-      const relatedField = relatedModel.fields.find(
-        (f) =>
-          f.relationName === field.relationName &&
-          f.isList &&
-          f.type === model.name,
-      )
+  if (!isManyToManyField(field)) return false
 
-      if (relatedField) {
-        // Create a unique identifier for this relationship
-        // Sort model names to ensure consistent ordering
-        const modelNames = [model.name, field.type].sort()
-        const relationId = `${modelNames[0]}_${modelNames[1]}`
+  const relatedField = findRelatedField(field, model, models)
+  if (!relatedField) return false
 
-        // Only process this relationship if we haven't seen it before
-        if (!processedRelations.has(relationId)) {
-          processedRelations.add(relationId)
+  storeManyToManyRelation(
+    model.name,
+    field.type,
+    field,
+    relatedField,
+    processedRelations,
+    manyToManyRelations,
+  )
 
-          // Store this many-to-many relation for later processing
-          if (modelNames[0] && modelNames[1]) {
-            manyToManyRelations.push({
-              model1: modelNames[0],
-              model2: modelNames[1],
-              field1: field,
-              field2: relatedField,
-            })
-          }
-        }
-        return true // Indicate that we found and processed a many-to-many relation
-      }
-    }
-  }
-  return false // Not a many-to-many relation
+  return true
 }
 
 function getPrimaryKeyInfo(table: Table, models: readonly DMMF.Model[]) {
