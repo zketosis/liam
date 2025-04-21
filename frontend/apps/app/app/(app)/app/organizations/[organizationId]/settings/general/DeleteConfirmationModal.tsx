@@ -19,6 +19,7 @@ interface DeleteConfirmationModalProps {
   onConfirmTextChange: (text: string) => void
   isConfirmEnabled: boolean
   onConfirm: () => void
+  isPending?: boolean
 }
 
 export function DeleteConfirmationModal({
@@ -29,6 +30,7 @@ export function DeleteConfirmationModal({
   onConfirmTextChange,
   isConfirmEnabled,
   onConfirm,
+  isPending = false,
 }: DeleteConfirmationModalProps) {
   return (
     <ModalRoot open={isOpen} onOpenChange={onClose}>
@@ -61,20 +63,23 @@ export function DeleteConfirmationModal({
               onChange={(e) => onConfirmTextChange(e.target.value)}
               placeholder="Type the organization name here"
               className={styles.confirmInput}
+              disabled={isPending}
             />
           </div>
           <div className={styles.divider} />
 
           <ModalActions>
             <ModalClose asChild>
-              <Button variant="outline-secondary">Cancel</Button>
+              <Button variant="outline-secondary" disabled={isPending}>
+                Cancel
+              </Button>
             </ModalClose>
             <Button
               variant="solid-danger"
-              disabled={!isConfirmEnabled}
+              disabled={!isConfirmEnabled || isPending}
               onClick={onConfirm}
             >
-              Delete
+              {isPending ? 'Deleting...' : 'Delete'}
             </Button>
           </ModalActions>
         </ModalContent>

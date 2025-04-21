@@ -1,34 +1,19 @@
 import { urlgen } from '@/utils/routes'
-import { ToastNotifications } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC, ReactNode } from 'react'
 import styles from './OrganizationsPage.module.css'
+import { OrganizationsPageClient } from './OrganizationsPageClient'
 import { getOrganizations } from './getOrganizations'
 
-export interface OrganizationsPageProps {
+export const OrganizationsPage: FC<{
   children?: ReactNode
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
-}
-
-export const OrganizationsPage: FC<OrganizationsPageProps> = async ({
-  searchParams,
-}) => {
+}> = async () => {
   const organizations = await getOrganizations()
-
-  // Extract status messages from URL
-  const params = await searchParams
-  const error = typeof params?.error === 'string' ? params.error : undefined
-  const success =
-    typeof params?.success === 'string' ? params.success : undefined
 
   return (
     <div className={styles.container}>
-      <ToastNotifications
-        error={error}
-        success={success}
-        successTitle="Success"
-        successDescription="Operation completed successfully"
-      />
+      {/* Client component to handle sessionStorage toast */}
+      <OrganizationsPageClient />
 
       <div className={styles.header}>
         <h1 className={styles.title}>Organizations</h1>
