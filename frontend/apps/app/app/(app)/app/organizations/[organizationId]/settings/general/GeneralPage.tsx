@@ -4,7 +4,7 @@ import {
 } from '@/features/organizations/actions/organizationActions'
 import { getOrganizationDetails } from '@/features/organizations/pages/OrganizationDetailPage/getOrganizationDetails'
 import { Button, Input, ToastNotifications } from '@liam-hq/ui'
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import * as v from 'valibot'
 import { DeleteOrganizationButton } from './DeleteOrganizationButton'
 import styles from './GeneralPage.module.css'
@@ -109,12 +109,7 @@ export async function GeneralPage({
   const organization = await getOrganizationDetails(organizationId)
 
   if (!organization) {
-    // Handle case where organization is not found
-    return (
-      <div className={styles.container}>
-        <p>Organization not found</p>
-      </div>
-    )
+    return notFound()
   }
 
   // Extract status messages from URL
