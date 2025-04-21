@@ -49,8 +49,5 @@ export async function deleteOrganization(
     return { success: false, error: 'Failed to delete organization' }
   }
 
-  // Revalidate the organizations page to reflect the changes
-  revalidatePath('/app/organizations')
-
   return { success: true }
 }

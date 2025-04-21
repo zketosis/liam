@@ -103,6 +103,7 @@ export async function deleteOrganizationAction(
 
     // Get the organization details to verify the name
     const organization = await getOrganizationDetails(organizationId)
+    const organizationName = organization?.name
     if (!organization) {
       return { success: false, error: 'Organization not found' }
     }
@@ -126,7 +127,7 @@ export async function deleteOrganizationAction(
 
     return {
       success: true,
-      message: `Organization "${organization.name}" has been deleted successfully`,
+      message: `Organization "${organizationName}" has been deleted successfully`,
     }
   } catch (error) {
     console.error('Error deleting organization:', error)

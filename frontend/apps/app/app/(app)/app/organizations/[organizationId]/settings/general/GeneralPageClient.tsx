@@ -4,6 +4,7 @@ import {
   deleteOrganizationAction,
   updateOrganizationAction,
 } from '@/features/organizations/actions/organizationClientActions'
+import { urlgen } from '@/utils/routes'
 import { Button, Input, useToast } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
@@ -62,8 +63,8 @@ export function GeneralPageClient({
         }),
       )
 
-      // Use Next.js router for client-side navigation instead of window.location
-      router.push('/app/organizations')
+      // Use Next.js router with urlgen for consistent navigation
+      router.push(urlgen('organizations'))
     } else if (deleteState.error) {
       toast({
         title: 'Error',
