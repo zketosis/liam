@@ -1,16 +1,35 @@
 import { urlgen } from '@/utils/routes'
+import { ToastNotifications } from '@liam-hq/ui'
 import Link from 'next/link'
 import type { FC, ReactNode } from 'react'
 import styles from './OrganizationsPage.module.css'
 import { getOrganizations } from './getOrganizations'
 
-export const OrganizationsPage: FC<{
+export interface OrganizationsPageProps {
   children?: ReactNode
-}> = async () => {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export const OrganizationsPage: FC<OrganizationsPageProps> = async ({
+  searchParams,
+}) => {
   const organizations = await getOrganizations()
+
+  // Extract status messages from URL
+  const params = await searchParams
+  const error = typeof params?.error === 'string' ? params.error : undefined
+  const success =
+    typeof params?.success === 'string' ? params.success : undefined
 
   return (
     <div className={styles.container}>
+      <ToastNotifications
+        error={error}
+        success={success}
+        successTitle="Success"
+        successDescription="Operation completed successfully"
+      />
+
       <div className={styles.header}>
         <h1 className={styles.title}>Organizations</h1>
         <Link

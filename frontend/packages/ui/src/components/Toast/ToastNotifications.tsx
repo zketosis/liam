@@ -98,14 +98,22 @@ export function ToastNotifications({
       })
     }
 
+    // Setup timer for clearing URL parameters
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+
     // Clear URL parameters after showing toast
     if (clearUrlParams && (error || success) && typeof window !== 'undefined') {
-      const timer = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         // Replace current URL with pathname only (no query parameters)
         window.history.replaceState({}, '', window.location.pathname)
       }, clearParamsDelay)
+    }
 
-      return () => clearTimeout(timer)
+    // Always return a cleanup function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
     }
   }, [
     error,

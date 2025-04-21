@@ -1,129 +1,136 @@
-'use client'
-
-import { createClient } from '@/libs/db/client'
-import { Button, Input, useToast } from '@liam-hq/ui'
-import { useParams } from 'next/navigation'
-import { type FC, useState } from 'react'
+import {
+  deleteOrganization,
+  updateOrganizationName,
+} from '@/features/organizations/actions/organizationActions'
+import { getOrganizationDetails } from '@/features/organizations/pages/OrganizationDetailPage/getOrganizationDetails'
+import { Button, Input, ToastNotifications } from '@liam-hq/ui'
+import { redirect } from 'next/navigation'
+import * as v from 'valibot'
+import { DeleteOrganizationButton } from './DeleteOrganizationButton'
 import styles from './GeneralPage.module.css'
 
-// Fetch organization data directly
-const fetchOrganizationName = async (
-  organizationId: string,
-): Promise<string> => {
-  const supabase = createClient()
-  const { data, error } = await supabase
-    .from('organizations')
-    .select('name')
-    .eq('id', organizationId)
-    .single()
+// Define schemas for form validation
+const organizationIdSchema = v.string('Organization ID must be a string')
+const nameSchema = v.string('Organization name must be a string')
 
-  if (error) {
-    console.error('Error fetching organization:', error)
-    return ''
+// Server action wrapper for form submission with redirect
+async function handleUpdateOrganization(formData: FormData) {
+  'use server'
+
+  const organizationIdResult = v.safeParse(
+    organizationIdSchema,
+    formData.get('organizationId'),
+  )
+  const nameResult = v.safeParse(nameSchema, formData.get('name'))
+
+  // Handle validation errors
+  if (!organizationIdResult.success) {
+    redirect(
+      `/app/organizations/${formData.get('organizationId')}/settings/general?error=${encodeURIComponent('Invalid organization ID')}`,
+    )
   }
 
-  return data?.name || ''
+  if (!nameResult.success) {
+    redirect(
+      `/app/organizations/${formData.get('organizationId')}/settings/general?error=${encodeURIComponent('Invalid organization name')}`,
+    )
+  }
+
+  const organizationId = organizationIdResult.output
+  const name = nameResult.output
+
+  const result = await updateOrganizationName(organizationId, name)
+
+  if (!result.success) {
+    redirect(
+      `/app/organizations/${organizationId}/settings/general?error=${encodeURIComponent(result.error || 'Failed to update organization name')}`,
+    )
+  }
+
+  redirect(`/app/organizations/${organizationId}/settings/general?success=true`)
 }
 
-export const GeneralPage: FC = () => {
-  const params = useParams()
-  // Ensure organizationId is a string
-  const organizationId =
-    typeof params.organizationId === 'string'
-      ? params.organizationId
-      : Array.isArray(params.organizationId)
-        ? params.organizationId[0]
-        : undefined
+// Server action wrapper for deleting organization
+async function handleDeleteOrganization(formData: FormData) {
+  'use server'
 
-  // State for form data and UI state
-  const [organizationData, setOrganizationData] = useState<{
-    name: string
-    isLoading: boolean
-    isInitialLoading: boolean
-    error: string | null
-    success: boolean
-  }>({
-    name: '',
-    isLoading: false,
-    isInitialLoading: true,
-    error: null,
-    success: false,
-  })
-  const toast = useToast()
+  const organizationIdResult = v.safeParse(
+    organizationIdSchema,
+    formData.get('organizationId'),
+  )
 
-  // Initialize data loading
-  if (organizationId && organizationData.isInitialLoading) {
-    fetchOrganizationName(organizationId).then((name) => {
-      setOrganizationData((prev) => ({
-        ...prev,
-        name,
-        isInitialLoading: false,
-      }))
-    })
+  // Handle validation error
+  if (!organizationIdResult.success) {
+    redirect(
+      `/app/organizations/${formData.get('organizationId')}/settings/general?error=${encodeURIComponent('Invalid organization ID')}`,
+    )
   }
 
-  const handleSave = async () => {
-    if (!organizationData.name.trim()) {
-      setOrganizationData((prev) => ({
-        ...prev,
-        error: 'Organization name cannot be empty',
-      }))
-      return
-    }
+  const organizationId = organizationIdResult.output
 
-    if (!organizationId) {
-      setOrganizationData((prev) => ({
-        ...prev,
-        error: 'Organization ID is missing',
-      }))
-      return
-    }
-
-    setOrganizationData((prev) => ({
-      ...prev,
-      isLoading: true,
-      error: null,
-      success: false,
-    }))
-
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('organizations')
-      .update({ name: organizationData.name.trim() })
-      .eq('id', organizationId)
-
-    if (error) {
-      setOrganizationData((prev) => ({
-        ...prev,
-        error: 'Failed to update organization name',
-        isLoading: false,
-      }))
-      console.error(error)
-      return
-    }
-
-    setOrganizationData((prev) => ({
-      ...prev,
-      success: true,
-      isLoading: false,
-    }))
-    toast({
-      title: 'Updated',
-      description: 'Organization name has been successfully updated',
-      status: 'success',
-    })
-    setTimeout(() => {
-      setOrganizationData((prev) => ({ ...prev, success: false }))
-    }, 3000) // Clear success message after 3 seconds
+  // Get the organization details to verify the name
+  const organization = await getOrganizationDetails(organizationId)
+  if (!organization) {
+    redirect(
+      `/app/organizations/${organizationId}/settings/general?error=${encodeURIComponent('Organization not found')}`,
+    )
   }
 
-  const handleDelete = () => {
-    // TODO: Implement delete functionality
-    // Delete organization
+  // Verify that the confirmation text matches the organization name
+  const confirmText = formData.get('confirmText')
+  if (confirmText !== organization.name) {
+    redirect(
+      `/app/organizations/${organizationId}/settings/general?error=${encodeURIComponent('Confirmation text does not match organization name')}`,
+    )
   }
+
+  const result = await deleteOrganization(organizationId)
+
+  if (!result.success) {
+    redirect(
+      `/app/organizations/${organizationId}/settings/general?error=${encodeURIComponent(result.error || 'Failed to delete organization')}`,
+    )
+  }
+
+  // Redirect with success message and additional parameters for toast notification
+  redirect(
+    `/app/organizations?success=Organization "${organization.name}" has been deleted successfully`,
+  )
+}
+
+export async function GeneralPage({
+  organizationId,
+  searchParams,
+}: {
+  organizationId: string
+  searchParams?: { [key: string]: string | string[] | undefined }
+}) {
+  // Fetch organization details using the existing function
+  const organization = await getOrganizationDetails(organizationId)
+
+  if (!organization) {
+    // Handle case where organization is not found
+    return (
+      <div className={styles.container}>
+        <p>Organization not found</p>
+      </div>
+    )
+  }
+
+  // Extract status messages from URL
+  const error =
+    typeof searchParams?.error === 'string' ? searchParams.error : undefined
+  const success =
+    typeof searchParams?.success === 'string' ? searchParams.success : undefined
 
   return (
     <div className={styles.container}>
+      <ToastNotifications
+        error={error}
+        success={success}
+        successTitle="Updated"
+        successDescription="Organization name has been successfully updated"
+      />
       {/* Organization Name Section */}
       <div className={styles.card}>
         <div className={styles.cardContent}>
@@ -133,20 +140,13 @@ export const GeneralPage: FC = () => {
             </div>
             <div className={styles.inputContainer}>
               <Input
-                value={organizationData.name}
-                onChange={(e) =>
-                  setOrganizationData((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
-                }
+                name="name"
+                form="updateOrgForm"
+                defaultValue={organization.name}
                 className={styles.input}
-                error={!!organizationData.error}
-                disabled={organizationData.isInitialLoading}
+                error={!!error}
               />
-              {organizationData.error && (
-                <p className={styles.errorText}>{organizationData.error}</p>
-              )}
+              {error && <p className={styles.errorText}>{error}</p>}
               <p className={styles.helperText}>
                 This is your team's visible name within Liam Migration. For
                 example, the name of your company or team.
@@ -156,16 +156,12 @@ export const GeneralPage: FC = () => {
         </div>
         <div className={styles.divider} />
         <div className={styles.cardFooter}>
-          <Button
-            variant="solid-primary"
-            onClick={handleSave}
-            className={styles.saveButton}
-            disabled={
-              organizationData.isLoading || organizationData.isInitialLoading
-            }
-          >
-            {organizationData.isLoading ? 'Saving...' : 'Save'}
-          </Button>
+          <form id="updateOrgForm" action={handleUpdateOrganization}>
+            <input type="hidden" name="organizationId" value={organizationId} />
+            <Button variant="solid-primary" type="submit">
+              Save
+            </Button>
+          </form>
         </div>
       </div>
 
@@ -188,14 +184,12 @@ export const GeneralPage: FC = () => {
         </div>
         <div className={styles.dangerDivider} />
         <div className={styles.cardFooter}>
-          <Button
-            variant="solid-danger"
-            onClick={handleDelete}
-            className={styles.deleteButton}
-            disabled={organizationData.isInitialLoading}
-          >
-            Delete
-          </Button>
+          {/* Client-side delete button that opens the modal */}
+          <DeleteOrganizationButton
+            organizationId={organizationId}
+            organizationName={organization.name}
+            handleDeleteOrganization={handleDeleteOrganization}
+          />
         </div>
       </div>
     </div>
