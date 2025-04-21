@@ -80,7 +80,7 @@ export async function postComment(
     const supabase = createClient()
 
     const { data: repository, error: repoError } = await supabase
-      .from('repositories')
+      .from('github_repositories')
       .select('*')
       .eq('id', repositoryId)
       .single()
@@ -96,7 +96,7 @@ export async function postComment(
     const repo = repository.name
 
     const { data: prRecord, error: prError } = await supabase
-      .from('pull_requests')
+      .from('github_pull_requests')
       .select(`
         *,
         migrations (
@@ -157,7 +157,7 @@ export async function postComment(
       )
 
       const { error: updateError } = await supabase
-        .from('pull_requests')
+        .from('github_pull_requests')
         .update({ comment_id: commentResponse.id })
         .eq('id', pullRequestId)
 

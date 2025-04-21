@@ -59,7 +59,7 @@ export const processGenerateReview = async (
     const supabase = createClient()
 
     const { data: repository, error: repositoryError } = await supabase
-      .from('repositories')
+      .from('github_repositories')
       .select('installation_id')
       .eq('id', payload.repositoryId)
       .single()

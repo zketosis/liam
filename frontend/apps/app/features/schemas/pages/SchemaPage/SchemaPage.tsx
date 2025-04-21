@@ -36,7 +36,7 @@ async function getERDEditorContent({
         *,
         project_repository_mappings(
           *,
-          repositories(
+          github_repositories(
             name, owner, installation_id
           )
         )
@@ -51,7 +51,7 @@ async function getERDEditorContent({
     .eq('path', schemaFilePath)
     .single()
 
-  const repository = project?.project_repository_mappings[0].repositories
+  const repository = project?.project_repository_mappings[0].github_repositories
   if (!repository?.installation_id || !repository.owner || !repository.name) {
     console.error('Repository information not found')
     return notFound()

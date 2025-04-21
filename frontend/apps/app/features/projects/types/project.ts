@@ -6,7 +6,7 @@ import type { Tables } from '@liam-hq/db/supabase/database.types'
 export type ProjectWithLastCommit = Tables<'projects'> & {
   lastCommitDate?: string
   project_repository_mappings?: Array<{
-    repository: Tables<'repositories'>
+    repository: Tables<'github_repositories'>
   }>
 }
 

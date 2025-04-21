@@ -33,7 +33,7 @@ export const addProject = async (formData: FormData) => {
 
   // Create repository
   const { data: repository, error: repositoryError } = await supabase
-    .from('repositories')
+    .from('github_repositories')
     .insert({
       name: repositoryName,
       owner: repositoryOwner,

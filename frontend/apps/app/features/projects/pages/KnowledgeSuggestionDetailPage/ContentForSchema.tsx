@@ -42,7 +42,7 @@ export const ContentForSchema: FC<Props> = async ({
   branchOrCommit,
 }) => {
   const repository =
-    suggestion.projects.project_repository_mappings[0]?.repositories
+    suggestion.projects.project_repository_mappings[0]?.github_repositories
   const repositoryFullName = `${repository.owner}/${repository.name}`
 
   const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)

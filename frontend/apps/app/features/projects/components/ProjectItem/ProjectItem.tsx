@@ -10,7 +10,7 @@ import styles from './ProjectItem.module.css'
 
 type ProjectWithRepositories = Tables<'projects'> & {
   project_repository_mappings?: Array<{
-    repository: Tables<'repositories'>
+    repository: Tables<'github_repositories'>
   }>
 }
 

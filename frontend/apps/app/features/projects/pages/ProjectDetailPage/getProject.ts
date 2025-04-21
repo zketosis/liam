@@ -12,8 +12,8 @@ export async function getProject(projectId: string) {
         organization_id,
         updated_at,
         project_repository_mappings(
-          repositories(
-            pull_requests(
+          github_repositories(
+            github_pull_requests(
               id,
               pull_number,
               migrations(
@@ -34,7 +34,7 @@ export async function getProject(projectId: string) {
 
     // Extract migrations from the nested structure
     const migrations = project.project_repository_mappings.flatMap((mapping) =>
-      mapping.repositories.pull_requests
+      mapping.github_repositories.github_pull_requests
         .filter((pr) => pr.migrations !== null)
         .map((pr) => {
           // Handle case where migration might be an array due to Supabase's return format
