@@ -16,6 +16,18 @@ export type RouteDefinitions = {
   'organizations/[organizationId]/projects/new': (params: {
     organizationId: string
   }) => string
+  'organizations/[organizationId]/settings/general': (params: {
+    organizationId: string
+  }) => string
+  'organizations/[organizationId]/settings/members': (params: {
+    organizationId: string
+  }) => string
+  'organizations/[organizationId]/settings/billing': (params: {
+    organizationId: string
+  }) => string
+  'organizations/[organizationId]/settings/projects': (params: {
+    organizationId: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]': (params: {
     projectId: string
     branchOrCommit: string
@@ -64,6 +76,18 @@ export const routeDefinitions: RouteDefinitions = {
   },
   'organizations/[organizationId]/projects/new': ({ organizationId }) => {
     return `/app/organizations/${organizationId}/projects/new`
+  },
+  'organizations/[organizationId]/settings/general': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}/settings/general`
+  },
+  'organizations/[organizationId]/settings/members': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}/settings/members`
+  },
+  'organizations/[organizationId]/settings/billing': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}/settings/billing`
+  },
+  'organizations/[organizationId]/settings/projects': ({ organizationId }) => {
+    return `/app/organizations/${organizationId}/settings/projects`
   },
   'projects/[projectId]': ({ projectId }) => {
     return `/app/projects/${projectId}`

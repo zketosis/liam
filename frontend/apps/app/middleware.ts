@@ -83,7 +83,12 @@ export async function updateSession(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  const response = await updateSession(request)
+  // NOTE: Set the x-url-path header to allow extracting the current path in layout.tsx and other components
+  // @see: https://github.com/vercel/next.js/issues/43704#issuecomment-1411186664
+  response.headers.set('x-url-path', request.nextUrl.pathname)
+
+  return response
 }
 
 export const config = {
