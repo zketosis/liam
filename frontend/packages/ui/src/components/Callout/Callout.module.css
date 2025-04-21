@@ -10,7 +10,7 @@
 
 .iconContainer {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   width: 24px;
   height: 24px;
 }

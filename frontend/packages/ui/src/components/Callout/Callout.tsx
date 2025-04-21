@@ -1,27 +1,7 @@
 import clsx from 'clsx'
 import type { ReactNode } from 'react'
+import { InfoIcon } from '../../icons/InfoIcon'
 import styles from './Callout.module.css'
-
-// Default icon for all variants
-const InfoIcon = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-labelledby="calloutInfoIconTitle"
-  >
-    <title id="calloutInfoIconTitle">Info</title>
-    <path
-      d="M8 5.5V8.5M8 11H8.01M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
 
 export type CalloutVariant =
   | 'default'
