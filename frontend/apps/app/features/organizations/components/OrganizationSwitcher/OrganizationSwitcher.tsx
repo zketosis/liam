@@ -69,7 +69,7 @@ export const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({
       </button>
 
       <Link
-        href={urlgen('organizations/[organizationId]', {
+        href={urlgen('organizations/[organizationId]/projects', {
           organizationId: `${currentOrganization.id}`,
         })}
         className={styles.settingsButton}
