@@ -1,5 +1,3 @@
-'use client'
-
 import { Button, Callout, Input } from '@liam-hq/ui'
 import {
   ModalActions,
