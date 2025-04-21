@@ -7,9 +7,6 @@ export type RouteDefinitions = {
   'projects/[projectId]/docs': (params: { projectId: string }) => string
   'organizations/new': string
   organizations: string
-  'organizations/[organizationId]': (params: {
-    organizationId: string
-  }) => string
   'organizations/[organizationId]/projects': (params: {
     organizationId: string
   }) => string
@@ -56,9 +53,6 @@ export const routeDefinitions: RouteDefinitions = {
   'projects/new': '/app/projects/new',
   'organizations/new': '/app/organizations/new',
   organizations: '/app/organizations',
-  'organizations/[organizationId]': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}`
-  },
   'organizations/[organizationId]/projects': ({ organizationId }) => {
     return `/app/organizations/${organizationId}/projects`
   },
