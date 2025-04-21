@@ -16,7 +16,9 @@ We have considered enhancing the security of our application by leveraging Supab
 Currently, the application accesses Supabase using the anon key on the client side, which poses a risk: tables without RLS enabled can be accessed regardless of user authentication.
 
 Furthermore, the application is built with a multi-tenant architecture, requiring **authorization control based on organizations**.  
-In this setup, most tables have a foreign key to a central organization_id, often resulting in deeply nested relationships.
+Many tables are several relationships away from the central organization_id. This creates a challenge where RLS policies must traverse multiple tables through foreign key relationships to reach the organization_id.
+
+For example, a policy might need to include multiple nested SELECT statements to verify that a record belongs to the user's organization.
 
 As a result, authorization policies can become complex. If RLS is only partially applied, alternative access paths through related tables may remain, creating potential security loopholes.
 
