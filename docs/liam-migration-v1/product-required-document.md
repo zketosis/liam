@@ -223,7 +223,7 @@ _Why this PR was chosen:_
 ### Onboarding Flow
 
 ```mermaid
-aflowchart TB
+flowchart TB
     subgraph Onboarding Flow
         subgraph Human
             A[Sign‑up]
@@ -260,7 +260,7 @@ aflowchart TB
 ### Development Flow
 
 ```mermaid
-aflowchart TB
+flowchart TB
     subgraph Development Flow
         subgraph Builder User
             A[Open PR]
@@ -273,7 +273,7 @@ aflowchart TB
             H[Discussion via comments]
         end
         subgraph GitHub
-            B[Review comment (summary) on PR]
+            B["Review comment (summary) on PR"]
             K[Approve PR]
         end
         subgraph Liam Migration
