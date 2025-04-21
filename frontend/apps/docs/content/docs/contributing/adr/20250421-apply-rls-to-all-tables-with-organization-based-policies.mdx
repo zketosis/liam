@@ -35,6 +35,28 @@ As a result, authorization policies can become complex. If RLS is only partially
 - **Backend exceptions**:
   - For system jobs or backend operations that do not go through user authentication, access beyond RLS restrictions will be needed. This will be handled by using specific authorization tokens or dedicated connection roles, allowing restricted access.
 
+### Example Implementation
+
+The projects table already implements this approach with the following policies:
+
+```sql
+-- Enable RLS on the projects table
+ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
+
+-- Policy for SELECT operations
+CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" 
+FOR SELECT TO "authenticated" 
+USING (("organization_id" IN ( 
+  SELECT "organization_members"."organization_id"
+  FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"())
+)));
+
+-- Similar policies exist for INSERT, UPDATE, and DELETE operations
+```
+
+These policies ensure that users can only access projects belonging to organizations they are members of, by joining through the organization_members table.
+
 ## Consequences
 
 ### Positive
