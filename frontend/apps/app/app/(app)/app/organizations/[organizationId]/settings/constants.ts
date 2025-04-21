@@ -1,4 +1,5 @@
 import { BookMarked, GitPullRequestArrow, LayoutGrid, Users } from '@liam-hq/ui'
+import { type InferOutput, literal, union } from 'valibot'
 
 export const SETTINGS_TAB = {
   GENERAL: 'general',
@@ -7,7 +8,14 @@ export const SETTINGS_TAB = {
   PROJECTS: 'projects',
 } as const
 
-export type SettingsTabValue = (typeof SETTINGS_TAB)[keyof typeof SETTINGS_TAB]
+export const SettingsTabSchema = union([
+  literal(SETTINGS_TAB.GENERAL),
+  literal(SETTINGS_TAB.MEMBERS),
+  literal(SETTINGS_TAB.BILLING),
+  literal(SETTINGS_TAB.PROJECTS),
+])
+
+export type SettingsTabValue = InferOutput<typeof SettingsTabSchema>
 
 export interface SettingsTab {
   value: SettingsTabValue

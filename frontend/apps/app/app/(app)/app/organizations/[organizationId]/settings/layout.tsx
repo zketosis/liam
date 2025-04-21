@@ -1,25 +1,43 @@
 import { TabsContent, TabsRoot } from '@liam-hq/ui'
+import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
+import { safeParse } from 'valibot'
 import { SettingsHeader } from './components/SettingsHeader'
-import { SETTINGS_TAB } from './constants'
+import {
+  SETTINGS_TAB,
+  SettingsTabSchema,
+  type SettingsTabValue,
+} from './constants'
 import styles from './layout.module.css'
 
 interface LayoutProps {
   children: ReactNode
 }
 
+const getDefaultTabFromPath = async (): Promise<
+  SettingsTabValue | undefined
+> => {
+  const headersList = await headers()
+  const urlPath = headersList.get('x-url-path') || ''
+  const pathSegments = urlPath.split('/')
+  const lastSegment = pathSegments[pathSegments.length - 1]
+
+  const result = safeParse(SettingsTabSchema, lastSegment)
+
+  return result.success ? result.output : undefined
+}
+
 export default async function OrganizationSettingsLayout({
   children,
 }: LayoutProps) {
+  const defaultTabFromPath = await getDefaultTabFromPath()
+
   return (
     <div className={styles.container}>
       <div className={styles.contentContainer}>
         <h1 className={styles.heading}>Settings</h1>
 
-        <TabsRoot
-          // TODO: Make it possible to retrieve it from the current path
-          defaultValue={SETTINGS_TAB.GENERAL}
-        >
+        <TabsRoot defaultValue={defaultTabFromPath}>
           <SettingsHeader />
           <TabsContent
             value={SETTINGS_TAB.GENERAL}
