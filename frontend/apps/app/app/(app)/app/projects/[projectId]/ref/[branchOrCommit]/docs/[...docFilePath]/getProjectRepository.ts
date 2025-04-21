@@ -19,7 +19,7 @@ export const getProjectRepository = async (
         *,
         project_repository_mappings(
           *,
-          repositories(
+          github_repositories(
             name, owner, installation_id
           )
         )
@@ -31,7 +31,8 @@ export const getProjectRepository = async (
       return null
     }
 
-    const repository = project?.project_repository_mappings[0]?.repositories
+    const repository =
+      project?.project_repository_mappings[0]?.github_repositories
     if (!repository?.installation_id || !repository.owner || !repository.name) {
       console.error('Repository information not found')
       return null

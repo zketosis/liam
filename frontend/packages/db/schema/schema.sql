@@ -163,6 +163,33 @@ CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
 ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."github_pull_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pull_number" bigint NOT NULL,
+    "comment_id" bigint,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "repository_id" "uuid" NOT NULL
+);
+
+
+ALTER TABLE "public"."github_pull_requests" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."github_repositories" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "owner" "text" NOT NULL,
+    "installation_id" integer NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."github_repositories" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "path" "text" NOT NULL,
@@ -304,33 +331,6 @@ CREATE TABLE IF NOT EXISTS "public"."projects" (
 ALTER TABLE "public"."projects" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."pull_requests" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "pull_number" bigint NOT NULL,
-    "comment_id" bigint,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    "repository_id" "uuid" NOT NULL
-);
-
-
-ALTER TABLE "public"."pull_requests" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."repositories" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "owner" "text" NOT NULL,
-    "installation_id" integer NOT NULL,
-    "is_active" boolean DEFAULT true NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."repositories" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "review_feedback_id" "uuid" NOT NULL,
@@ -466,12 +466,12 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 
 
-ALTER TABLE ONLY "public"."pull_requests"
+ALTER TABLE ONLY "public"."github_pull_requests"
     ADD CONSTRAINT "pull_request_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."repositories"
+ALTER TABLE ONLY "public"."github_repositories"
     ADD CONSTRAINT "repository_pkey" PRIMARY KEY ("id");
 
 
@@ -502,6 +502,14 @@ ALTER TABLE ONLY "public"."users"
 
 
 CREATE UNIQUE INDEX "github_doc_file_path_path_project_id_key" ON "public"."github_doc_file_paths" USING "btree" ("path", "project_id");
+
+
+
+CREATE UNIQUE INDEX "github_pull_request_repository_id_pull_number_key" ON "public"."github_pull_requests" USING "btree" ("repository_id", "pull_number");
+
+
+
+CREATE UNIQUE INDEX "github_repository_owner_name_key" ON "public"."github_repositories" USING "btree" ("owner", "name");
 
 
 
@@ -549,16 +557,13 @@ CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON
 
 
 
-CREATE UNIQUE INDEX "pull_request_repository_id_pull_number_key" ON "public"."pull_requests" USING "btree" ("repository_id", "pull_number");
-
-
-
-CREATE UNIQUE INDEX "repository_owner_name_key" ON "public"."repositories" USING "btree" ("owner", "name");
-
-
-
 ALTER TABLE ONLY "public"."github_doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."github_pull_requests"
+    ADD CONSTRAINT "github_pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -593,7 +598,7 @@ ALTER TABLE ONLY "public"."membership_invites"
 
 
 ALTER TABLE ONLY "public"."migrations"
-    ADD CONSTRAINT "migration_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "migration_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -623,7 +628,7 @@ ALTER TABLE ONLY "public"."overall_reviews"
 
 
 ALTER TABLE ONLY "public"."overall_reviews"
-    ADD CONSTRAINT "overall_review_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "overall_review_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -638,12 +643,7 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 
 ALTER TABLE ONLY "public"."project_repository_mappings"
-    ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."pull_requests"
-    ADD CONSTRAINT "pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -976,6 +976,18 @@ GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."github_pull_requests" TO "anon";
+GRANT ALL ON TABLE "public"."github_pull_requests" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_pull_requests" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."github_repositories" TO "anon";
+GRANT ALL ON TABLE "public"."github_repositories" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_repositories" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "anon";
 GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "authenticated";
 GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "service_role";
@@ -1039,18 +1051,6 @@ GRANT ALL ON TABLE "public"."project_repository_mappings" TO "service_role";
 GRANT ALL ON TABLE "public"."projects" TO "anon";
 GRANT ALL ON TABLE "public"."projects" TO "authenticated";
 GRANT ALL ON TABLE "public"."projects" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."pull_requests" TO "anon";
-GRANT ALL ON TABLE "public"."pull_requests" TO "authenticated";
-GRANT ALL ON TABLE "public"."pull_requests" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."repositories" TO "anon";
-GRANT ALL ON TABLE "public"."repositories" TO "authenticated";
-GRANT ALL ON TABLE "public"."repositories" TO "service_role";
 
 
 

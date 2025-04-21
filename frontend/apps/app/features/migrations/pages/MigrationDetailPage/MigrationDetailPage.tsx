@@ -28,11 +28,11 @@ async function getMigrationContents(migrationId: string) {
       title,
       created_at,
       pull_request_id,
-      pull_requests (
+      github_pull_requests (
         id,
         pull_number,
         repository_id,
-        repositories (
+        github_repositories (
           id,
           installation_id,
           name,
@@ -48,8 +48,8 @@ async function getMigrationContents(migrationId: string) {
     return notFound()
   }
 
-  const pullRequest = migration.pull_requests
-  const repository = pullRequest.repositories
+  const pullRequest = migration.github_pull_requests
+  const repository = pullRequest.github_repositories
 
   const { data: overallReview, error: reviewError } = await supabase
     .from('overall_reviews')
@@ -210,7 +210,7 @@ export const MigrationDetailPage: FC<Props> = async ({
       <div className={styles.heading}>
         <h1 className={styles.title}>{migration.title}</h1>
         <p className={styles.subTitle}>
-          #{migration.pull_requests.pull_number}
+          #{migration.github_pull_requests.pull_number}
         </p>
       </div>
       <div className={styles.twoColumns}>

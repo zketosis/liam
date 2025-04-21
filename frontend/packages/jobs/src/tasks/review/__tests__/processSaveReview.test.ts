@@ -37,8 +37,8 @@ describe.skip('processSaveReview', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    await supabase.from('repositories').insert(testRepository)
-    await supabase.from('pull_requests').insert(testPullRequest)
+    await supabase.from('github_repositories').insert(testRepository)
+    await supabase.from('github_pull_requests').insert(testPullRequest)
     await supabase.from('projects').insert(testProject)
   })
 
@@ -57,9 +57,15 @@ describe.skip('processSaveReview', () => {
       await supabase.from('overall_reviews').delete().in('id', reviewIds)
     }
 
-    await supabase.from('pull_requests').delete().eq('id', testPullRequest.id)
+    await supabase
+      .from('github_pull_requests')
+      .delete()
+      .eq('id', testPullRequest.id)
     await supabase.from('projects').delete().eq('id', testProject.id)
-    await supabase.from('repositories').delete().eq('id', testRepository.id)
+    await supabase
+      .from('github_repositories')
+      .delete()
+      .eq('id', testRepository.id)
   })
 
   it('should save review successfully', async () => {

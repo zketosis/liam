@@ -5,7 +5,7 @@ export const getInstallationIdFromRepositoryId = async (
 ): Promise<number> => {
   const supabase = createClient()
   const { data: repository, error } = await supabase
-    .from('repositories')
+    .from('github_repositories')
     .select('installation_id')
     .eq('id', repositoryId)
     .single()

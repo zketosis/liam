@@ -24,7 +24,7 @@ async function getSuggestionWithProject(
         id,
         name,
         project_repository_mappings(
-          repositories(*)
+          github_repositories(*)
         )
       )
     `)
@@ -74,7 +74,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
 }) => {
   const suggestion = await getKnowledgeSuggestionDetail(projectId, suggestionId)
   const repository =
-    suggestion.projects.project_repository_mappings[0]?.repositories
+    suggestion.projects.project_repository_mappings[0]?.github_repositories
 
   return (
     <div className={styles.container}>

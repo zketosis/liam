@@ -8,7 +8,7 @@ describe('getProjectRepository', () => {
 
     // Create test repository
     const { data: repository } = await supabase
-      .from('repositories')
+      .from('github_repositories')
       .insert({
         name: 'test-repo',
         owner: 'test-owner',
