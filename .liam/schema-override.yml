@@ -19,6 +19,9 @@ overrides:
   tables:
     github_repositories:
       comment: "GitHub repositories table with github_ prefix pattern"
+      columns:
+        github_repository_identifier:
+          comment: "GitHub's repository ID. Maps to 'repository.id' in Octokit and 'Repository.databaseId' in GraphQL API."
     github_pull_requests:
       comment: "GitHub pull requests table with github_ prefix pattern. Should be updated to have migration_id instead of migrations having pull_request_id."
     migrations:
