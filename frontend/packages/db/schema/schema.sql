@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS "public"."github_repositories" (
     "github_installation_identifier" integer NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "github_repository_identifier" integer,
+    "github_repository_identifier" integer NOT NULL,
     "organization_id" "uuid" NOT NULL
 );
 
@@ -399,6 +399,11 @@ ALTER TABLE "public"."users" OWNER TO "postgres";
 
 ALTER TABLE ONLY "public"."github_doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."github_repositories"
+    ADD CONSTRAINT "github_repository_github_repository_identifier_organization_id_" UNIQUE ("github_repository_identifier", "organization_id");
 
 
 
