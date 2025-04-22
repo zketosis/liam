@@ -550,8 +550,8 @@ importers:
         specifier: 0.3.45
         version: 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
       '@langchain/openai':
-        specifier: 0.5.5
-        version: 0.5.5(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
+        specifier: 0.5.6
+        version: 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
       '@liam-hq/db':
         specifier: workspace:*
         version: link:../db
@@ -1551,8 +1551,8 @@ packages:
     resolution: {integrity: sha512-4icCMCeuauVvwH43zgCE6Hk2Zbke5OccfVhFpTiIJPo8WoU/ALdaZlS22S+6+qZ9lFzFHsgZ6K33Av9aWhxkQA==}
     engines: {node: '>=18'}
 
-  '@langchain/openai@0.5.5':
-    resolution: {integrity: sha512-QwdZrWcx6FB+UMKQ6+a0M9ZXzeUnZCwXP7ltqCCycPzdfiwxg3TQ6WkSefdEyiPpJcVVq/9HZSxrzGmf18QGyw==}
+  '@langchain/openai@0.5.6':
+    resolution: {integrity: sha512-zN0iyJthPNmcefIBVybZwcTBgcqu/ElJFov42ZntxEncK4heOMAE9lkq9LQ5CaPU/SgrduibrM1oL57+tLUtaA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': '>=0.3.39 <0.4.0'
@@ -8789,7 +8789,7 @@ snapshots:
     transitivePeerDependencies:
       - openai
 
-  '@langchain/openai@0.5.5(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)':
+  '@langchain/openai@0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)':
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
       js-tiktoken: 1.0.19
@@ -8800,7 +8800,7 @@ snapshots:
       - encoding
       - ws
 
-  '@langchain/openai@0.5.5(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)':
+  '@langchain/openai@0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)':
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
       js-tiktoken: 1.0.19
@@ -13270,7 +13270,7 @@ snapshots:
   langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1):
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
-      '@langchain/openai': 0.5.5(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)
+      '@langchain/openai': 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)
       '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))
       js-tiktoken: 1.0.19
       js-yaml: 4.1.0
@@ -13293,7 +13293,7 @@ snapshots:
   langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1):
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
-      '@langchain/openai': 0.5.5(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
+      '@langchain/openai': 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
       '@langchain/textsplitters': 0.1.0(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))
       js-tiktoken: 1.0.19
       js-yaml: 4.1.0
