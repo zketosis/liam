@@ -20,7 +20,7 @@ export async function getOriginalDocumentContent(
       repositoryFullName,
       docPath,
       branchOrCommit,
-      repository.installation_id,
+      repository.github_installation_identifier,
     )
 
     return fileData.content

@@ -91,7 +91,7 @@ export async function postComment(
       )
     }
 
-    const installationId = repository.installation_id
+    const installationId = repository.github_installation_identifier
     const owner = repository.owner
     const repo = repository.name
 

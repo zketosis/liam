@@ -8,12 +8,18 @@ vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 describe.skip('processSaveReview', () => {
   const supabase = createClient()
 
+  const testOrganization = {
+    id: '9999',
+    name: 'test-organization',
+  }
+
   const testRepository = {
     id: '9999',
     name: 'test-repo',
     owner: 'test-owner',
-    installation_id: 12345,
-    is_active: true,
+    github_installation_identifier: 12345,
+    github_repository_identifier: 67890,
+    organization_id: testOrganization.id,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -30,6 +36,7 @@ describe.skip('processSaveReview', () => {
   const testProject = {
     id: '9999',
     name: 'test-project',
+    organization_id: testOrganization.id,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -37,6 +44,7 @@ describe.skip('processSaveReview', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
+    await supabase.from('organizations').insert(testOrganization)
     await supabase.from('github_repositories').insert(testRepository)
     await supabase.from('github_pull_requests').insert(testPullRequest)
     await supabase.from('projects').insert(testProject)
@@ -66,6 +74,7 @@ describe.skip('processSaveReview', () => {
       .from('github_repositories')
       .delete()
       .eq('id', testRepository.id)
+    await supabase.from('organizations').delete().eq('id', testOrganization.id)
   })
 
   it('should save review successfully', async () => {

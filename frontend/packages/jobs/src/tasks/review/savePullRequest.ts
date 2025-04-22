@@ -39,7 +39,8 @@ export type SavePullRequestResult = {
 
 type Repository = {
   id: string
-  installation_id: number
+  github_installation_identifier: number
+  github_repository_identifier: number
   owner: string
   name: string
 }
@@ -116,7 +117,7 @@ async function fetchSchemaFileContent(
       `${repository.owner}/${repository.name}`,
       schemaPath,
       branchRef,
-      Number(repository.installation_id),
+      Number(repository.github_installation_identifier),
     )
 
     if (!content) {
@@ -237,7 +238,7 @@ export async function processSavePullRequest(
   )
 
   const fileChanges = await getPullRequestFiles(
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -246,7 +247,7 @@ export async function processSavePullRequest(
   const schemaPath = await getSchemaPathForProject(supabase, payload.projectId)
 
   const prDetails = await getPullRequestDetails(
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
     repository.owner,
     repository.name,
     payload.prNumber,

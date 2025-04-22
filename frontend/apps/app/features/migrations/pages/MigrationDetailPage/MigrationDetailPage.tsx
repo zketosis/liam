@@ -34,7 +34,7 @@ async function getMigrationContents(migrationId: string) {
         repository_id,
         github_repositories (
           id,
-          installation_id,
+          github_installation_identifier,
           name,
           owner
         )
@@ -79,14 +79,14 @@ async function getMigrationContents(migrationId: string) {
     .single()
 
   const prDetails = await getPullRequestDetails(
-    repository.installation_id,
+    repository.github_installation_identifier,
     repository.owner,
     repository.name,
     pullRequest.pull_number,
   )
 
   const files = await getPullRequestFiles(
-    repository.installation_id,
+    repository.github_installation_identifier,
     repository.owner,
     repository.name,
     pullRequest.pull_number,

@@ -53,7 +53,7 @@ export const ContentForSchema: FC<Props> = async ({
     repositoryFullName,
     filePath,
     branchOrCommit,
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
   )
 
   const { value: schema, errors } =

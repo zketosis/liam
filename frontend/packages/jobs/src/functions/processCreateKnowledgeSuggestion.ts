@@ -51,7 +51,7 @@ const getRepositoryInfo = async (projectId: string) => {
   return {
     owner: repository.owner,
     name: repository.name,
-    installationId: repository.installation_id,
+    installationId: repository.github_installation_identifier,
   }
 }
 

@@ -16,7 +16,7 @@ export const getProjects = async (organizationId?: string) => {
           id,
           name,
           owner,
-          installation_id
+          github_installation_identifier
         )
       )
     `)

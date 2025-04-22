@@ -54,7 +54,7 @@ export async function processGenerateDocsSuggestion(payload: {
           repositoryFullName,
           filePath,
           branch,
-          Number(repository.installation_id),
+          Number(repository.github_installation_identifier),
         )
 
         return {
@@ -97,7 +97,7 @@ export async function processGenerateDocsSuggestion(payload: {
       payload.projectId,
       branch,
       repositoryFullName,
-      repository.installation_id,
+      repository.github_installation_identifier,
     )
 
     const result = await generateDocsSuggestion(

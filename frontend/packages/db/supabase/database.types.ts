@@ -107,32 +107,43 @@ export type Database = {
       github_repositories: {
         Row: {
           created_at: string
+          github_installation_identifier: number
+          github_repository_identifier: number
           id: string
-          installation_id: number
-          is_active: boolean
           name: string
+          organization_id: string
           owner: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          github_installation_identifier: number
+          github_repository_identifier: number
           id?: string
-          installation_id: number
-          is_active?: boolean
           name: string
+          organization_id: string
           owner: string
           updated_at: string
         }
         Update: {
           created_at?: string
+          github_installation_identifier?: number
+          github_repository_identifier?: number
           id?: string
-          installation_id?: number
-          is_active?: boolean
           name?: string
+          organization_id?: string
           owner?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'github_repositories_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
+        ]
       }
       github_schema_file_paths: {
         Row: {
