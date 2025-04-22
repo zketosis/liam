@@ -149,11 +149,13 @@ export const InviteMemberModal: FC<InviteMemberModalProps> = ({
               </Button>
               <Button
                 type="submit"
-                disabled={loading || !email.trim()}
+                isLoading={loading}
+                disabled={!email.trim()}
                 variant="solid-primary"
                 size="md"
+                loadingIndicatorType="content"
               >
-                {loading ? 'Sending...' : 'Invite'}
+                Invite
               </Button>
             </ModalActions>
           </form>
