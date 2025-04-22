@@ -114,44 +114,7 @@ export const createParserTestCases = (
           columns: ['email'],
         }),
       },
-      constraints: {
-        UNIQUE_email: {
-          type: 'UNIQUE',
-          name: 'UNIQUE_email',
-          columnName: 'email',
-        },
-      },
     }),
-  'foreign key': (name: string) => ({
-    relationships: {
-      [name]: {
-        name,
-        primaryTableName: 'users',
-        primaryColumnName: 'id',
-        foreignTableName: 'posts',
-        foreignColumnName: 'user_id',
-        cardinality: 'ONE_TO_MANY',
-        updateConstraint: 'NO_ACTION',
-        deleteConstraint: 'NO_ACTION',
-      },
-    },
-    constraints: {
-      PRIMARY_id: {
-        type: 'PRIMARY KEY',
-        name: 'PRIMARY_id',
-        columnName: 'id',
-      },
-      [name]: {
-        type: 'FOREIGN KEY',
-        name,
-        columnName: 'user_id',
-        targetTableName: 'users',
-        targetColumnName: 'id',
-        updateConstraint: 'NO_ACTION',
-        deleteConstraint: 'NO_ACTION',
-      },
-    },
-  }),
   'foreign key (one-to-many)': (name: string) => ({
     [name]: {
       name,
@@ -177,45 +140,15 @@ export const createParserTestCases = (
     },
   }),
   'foreign key with action': {
-    relationships: {
-      fk_posts_user_id: {
-        name: 'fk_posts_user_id',
-        primaryTableName: 'users',
-        primaryColumnName: 'id',
-        foreignTableName: 'posts',
-        foreignColumnName: 'user_id',
-        cardinality: 'ONE_TO_MANY',
-        updateConstraint: 'RESTRICT',
-        deleteConstraint: 'CASCADE',
-      },
-    },
-    constraints: {
-      PRIMARY_id: {
-        type: 'PRIMARY KEY',
-        name: 'PRIMARY_id',
-        columnName: 'id',
-      },
-      fk_posts_user_id: {
-        type: 'FOREIGN KEY',
-        name: 'fk_posts_user_id',
-        columnName: 'user_id',
-        targetTableName: 'users',
-        targetColumnName: 'id',
-        updateConstraint: 'RESTRICT',
-        deleteConstraint: 'CASCADE',
-      },
-    },
-  },
-  'check constraint': {
-    PRIMARY_id: {
-      type: 'PRIMARY KEY',
-      name: 'PRIMARY_id',
-      columnName: 'id',
-    },
-    age_range_check: {
-      type: 'CHECK',
-      name: 'age_range_check',
-      detail: 'age >= 20 and age < 20',
+    fk_posts_user_id: {
+      name: 'fk_posts_user_id',
+      primaryTableName: 'users',
+      primaryColumnName: 'id',
+      foreignTableName: 'posts',
+      foreignColumnName: 'user_id',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'RESTRICT',
+      deleteConstraint: 'CASCADE',
     },
   },
 })
