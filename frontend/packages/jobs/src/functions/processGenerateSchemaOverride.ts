@@ -63,7 +63,7 @@ export const processGenerateSchemaOverride = async (
         projects.id,
         overallReview.branch_name,
         repositoryFullName,
-        repositories.installation_id,
+        repositories.github_installation_identifier,
       )
 
     const schemaOverrideResult = await generateSchemaOverride(

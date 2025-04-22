@@ -180,10 +180,11 @@ CREATE TABLE IF NOT EXISTS "public"."github_repositories" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
     "owner" "text" NOT NULL,
-    "installation_id" integer NOT NULL,
-    "is_active" boolean DEFAULT true NOT NULL,
+    "github_installation_identifier" integer NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "github_repository_identifier" integer NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -401,6 +402,11 @@ ALTER TABLE ONLY "public"."github_doc_file_paths"
 
 
 
+ALTER TABLE ONLY "public"."github_repositories"
+    ADD CONSTRAINT "github_repository_github_repository_identifier_organization_id_" UNIQUE ("github_repository_identifier", "organization_id");
+
+
+
 ALTER TABLE ONLY "public"."github_schema_file_paths"
     ADD CONSTRAINT "github_schema_file_path_path_project_id_key" UNIQUE ("path", "project_id");
 
@@ -564,6 +570,11 @@ ALTER TABLE ONLY "public"."github_doc_file_paths"
 
 ALTER TABLE ONLY "public"."github_pull_requests"
     ADD CONSTRAINT "github_pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."github_repositories"
+    ADD CONSTRAINT "github_repositories_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 

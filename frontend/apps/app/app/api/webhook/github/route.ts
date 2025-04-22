@@ -47,7 +47,7 @@ const getProjectInfo = async (
   const { data: repository, error: repositoryError } = await supabase
     .from('github_repositories')
     .select('*')
-    .eq('installation_id', installationId)
+    .eq('github_installation_identifier', installationId)
     .limit(1)
     .single()
 

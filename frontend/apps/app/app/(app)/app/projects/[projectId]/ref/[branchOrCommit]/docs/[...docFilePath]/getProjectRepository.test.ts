@@ -12,7 +12,8 @@ describe('getProjectRepository', () => {
       .insert({
         name: 'test-repo',
         owner: 'test-owner',
-        installation_id: 12345,
+        github_installation_identifier: 12345,
+        github_repository_identifier: 67890,
         updated_at: new Date().toISOString(),
       })
       .select()
@@ -48,7 +49,10 @@ describe('getProjectRepository', () => {
     expect(result).not.toBeNull()
     expect(result?.repository).toHaveProperty('name', 'test-repo')
     expect(result?.repository).toHaveProperty('owner', 'test-owner')
-    expect(result?.repository).toHaveProperty('installation_id', '12345')
+    expect(result?.repository).toHaveProperty(
+      'github_installation_identifier',
+      12345,
+    )
   })
 
   it('should return null when project does not exist', async () => {

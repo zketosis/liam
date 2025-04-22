@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         project_repository_mappings(
           *,
           github_repositories(
-            name, owner, installation_id
+            name, owner, github_installation_identifier
           )
         )
       `)
@@ -44,7 +44,11 @@ export async function POST(request: NextRequest) {
 
     const repository =
       project?.project_repository_mappings[0].github_repositories
-    if (!repository?.installation_id || !repository.owner || !repository.name) {
+    if (
+      !repository?.github_installation_identifier ||
+      !repository.owner ||
+      !repository.name
+    ) {
       return NextResponse.json(
         { error: 'Repository information not found' },
         { status: 404 },
@@ -56,7 +60,7 @@ export async function POST(request: NextRequest) {
       repositoryFullName,
       SCHEMA_OVERRIDE_FILE_PATH,
       branchOrCommit,
-      Number(repository.installation_id),
+      Number(repository.github_installation_identifier),
     )
 
     const rawSchemaOverride = content
@@ -83,7 +87,7 @@ export async function POST(request: NextRequest) {
       SCHEMA_OVERRIDE_FILE_PATH,
       JSON.stringify(schemaOverride, null, 2),
       `Update ${SCHEMA_OVERRIDE_FILE_PATH}`,
-      Number(repository.installation_id),
+      Number(repository.github_installation_identifier),
       branchOrCommit,
       sha || undefined,
     )

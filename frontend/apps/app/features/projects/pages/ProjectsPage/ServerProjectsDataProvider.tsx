@@ -44,7 +44,7 @@ export async function ServerProjectsDataProvider({
         if (repository) {
           try {
             const commitData = await fetchLastCommitData(
-              repository.installation_id,
+              repository.github_installation_identifier,
               repository.owner,
               repository.name,
             )

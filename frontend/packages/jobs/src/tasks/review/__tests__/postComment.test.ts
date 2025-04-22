@@ -28,8 +28,9 @@ describe.skip('postComment', () => {
     id: '9999',
     name: 'test-repo',
     owner: 'test-owner',
-    installation_id: 12345,
-    is_active: true,
+    github_installation_identifier: 12345,
+    github_repository_identifier: 67890,
+    organization_id: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -92,7 +93,7 @@ describe.skip('postComment', () => {
 
     expect(result.success).toBe(true)
     expect(createPullRequestComment).toHaveBeenCalledWith(
-      testRepository.installation_id,
+      testRepository.github_installation_identifier,
       testRepository.owner,
       testRepository.name,
       testPullRequest.pull_number,
@@ -131,7 +132,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
 
     expect(result.success).toBe(true)
     expect(updatePullRequestComment).toHaveBeenCalledWith(
-      testRepository.installation_id,
+      testRepository.github_installation_identifier,
       testRepository.owner,
       testRepository.name,
       existingCommentId,

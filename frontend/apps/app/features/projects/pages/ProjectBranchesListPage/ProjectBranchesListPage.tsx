@@ -20,7 +20,7 @@ async function getProjectAndBranches(projectId: string) {
         name,
         project_repository_mappings(
           github_repositories(
-            id, name, owner, installation_id
+            id, name, owner, github_installation_identifier
           )
         )
       `)
@@ -35,7 +35,7 @@ async function getProjectAndBranches(projectId: string) {
       project.project_repository_mappings.map(async (mapping) => {
         const repository = mapping.github_repositories
         const branches = await getRepositoryBranches(
-          Number(repository.installation_id),
+          Number(repository.github_installation_identifier),
           repository.owner,
           repository.name,
         )

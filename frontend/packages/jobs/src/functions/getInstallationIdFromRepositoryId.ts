@@ -6,7 +6,7 @@ export const getInstallationIdFromRepositoryId = async (
   const supabase = createClient()
   const { data: repository, error } = await supabase
     .from('github_repositories')
-    .select('installation_id')
+    .select('github_installation_identifier')
     .eq('id', repositoryId)
     .single()
 
@@ -16,5 +16,5 @@ export const getInstallationIdFromRepositoryId = async (
     )
   }
 
-  return repository.installation_id
+  return repository.github_installation_identifier
 }

@@ -37,8 +37,8 @@ export const addProject = async (formData: FormData) => {
     .insert({
       name: repositoryName,
       owner: repositoryOwner,
-      installation_id: Number(installationId),
-      is_active: true,
+      github_installation_identifier: Number(installationId),
+      github_repository_identifier: 0, // This is a placeholder, should be updated with the actual repository ID
       updated_at: now,
     })
     .select()

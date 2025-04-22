@@ -178,7 +178,7 @@ export const KnowledgeSuggestionDetailPage: FC<Props> = async ({
               <input
                 type="hidden"
                 name="installationId"
-                value={repository.installation_id.toString()}
+                value={repository.github_installation_identifier.toString()}
               />
               <button type="submit" className={styles.approveButton}>
                 Approve

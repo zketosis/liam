@@ -44,7 +44,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
           <div className={styles.projectIconPlaceholder}>
             {repository ? (
               <OrganizationDataWrapper
-                installationId={repository.installation_id}
+                installationId={repository.github_installation_identifier}
                 owner={repository.owner}
                 repo={repository.name}
               />
@@ -69,7 +69,7 @@ export const ProjectItem: FC<ProjectItemProps> = ({ project }) => {
         <div className={styles.commitInfo}>
           {repository ? (
             <LastCommitDataWrapper
-              installationId={repository.installation_id}
+              installationId={repository.github_installation_identifier}
               owner={repository.owner}
               repo={repository.name}
               defaultDate={project.created_at}

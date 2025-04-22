@@ -11,14 +11,14 @@ import { SCHEMA_OVERRIDE_FILE_PATH } from '../../../constants'
 export const safeApplySchemaOverride = async (
   repositoryFullName: string,
   branchOrCommit: string,
-  installationId: number,
+  githubInstallationIdentifier: number,
   schema: Schema,
 ) => {
   const { content: overrideContent } = await getFileContent(
     repositoryFullName,
     SCHEMA_OVERRIDE_FILE_PATH,
     branchOrCommit,
-    installationId,
+    githubInstallationIdentifier,
   )
 
   if (overrideContent === null) {

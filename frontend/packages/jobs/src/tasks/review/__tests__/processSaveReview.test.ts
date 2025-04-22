@@ -12,8 +12,9 @@ describe.skip('processSaveReview', () => {
     id: '9999',
     name: 'test-repo',
     owner: 'test-owner',
-    installation_id: 12345,
-    is_active: true,
+    github_installation_identifier: 12345,
+    github_repository_identifier: 67890,
+    organization_id: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }

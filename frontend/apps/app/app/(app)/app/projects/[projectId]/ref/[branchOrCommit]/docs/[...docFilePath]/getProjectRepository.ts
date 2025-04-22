@@ -4,7 +4,7 @@ export interface ProjectRepository {
   repository: {
     name: string
     owner: string
-    installation_id: number
+    github_installation_identifier: number
   }
 }
 
@@ -20,7 +20,7 @@ export const getProjectRepository = async (
         project_repository_mappings(
           *,
           github_repositories(
-            name, owner, installation_id
+            name, owner, github_installation_identifier
           )
         )
       `)
@@ -33,7 +33,11 @@ export const getProjectRepository = async (
 
     const repository =
       project?.project_repository_mappings[0]?.github_repositories
-    if (!repository?.installation_id || !repository.owner || !repository.name) {
+    if (
+      !repository?.github_installation_identifier ||
+      !repository.owner ||
+      !repository.name
+    ) {
       console.error('Repository information not found')
       return null
     }
@@ -42,7 +46,8 @@ export const getProjectRepository = async (
       repository: {
         name: repository.name,
         owner: repository.owner,
-        installation_id: repository.installation_id,
+        github_installation_identifier:
+          repository.github_installation_identifier,
       },
     }
   } catch (error) {
