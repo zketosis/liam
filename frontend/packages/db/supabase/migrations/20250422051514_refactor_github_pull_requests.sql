@@ -39,7 +39,6 @@ CREATE TABLE "public"."github_pull_request_comments" (
 );
 
 -- Grant permissions on the new table
-ALTER TABLE "public"."github_pull_request_comments" ENABLE ROW LEVEL SECURITY;
 GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "anon";
 GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "authenticated";
 GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "service_role";

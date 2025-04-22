@@ -767,9 +767,6 @@ COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."pro
 
 
 
-ALTER TABLE "public"."github_pull_request_comments" ENABLE ROW LEVEL SECURITY;
-
-
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 
 
