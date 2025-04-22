@@ -180,8 +180,7 @@ CREATE TABLE IF NOT EXISTS "public"."github_pull_requests" (
     "pull_number" bigint NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "repository_id" "uuid" NOT NULL,
-    "github_pull_request_identifier" bigint NOT NULL
+    "repository_id" "uuid" NOT NULL
 );
 
 
@@ -426,11 +425,6 @@ ALTER TABLE ONLY "public"."github_pull_request_comments"
 
 ALTER TABLE ONLY "public"."github_pull_request_comments"
     ADD CONSTRAINT "github_pull_request_comments_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."github_pull_requests"
-    ADD CONSTRAINT "github_pull_request_repository_id_github_pull_request_identifie" UNIQUE ("repository_id", "github_pull_request_identifier");
 
 
 

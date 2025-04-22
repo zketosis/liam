@@ -151,7 +151,6 @@ async function getOrCreatePullRequestRecord(
   supabase: SupabaseClient,
   repositoryId: string,
   pullNumber: number,
-  githubPullRequestIdentifier: number,
 ): Promise<{ id: string }> {
   const { data: existingPR } = await supabase
     .from('github_pull_requests')
@@ -170,7 +169,6 @@ async function getOrCreatePullRequestRecord(
     .insert({
       repository_id: repositoryId,
       pull_number: pullNumber,
-      github_pull_request_identifier: githubPullRequestIdentifier,
       updated_at: now,
     })
     .select()
@@ -267,7 +265,6 @@ export async function processSavePullRequest(
     supabase,
     repository.id,
     payload.prNumber,
-    prDetails.id,
   )
 
   await createOrUpdateMigrationRecord(supabase, prRecord.id, prDetails.title)

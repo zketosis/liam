@@ -28,7 +28,6 @@ describe.skip('processSaveReview', () => {
     id: '9999',
     pull_number: 9999,
     repository_id: '9999',
-    github_pull_request_identifier: 9999,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }

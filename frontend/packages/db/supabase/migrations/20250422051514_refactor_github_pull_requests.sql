@@ -3,7 +3,6 @@
 
   Purpose:
   - Remove comment_id from github_pull_requests to avoid record updates, moving it to a separate table
-  - Add github_pull_request_identifier to github_pull_requests for direct reference to GitHub's pull request ID
   - Create new github_pull_request_comments table with a 1:1 relationship to github_pull_requests
 
   Affected tables:
@@ -43,27 +42,7 @@ GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "anon";
 GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "authenticated";
 GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "service_role";
 
--- Step 2: Add github_pull_request_identifier to github_pull_requests
--- First, add the column as nullable
-ALTER TABLE "public"."github_pull_requests"
-ADD COLUMN "github_pull_request_identifier" bigint;
-
--- Step 3: If there's data in the table, we need to populate the new column
--- We'll use the pull_number as a fallback since it's likely the same identifier
-UPDATE "public"."github_pull_requests"
-SET "github_pull_request_identifier" = "pull_number";
-
--- Step 4: Now make the column NOT NULL
-ALTER TABLE "public"."github_pull_requests"
-ALTER COLUMN "github_pull_request_identifier" SET NOT NULL;
-
--- Step 5: Create composite unique constraint with repository_id
--- This ensures that within a repository, each GitHub pull request identifier is unique
-ALTER TABLE "public"."github_pull_requests"
-ADD CONSTRAINT "github_pull_request_repository_id_github_pull_request_identifier_key"
-UNIQUE ("repository_id", "github_pull_request_identifier");
-
--- Step 6: Optionally migrate existing comment_id data to the new table
+-- Step 2: Optionally migrate existing comment_id data to the new table
 -- This will preserve any existing comment relationships
 INSERT INTO "public"."github_pull_request_comments"
 ("github_pull_request_id", "github_comment_identifier", "updated_at")
@@ -74,9 +53,9 @@ SELECT
 FROM "public"."github_pull_requests"
 WHERE "comment_id" IS NOT NULL;
 
--- Step 7: Finally, drop the comment_id column from github_pull_requests
+-- Step 3: Finally, drop the comment_id column from github_pull_requests
 -- This comment explains the potentially destructive operation
--- Note: This is a destructive operation, but we've migrated the data in step 6
+-- Note: This is a destructive operation, but we've migrated the data in step 2
 ALTER TABLE "public"."github_pull_requests"
 DROP COLUMN "comment_id";
 

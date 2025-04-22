@@ -104,7 +104,6 @@ export type Database = {
       github_pull_requests: {
         Row: {
           created_at: string
-          github_pull_request_identifier: number
           id: string
           pull_number: number
           repository_id: string
@@ -112,7 +111,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          github_pull_request_identifier: number
           id?: string
           pull_number: number
           repository_id: string
@@ -120,7 +118,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          github_pull_request_identifier?: number
           id?: string
           pull_number?: number
           repository_id?: string

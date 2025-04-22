@@ -44,7 +44,6 @@ describe.skip('postComment', () => {
     id: '9999',
     pull_number: 1,
     repository_id: '9999',
-    github_pull_request_identifier: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -185,7 +184,6 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       id: '8888',
       pull_number: 2,
       repository_id: testRepository.id,
-      github_pull_request_identifier: 2,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
