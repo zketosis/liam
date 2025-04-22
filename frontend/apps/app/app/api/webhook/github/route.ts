@@ -45,7 +45,7 @@ const getProjectInfo = async (
   const supabase = await createClient()
 
   const { data: repository, error: repositoryError } = await supabase
-    .from('repositories')
+    .from('github_repositories')
     .select('*')
     .eq('installation_id', installationId)
     .limit(1)

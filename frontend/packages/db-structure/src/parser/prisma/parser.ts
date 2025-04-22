@@ -2,6 +2,8 @@ import type { DMMF } from '@prisma/generator-helper'
 import pkg from '@prisma/internals'
 import type {
   Columns,
+  Constraints,
+  ForeignKeyConstraint,
   ForeignKeyConstraintReferenceOption,
   Index,
   Relationship,
@@ -58,6 +60,15 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
   const tableGroups: Record<string, TableGroup> = {}
   const errors: Error[] = []
 
+  // Track many-to-many relationships for later processing
+  // Use a Set to store unique relationship identifiers to avoid duplicates
+  const processedManyToManyRelations = new Set<string>()
+  const manyToManyRelations: Array<{
+    model1: string
+    model2: string
+    field1: DMMF.Field
+    field2: DMMF.Field
+  }> = []
   const tableFieldRenaming: Record<string, Record<string, string>> = {}
   for (const model of dmmf.datamodel.models) {
     for (const field of model.fields) {
@@ -71,6 +82,7 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
 
   for (const model of dmmf.datamodel.models) {
     const columns: Columns = {}
+    const constraints: Constraints = {}
     for (const field of model.fields) {
       if (field.relationName) continue
       const defaultValue = extractDefaultValue(field)
@@ -90,6 +102,23 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         comment: field.documentation ?? null,
         check: null,
       }
+
+      if (field.isId) {
+        const constraintName = `PRIMARY_${fieldName}`
+        constraints[constraintName] = {
+          type: 'PRIMARY KEY',
+          name: constraintName,
+          columnName: fieldName,
+        }
+      } else if (field.isUnique) {
+        // to avoid duplicate with PRIMARY KEY constraint, it doesn't create constraint object with `field.isId`
+        const constraintName = `UNIQUE_${fieldName}`
+        constraints[constraintName] = {
+          type: 'UNIQUE',
+          name: constraintName,
+          columnName: fieldName,
+        }
+      }
     }
 
     tables[model.name] = {
@@ -97,12 +126,25 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
       columns,
       comment: model.documentation ?? null,
       indexes: {},
-      constraints: {},
+      constraints,
     }
   }
   for (const model of dmmf.datamodel.models) {
     for (const field of model.fields) {
       if (!field.relationName) continue
+
+      // Check if this is a many-to-many relation and process it
+      if (
+        detectAndStoreManyToManyRelation(
+          field,
+          model,
+          dmmf.datamodel.models,
+          processedManyToManyRelations,
+          manyToManyRelations,
+        )
+      ) {
+        continue // Skip normal relationship processing
+      }
 
       const existingRelationship = relationships[field.relationName]
       const isTargetField =
@@ -111,20 +153,23 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
         field.relationFromFields?.[0] &&
         (field.relationFromFields?.length ?? 0) > 0
 
-      const relationship: Relationship = isTargetField
-        ? ({
+      // Get the column names with fallback to empty string
+      const primaryColumnName = field.relationToFields?.[0] ?? ''
+      const foreignColumnName = field.relationFromFields?.[0] ?? ''
+      const _relationship: Relationship = isTargetField
+        ? {
             name: field.relationName,
             primaryTableName: field.type,
-            primaryColumnName: field.relationToFields[0] ?? '',
+            primaryColumnName,
             foreignTableName: model.name,
-            foreignColumnName: field.relationFromFields[0] ?? '',
+            foreignColumnName,
             cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
             updateConstraint: 'NO_ACTION',
             deleteConstraint: normalizeConstraintName(
               field.relationOnDelete ?? '',
             ),
-          } as const)
-        : ({
+          }
+        : {
             name: field.relationName,
             primaryTableName: existingRelationship?.primaryTableName ?? '',
             primaryColumnName: existingRelationship?.primaryColumnName ?? '',
@@ -133,12 +178,27 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
             cardinality: field.isList ? 'ONE_TO_MANY' : 'ONE_TO_ONE',
             updateConstraint: 'NO_ACTION',
             deleteConstraint: 'NO_ACTION',
-          } as const)
+          }
 
-      relationships[relationship.name] = getFieldRenamedRelationship(
-        relationship,
+      const relationship = getFieldRenamedRelationship(
+        _relationship,
         tableFieldRenaming,
       )
+      relationships[relationship.name] = relationship
+
+      const constraint: ForeignKeyConstraint = {
+        type: 'FOREIGN KEY',
+        name: relationship.name,
+        columnName: relationship.foreignColumnName,
+        targetTableName: relationship.primaryTableName,
+        targetColumnName: relationship.primaryColumnName,
+        updateConstraint: relationship.updateConstraint,
+        deleteConstraint: relationship.deleteConstraint,
+      }
+      const table = tables[relationship.foreignTableName]
+      if (table) {
+        table.constraints[constraint.name] = constraint
+      }
     }
   }
   for (const index of dmmf.datamodel.indexes) {
@@ -150,6 +210,60 @@ async function parsePrismaSchema(schemaString: string): Promise<ProcessResult> {
     )
     if (!indexInfo) continue
     table.indexes[indexInfo.name] = indexInfo
+  }
+
+  // Process many-to-many relations
+  for (const relation of manyToManyRelations) {
+    const table_A = tables[relation.model1]
+    const table_B = tables[relation.model2]
+
+    // Skip if both tables are undefined
+    if (table_A === undefined && table_B === undefined) continue
+
+    // Get primary key info for model1 if table_A exists
+    const model1PrimaryKeyInfo = table_A
+      ? getPrimaryKeyInfo(table_A, dmmf.datamodel.models)
+      : null
+
+    // Get primary key info for model2 if table_B exists
+    const model2PrimaryKeyInfo = table_B
+      ? getPrimaryKeyInfo(table_B, dmmf.datamodel.models)
+      : null
+
+    if (model1PrimaryKeyInfo && model2PrimaryKeyInfo) {
+      const model1PrimaryKeyColumnType = convertToPostgresColumnType(
+        model1PrimaryKeyInfo.type,
+        null,
+        null,
+      )
+      const model2PrimaryKeyColumnType = convertToPostgresColumnType(
+        model2PrimaryKeyInfo.type,
+        null,
+        null,
+      )
+
+      const joinTableName = createManyToManyJoinTableName(
+        relation.model1,
+        relation.model2,
+      )
+      // Create join table
+      tables[joinTableName] = createManyToManyJoinTable(
+        joinTableName,
+        model1PrimaryKeyColumnType,
+        model2PrimaryKeyColumnType,
+      )
+
+      // Add relationships for the join table
+      const joinTableRelationships = createManyToManyRelationships(
+        joinTableName,
+        relation.model1,
+        model1PrimaryKeyInfo.name,
+        relation.model2,
+        model2PrimaryKeyInfo.name,
+      )
+      // Add the relationships to the global relationships object
+      Object.assign(relationships, joinTableRelationships)
+    }
   }
 
   return {
@@ -230,6 +344,211 @@ function normalizeConstraintName(
     default:
       return 'NO_ACTION'
   }
+}
+
+/**
+ * Creates the name for a many-to-many join table
+ */
+function createManyToManyJoinTableName(model1: string, model2: string): string {
+  return `_${model1}To${model2}`
+}
+
+/**
+ * Creates a join table for a many-to-many relationship
+ */
+function createManyToManyJoinTable(
+  joinTableName: string,
+  table_A_ColumnType: string,
+  table_B_ColumnType: string,
+): Table {
+  return {
+    name: joinTableName,
+    constraints: {},
+    columns: {
+      A: {
+        name: 'A',
+        type: table_A_ColumnType,
+        default: null,
+        notNull: true,
+        unique: false,
+        primary: false,
+        comment: null,
+        check: null,
+      },
+      B: {
+        name: 'B',
+        type: table_B_ColumnType,
+        default: null,
+        notNull: true,
+        unique: false,
+        primary: false,
+        comment: null,
+        check: null,
+      },
+    },
+    comment: null,
+    indexes: {
+      [`${joinTableName}_AB_pkey`]: {
+        name: `${joinTableName}_AB_pkey`,
+        unique: true,
+        columns: ['A', 'B'],
+        type: '',
+      },
+      [`${joinTableName}_B_index`]: {
+        name: `${joinTableName}_B_index`,
+        unique: false,
+        columns: ['B'],
+        type: '',
+      },
+    },
+  }
+}
+
+/**
+ * Creates relationships for a many-to-many join table
+ */
+function createManyToManyRelationships(
+  joinTableName: string,
+  model1: string,
+  primaryColumnNameOfA: string,
+  model2: string,
+  primaryColumnNameOfB: string,
+): Record<string, Relationship> {
+  return {
+    [`${joinTableName}_A_fkey`]: {
+      name: `${joinTableName}_A_fkey`,
+      primaryTableName: model1,
+      primaryColumnName: primaryColumnNameOfA,
+      foreignTableName: joinTableName,
+      foreignColumnName: 'A',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'CASCADE',
+      deleteConstraint: 'CASCADE',
+    },
+    [`${joinTableName}_B_fkey`]: {
+      name: `${joinTableName}_B_fkey`,
+      primaryTableName: model2,
+      primaryColumnName: primaryColumnNameOfB,
+      foreignTableName: joinTableName,
+      foreignColumnName: 'B',
+      cardinality: 'ONE_TO_MANY',
+      updateConstraint: 'CASCADE',
+      deleteConstraint: 'CASCADE',
+    },
+  }
+}
+
+/**
+ * Detects if a field is part of a many-to-many relation and stores it for later processing
+ */
+function isManyToManyField(field: DMMF.Field): boolean {
+  return (
+    field.isList &&
+    (!field.relationFromFields || field.relationFromFields.length === 0) &&
+    (!field.relationToFields || field.relationToFields.length === 0)
+  )
+}
+
+function findRelatedField(
+  field: DMMF.Field,
+  model: DMMF.Model,
+  models: readonly DMMF.Model[],
+): DMMF.Field | undefined {
+  const relatedModel = models.find((m) => m.name === field.type)
+  if (!relatedModel) return undefined
+
+  return relatedModel.fields.find(
+    (f) =>
+      f.relationName === field.relationName &&
+      f.isList &&
+      f.type === model.name,
+  )
+}
+
+function getSortedModelPair(model1: string, model2: string): [string, string] {
+  return model1.localeCompare(model2) < 0 ? [model1, model2] : [model2, model1]
+}
+
+function storeManyToManyRelation(
+  model1: string,
+  model2: string,
+  field1: DMMF.Field,
+  field2: DMMF.Field,
+  processedRelations: Set<string>,
+  manyToManyRelations: Array<{
+    model1: string
+    model2: string
+    field1: DMMF.Field
+    field2: DMMF.Field
+  }>,
+): void {
+  const [sortedModel1, sortedModel2] = getSortedModelPair(model1, model2)
+  const relationId = `${sortedModel1}_${sortedModel2}`
+
+  if (!processedRelations.has(relationId)) {
+    processedRelations.add(relationId)
+    manyToManyRelations.push({
+      model1: sortedModel1,
+      model2: sortedModel2,
+      field1: field1,
+      field2: field2,
+    })
+  }
+}
+
+function detectAndStoreManyToManyRelation(
+  field: DMMF.Field,
+  model: DMMF.Model,
+  models: readonly DMMF.Model[],
+  processedRelations: Set<string>,
+  manyToManyRelations: Array<{
+    model1: string
+    model2: string
+    field1: DMMF.Field
+    field2: DMMF.Field
+  }>,
+): boolean {
+  if (!isManyToManyField(field)) return false
+
+  const relatedField = findRelatedField(field, model, models)
+  if (!relatedField) return false
+
+  storeManyToManyRelation(
+    model.name,
+    field.type,
+    field,
+    relatedField,
+    processedRelations,
+    manyToManyRelations,
+  )
+
+  return true
+}
+
+function getPrimaryKeyInfo(table: Table, models: readonly DMMF.Model[]) {
+  const tableName = table?.name
+  const model = models.find((m) => m.name === tableName)
+
+  if (!model) {
+    return null // or throw an error if model is required
+  }
+
+  const tableIndexes = table?.indexes
+  const primaryKeyIndex = tableIndexes[`${tableName}_pkey`]
+  const primaryKeyColumnName = primaryKeyIndex?.columns[0]
+
+  if (!primaryKeyColumnName) {
+    return null // no primary key found
+  }
+
+  // Find the field in the model that matches the primary key column name
+  const primaryKeyField = model.fields.find(
+    (field) =>
+      field.name === primaryKeyColumnName ||
+      field.dbName === primaryKeyColumnName,
+  )
+
+  return primaryKeyField
 }
 
 export const processor: Processor = (str) => parsePrismaSchema(str)

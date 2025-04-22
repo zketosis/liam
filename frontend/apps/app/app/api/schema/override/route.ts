@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         *,
         project_repository_mappings(
           *,
-          repositories(
+          github_repositories(
             name, owner, installation_id
           )
         )
@@ -42,7 +42,8 @@ export async function POST(request: NextRequest) {
       .eq('id', projectId)
       .single()
 
-    const repository = project?.project_repository_mappings[0].repositories
+    const repository =
+      project?.project_repository_mappings[0].github_repositories
     if (!repository?.installation_id || !repository.owner || !repository.name) {
       return NextResponse.json(
         { error: 'Repository information not found' },

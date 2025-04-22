@@ -5,19 +5,16 @@ import styles from './SchemaLink.module.css'
 
 interface SchemaLinkProps {
   schemaName: string
-  onClick?: () => void
   format?: FormatType
 }
 
 export const SchemaLink: FC<SchemaLinkProps> = ({
   schemaName,
-  onClick,
   format = 'postgres',
 }) => {
   return (
     <button
       className={styles.schemaLink}
-      onClick={onClick || (() => {})}
       type="button"
       aria-label={`Open schema ${schemaName}`}
     >

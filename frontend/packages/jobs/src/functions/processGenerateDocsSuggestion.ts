@@ -32,17 +32,17 @@ export async function processGenerateDocsSuggestion(payload: {
       .from('project_repository_mappings')
       .select(`
         *,
-        repositories(*)
+        github_repositories(*)
       `)
       .eq('project_id', payload.projectId)
       .limit(1)
       .maybeSingle()
 
-    if (error || !projectRepo?.repositories) {
+    if (error || !projectRepo?.github_repositories) {
       throw new Error('Repository information not found')
     }
 
-    const repository = projectRepo.repositories
+    const repository = projectRepo.github_repositories
     const repositoryFullName = `${repository.owner}/${repository.name}`
     const branch = payload.branchOrCommit || 'main'
 

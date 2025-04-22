@@ -72,7 +72,7 @@ async function getRepositoryFromProjectId(
     .from('project_repository_mappings')
     .select(`
       *,
-      repositories(*)
+      github_repositories(*)
     `)
     .eq('project_id', projectId)
     .limit(1)
@@ -84,7 +84,7 @@ async function getRepositoryFromProjectId(
     )
   }
 
-  return projectMapping.repositories
+  return projectMapping.github_repositories
 }
 
 async function getSchemaPathForProject(
@@ -152,7 +152,7 @@ async function getOrCreatePullRequestRecord(
   pullNumber: number,
 ): Promise<{ id: string }> {
   const { data: existingPR } = await supabase
-    .from('pull_requests')
+    .from('github_pull_requests')
     .select('id')
     .eq('repository_id', repositoryId)
     .eq('pull_number', pullNumber)
@@ -164,7 +164,7 @@ async function getOrCreatePullRequestRecord(
 
   const now = new Date().toISOString()
   const { data: newPR, error: createPRError } = await supabase
-    .from('pull_requests')
+    .from('github_pull_requests')
     .insert({
       repository_id: repositoryId,
       pull_number: pullNumber,
@@ -289,7 +289,7 @@ export const savePullRequestTask = task({
 
       const supabase = createClient()
       const { data: repository, error: repositoryError } = await supabase
-        .from('repositories')
+        .from('github_repositories')
         .select('*')
         .eq('id', result.repositoryId)
         .single()

@@ -15,7 +15,7 @@ export const processSaveReview = async (
   try {
     const supabase = createClient()
     const { data: pullRequest, error: pullRequestError } = await supabase
-      .from('pull_requests')
+      .from('github_pull_requests')
       .select('*')
       .eq('id', payload.pullRequestId)
       .single()

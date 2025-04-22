@@ -35,6 +35,14 @@ describe(_processor, () => {
             }),
             ...override?.indexes,
           },
+          constraints: {
+            PRIMARY_id: {
+              type: 'PRIMARY KEY',
+              name: 'PRIMARY_id',
+              columnName: 'id',
+            },
+            ...override?.constraints,
+          },
           comment: override?.comment ?? null,
         }),
       },
@@ -215,6 +223,13 @@ describe(_processor, () => {
             columns: ['mention'],
           }),
         },
+        constraints: {
+          UNIQUE_mention: {
+            type: 'UNIQUE',
+            name: 'UNIQUE_mention',
+            columnName: 'mention',
+          },
+        },
       })
 
       expect(value).toEqual(expected)
@@ -238,6 +253,15 @@ describe(_processor, () => {
       expect(value.relationships).toEqual(
         parserTestCases['foreign key (one-to-many)'](keyName),
       )
+      expect(value.tables['posts']?.constraints['postsTousers']).toEqual({
+        type: 'FOREIGN KEY',
+        name: 'postsTousers',
+        columnName: 'user_id',
+        targetTableName: 'users',
+        targetColumnName: 'id',
+        updateConstraint: 'NO_ACTION',
+        deleteConstraint: 'NO_ACTION',
+      })
     })
 
     it('relationship (one-to-one)', async () => {
@@ -258,6 +282,15 @@ describe(_processor, () => {
       expect(value.relationships).toEqual(
         parserTestCases['foreign key (one-to-one)'](keyName),
       )
+      expect(value.tables['posts']?.constraints['postsTousers']).toEqual({
+        type: 'FOREIGN KEY',
+        name: 'postsTousers',
+        columnName: 'user_id',
+        targetTableName: 'users',
+        targetColumnName: 'id',
+        updateConstraint: 'NO_ACTION',
+        deleteConstraint: 'NO_ACTION',
+      })
     })
 
     describe('foreign key constraints (on delete)', () => {
@@ -285,7 +318,7 @@ describe(_processor, () => {
           }
         `)
 
-          const expected = {
+          expect(value.relationships).toEqual({
             postsTousers: {
               name: 'postsTousers',
               primaryTableName: 'users',
@@ -296,9 +329,16 @@ describe(_processor, () => {
               updateConstraint: 'NO_ACTION',
               deleteConstraint: expectedAction,
             },
-          }
-
-          expect(value.relationships).toEqual(expected)
+          })
+          expect(value.tables['posts']?.constraints['postsTousers']).toEqual({
+            type: 'FOREIGN KEY',
+            name: 'postsTousers',
+            columnName: 'user_id',
+            targetTableName: 'users',
+            targetColumnName: 'id',
+            updateConstraint: 'NO_ACTION',
+            deleteConstraint: expectedAction,
+          })
         },
       )
     })
@@ -360,6 +400,13 @@ describe(_processor, () => {
             columns: ['email'],
           }),
         },
+        constraints: {
+          UNIQUE_email: {
+            type: 'UNIQUE',
+            name: 'UNIQUE_email',
+            columnName: 'email',
+          },
+        },
       })
 
       expect(value).toEqual(expected)
@@ -381,6 +428,13 @@ describe(_processor, () => {
             notNull: true,
             unique: false,
           }),
+        },
+        constraints: {
+          PRIMARY_id: {
+            type: 'PRIMARY KEY',
+            columnName: 'id',
+            name: 'PRIMARY_id',
+          },
         },
       })
 
@@ -436,6 +490,18 @@ describe(_processor, () => {
                 type: '',
               },
             },
+            constraints: {
+              PRIMARY__id: {
+                type: 'PRIMARY KEY',
+                name: 'PRIMARY__id',
+                columnName: '_id',
+              },
+              UNIQUE_raw_email_address: {
+                type: 'UNIQUE',
+                name: 'UNIQUE_raw_email_address',
+                columnName: 'raw_email_address',
+              },
+            },
           }),
           posts: aTable({
             name: 'posts',
@@ -462,6 +528,22 @@ describe(_processor, () => {
                 columns: ['id'],
               }),
             },
+            constraints: {
+              PRIMARY_id: {
+                type: 'PRIMARY KEY',
+                name: 'PRIMARY_id',
+                columnName: 'id',
+              },
+              postsTousers: {
+                type: 'FOREIGN KEY',
+                name: 'postsTousers',
+                columnName: 'raw_user_id',
+                targetTableName: 'users',
+                targetColumnName: '_id',
+                updateConstraint: 'NO_ACTION',
+                deleteConstraint: 'NO_ACTION',
+              },
+            },
           }),
         },
       })
@@ -476,6 +558,141 @@ describe(_processor, () => {
       }
 
       expect(value).toEqual(expectedTables)
+    })
+
+    it('relationship (implicit many-to-many)', async () => {
+      const { value } = await processor(`
+        model Post {
+          id         Int        @id @default(autoincrement())
+          title      String
+          categories Category[]
+        }
+        model Category {
+          id    Int    @id @default(autoincrement())
+          name  String
+          posts Post[]
+        }
+      `)
+
+      const expectedSchema = aSchema({
+        tables: {
+          Post: aTable({
+            name: 'Post',
+            columns: {
+              id: aColumn({
+                name: 'id',
+                type: 'serial',
+                default: 'autoincrement()',
+                notNull: true,
+                primary: true,
+                unique: true,
+              }),
+              title: aColumn({
+                name: 'title',
+                type: 'text',
+                notNull: true,
+              }),
+            },
+            indexes: {
+              Post_pkey: anIndex({
+                name: 'Post_pkey',
+                columns: ['id'],
+                unique: true,
+              }),
+            },
+            constraints: {
+              PRIMARY_id: {
+                type: 'PRIMARY KEY',
+                name: 'PRIMARY_id',
+                columnName: 'id',
+              },
+            },
+          }),
+          Category: aTable({
+            name: 'Category',
+            columns: {
+              id: aColumn({
+                name: 'id',
+                type: 'serial',
+                default: 'autoincrement()',
+                notNull: true,
+                primary: true,
+                unique: true,
+              }),
+              name: aColumn({
+                name: 'name',
+                type: 'text',
+                notNull: true,
+              }),
+            },
+            indexes: {
+              Category_pkey: anIndex({
+                name: 'Category_pkey',
+                columns: ['id'],
+                unique: true,
+              }),
+            },
+            constraints: {
+              PRIMARY_id: {
+                type: 'PRIMARY KEY',
+                name: 'PRIMARY_id',
+                columnName: 'id',
+              },
+            },
+          }),
+          _CategoryToPost: aTable({
+            name: '_CategoryToPost',
+            columns: {
+              A: aColumn({
+                name: 'A',
+                type: 'integer',
+                notNull: true,
+              }),
+              B: aColumn({
+                name: 'B',
+                type: 'integer',
+                notNull: true,
+              }),
+            },
+            indexes: {
+              _CategoryToPost_AB_pkey: anIndex({
+                name: '_CategoryToPost_AB_pkey',
+                columns: ['A', 'B'],
+                unique: true,
+              }),
+              _CategoryToPost_B_index: anIndex({
+                name: '_CategoryToPost_B_index',
+                columns: ['B'],
+                unique: false,
+              }),
+            },
+          }),
+        },
+        relationships: {
+          _CategoryToPost_A_fkey: aRelationship({
+            name: '_CategoryToPost_A_fkey',
+            primaryTableName: 'Category',
+            primaryColumnName: 'id',
+            foreignTableName: '_CategoryToPost',
+            foreignColumnName: 'A',
+            cardinality: 'ONE_TO_MANY',
+            updateConstraint: 'CASCADE',
+            deleteConstraint: 'CASCADE',
+          }),
+          _CategoryToPost_B_fkey: aRelationship({
+            name: '_CategoryToPost_B_fkey',
+            primaryTableName: 'Post',
+            primaryColumnName: 'id',
+            foreignTableName: '_CategoryToPost',
+            foreignColumnName: 'B',
+            cardinality: 'ONE_TO_MANY',
+            updateConstraint: 'CASCADE',
+            deleteConstraint: 'CASCADE',
+          }),
+        },
+      })
+
+      expect(value).toEqual(expectedSchema)
     })
   })
 })

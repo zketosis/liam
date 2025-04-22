@@ -54,15 +54,21 @@ describe.skip('postComment', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    await supabase.from('repositories').insert(testRepository)
-    await supabase.from('pull_requests').insert(testPullRequest)
+    await supabase.from('github_repositories').insert(testRepository)
+    await supabase.from('github_pull_requests').insert(testPullRequest)
     await supabase.from('migrations').insert(testMigration)
   })
 
   afterEach(async () => {
     await supabase.from('migrations').delete().eq('id', testMigration.id)
-    await supabase.from('pull_requests').delete().eq('id', testPullRequest.id)
-    await supabase.from('repositories').delete().eq('id', testRepository.id)
+    await supabase
+      .from('github_pull_requests')
+      .delete()
+      .eq('id', testPullRequest.id)
+    await supabase
+      .from('github_repositories')
+      .delete()
+      .eq('id', testRepository.id)
   })
 
   it('should create a new comment when no comment exists', async () => {
@@ -97,7 +103,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
 
     const { data: updatedPR } = await supabase
-      .from('pull_requests')
+      .from('github_pull_requests')
       .select('*')
       .eq('id', testPullRequest.id)
       .single()
@@ -108,7 +114,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
   it('should update existing comment when comment exists', async () => {
     const existingCommentId = 456
     await supabase
-      .from('pull_requests')
+      .from('github_pull_requests')
       .update({ comment_id: existingCommentId })
       .eq('id', testPullRequest.id)
 
@@ -174,7 +180,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       updated_at: new Date().toISOString(),
     }
 
-    await supabase.from('pull_requests').insert(prWithoutMigration)
+    await supabase.from('github_pull_requests').insert(prWithoutMigration)
 
     const testPayload = {
       reviewComment: 'Test review comment',
@@ -191,7 +197,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       )
     } finally {
       await supabase
-        .from('pull_requests')
+        .from('github_pull_requests')
         .delete()
         .eq('id', prWithoutMigration.id)
     }

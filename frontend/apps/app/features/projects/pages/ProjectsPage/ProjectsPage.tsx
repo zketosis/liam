@@ -1,21 +1,18 @@
 import { urlgen } from '@/utils/routes'
-import type { FC } from 'react'
-import { EmptyProjectsState } from '../../components'
-import { ClientSearchWrapper } from './ClientSearchWrapper'
+import { EmptyProjectsState } from '../../components/EmptyProjectsState'
 import styles from './ProjectsPage.module.css'
+import { ServerProjectsDataProvider } from './ServerProjectsDataProvider'
 import {
   getCurrentOrganization,
   getUserOrganizations,
 } from './getCurrentOrganization'
 import { getProjects } from './getProjects'
 
-interface ProjectsPageProps {
-  organizationId?: string
-}
-
-export const ProjectsPage: FC<ProjectsPageProps> = async ({
+export async function ProjectsPage({
   organizationId,
-}) => {
+}: {
+  organizationId?: string
+}) {
   const currentOrganization = organizationId
     ? await getCurrentOrganization(organizationId)
     : await getCurrentOrganization()
@@ -31,15 +28,15 @@ export const ProjectsPage: FC<ProjectsPageProps> = async ({
             createProjectHref={
               currentOrganization
                 ? urlgen('organizations/[organizationId]/projects/new', {
-                    organizationId: currentOrganization.id.toString(),
+                    organizationId: currentOrganization.id,
                   })
                 : urlgen('organizations/new')
             }
           />
         ) : (
-          <ClientSearchWrapper
-            initialProjects={projects}
-            organizationId={currentOrganization?.id}
+          <ServerProjectsDataProvider
+            projects={projects}
+            organizationId={organizationId}
           />
         )}
       </div>
