@@ -169,6 +169,7 @@ async function getOrCreatePullRequestRecord(
     .insert({
       repository_id: repositoryId,
       pull_number: pullNumber,
+      github_pull_request_identifier: pullNumber, // Add the new required field
       updated_at: now,
     })
     .select()
