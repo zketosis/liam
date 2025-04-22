@@ -85,7 +85,13 @@ async function getRepositoryFromProjectId(
     )
   }
 
-  return projectMapping.github_repositories
+  // TEMPORARY: Using default value 0 for null github_repository_identifier.
+  // This will be reverted once the migration is complete.
+  return {
+    ...projectMapping.github_repositories,
+    github_repository_identifier:
+      projectMapping.github_repositories.github_repository_identifier ?? 0,
+  }
 }
 
 async function getSchemaPathForProject(

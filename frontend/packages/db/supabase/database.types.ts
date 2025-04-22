@@ -108,7 +108,7 @@ export type Database = {
         Row: {
           created_at: string
           github_installation_identifier: number
-          github_repository_identifier: number
+          github_repository_identifier: number | null
           id: string
           name: string
           organization_id: string
@@ -118,7 +118,7 @@ export type Database = {
         Insert: {
           created_at?: string
           github_installation_identifier: number
-          github_repository_identifier: number
+          github_repository_identifier?: number | null
           id?: string
           name: string
           organization_id: string
@@ -128,7 +128,7 @@ export type Database = {
         Update: {
           created_at?: string
           github_installation_identifier?: number
-          github_repository_identifier?: number
+          github_repository_identifier?: number | null
           id?: string
           name?: string
           organization_id?: string
