@@ -28,7 +28,9 @@ export {
   aTable,
   aSchema,
   anIndex,
+  aPrimaryKeyConstraint,
   aRelationship,
+  aUniqueConstraint,
   aForeignKeyConstraint,
   aCheckConstraint,
 } from './factories.js'

@@ -3,10 +3,12 @@ import type {
   Column,
   ForeignKeyConstraint,
   Index,
+  PrimaryKeyConstraint,
   Relationship,
   Schema,
   Table,
   Tables,
+  UniqueConstraint,
 } from './schema.js'
 
 export const aColumn = (override?: Partial<Column>): Column => ({
@@ -44,6 +46,15 @@ export const anIndex = (override?: Partial<Index>): Index => ({
   ...override,
 })
 
+export const aPrimaryKeyConstraint = (
+  override?: Partial<PrimaryKeyConstraint>,
+): PrimaryKeyConstraint => ({
+  type: 'PRIMARY KEY',
+  name: '',
+  columnName: '',
+  ...override,
+})
+
 export const aForeignKeyConstraint = (
   override?: Partial<ForeignKeyConstraint>,
 ): ForeignKeyConstraint => ({
@@ -54,6 +65,15 @@ export const aForeignKeyConstraint = (
   targetColumnName: '',
   updateConstraint: 'NO_ACTION',
   deleteConstraint: 'NO_ACTION',
+  ...override,
+})
+
+export const aUniqueConstraint = (
+  override?: Partial<UniqueConstraint>,
+): UniqueConstraint => ({
+  type: 'UNIQUE',
+  name: '',
+  columnName: '',
   ...override,
 })
 

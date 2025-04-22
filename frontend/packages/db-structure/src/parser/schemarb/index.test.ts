@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
-import { aColumn, aSchema, aTable } from '../../schema/index.js'
+import {
+  aCheckConstraint,
+  aColumn,
+  aForeignKeyConstraint,
+  aPrimaryKeyConstraint,
+  aRelationship,
+  aSchema,
+  aTable,
+  aUniqueConstraint,
+  anIndex,
+} from '../../schema/index.js'
 import { UnsupportedTokenError, processor } from './index.js'
 
 import { createParserTestCases } from '../__tests__/index.js'
@@ -218,7 +228,45 @@ describe(processor, () => {
         end
       `)
 
-      expect(value).toEqual(parserTestCases['index (unique: true)'](''))
+      const expected = aSchema({
+        tables: {
+          users: aTable({
+            name: 'users',
+            columns: {
+              id: aColumn({
+                name: 'id',
+                type: 'bigserial',
+                primary: true,
+                notNull: true,
+                unique: true,
+              }),
+              email: aColumn({
+                name: 'email',
+                type: 'varchar',
+              }),
+            },
+            indexes: {
+              index_users_on_email: anIndex({
+                name: 'index_users_on_email',
+                columns: ['email'],
+                unique: true,
+              }),
+            },
+            constraints: {
+              PRIMARY_id: aPrimaryKeyConstraint({
+                name: 'PRIMARY_id',
+                columnName: 'id',
+              }),
+              UNIQUE_email: aUniqueConstraint({
+                name: 'UNIQUE_email',
+                columnName: 'email',
+              }),
+            },
+          }),
+        },
+      })
+
+      expect(value).toEqual(expected)
     })
 
     it('foreign key', async () => {
@@ -231,12 +279,27 @@ describe(processor, () => {
         add_foreign_key "posts", "users", column: "user_id", name: "${keyName}"
       `)
 
-      expect(value.relationships).toEqual(
-        parserTestCases['foreign key'](keyName).relationships,
-      )
-      expect(value.tables['posts']?.constraints).toEqual(
-        parserTestCases['foreign key'](keyName).constraints,
-      )
+      expect(value.relationships).toEqual({
+        fk_posts_user_id: aRelationship({
+          name: 'fk_posts_user_id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+        }),
+      })
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: aPrimaryKeyConstraint({
+          name: 'PRIMARY_id',
+          columnName: 'id',
+        }),
+        fk_posts_user_id: aForeignKeyConstraint({
+          name: 'fk_posts_user_id',
+          columnName: 'user_id',
+          targetTableName: 'users',
+          targetColumnName: 'id',
+        }),
+      })
     })
 
     describe('foreign key cardinality', () => {
@@ -299,12 +362,34 @@ describe(processor, () => {
         add_foreign_key "posts", "users", column: "user_id", name: "fk_posts_user_id", on_update: :restrict, on_delete: :cascade
       `)
 
-      expect(value.relationships).toEqual(
-        parserTestCases['foreign key with action'].relationships,
-      )
-      expect(value.tables['posts']?.constraints).toEqual(
-        parserTestCases['foreign key with action'].constraints,
-      )
+      expect(value.relationships).toEqual({
+        fk_posts_user_id: aRelationship({
+          name: 'fk_posts_user_id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'user_id',
+          primaryTableName: 'users',
+          primaryColumnName: 'id',
+          cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'RESTRICT',
+          deleteConstraint: 'CASCADE',
+        }),
+      })
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: aPrimaryKeyConstraint({
+          type: 'PRIMARY KEY',
+          name: 'PRIMARY_id',
+          columnName: 'id',
+        }),
+        fk_posts_user_id: aForeignKeyConstraint({
+          type: 'FOREIGN KEY',
+          name: 'fk_posts_user_id',
+          columnName: 'user_id',
+          targetTableName: 'users',
+          targetColumnName: 'id',
+          updateConstraint: 'RESTRICT',
+          deleteConstraint: 'CASCADE',
+        }),
+      })
     })
 
     it('check constraint', async () => {
@@ -316,9 +401,16 @@ describe(processor, () => {
         add_check_constraint "users", "age >= 20 and age < 20", name: "age_range_check"
       `)
 
-      expect(value.tables['users']?.constraints).toEqual(
-        parserTestCases['check constraint'],
-      )
+      expect(value.tables['users']?.constraints).toEqual({
+        PRIMARY_id: aPrimaryKeyConstraint({
+          name: 'PRIMARY_id',
+          columnName: 'id',
+        }),
+        age_range_check: aCheckConstraint({
+          name: 'age_range_check',
+          detail: 'age >= 20 and age < 20',
+        }),
+      })
     })
   })
 
