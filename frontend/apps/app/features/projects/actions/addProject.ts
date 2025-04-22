@@ -11,6 +11,7 @@ export const addProject = async (formData: FormData) => {
   const repositoryOwner = formData.get('repositoryOwner') as string
   const installationId = formData.get('installationId') as string
   const organizationId = formData.get('organizationId') as string
+  const repositoryIdentifier = formData.get('repositoryIdentifier') as string
 
   const supabase = await createClient()
   const now = new Date().toISOString()
@@ -38,7 +39,8 @@ export const addProject = async (formData: FormData) => {
       name: repositoryName,
       owner: repositoryOwner,
       github_installation_identifier: Number(installationId),
-      github_repository_identifier: 0, // This is a placeholder, should be updated with the actual repository ID
+      github_repository_identifier: Number(repositoryIdentifier),
+      organization_id: organizationId,
       updated_at: now,
     })
     .select()

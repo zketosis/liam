@@ -6,6 +6,32 @@ describe('getProjectRepository', () => {
   it.skip('should return repository information with the correct structure', async () => {
     const supabase = await createClient()
 
+    // Create test organization
+    const { data: organization } = await supabase
+      .from('organizations')
+      .insert({
+        name: 'Test Organization',
+      })
+      .select()
+      .single()
+
+    // Fail the test if organization doesn't exist
+    expect(organization).not.toBeNull()
+    if (!organization) {
+      throw new Error('Organization is null')
+    }
+
+    // Create test project
+    const { data: project } = await supabase
+      .from('projects')
+      .insert({
+        name: 'Test Project',
+        organization_id: organization.id,
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single()
+
     // Create test repository
     const { data: repository } = await supabase
       .from('github_repositories')
@@ -14,16 +40,7 @@ describe('getProjectRepository', () => {
         owner: 'test-owner',
         github_installation_identifier: 12345,
         github_repository_identifier: 67890,
-        updated_at: new Date().toISOString(),
-      })
-      .select()
-      .single()
-
-    // Create test project
-    const { data: project } = await supabase
-      .from('projects')
-      .insert({
-        name: 'Test Project',
+        organization_id: organization.id,
         updated_at: new Date().toISOString(),
       })
       .select()
