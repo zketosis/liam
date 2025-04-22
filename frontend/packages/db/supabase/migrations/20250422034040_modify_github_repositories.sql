@@ -6,7 +6,7 @@ RENAME COLUMN "installation_id" TO "github_installation_identifier";
 
 -- Add github_repository_identifier column
 ALTER TABLE "public"."github_repositories"
-ADD COLUMN "github_repository_identifier" integer;
+ADD COLUMN "github_repository_identifier" integer NOT NULL;
 
 -- Add organization_id column with foreign key constraint
 ALTER TABLE "public"."github_repositories"
@@ -30,9 +30,9 @@ ALTER COLUMN "organization_id" SET NOT NULL;
 ALTER TABLE "public"."github_repositories"
 DROP COLUMN "is_active";
 
--- Removed composite unique constraint
--- ALTER TABLE "public"."github_repositories"
--- ADD CONSTRAINT "github_repository_github_repository_identifier_organization_id_key"
--- UNIQUE ("github_repository_identifier", "organization_id");
+-- Add composite unique constraint
+ALTER TABLE "public"."github_repositories"
+ADD CONSTRAINT "github_repository_github_repository_identifier_organization_id_key"
+UNIQUE ("github_repository_identifier", "organization_id");
 
 COMMIT;
