@@ -306,7 +306,31 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Stores comments on tasks, enabling discussions or updates.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "fk_comments_task_id": {
+          "columnName": "task_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_comments_task_id",
+          "targetColumnName": "id",
+          "targetTableName": "tasks",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+        "fk_comments_user_id": {
+          "columnName": "user_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_comments_user_id",
+          "targetColumnName": "id",
+          "targetTableName": "users",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_comments_on_task_id": {
           "columns": [
@@ -361,7 +385,13 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Represents organizations using the system. Each company is a top-level entity that owns departments, users, and projects.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+      },
       "indexes": {},
       "name": "companies",
     },
@@ -399,7 +429,22 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Represents departments within a company, organizing users into functional groups.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "fk_departments_company_id": {
+          "columnName": "company_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_departments_company_id",
+          "targetColumnName": "id",
+          "targetTableName": "companies",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_departments_on_company_id": {
           "columns": [
@@ -446,7 +491,36 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Associates users with projects they are assigned to work on.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "UNIQUE_user_id": {
+          "columnName": "user_id",
+          "name": "UNIQUE_user_id",
+          "type": "UNIQUE",
+        },
+        "fk_project_assignments_project_id": {
+          "columnName": "project_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_project_assignments_project_id",
+          "targetColumnName": "id",
+          "targetTableName": "projects",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+        "fk_project_assignments_user_id": {
+          "columnName": "user_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_project_assignments_user_id",
+          "targetColumnName": "id",
+          "targetTableName": "users",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_project_assignments_on_user_id_and_project_id": {
           "columns": [
@@ -504,7 +578,22 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Represents projects managed within a company. Projects are linked to tasks and users.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "fk_projects_company_id": {
+          "columnName": "company_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_projects_company_id",
+          "targetColumnName": "id",
+          "targetTableName": "companies",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_projects_on_company_id": {
           "columns": [
@@ -551,7 +640,13 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Defines roles that can be assigned to users, such as 'Admin' or 'Manager'.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+      },
       "indexes": {},
       "name": "roles",
     },
@@ -629,7 +724,31 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Represents tasks within a project, assigned to users with deadlines and statuses.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "fk_tasks_assigned_user_id": {
+          "columnName": "assigned_user_id",
+          "deleteConstraint": "RESTRICT",
+          "name": "fk_tasks_assigned_user_id",
+          "targetColumnName": "id",
+          "targetTableName": "users",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+        "fk_tasks_project_id": {
+          "columnName": "project_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_tasks_project_id",
+          "targetColumnName": "id",
+          "targetTableName": "projects",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_tasks_on_assigned_user_id": {
           "columns": [
@@ -714,7 +833,31 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Tracks time spent by users on tasks for reporting or billing purposes.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "fk_timesheets_task_id": {
+          "columnName": "task_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_timesheets_task_id",
+          "targetColumnName": "id",
+          "targetTableName": "tasks",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+        "fk_timesheets_user_id": {
+          "columnName": "user_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_timesheets_user_id",
+          "targetColumnName": "id",
+          "targetTableName": "users",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_timesheets_on_task_id": {
           "columns": [
@@ -769,7 +912,36 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Associates users with roles to define their permissions within the company.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "UNIQUE_user_id": {
+          "columnName": "user_id",
+          "name": "UNIQUE_user_id",
+          "type": "UNIQUE",
+        },
+        "fk_user_roles_role_id": {
+          "columnName": "role_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_user_roles_role_id",
+          "targetColumnName": "id",
+          "targetTableName": "roles",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+        "fk_user_roles_user_id": {
+          "columnName": "user_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_user_roles_user_id",
+          "targetColumnName": "id",
+          "targetTableName": "users",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_user_roles_on_user_id_and_role_id": {
           "columns": [
@@ -867,7 +1039,31 @@ exports[`parse > should parse schema.rb to JSON correctly 1`] = `
         },
       },
       "comment": "Represents employees or members of a company, who are assigned roles and tasks.",
-      "constraints": {},
+      "constraints": {
+        "PRIMARY_id": {
+          "columnName": "id",
+          "name": "PRIMARY_id",
+          "type": "PRIMARY KEY",
+        },
+        "fk_users_company_id": {
+          "columnName": "company_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_users_company_id",
+          "targetColumnName": "id",
+          "targetTableName": "companies",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+        "fk_users_department_id": {
+          "columnName": "department_id",
+          "deleteConstraint": "CASCADE",
+          "name": "fk_users_department_id",
+          "targetColumnName": "id",
+          "targetTableName": "departments",
+          "type": "FOREIGN KEY",
+          "updateConstraint": "RESTRICT",
+        },
+      },
       "indexes": {
         "index_users_on_company_id": {
           "columns": [
