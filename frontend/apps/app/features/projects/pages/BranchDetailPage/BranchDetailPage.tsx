@@ -16,7 +16,7 @@ async function getBranchDetails(projectId: string) {
     .select(`
       *,
       project_repository_mappings!inner (
-        repositories (
+        github_repositories (
           id,
           name,
           owner
@@ -61,7 +61,7 @@ async function getBranchDetails(projectId: string) {
 
   return {
     ...project,
-    repository: project.project_repository_mappings[0].repositories,
+    repository: project.project_repository_mappings[0].github_repositories,
     schemaPath: transformedSchemaPath,
     docPaths: transformedDocPaths,
   }
