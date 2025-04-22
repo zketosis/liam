@@ -69,9 +69,40 @@ export type Database = {
           },
         ]
       }
+      github_pull_request_comments: {
+        Row: {
+          created_at: string
+          github_comment_identifier: number
+          github_pull_request_id: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          github_comment_identifier: number
+          github_pull_request_id: string
+          id?: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          github_comment_identifier?: number
+          github_pull_request_id?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'github_pull_request_comments_github_pull_request_id_fkey'
+            columns: ['github_pull_request_id']
+            isOneToOne: true
+            referencedRelation: 'github_pull_requests'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       github_pull_requests: {
         Row: {
-          comment_id: number | null
           created_at: string
           id: string
           pull_number: number
@@ -79,7 +110,6 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          comment_id?: number | null
           created_at?: string
           id?: string
           pull_number: number
@@ -87,7 +117,6 @@ export type Database = {
           updated_at: string
         }
         Update: {
-          comment_id?: number | null
           created_at?: string
           id?: string
           pull_number?: number

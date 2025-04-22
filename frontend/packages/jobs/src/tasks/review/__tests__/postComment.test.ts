@@ -44,7 +44,6 @@ describe.skip('postComment', () => {
     id: '9999',
     pull_number: 1,
     repository_id: '9999',
-    comment_id: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -110,21 +109,23 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
     )
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
 
-    const { data: updatedPR } = await supabase
-      .from('github_pull_requests')
-      .select('*')
-      .eq('id', testPullRequest.id)
-      .single()
+    const { data: prComment } = await supabase
+      .from('github_pull_request_comments')
+      .select('github_comment_identifier')
+      .eq('github_pull_request_id', testPullRequest.id)
+      .maybeSingle()
 
-    expect(updatedPR?.comment_id).toBe(mockCommentId)
+    expect(prComment?.github_comment_identifier).toBe(mockCommentId)
   })
 
   it('should update existing comment when comment exists', async () => {
     const existingCommentId = 456
-    await supabase
-      .from('github_pull_requests')
-      .update({ comment_id: existingCommentId })
-      .eq('id', testPullRequest.id)
+    const now = new Date().toISOString()
+    await supabase.from('github_pull_request_comments').insert({
+      github_pull_request_id: testPullRequest.id,
+      github_comment_identifier: existingCommentId,
+      updated_at: now,
+    })
 
     const testPayload = {
       reviewComment: 'Updated review comment',
@@ -183,7 +184,6 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       id: '8888',
       pull_number: 2,
       repository_id: testRepository.id,
-      comment_id: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }

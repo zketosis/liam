@@ -163,10 +163,21 @@ CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
 ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."github_pull_request_comments" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "github_pull_request_id" "uuid" NOT NULL,
+    "github_comment_identifier" integer NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."github_pull_request_comments" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."github_pull_requests" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "pull_number" bigint NOT NULL,
-    "comment_id" bigint,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
     "repository_id" "uuid" NOT NULL
@@ -402,6 +413,21 @@ ALTER TABLE ONLY "public"."github_doc_file_paths"
 
 
 
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_github_comment_identifier_key" UNIQUE ("github_comment_identifier");
+
+
+
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_github_pull_request_id_key" UNIQUE ("github_pull_request_id");
+
+
+
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."github_repositories"
     ADD CONSTRAINT "github_repository_github_repository_identifier_organization_id_" UNIQUE ("github_repository_identifier", "organization_id");
 
@@ -565,6 +591,11 @@ CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON
 
 ALTER TABLE ONLY "public"."github_doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_github_pull_request_id_fkey" FOREIGN KEY ("github_pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -984,6 +1015,12 @@ GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "service_role";
 GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "anon";
 GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "authenticated";
 GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "anon";
+GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "service_role";
 
 
 

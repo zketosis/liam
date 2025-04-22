@@ -63,5 +63,51 @@ Write Postgres-compatible SQL code for Supabase migration files that:
 - Write all SQL in lowercase.
 - Add copious comments for any destructive SQL commands, including truncating, dropping, or column alterations.
 - **Follow the schema design patterns and rules documented in [`docs/schemaPatterns.md`](./schemaPatterns.md)** for consistent database design.
+- **Wrap migrations in a transaction (BEGIN/COMMIT) to ensure atomicity**. This prevents partial migrations if an error occurs.
 
 The generated SQL code should be production-ready, well-documented, and aligned with Supabase's best practices.
+
+## Adding NOT NULL Constraints
+
+When adding a NOT NULL constraint to an existing column:
+
+1. Always update existing rows with appropriate values before applying the constraint.
+2. For columns with foreign key references, derive values from related tables when possible.
+3. Example approach:
+
+```sql
+BEGIN;
+
+-- Add the column as nullable first
+ALTER TABLE "public"."table_name"
+ADD COLUMN "new_column" uuid REFERENCES "public"."referenced_table"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+-- Update existing rows with values from a related table
+UPDATE "public"."table_name" tn
+SET "new_column" = (
+  SELECT rt."id" 
+  FROM "public"."referenced_table" rt
+  JOIN "public"."join_table" jt ON rt."id" = jt."referenced_id"
+  WHERE jt."table_id" = tn."id"
+  LIMIT 1
+);
+
+-- Now make the column NOT NULL
+ALTER TABLE "public"."table_name"
+ALTER COLUMN "new_column" SET NOT NULL;
+
+COMMIT;
+```
+
+## Post-Migration Steps
+
+After applying migrations, always run:
+
+1. Run the combined command to update both schema SQL file and TypeScript types:
+   ```sh
+   cd frontend/packages/db && pnpm supabase:gen
+   ```
+
+2. Test affected functionality to ensure backward compatibility with the previous app version.
+
+3. Update all test files that might be affected by schema changes, especially where strict typing is enforced.
