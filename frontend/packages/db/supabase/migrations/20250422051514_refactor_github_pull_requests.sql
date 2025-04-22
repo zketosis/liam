@@ -38,9 +38,6 @@ CREATE TABLE "public"."github_pull_request_comments" (
     ON DELETE CASCADE
 );
 
--- Add comments to the table
-COMMENT ON TABLE "public"."github_pull_request_comments" IS 'Stores GitHub comment information for pull requests, maintaining a 1:1 relationship with github_pull_requests';
-
 -- Grant permissions on the new table
 ALTER TABLE "public"."github_pull_request_comments" ENABLE ROW LEVEL SECURITY;
 GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "anon";

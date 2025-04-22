@@ -175,10 +175,6 @@ CREATE TABLE IF NOT EXISTS "public"."github_pull_request_comments" (
 ALTER TABLE "public"."github_pull_request_comments" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."github_pull_request_comments" IS 'Stores GitHub comment information for pull requests, maintaining a 1:1 relationship with github_pull_requests';
-
-
-
 CREATE TABLE IF NOT EXISTS "public"."github_pull_requests" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "pull_number" bigint NOT NULL,
