@@ -17,6 +17,13 @@
         "^fumadocs-mdx$",
         "^fumadocs-ui$"
       ]
+    },
+    {
+      "groupName": "langfuse",
+      "matchPackagePatterns": [
+        "^langfuse$",
+        "^langfuse-langchain$"
+      ]
     }
   ]
 }
