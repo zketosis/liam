@@ -32,7 +32,7 @@ async function getBranchDetails(projectId: string) {
   }
 
   const { data: schemaPath, error: schemaPathError } = await supabase
-    .from('github_schema_file_paths')
+    .from('schema_file_paths')
     .select('path')
     .eq('project_id', projectId)
     .single()
