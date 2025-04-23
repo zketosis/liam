@@ -166,7 +166,7 @@ ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."github_pull_request_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "github_pull_request_id" "uuid" NOT NULL,
-    "github_comment_identifier" integer NOT NULL,
+    "github_comment_identifier" bigint NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
