@@ -3,8 +3,11 @@ export type RouteDefinitions = {
   projects: string
   'projects/new': string
   'projects/[projectId]': (params: { projectId: string }) => string
+  'projects/[projectId]/schema': (params: { projectId: string }) => string
   'projects/[projectId]/migrations': (params: { projectId: string }) => string
   'projects/[projectId]/docs': (params: { projectId: string }) => string
+  'projects/[projectId]/rule': (params: { projectId: string }) => string
+  'projects/[projectId]/settings': (params: { projectId: string }) => string
   'organizations/new': string
   organizations: string
   'organizations/[organizationId]/projects': (params: {
@@ -86,11 +89,20 @@ export const routeDefinitions: RouteDefinitions = {
   'projects/[projectId]': ({ projectId }) => {
     return `/app/projects/${projectId}`
   },
+  'projects/[projectId]/schema': ({ projectId }) => {
+    return `/app/projects/${projectId}/schema`
+  },
   'projects/[projectId]/migrations': ({ projectId }) => {
     return `/app/projects/${projectId}/migrations`
   },
   'projects/[projectId]/docs': ({ projectId }) => {
     return `/app/projects/${projectId}/docs`
+  },
+  'projects/[projectId]/rule': ({ projectId }) => {
+    return `/app/projects/${projectId}/rule`
+  },
+  'projects/[projectId]/settings': ({ projectId }) => {
+    return `/app/projects/${projectId}/settings`
   },
   'projects/[projectId]/ref/[branchOrCommit]': ({
     projectId,
