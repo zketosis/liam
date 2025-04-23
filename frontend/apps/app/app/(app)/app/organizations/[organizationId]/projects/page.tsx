@@ -35,20 +35,5 @@ export default async function Page({ params }: PageProps) {
     return notFound()
   }
 
-  const { data: organizationMembers, error: orgError } = await supabase
-    .from('organization_members')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('organization_id', organizationId)
-    .limit(1)
-
-  if (orgError) {
-    console.error('Error fetching organization members:', orgError)
-  }
-
-  if (!organizationMembers || organizationMembers.length === 0) {
-    return notFound()
-  }
-
   return <ProjectsPage organizationId={organizationId} />
 }
