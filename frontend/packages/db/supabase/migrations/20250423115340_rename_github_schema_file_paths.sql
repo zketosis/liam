@@ -1,8 +1,12 @@
 
-alter table "public"."github_schema_file_paths" drop constraint if exists "github_schema_file_path_project_id_fkey";
+ALTER TABLE "public"."github_schema_file_paths"
+  DROP CONSTRAINT IF EXISTS "github_schema_file_path_path_project_id_key";
 
-drop index if exists "public"."github_schema_file_path_path_project_id_key";
-drop index if exists "public"."github_schema_file_path_project_id_key";
+ALTER TABLE "public"."github_schema_file_paths"
+  DROP CONSTRAINT IF EXISTS "github_schema_file_path_project_id_fkey";
+
+DROP INDEX IF EXISTS "public"."github_schema_file_path_path_project_id_key";
+DROP INDEX IF EXISTS "public"."github_schema_file_path_project_id_key";
 
 alter table "public"."github_schema_file_paths" rename to "schema_file_paths";
 
