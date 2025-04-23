@@ -40,7 +40,7 @@ SET "project_id" = (
   WHERE gpr.id = m.pull_request_id
   LIMIT 1
 );
-
+DELETE FROM "public"."migrations" WHERE "project_id" IS NULL;
 -- Step 5: Create mappings in the new table
 INSERT INTO "public"."migration_pull_request_mappings" ("migration_id", "pull_request_id", "updated_at")
 SELECT "id", "pull_request_id", CURRENT_TIMESTAMP
