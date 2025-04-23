@@ -22,7 +22,15 @@ export default async function Page({ params }: PageProps) {
 
   const supabase = await createClient()
   const { data } = await supabase.auth.getSession()
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
 
+  if (error || !user) {
+    console.error('Error fetching user:', error)
+    return notFound()
+  }
   if (data.session === null) {
     return notFound()
   }
@@ -30,7 +38,7 @@ export default async function Page({ params }: PageProps) {
   const { data: organizationMembers, error: orgError } = await supabase
     .from('organization_members')
     .select('id')
-    .eq('user_id', data.session.user.id)
+    .eq('user_id', user.id)
     .eq('organization_id', organizationId)
     .limit(1)
 

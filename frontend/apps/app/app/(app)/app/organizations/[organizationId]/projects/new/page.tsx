@@ -15,6 +15,15 @@ export default async function NewProjectPage({ params }: PageProps) {
 
   const { organizationId } = parsedParams.output
   const supabase = await createClient()
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+  if (error || !user) {
+    console.error('Error fetching user:', error)
+    return notFound()
+  }
+
   const { data } = await supabase.auth.getSession()
 
   if (data.session === null) {
@@ -24,7 +33,7 @@ export default async function NewProjectPage({ params }: PageProps) {
   const { data: organizationMembers, error: orgError } = await supabase
     .from('organization_members')
     .select('id')
-    .eq('user_id', data.session.user.id)
+    .eq('user_id', user.id)
     .eq('organization_id', organizationId)
     .limit(1)
 
