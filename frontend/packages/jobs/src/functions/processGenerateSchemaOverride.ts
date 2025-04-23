@@ -19,8 +19,8 @@ export const processGenerateSchemaOverride = async (
       .from('overall_reviews')
       .select(`
         *,
-        pull_requests(*,
-          repositories(*)
+        github_pull_requests(*,
+          github_repositories(*)
         ),
         projects(*)
       `)
@@ -33,8 +33,8 @@ export const processGenerateSchemaOverride = async (
       )
     }
 
-    const { pull_requests, projects } = overallReview
-    if (!pull_requests) {
+    const { github_pull_requests, projects } = overallReview
+    if (!github_pull_requests) {
       throw new Error(
         `Pull request not found for overall review ${payload.overallReviewId}`,
       )
@@ -46,10 +46,10 @@ export const processGenerateSchemaOverride = async (
       )
     }
 
-    const repositories = pull_requests.repositories
+    const repositories = github_pull_requests.github_repositories
     if (!repositories) {
       throw new Error(
-        `Repository not found for pull request ${pull_requests.id}`,
+        `Repository not found for pull request ${github_pull_requests.id}`,
       )
     }
 
@@ -63,7 +63,7 @@ export const processGenerateSchemaOverride = async (
         projects.id,
         overallReview.branch_name,
         repositoryFullName,
-        repositories.installation_id,
+        repositories.github_installation_identifier,
       )
 
     const schemaOverrideResult = await generateSchemaOverride(
@@ -86,9 +86,9 @@ export const processGenerateSchemaOverride = async (
       createNeeded: true,
       override: schemaOverrideResult.override,
       projectId: projects.id,
-      pullRequestNumber: Number(pull_requests.pull_number), // Convert bigint to number
+      pullRequestNumber: Number(github_pull_requests.pull_number), // Convert bigint to number
       branchName: overallReview.branch_name, // Get branchName from overallReview
-      title: `Schema meta update from PR #${Number(pull_requests.pull_number)}`,
+      title: `Schema meta update from PR #${Number(github_pull_requests.pull_number)}`,
       traceId: predefinedRunId,
       reasoning: schemaOverrideResult.reasoning,
       overallReviewId: payload.overallReviewId,

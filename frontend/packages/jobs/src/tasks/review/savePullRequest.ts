@@ -39,7 +39,8 @@ export type SavePullRequestResult = {
 
 type Repository = {
   id: string
-  installation_id: number
+  github_installation_identifier: number
+  github_repository_identifier: number
   owner: string
   name: string
 }
@@ -72,7 +73,7 @@ async function getRepositoryFromProjectId(
     .from('project_repository_mappings')
     .select(`
       *,
-      repositories(*)
+      github_repositories(*)
     `)
     .eq('project_id', projectId)
     .limit(1)
@@ -84,7 +85,7 @@ async function getRepositoryFromProjectId(
     )
   }
 
-  return projectMapping.repositories
+  return projectMapping.github_repositories
 }
 
 async function getSchemaPathForProject(
@@ -116,7 +117,7 @@ async function fetchSchemaFileContent(
       `${repository.owner}/${repository.name}`,
       schemaPath,
       branchRef,
-      Number(repository.installation_id),
+      Number(repository.github_installation_identifier),
     )
 
     if (!content) {
@@ -152,7 +153,7 @@ async function getOrCreatePullRequestRecord(
   pullNumber: number,
 ): Promise<{ id: string }> {
   const { data: existingPR } = await supabase
-    .from('pull_requests')
+    .from('github_pull_requests')
     .select('id')
     .eq('repository_id', repositoryId)
     .eq('pull_number', pullNumber)
@@ -164,7 +165,7 @@ async function getOrCreatePullRequestRecord(
 
   const now = new Date().toISOString()
   const { data: newPR, error: createPRError } = await supabase
-    .from('pull_requests')
+    .from('github_pull_requests')
     .insert({
       repository_id: repositoryId,
       pull_number: pullNumber,
@@ -237,7 +238,7 @@ export async function processSavePullRequest(
   )
 
   const fileChanges = await getPullRequestFiles(
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -246,7 +247,7 @@ export async function processSavePullRequest(
   const schemaPath = await getSchemaPathForProject(supabase, payload.projectId)
 
   const prDetails = await getPullRequestDetails(
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -289,7 +290,7 @@ export const savePullRequestTask = task({
 
       const supabase = createClient()
       const { data: repository, error: repositoryError } = await supabase
-        .from('repositories')
+        .from('github_repositories')
         .select('*')
         .eq('id', result.repositoryId)
         .single()

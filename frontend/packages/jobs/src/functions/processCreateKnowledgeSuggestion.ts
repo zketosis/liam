@@ -33,7 +33,7 @@ const getRepositoryInfo = async (projectId: string) => {
       *,
       project_repository_mappings(
         *,
-        repositories(*)
+        github_repositories(*)
       )
     `)
     .eq('id', projectId)
@@ -42,16 +42,16 @@ const getRepositoryInfo = async (projectId: string) => {
   if (
     error ||
     !project ||
-    !project.project_repository_mappings?.[0]?.repositories
+    !project.project_repository_mappings?.[0]?.github_repositories
   ) {
     throw new Error('Repository information not found for the project')
   }
 
-  const repository = project.project_repository_mappings[0].repositories
+  const repository = project.project_repository_mappings[0].github_repositories
   return {
     owner: repository.owner,
     name: repository.name,
-    installationId: repository.installation_id,
+    installationId: repository.github_installation_identifier,
   }
 }
 

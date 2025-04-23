@@ -27,7 +27,7 @@ export const getDocumentContent = async ({
       repositoryFullName,
       filePath,
       branchOrCommit,
-      repository.installation_id,
+      repository.github_installation_identifier,
     )
 
     return fileData.content

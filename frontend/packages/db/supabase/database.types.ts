@@ -69,6 +69,111 @@ export type Database = {
           },
         ]
       }
+      github_pull_request_comments: {
+        Row: {
+          created_at: string
+          github_comment_identifier: number
+          github_pull_request_id: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          github_comment_identifier: number
+          github_pull_request_id: string
+          id?: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          github_comment_identifier?: number
+          github_pull_request_id?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'github_pull_request_comments_github_pull_request_id_fkey'
+            columns: ['github_pull_request_id']
+            isOneToOne: true
+            referencedRelation: 'github_pull_requests'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      github_pull_requests: {
+        Row: {
+          created_at: string
+          id: string
+          pull_number: number
+          repository_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pull_number: number
+          repository_id: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pull_number?: number
+          repository_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'github_pull_request_repository_id_fkey'
+            columns: ['repository_id']
+            isOneToOne: false
+            referencedRelation: 'github_repositories'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      github_repositories: {
+        Row: {
+          created_at: string
+          github_installation_identifier: number
+          github_repository_identifier: number
+          id: string
+          name: string
+          organization_id: string
+          owner: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          github_installation_identifier: number
+          github_repository_identifier: number
+          id?: string
+          name: string
+          organization_id: string
+          owner: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          github_installation_identifier?: number
+          github_repository_identifier?: number
+          id?: string
+          name?: string
+          organization_id?: string
+          owner?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'github_repositories_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       github_schema_file_paths: {
         Row: {
           created_at: string
@@ -100,6 +205,45 @@ export type Database = {
             columns: ['project_id']
             isOneToOne: false
             referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      invitations: {
+        Row: {
+          email: string
+          id: string
+          invite_by_user_id: string
+          invited_at: string | null
+          organization_id: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          invite_by_user_id: string
+          invited_at?: string | null
+          organization_id: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          invite_by_user_id?: string
+          invited_at?: string | null
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'invitations_invite_by_user_id_fkey'
+            columns: ['invite_by_user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'invitations_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -199,45 +343,6 @@ export type Database = {
           },
         ]
       }
-      membership_invites: {
-        Row: {
-          email: string
-          id: string
-          invite_by_user_id: string
-          invited_at: string | null
-          organization_id: string
-        }
-        Insert: {
-          email: string
-          id?: string
-          invite_by_user_id: string
-          invited_at?: string | null
-          organization_id: string
-        }
-        Update: {
-          email?: string
-          id?: string
-          invite_by_user_id?: string
-          invited_at?: string | null
-          organization_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'membership_invites_invite_by_user_id_fkey'
-            columns: ['invite_by_user_id']
-            isOneToOne: false
-            referencedRelation: 'users'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'membership_invites_organization_id_fkey'
-            columns: ['organization_id']
-            isOneToOne: false
-            referencedRelation: 'organizations'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       migrations: {
         Row: {
           created_at: string
@@ -265,7 +370,7 @@ export type Database = {
             foreignKeyName: 'migration_pull_request_id_fkey'
             columns: ['pull_request_id']
             isOneToOne: false
-            referencedRelation: 'pull_requests'
+            referencedRelation: 'github_pull_requests'
             referencedColumns: ['id']
           },
         ]
@@ -406,7 +511,7 @@ export type Database = {
             foreignKeyName: 'overall_review_pull_request_id_fkey'
             columns: ['pull_request_id']
             isOneToOne: false
-            referencedRelation: 'pull_requests'
+            referencedRelation: 'github_pull_requests'
             referencedColumns: ['id']
           },
         ]
@@ -445,7 +550,7 @@ export type Database = {
             foreignKeyName: 'project_repository_mapping_repository_id_fkey'
             columns: ['repository_id']
             isOneToOne: false
-            referencedRelation: 'repositories'
+            referencedRelation: 'github_repositories'
             referencedColumns: ['id']
           },
         ]
@@ -481,71 +586,6 @@ export type Database = {
             referencedColumns: ['id']
           },
         ]
-      }
-      pull_requests: {
-        Row: {
-          comment_id: number | null
-          created_at: string
-          id: string
-          pull_number: number
-          repository_id: string
-          updated_at: string
-        }
-        Insert: {
-          comment_id?: number | null
-          created_at?: string
-          id?: string
-          pull_number: number
-          repository_id: string
-          updated_at: string
-        }
-        Update: {
-          comment_id?: number | null
-          created_at?: string
-          id?: string
-          pull_number?: number
-          repository_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'pull_request_repository_id_fkey'
-            columns: ['repository_id']
-            isOneToOne: false
-            referencedRelation: 'repositories'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      repositories: {
-        Row: {
-          created_at: string
-          id: string
-          installation_id: number
-          is_active: boolean
-          name: string
-          owner: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          installation_id: number
-          is_active?: boolean
-          name: string
-          owner: string
-          updated_at: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          installation_id?: number
-          is_active?: boolean
-          name?: string
-          owner?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       review_feedback_comments: {
         Row: {

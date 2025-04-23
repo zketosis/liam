@@ -111,11 +111,3 @@
   justify-content: flex-end;
   padding: var(--spacing-4) var(--spacing-5);
 }
-
-.saveButton {
-  min-width: 80px;
-}
-
-.deleteButton {
-  min-width: 80px;
-}

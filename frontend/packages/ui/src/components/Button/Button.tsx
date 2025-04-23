@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { type ComponentProps, type ReactNode, forwardRef } from 'react'
 import { match } from 'ts-pattern'
+import { Spinner } from '../Spinner'
 import styles from './Button.module.css'
 
 type Props = ComponentProps<'button'> & {
@@ -12,6 +13,8 @@ type Props = ComponentProps<'button'> & {
   size?: 'sm' | 'md' | 'lg'
   leftIcon?: ReactNode
   rightIcon?: ReactNode
+  isLoading?: boolean | undefined
+  loadingIndicatorType?: 'leftIcon' | 'content'
 }
 
 export const Button = forwardRef<HTMLButtonElement, Props>(
@@ -20,14 +23,26 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       className,
       variant = 'solid-primary',
       size = 'sm',
-      leftIcon,
+      isLoading = false,
+      loadingIndicatorType = 'leftIcon',
+      leftIcon: propsLeftIcon,
       rightIcon,
-      disabled,
+      disabled: propsDisabled,
       children,
       ...props
     },
     ref,
   ) => {
+    const disabled = propsDisabled || isLoading
+    const leftIcon =
+      isLoading && loadingIndicatorType === 'leftIcon' ? (
+        <Spinner />
+      ) : (
+        propsLeftIcon
+      )
+    const displayedChildren =
+      isLoading && loadingIndicatorType === 'content' ? <Spinner /> : children
+
     const variantClassName = match(variant)
       .with('solid-primary', () => styles.solidPrimary)
       .with('solid-danger', () => styles.solidDanger)
@@ -56,7 +71,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
         {...props}
       >
         {leftIcon && <div className={styles.icon}>{leftIcon}</div>}
-        {children}
+        {displayedChildren}
         {rightIcon && <div className={styles.icon}>{rightIcon}</div>}
       </button>
     )

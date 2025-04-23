@@ -24,12 +24,18 @@ vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
 describe.skip('postComment', () => {
   const supabase = createClient()
 
+  const testOrganization = {
+    id: '9999',
+    name: 'test-organization',
+  }
+
   const testRepository = {
     id: '9999',
     name: 'test-repo',
     owner: 'test-owner',
-    installation_id: 12345,
-    is_active: true,
+    github_installation_identifier: 12345,
+    github_repository_identifier: 67890,
+    organization_id: testOrganization.id,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -38,7 +44,6 @@ describe.skip('postComment', () => {
     id: '9999',
     pull_number: 1,
     repository_id: '9999',
-    comment_id: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
@@ -54,15 +59,23 @@ describe.skip('postComment', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    await supabase.from('repositories').insert(testRepository)
-    await supabase.from('pull_requests').insert(testPullRequest)
+    await supabase.from('organizations').insert(testOrganization)
+    await supabase.from('github_repositories').insert(testRepository)
+    await supabase.from('github_pull_requests').insert(testPullRequest)
     await supabase.from('migrations').insert(testMigration)
   })
 
   afterEach(async () => {
     await supabase.from('migrations').delete().eq('id', testMigration.id)
-    await supabase.from('pull_requests').delete().eq('id', testPullRequest.id)
-    await supabase.from('repositories').delete().eq('id', testRepository.id)
+    await supabase
+      .from('github_pull_requests')
+      .delete()
+      .eq('id', testPullRequest.id)
+    await supabase
+      .from('github_repositories')
+      .delete()
+      .eq('id', testRepository.id)
+    await supabase.from('organizations').delete().eq('id', testOrganization.id)
   })
 
   it('should create a new comment when no comment exists', async () => {
@@ -86,7 +99,7 @@ describe.skip('postComment', () => {
 
     expect(result.success).toBe(true)
     expect(createPullRequestComment).toHaveBeenCalledWith(
-      testRepository.installation_id,
+      testRepository.github_installation_identifier,
       testRepository.owner,
       testRepository.name,
       testPullRequest.pull_number,
@@ -96,21 +109,23 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
     )
     expect(createPullRequestComment).toHaveBeenCalledTimes(1)
 
-    const { data: updatedPR } = await supabase
-      .from('pull_requests')
-      .select('*')
-      .eq('id', testPullRequest.id)
-      .single()
+    const { data: prComment } = await supabase
+      .from('github_pull_request_comments')
+      .select('github_comment_identifier')
+      .eq('github_pull_request_id', testPullRequest.id)
+      .maybeSingle()
 
-    expect(updatedPR?.comment_id).toBe(mockCommentId)
+    expect(prComment?.github_comment_identifier).toBe(mockCommentId)
   })
 
   it('should update existing comment when comment exists', async () => {
     const existingCommentId = 456
-    await supabase
-      .from('pull_requests')
-      .update({ comment_id: existingCommentId })
-      .eq('id', testPullRequest.id)
+    const now = new Date().toISOString()
+    await supabase.from('github_pull_request_comments').insert({
+      github_pull_request_id: testPullRequest.id,
+      github_comment_identifier: existingCommentId,
+      updated_at: now,
+    })
 
     const testPayload = {
       reviewComment: 'Updated review comment',
@@ -125,7 +140,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
 
     expect(result.success).toBe(true)
     expect(updatePullRequestComment).toHaveBeenCalledWith(
-      testRepository.installation_id,
+      testRepository.github_installation_identifier,
       testRepository.owner,
       testRepository.name,
       existingCommentId,
@@ -169,12 +184,11 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       id: '8888',
       pull_number: 2,
       repository_id: testRepository.id,
-      comment_id: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
 
-    await supabase.from('pull_requests').insert(prWithoutMigration)
+    await supabase.from('github_pull_requests').insert(prWithoutMigration)
 
     const testPayload = {
       reviewComment: 'Test review comment',
@@ -191,7 +205,7 @@ Migration URL: ${process.env['NEXT_PUBLIC_BASE_URL']}/app/migrations/${testMigra
       )
     } finally {
       await supabase
-        .from('pull_requests')
+        .from('github_pull_requests')
         .delete()
         .eq('id', prWithoutMigration.id)
     }

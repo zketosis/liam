@@ -2,6 +2,7 @@ import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
 import type { FC, ReactNode } from 'react'
 import styles from './OrganizationsPage.module.css'
+import { OrganizationsPageClient } from './OrganizationsPageClient'
 import { getOrganizations } from './getOrganizations'
 
 export const OrganizationsPage: FC<{
@@ -11,6 +12,9 @@ export const OrganizationsPage: FC<{
 
   return (
     <div className={styles.container}>
+      {/* Client component to handle sessionStorage toast */}
+      <OrganizationsPageClient />
+
       <div className={styles.header}>
         <h1 className={styles.title}>Organizations</h1>
         <Link
@@ -31,7 +35,7 @@ export const OrganizationsPage: FC<{
           {organizations.map((organization) => (
             <Link
               key={organization.id}
-              href={urlgen('organizations/[organizationId]', {
+              href={urlgen('organizations/[organizationId]/projects', {
                 organizationId: `${organization.id}`,
               })}
               className={styles.organizationCard}

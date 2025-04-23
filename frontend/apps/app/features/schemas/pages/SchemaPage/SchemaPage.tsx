@@ -36,8 +36,8 @@ async function getERDEditorContent({
         *,
         project_repository_mappings(
           *,
-          repositories(
-            name, owner, installation_id
+          github_repositories(
+            name, owner, github_installation_identifier
           )
         )
       `)
@@ -51,8 +51,12 @@ async function getERDEditorContent({
     .eq('path', schemaFilePath)
     .single()
 
-  const repository = project?.project_repository_mappings[0].repositories
-  if (!repository?.installation_id || !repository.owner || !repository.name) {
+  const repository = project?.project_repository_mappings[0].github_repositories
+  if (
+    !repository?.github_installation_identifier ||
+    !repository.owner ||
+    !repository.name
+  ) {
     console.error('Repository information not found')
     return notFound()
   }
@@ -62,7 +66,7 @@ async function getERDEditorContent({
     repositoryFullName,
     schemaFilePath,
     branchOrCommit,
-    repository.installation_id,
+    repository.github_installation_identifier,
   )
 
   if (!content) {
@@ -106,7 +110,7 @@ async function getERDEditorContent({
   const { result, error: overrideError } = await safeApplySchemaOverride(
     repositoryFullName,
     branchOrCommit,
-    repository.installation_id,
+    repository.github_installation_identifier,
     schema,
   )
 

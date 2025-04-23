@@ -6,23 +6,41 @@ describe('getProjectRepository', () => {
   it.skip('should return repository information with the correct structure', async () => {
     const supabase = await createClient()
 
-    // Create test repository
-    const { data: repository } = await supabase
-      .from('repositories')
+    // Create test organization
+    const { data: organization } = await supabase
+      .from('organizations')
       .insert({
-        name: 'test-repo',
-        owner: 'test-owner',
-        installation_id: 12345,
-        updated_at: new Date().toISOString(),
+        name: 'Test Organization',
       })
       .select()
       .single()
+
+    // Fail the test if organization doesn't exist
+    expect(organization).not.toBeNull()
+    if (!organization) {
+      throw new Error('Organization is null')
+    }
 
     // Create test project
     const { data: project } = await supabase
       .from('projects')
       .insert({
         name: 'Test Project',
+        organization_id: organization.id,
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single()
+
+    // Create test repository
+    const { data: repository } = await supabase
+      .from('github_repositories')
+      .insert({
+        name: 'test-repo',
+        owner: 'test-owner',
+        github_installation_identifier: 12345,
+        github_repository_identifier: 67890,
+        organization_id: organization.id,
         updated_at: new Date().toISOString(),
       })
       .select()
@@ -48,7 +66,10 @@ describe('getProjectRepository', () => {
     expect(result).not.toBeNull()
     expect(result?.repository).toHaveProperty('name', 'test-repo')
     expect(result?.repository).toHaveProperty('owner', 'test-owner')
-    expect(result?.repository).toHaveProperty('installation_id', '12345')
+    expect(result?.repository).toHaveProperty(
+      'github_installation_identifier',
+      12345,
+    )
   })
 
   it('should return null when project does not exist', async () => {

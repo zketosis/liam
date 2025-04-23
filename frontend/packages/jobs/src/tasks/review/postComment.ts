@@ -80,7 +80,7 @@ export async function postComment(
     const supabase = createClient()
 
     const { data: repository, error: repoError } = await supabase
-      .from('repositories')
+      .from('github_repositories')
       .select('*')
       .eq('id', repositoryId)
       .single()
@@ -91,12 +91,12 @@ export async function postComment(
       )
     }
 
-    const installationId = repository.installation_id
+    const installationId = repository.github_installation_identifier
     const owner = repository.owner
     const repo = repository.name
 
     const { data: prRecord, error: prError } = await supabase
-      .from('pull_requests')
+      .from('github_pull_requests')
       .select(`
         *,
         migrations (
@@ -117,6 +117,13 @@ export async function postComment(
         `Migration for Pull request with ID ${pullRequestId} not found`,
       )
     }
+
+    // Fetch comment ID from github_pull_request_comments if exists
+    const { data: commentRecord } = await supabase
+      .from('github_pull_request_comments')
+      .select('github_comment_identifier')
+      .eq('github_pull_request_id', pullRequestId)
+      .maybeSingle()
 
     const migration = prRecord.migrations[0]
     const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodeURIComponent(branchName)}/migrations/${migration.id}`
@@ -139,12 +146,12 @@ export async function postComment(
 
     const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinkText}`
 
-    if (prRecord.comment_id) {
+    if (commentRecord?.github_comment_identifier) {
       await updatePullRequestComment(
         Number(installationId),
         owner,
         repo,
-        Number(prRecord.comment_id),
+        Number(commentRecord.github_comment_identifier),
         fullComment,
       )
     } else {
@@ -156,14 +163,18 @@ export async function postComment(
         fullComment,
       )
 
-      const { error: updateError } = await supabase
-        .from('pull_requests')
-        .update({ comment_id: commentResponse.id })
-        .eq('id', pullRequestId)
+      const now = new Date().toISOString()
+      const { error: createCommentError } = await supabase
+        .from('github_pull_request_comments')
+        .insert({
+          github_pull_request_id: pullRequestId,
+          github_comment_identifier: commentResponse.id,
+          updated_at: now,
+        })
 
-      if (updateError) {
+      if (createCommentError) {
         throw new Error(
-          `Failed to update pull request with comment ID: ${updateError.message}`,
+          `Failed to create github_pull_request_comments record: ${createCommentError.message}`,
         )
       }
     }

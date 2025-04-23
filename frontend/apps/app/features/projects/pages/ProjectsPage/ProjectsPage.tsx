@@ -1,4 +1,5 @@
 import { urlgen } from '@/utils/routes'
+import { notFound } from 'next/navigation'
 import { EmptyProjectsState } from '../../components/EmptyProjectsState'
 import styles from './ProjectsPage.module.css'
 import { ServerProjectsDataProvider } from './ServerProjectsDataProvider'
@@ -11,13 +12,17 @@ import { getProjects } from './getProjects'
 export async function ProjectsPage({
   organizationId,
 }: {
-  organizationId?: string
+  organizationId: string
 }) {
-  const currentOrganization = organizationId
-    ? await getCurrentOrganization(organizationId)
-    : await getCurrentOrganization()
+  const currentOrganization = await getCurrentOrganization(organizationId)
+
+  if (!currentOrganization) {
+    console.error('Organization not found')
+    return notFound()
+  }
+
   await getUserOrganizations() // Fetch for future use
-  const projects = await getProjects(currentOrganization?.id)
+  const projects = await getProjects(currentOrganization.id)
 
   return (
     <div className={styles.container}>

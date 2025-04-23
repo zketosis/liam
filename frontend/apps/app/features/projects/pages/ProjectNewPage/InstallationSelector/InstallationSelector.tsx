@@ -75,7 +75,7 @@ export const InstallationSelector: FC<Props> = ({
         formData.set('projectName', repository.name)
         formData.set('repositoryName', repository.name)
         formData.set('repositoryOwner', repository.owner.login)
-        formData.set('repositoryId', repository.id.toString())
+        formData.set('repositoryIdentifier', repository.id.toString())
         formData.set(
           'installationId',
           selectedInstallation?.id.toString() || '',
