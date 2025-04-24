@@ -71,7 +71,6 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 4. **Supabase Component Implementation**: Implemented Supabase for database access in key components:
    - ProjectBranchesListPage component
    - KnowledgeSuggestionDetailPage component
-   - ProjectDetailPage component
    - Implemented proper handling of date fields by converting string dates to Date objects
    - Used nested select syntax for complex relationships between tables
    - Added comprehensive error handling for Supabase queries
