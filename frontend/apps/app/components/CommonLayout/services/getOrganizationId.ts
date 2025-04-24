@@ -1,7 +1,7 @@
 import { createClient } from '@/libs/db/server'
 import { getOrganizationIdFromCookie } from './getOrganizationIdFromCookie'
 
-export async function getOrganizationId() {
+export async function getOrganizationId(): Promise<string | null> {
   const storedOrganizationId = await getOrganizationIdFromCookie()
 
   if (storedOrganizationId !== null && storedOrganizationId !== '') {
@@ -15,19 +15,20 @@ export async function getOrganizationId() {
     throw new Error('Authentication failed: ', authUser.error)
   }
 
-  const organizationMember = await supabase
-    .from('organization_members')
-    .select('organization_id')
-    .eq('user_id', authUser.data.user.id)
-    .limit(1)
-    .single()
+  const { data: organizationMember, error: organizationMemberError } =
+    await supabase
+      .from('organization_members')
+      .select('organization_id')
+      .eq('user_id', authUser.data.user.id)
+      .limit(1)
+      .maybeSingle()
 
-  if (organizationMember.error) {
+  if (organizationMemberError) {
     throw new Error(
       'Failed to fetch organization member data',
-      organizationMember.error,
+      organizationMemberError,
     )
   }
 
-  return organizationMember.data.organization_id
+  return organizationMember?.organization_id ?? null
 }
