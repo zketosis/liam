@@ -235,7 +235,6 @@ export const processCreateKnowledgeSuggestion = async (
         trace_id: traceId || null,
         reasoning: payload.reasoning || null,
         updated_at: now,
-        organization_id: null,
       })
       .select()
       .single()
