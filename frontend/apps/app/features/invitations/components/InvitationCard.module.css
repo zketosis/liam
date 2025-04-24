@@ -1,0 +1,117 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-4);
+  background-color: var(--global-background);
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-8);
+  background-color: var(--color-green-alpha-10);
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0px 4px 80px 0px rgba(29, 237, 131, 0.1);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--border-radius-xl);
+  border: 1px solid transparent;
+  background: linear-gradient(
+      to bottom,
+      var(--color-green-400),
+      var(--color-green-200),
+      var(--color-green-700)
+    )
+    border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.logo {
+  margin-bottom: var(--spacing-2);
+}
+
+.greeting {
+  font-family: var(--main-font);
+  font-size: var(--font-size-6);
+  font-weight: 400;
+  color: var(--global-foreground);
+  text-align: center;
+  margin-bottom: var(--spacing-2);
+}
+
+.description {
+  font-family: var(--main-font);
+  font-size: var(--font-size-3);
+  font-weight: 400;
+  color: var(--color-white-alpha-70);
+  text-align: left;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: var(--spacing-4);
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--color-green-400);
+  color: var(--color-black-alpha-100);
+  border: 1px solid var(--color-green-400);
+  border-radius: var(--border-radius-md);
+  font-family: var(--main-font);
+  font-size: var(--font-size-4);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--color-green-300);
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-green-alpha-40);
+}
+
+.error {
+  color: var(--color-red-500);
+  font-size: var(--font-size-3);
+  margin-top: var(--spacing-2);
+  text-align: center;
+  width: 100%;
+}

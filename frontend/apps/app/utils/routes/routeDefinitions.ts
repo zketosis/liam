@@ -25,6 +25,9 @@ export type RouteDefinitions = {
   'organizations/[organizationId]/settings/projects': (params: {
     organizationId: string
   }) => string
+  'invitations/organizations/[organizationId]': (params: {
+    organizationId: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]': (params: {
     projectId: string
     branchOrCommit: string
@@ -90,6 +93,9 @@ export const routeDefinitions: RouteDefinitions = {
   },
   'organizations/[organizationId]/settings/projects': ({ organizationId }) => {
     return `/app/organizations/${organizationId}/settings/projects`
+  },
+  'invitations/organizations/[organizationId]': ({ organizationId }) => {
+    return `/app/invitations/organizations/${organizationId}`
   },
   'projects/[projectId]': ({ projectId }) => {
     return `/app/projects/${projectId}`
