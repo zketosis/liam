@@ -55,7 +55,8 @@ export const processGenerateSchemaOverride = async (
     }
 
     // Get the pull request from the mapping
-    const pullRequestMapping = overallReview.migration.migration_pull_request_mappings[0]
+    const pullRequestMapping =
+      overallReview.migration.migration_pull_request_mappings[0]
     if (!pullRequestMapping || !pullRequestMapping.github_pull_requests) {
       throw new Error(
         `Pull request not found for migration ${overallReview.migration.id}`,
@@ -65,9 +66,7 @@ export const processGenerateSchemaOverride = async (
     const pullRequest = pullRequestMapping.github_pull_requests
     const repositories = pullRequest.github_repositories
     if (!repositories) {
-      throw new Error(
-        `Repository not found for pull request ${pullRequest.id}`,
-      )
+      throw new Error(`Repository not found for pull request ${pullRequest.id}`)
     }
 
     const predefinedRunId = uuidv4()
