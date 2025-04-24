@@ -2,8 +2,11 @@ import type { MergeDeep } from 'type-fest'
 import type { Database as DatabaseGenerated } from '../../../supabase/database.types'
 import type { KnowledgeSuggestionsOverride } from './knowledge_suggestions'
 import type { GithubPullRequestsOverride } from './github_pull_requests'
+import type { GithubPullRequestCommentsOverride } from './github_pull_request_comments'
 
 export type AppDatabaseOverrides = MergeDeep<
   DatabaseGenerated,
-  KnowledgeSuggestionsOverride & GithubPullRequestsOverride
+  KnowledgeSuggestionsOverride &
+    GithubPullRequestsOverride &
+    GithubPullRequestCommentsOverride
 >
