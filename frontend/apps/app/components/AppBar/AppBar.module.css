@@ -61,6 +61,10 @@
   position: relative;
 }
 
+.breadcrumbItem:focus {
+  outline: none;
+}
+
 .breadcrumbItem:hover {
   background-color: #2e3031;
 }
