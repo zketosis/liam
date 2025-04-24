@@ -1,3 +1,5 @@
+BEGIN;
+
 alter table "public"."github_schema_file_paths"
   drop constraint if exists "github_schema_file_path_path_project_id_key";
 
@@ -22,3 +24,5 @@ create unique index if not exists "schema_file_path_project_id_key"
 grant all on table "public"."schema_file_paths" to "anon";
 grant all on table "public"."schema_file_paths" to "authenticated";
 grant all on table "public"."schema_file_paths" to "service_role";
+
+COMMIT;
