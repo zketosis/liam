@@ -13,7 +13,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@liam-hq/configs": "workspace:*",
-    "supabase": "2.22.2",
+    "supabase": "2.22.3",
     "type-fest": "4.40.0",
     "typescript": "5.8.3"
   },

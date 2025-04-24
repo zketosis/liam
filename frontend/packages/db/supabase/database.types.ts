@@ -822,6 +822,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      invite_organization_member: {
+        Args: {
+          p_email: string
+          p_organization_id: string
+          p_invite_by_user_id: string
+        }
+        Returns: Json
+      }
       sync_existing_users: {
         Args: Record<PropertyKey, never>
         Returns: undefined
