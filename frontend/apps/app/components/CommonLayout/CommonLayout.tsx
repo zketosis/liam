@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { ClientAppBar } from './ClientAppBar'
 import styles from './CommonLayout.module.css'
 import { GlobalNav } from './GlobalNav'
+import { OrgCookie } from './OrgCookie'
 import { getOrganization } from './services/getOrganization'
 import { getOrganizationId } from './services/getOrganizationId'
 
@@ -22,6 +23,7 @@ export async function CommonLayout({ children }: CommonLayoutProps) {
 
   return (
     <div className={styles.layout}>
+      <OrgCookie orgId={organization.id} />
       <GlobalNav currentOrganization={organization} />
       <div className={styles.mainContent}>
         <ClientAppBar avatarInitial="L" avatarColor="var(--color-teal-800)" />
