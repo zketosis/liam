@@ -285,7 +285,10 @@ export const AppBar = ({
 }
 
 const BreadcrumbItem = forwardRef<HTMLButtonElement, BreadcrumbItemProps>(
-  ({ label, tag, onClick, isActive = false, isProject = false }, ref) => {
+  (
+    { label, tag, onClick, isActive = false, isProject = false, ...props },
+    ref,
+  ) => {
     const textClassName = isProject
       ? `${styles.breadcrumbText} ${styles.projectText}`
       : `${styles.breadcrumbText} ${styles.branchText}`
@@ -296,6 +299,7 @@ const BreadcrumbItem = forwardRef<HTMLButtonElement, BreadcrumbItemProps>(
         className={`${styles.breadcrumbItem} ${isActive ? styles.active : ''}`}
         onClick={onClick}
         type="button"
+        {...props}
       >
         {isProject && (
           <div className={styles.breadcrumbIcon}>
