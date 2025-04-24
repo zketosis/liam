@@ -260,6 +260,7 @@ export type Database = {
           created_at: string
           file_sha: string | null
           id: string
+          organization_id: string
           path: string
           project_id: string
           reasoning: string | null
@@ -275,6 +276,7 @@ export type Database = {
           created_at?: string
           file_sha?: string | null
           id?: string
+          organization_id: string
           path: string
           project_id: string
           reasoning?: string | null
@@ -290,6 +292,7 @@ export type Database = {
           created_at?: string
           file_sha?: string | null
           id?: string
+          organization_id?: string
           path?: string
           project_id?: string
           reasoning?: string | null
@@ -304,6 +307,13 @@ export type Database = {
             columns: ['project_id']
             isOneToOne: false
             referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'knowledge_suggestions_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]

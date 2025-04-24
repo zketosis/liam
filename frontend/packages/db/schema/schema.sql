@@ -202,6 +202,23 @@ $$;
 ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_knowledge_suggestions_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."projects" 
+    WHERE "id" = NEW.project_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_knowledge_suggestions_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -314,7 +331,8 @@ CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestions" (
     "updated_at" timestamp(3) with time zone NOT NULL,
     "branch_name" "text" NOT NULL,
     "trace_id" "text",
-    "reasoning" "text" DEFAULT ''::"text"
+    "reasoning" "text" DEFAULT ''::"text",
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -681,6 +699,10 @@ CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_p
 
 
 
+CREATE OR REPLACE TRIGGER "set_knowledge_suggestions_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."knowledge_suggestions" FOR EACH ROW EXECUTE FUNCTION "public"."set_knowledge_suggestions_organization_id"();
+
+
+
 ALTER TABLE ONLY "public"."github_doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -723,6 +745,11 @@ ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
 
 ALTER TABLE ONLY "public"."knowledge_suggestions"
     ADD CONSTRAINT "knowledge_suggestion_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."knowledge_suggestions"
+    ADD CONSTRAINT "knowledge_suggestions_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -831,6 +858,16 @@ COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."pro
 
 
 
+CREATE POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only create knowledge suggestions in organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."projects" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -841,6 +878,16 @@ COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."project
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only view knowledge suggestions belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -848,6 +895,18 @@ CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."project
 
 
 COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" IS 'Authenticated users can only view projects belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_update_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"())))) WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_update_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only update knowledge suggestions in organizations they are members of';
 
 
 
@@ -863,7 +922,14 @@ COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."pro
 
 
 
+ALTER TABLE "public"."knowledge_suggestions" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "service_role_can_delete_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR DELETE TO "service_role" USING (true);
+
 
 
 CREATE POLICY "service_role_can_delete_all_projects" ON "public"."projects" FOR DELETE TO "service_role" USING (true);
@@ -871,6 +937,10 @@ CREATE POLICY "service_role_can_delete_all_projects" ON "public"."projects" FOR 
 
 
 COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."projects" IS 'Service role can delete any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_insert_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
 
@@ -882,11 +952,19 @@ COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" 
 
 
 
+CREATE POLICY "service_role_can_select_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "service_role" USING (true);
+
+
+
 CREATE POLICY "service_role_can_select_all_projects" ON "public"."projects" FOR SELECT TO "service_role" USING (true);
 
 
 
 COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."projects" IS 'Service role can view all projects (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_update_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
 
 
 
@@ -1106,6 +1184,12 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "service_role";
 
 
 
