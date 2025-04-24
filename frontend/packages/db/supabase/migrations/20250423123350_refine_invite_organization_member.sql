@@ -1,16 +1,32 @@
 -- Function to handle organization member invitations atomically
 create or replace function invite_organization_member(
   p_email text,
-  p_organization_id uuid,
-  p_invite_by_user_id uuid
+  p_organization_id uuid
 ) returns jsonb as $$
 declare
   v_is_member boolean;
+  v_invite_by_user_id uuid;
   v_existing_invite_id uuid;
   v_result jsonb;
 begin
   -- Start transaction
   begin
+    v_invite_by_user_id := auth.uid();
+
+    -- Check inviter is a valid user
+    if not exists (
+      select 1
+      from organization_members om
+      where om.user_id = v_invite_by_user_id
+      and om.organization_id = p_organization_id
+    ) then
+      v_result := jsonb_build_object(
+        'success', false,
+        'error', 'inviter user does not exist'
+      );
+      return v_result;
+    end if;
+
     -- Check if user is already a member
     select exists(
       select 1
@@ -38,7 +54,10 @@ begin
     -- If invitation exists, update it
     if v_existing_invite_id is not null then
       update invitations
-      set invited_at = current_timestamp
+      set invited_at = current_timestamp,
+      expired_at = current_timestamp + interval '7 days',
+      invite_by_user_id = v_invite_by_user_id,
+      token = gen_random_uuid()
       where id = v_existing_invite_id;
       
       v_result := jsonb_build_object('success', true, 'error', null);
@@ -47,13 +66,15 @@ begin
       insert into invitations (
         organization_id,
         email,
-        invite_by_user_id,
-        invited_at
+        invited_at,
+        expired_at,
+        invite_by_user_id
       ) values (
         p_organization_id,
         lower(p_email),
-        p_invite_by_user_id,
-        current_timestamp
+        current_timestamp,
+        current_timestamp + interval '7 days',
+        v_invite_by_user_id
       );
       
       v_result := jsonb_build_object('success', true, 'error', null);
@@ -70,4 +91,6 @@ begin
     return v_result;
   end;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql;
+
+revoke all on function invite_organization_member(text, uuid) from anon;
