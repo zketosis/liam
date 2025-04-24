@@ -7,9 +7,12 @@
     "@changesets/get-github-info": "0.6.0",
     "@changesets/types": "6.1.0",
     "@turbo/gen": "2.5.0",
+    "@types/node": "22.14.1",
     "concurrently": "9.1.2",
+    "knip": "5.50.5",
     "syncpack": "13.0.3",
     "turbo": "2.5.0",
+    "typescript": "5.8.3",
     "vercel": "41.6.1"
   },
   "scripts": {
@@ -23,6 +26,7 @@
     "fmt:turbo": "turbo fmt",
     "gen:turbo": "turbo gen",
     "lint": "concurrently \"pnpm:lint:*\"",
+    "lint:knip": "knip",
     "lint:syncpack": "syncpack lint",
     "lint:turbo": "turbo lint",
     "prebuild": "pnpm create-env-files",
