@@ -69,28 +69,23 @@ async function getProject(projectId: string) {
   }
 }
 
-// Add function to get knowledge suggestions count
+// Function to get knowledge suggestions count without try-catch
 async function getKnowledgeSuggestionsCount(
   projectId: string,
 ): Promise<number> {
-  try {
-    const supabase = await createClient()
-    const { count, error } = await supabase
-      .from('knowledge_suggestions')
-      .select('*', { count: 'exact', head: true })
-      .eq('project_id', projectId)
-      .is('approved_at', null) // Count suggestions that haven't been approved yet
+  const supabase = await createClient()
+  const { count, error } = await supabase
+    .from('knowledge_suggestions')
+    .select('*', { count: 'exact', head: true })
+    .eq('project_id', projectId)
+    .is('approved_at', null) // Count suggestions that haven't been approved yet
 
-    if (error) {
-      console.error('Error fetching knowledge suggestions count:', error)
-      return 0
-    }
-
-    return count || 0
-  } catch (error) {
-    console.error('Error counting knowledge suggestions:', error)
+  if (error) {
+    console.error('Error fetching knowledge suggestions count:', error)
     return 0
   }
+
+  return count || 0
 }
 
 export const ProjectHeader: FC<ProjectHeaderProps> = async ({
