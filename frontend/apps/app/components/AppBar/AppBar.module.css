@@ -61,11 +61,6 @@
   position: relative;
 }
 
-.breadcrumbTrigger {
-  all: unset;
-  cursor: pointer;
-}
-
 .breadcrumbItem:hover {
   background-color: #2e3031;
 }
