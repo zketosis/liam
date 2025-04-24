@@ -403,8 +403,8 @@ importers:
         specifier: workspace:*
         version: link:../configs
       supabase:
-        specifier: 2.20.12
-        version: 2.20.12
+        specifier: 2.22.2
+        version: 2.22.2
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -7259,8 +7259,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.20.12:
-    resolution: {integrity: sha512-8UTRRvQdMsfs7jcHPDfv6cFYwrar5OyqidtB8GSdPCaKfEP+0n4TwCVwu7H0tDCbCYs28HDZDzQAZ8Ox+aVIiA==}
+  supabase@2.22.2:
+    resolution: {integrity: sha512-Bx6+w2wy5HcWnsEVqxicKeHlm+mOfV7Mebiyarmo9i9hxiAhP0Drjgck4gtQJRx2hgmb8HcmATUMd5bmbnEW7g==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -15783,7 +15783,7 @@ snapshots:
       client-only: 0.0.1
       react: 18.3.1
 
-  supabase@2.20.12:
+  supabase@2.22.2:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6
