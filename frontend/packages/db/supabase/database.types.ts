@@ -177,24 +177,30 @@ export type Database = {
       invitations: {
         Row: {
           email: string
+          expired_at: string
           id: string
           invite_by_user_id: string
           invited_at: string | null
           organization_id: string
+          token: string
         }
         Insert: {
           email: string
+          expired_at?: string
           id?: string
           invite_by_user_id: string
           invited_at?: string | null
           organization_id: string
+          token?: string
         }
         Update: {
           email?: string
+          expired_at?: string
           id?: string
           invite_by_user_id?: string
           invited_at?: string | null
           organization_id?: string
+          token?: string
         }
         Relationships: [
           {

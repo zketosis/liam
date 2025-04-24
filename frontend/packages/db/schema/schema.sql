@@ -339,7 +339,9 @@ CREATE TABLE IF NOT EXISTS "public"."invitations" (
     "email" "text" NOT NULL,
     "invite_by_user_id" "uuid" NOT NULL,
     "organization_id" "uuid" NOT NULL,
-    "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    "token" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "expired_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -584,6 +586,11 @@ ALTER TABLE ONLY "public"."schema_file_paths"
 
 ALTER TABLE ONLY "public"."invitations"
     ADD CONSTRAINT "invitations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_token_key" UNIQUE ("token");
 
 
 
