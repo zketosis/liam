@@ -28,10 +28,11 @@
 .projectsContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   gap: var(--spacing-5);
   align-self: stretch;
+  height: 100%;
 }
 
 .projectsHeader {
@@ -101,19 +102,5 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-4);
   align-items: flex-start;
-  width: 100%;
-}
-
-.emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-10);
-  text-align: center;
-  color: var(--global-mute-text);
-  background-color: var(--pane-background);
-  border: 1px solid var(--global-border);
-  border-radius: var(--border-radius-md);
   width: 100%;
 }

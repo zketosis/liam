@@ -5,6 +5,7 @@ import type { Tables } from '@liam-hq/db/supabase/database.types'
 import Link from 'next/link'
 import { useState } from 'react'
 import {
+  EmptyProjectsState,
   ProjectItem,
   SearchInput,
   SortDropdown,
@@ -93,10 +94,7 @@ export function ProjectsListView({
       </div>
 
       {projects === null || projects.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p>No projects found.</p>
-          <p>Create a new project to get started.</p>
-        </div>
+        <EmptyProjectsState projects={projects} />
       ) : (
         <div className={styles.projectsGrid}>
           {projects.map((project) => (

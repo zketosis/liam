@@ -30,6 +30,7 @@ export async function ProjectsPage({
         <h1 className={styles.heading}>Projects</h1>
         {projects === null || projects.length === 0 ? (
           <EmptyProjectsState
+            projects={projects}
             createProjectHref={
               currentOrganization
                 ? urlgen('organizations/[organizationId]/projects/new', {
