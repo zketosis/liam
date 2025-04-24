@@ -42,9 +42,7 @@ export const OrganizationNewPage: FC = () => {
     }
   }
 
-  // Define button variant based on form state
-  const buttonVariant =
-    isFormValid && !loading ? 'solid-primary' : 'outline-secondary'
+
 
   return (
     <div className={styles.container}>
@@ -80,9 +78,11 @@ export const OrganizationNewPage: FC = () => {
             <div className={styles.buttonContainer}>
               <Button
                 type="submit"
-                disabled={loading || !isFormValid}
-                variant={buttonVariant}
+                isLoading={loading}
+                disabled={!isFormValid}
+                variant="solid-primary"
                 className={styles.buttonCustom}
+                loadingIndicatorType="content"
               >
                 Create Organization
               </Button>
