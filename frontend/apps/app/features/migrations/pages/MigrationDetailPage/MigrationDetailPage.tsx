@@ -101,7 +101,7 @@ async function getMigrationContents(migrationId: string) {
         )
       )
     `)
-    .eq('pull_request_id', pullRequest.id)
+    .eq('migration_id', migrationId)
     .order('created_at', { ascending: false })
     .limit(1)
     .single()
