@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/libs/db/server'
-import type { SupabaseClient } from '@/libs/db/server'
 import { revalidatePath } from 'next/cache'
 import * as v from 'valibot'
 
@@ -15,86 +14,20 @@ const inviteFormSchema = v.object({
   organizationId: v.string(),
 })
 
-/**
- * Checks if a user is already a member of the organization
- */
-const checkExistingMember = async (
-  supabase: SupabaseClient,
-  organizationId: string,
-  email: string,
-): Promise<boolean> => {
-  const { data: existingMembers } = await supabase
-    .from('organization_members')
-    .select('id, users(email)')
-    .eq('organization_id', organizationId)
-
-  return (
-    existingMembers?.some(
-      (member) => member.users?.email?.toLowerCase() === email.toLowerCase(),
-    ) || false
-  )
-}
-
-/**
- * Checks if an invitation already exists for the email and organization
- */
-const checkExistingInvite = async (
-  supabase: SupabaseClient,
-  organizationId: string,
-  email: string,
-) => {
-  const { data: existingInvites } = await supabase
-    .from('invitations')
-    .select('id')
-    .eq('organization_id', organizationId)
-    .eq('email', email.toLowerCase())
-
-  return existingInvites && existingInvites.length > 0
-    ? existingInvites[0]
-    : null
-}
-
-/**
- * Updates an existing invitation (resend)
- */
-const updateInvite = async (
-  supabase: SupabaseClient,
-  inviteId: string,
-): Promise<void> => {
-  await supabase
-    .from('invitations')
-    .update({ invited_at: new Date().toISOString() })
-    .eq('id', inviteId)
-}
-
-/**
- * Creates a new invitation
- */
-const createInvite = async (
-  supabase: SupabaseClient,
-  organizationId: string,
-  email: string,
-  userId: string,
-): Promise<{ success: boolean; error?: string }> => {
-  const { error: insertError } = await supabase.from('invitations').insert({
-    organization_id: organizationId,
-    email: email.toLowerCase(),
-    invite_by_user_id: userId,
-    invited_at: new Date().toISOString(),
-  })
-
-  if (insertError) {
-    return {
-      success: false,
-      error: insertError.message,
-    }
-  }
-
-  return { success: true }
-}
+const invitationResultSchema = v.union([
+  v.object({
+    success: v.literal(true),
+    error: v.null(),
+  }),
+  v.object({
+    success: v.literal(false),
+    error: v.string(),
+  }),
+])
 
 /**
  * Server action to invite a member to an organization
+ * Uses an atomic RPC function to handle all database operations in a single transaction
  */
 export const inviteMember = async (formData: FormData) => {
   // Parse and validate form data
@@ -104,12 +37,11 @@ export const inviteMember = async (formData: FormData) => {
   }
 
   const parsedData = v.safeParse(inviteFormSchema, formDataObject)
-
   if (!parsedData.success) {
     return {
       success: false,
       error: `Invalid form data: ${parsedData.issues.map((issue) => issue.message).join(', ')}`,
-    }
+    } as const
   }
 
   const { email, organizationId } = parsedData.output
@@ -123,57 +55,37 @@ export const inviteMember = async (formData: FormData) => {
     return {
       success: false,
       error: 'User not authenticated',
-    }
+    } as const
   }
 
-  // Check if user is already a member
-  const isAlreadyMember = await checkExistingMember(
-    supabase,
-    organizationId,
-    email,
-  )
+  // Call the RPC function to handle the invitation atomically
+  const { data, error } = await supabase.rpc('invite_organization_member', {
+    p_email: email,
+    p_organization_id: organizationId,
+    p_invite_by_user_id: userId,
+  })
 
-  if (isAlreadyMember) {
+  if (error) {
+    console.error('Error inviting member:', JSON.stringify(error, null, 2))
     return {
       success: false,
-      error: 'This user is already a member of the organization',
-    }
+      error: 'Failed to send invitation. Please try again.',
+    } as const
   }
 
-  // Check if invitation already exists
-  const existingInvite = await checkExistingInvite(
-    supabase,
-    organizationId,
-    email,
-  )
-
-  if (existingInvite) {
-    // Update existing invite (resend)
-    await updateInvite(supabase, existingInvite.id)
-    return { success: true }
-  }
-
-  // Create new invite
-  const createResult = await createInvite(
-    supabase,
-    organizationId,
-    email,
-    userId,
-  )
-  if (!createResult.success) {
+  const result = v.safeParse(invitationResultSchema, data)
+  if (!result.success) {
     return {
       success: false,
-      error:
-        createResult.error || 'Failed to send invitation. Please try again.',
-    }
+      error: `Invalid response from server: ${result.issues.map((issue) => issue.message).join(', ')}`,
+    } as const
   }
 
   // TODO: Send email to user
-
   revalidatePath(
     `/app/organizations/${organizationId}/settings/members`,
     'page',
   )
 
-  return { success: true }
+  return result.output
 }
