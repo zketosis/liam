@@ -62,7 +62,7 @@
 }
 
 .breadcrumbItem:focus {
-  outline: none;
+  outline-color: var(--primary-color);
 }
 
 .breadcrumbItem:hover {
