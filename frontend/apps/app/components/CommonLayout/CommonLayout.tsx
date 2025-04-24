@@ -1,3 +1,4 @@
+import { getOrganizationId } from '@/features/organizations/services/getOrganizationId'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { ClientAppBar } from './ClientAppBar'
@@ -6,7 +7,6 @@ import { GlobalNav } from './GlobalNav'
 import { OrgCookie } from './OrgCookie'
 import { getAuthUser } from './services/getAuthUser'
 import { getOrganization } from './services/getOrganization'
-import { getOrganizationId } from './services/getOrganizationId'
 import { getOrganizationsByUserId } from './services/getOrganizationsByUserId'
 
 type CommonLayoutProps = {
@@ -14,8 +14,6 @@ type CommonLayoutProps = {
 }
 
 export async function CommonLayout({ children }: CommonLayoutProps) {
-  // In a Server Component, we can't directly access the URL path
-  // We'll let the ClientAppBar handle path detection and project ID extraction
   const organizationId = await getOrganizationId()
   const { data: organization } = await getOrganization(organizationId)
 
