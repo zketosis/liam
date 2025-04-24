@@ -19,20 +19,20 @@ async function getFeedbackData(supabase: SupabaseClient, feedbackId: string) {
     .from('review_feedbacks')
     .select(`
       *,
-      overallReview:overallReviewId(
+      overallReview:overall_review_id(
         id,
-        projectId,
-        pullRequest:pullRequestId(
+        project_id,
+        pullRequest:pull_request_id(
           id,
-          repositoryId,
-          pullNumber,
-          repository:repositoryId(
+          repository_id,
+          pull_number,
+          repository:repository_id(
             owner,
             name,
-            installationId
+            github_installation_identifier
           )
         ),
-        branchName
+        branch_name
       )
     `)
     .eq('id', feedbackId)

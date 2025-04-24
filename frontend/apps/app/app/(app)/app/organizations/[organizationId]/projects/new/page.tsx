@@ -15,24 +15,18 @@ export default async function NewProjectPage({ params }: PageProps) {
 
   const { organizationId } = parsedParams.output
   const supabase = await createClient()
-  const { data } = await supabase.auth.getSession()
-
-  if (data.session === null) {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+  if (error || !user) {
+    console.error('Error fetching user:', error)
     return notFound()
   }
 
-  const { data: organizationMembers, error: orgError } = await supabase
-    .from('organization_members')
-    .select('id')
-    .eq('user_id', data.session.user.id)
-    .eq('organization_id', organizationId)
-    .limit(1)
+  const { data } = await supabase.auth.getSession()
 
-  if (orgError) {
-    console.error('Error fetching organization members:', orgError)
-  }
-
-  if (!organizationMembers || organizationMembers.length === 0) {
+  if (data.session === null) {
     return notFound()
   }
 

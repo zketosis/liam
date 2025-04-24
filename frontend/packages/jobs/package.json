@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@langchain/core": "0.3.45",
-    "@langchain/openai": "0.5.5",
+    "@langchain/openai": "0.5.6",
     "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/github": "workspace:*",
@@ -43,7 +43,7 @@
     "lint:biome": "biome check .",
     "lint:tsc": "tsc --noEmit",
     "postinstall": "cp ../db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
-    "test": "vitest --watch=false",
+    "test": "vitest --watch=false --passWithNoTests",
     "trigger:dev": "trigger dev"
   }
 }

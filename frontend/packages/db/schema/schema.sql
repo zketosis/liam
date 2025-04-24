@@ -166,7 +166,7 @@ ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."github_pull_request_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "github_pull_request_id" "uuid" NOT NULL,
-    "github_comment_identifier" integer NOT NULL,
+    "github_comment_identifier" bigint NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
@@ -200,19 +200,6 @@ CREATE TABLE IF NOT EXISTS "public"."github_repositories" (
 
 
 ALTER TABLE "public"."github_repositories" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "path" "text" NOT NULL,
-    "project_id" "uuid" NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    "format" "public"."schema_format_enum" NOT NULL
-);
-
-
-ALTER TABLE "public"."github_schema_file_paths" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."invitations" (
@@ -259,12 +246,24 @@ CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestions" (
 ALTER TABLE "public"."knowledge_suggestions" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."migrations" (
+CREATE TABLE IF NOT EXISTS "public"."migration_pull_request_mappings" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "title" "text" NOT NULL,
+    "migration_id" "uuid" NOT NULL,
     "pull_request_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."migration_pull_request_mappings" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."migrations" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "title" "text" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "project_id" "uuid" NOT NULL
 );
 
 
@@ -398,6 +397,19 @@ CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippets" (
 ALTER TABLE "public"."review_suggestion_snippets" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."schema_file_paths" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "path" "text" NOT NULL,
+    "project_id" "uuid" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "format" "public"."schema_format_enum" NOT NULL
+);
+
+
+ALTER TABLE "public"."schema_file_paths" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" NOT NULL,
     "name" "text" NOT NULL,
@@ -433,12 +445,7 @@ ALTER TABLE ONLY "public"."github_repositories"
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_paths"
-    ADD CONSTRAINT "github_schema_file_path_path_project_id_key" UNIQUE ("path", "project_id");
-
-
-
-ALTER TABLE ONLY "public"."github_schema_file_paths"
+ALTER TABLE ONLY "public"."schema_file_paths"
     ADD CONSTRAINT "github_schema_file_path_pkey" PRIMARY KEY ("id");
 
 
@@ -460,6 +467,16 @@ ALTER TABLE ONLY "public"."knowledge_suggestions"
 
 ALTER TABLE ONLY "public"."migrations"
     ADD CONSTRAINT "migration_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mapping_migration_id_pull_request_id_key" UNIQUE ("migration_id", "pull_request_id");
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mappings_pkey" PRIMARY KEY ("id");
 
 
 
@@ -545,10 +562,6 @@ CREATE UNIQUE INDEX "github_repository_owner_name_key" ON "public"."github_repos
 
 
 
-CREATE UNIQUE INDEX "github_schema_file_path_project_id_key" ON "public"."github_schema_file_paths" USING "btree" ("project_id");
-
-
-
 CREATE INDEX "idx_project_organization_id" ON "public"."projects" USING "btree" ("organization_id");
 
 
@@ -569,10 +582,6 @@ CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public
 
 
 
-CREATE UNIQUE INDEX "migration_pull_request_id_key" ON "public"."migrations" USING "btree" ("pull_request_id");
-
-
-
 CREATE INDEX "organization_member_organization_id_idx" ON "public"."organization_members" USING "btree" ("organization_id");
 
 
@@ -586,6 +595,14 @@ CREATE UNIQUE INDEX "overall_review_knowledge_suggestion_mapping_unique_mapping"
 
 
 CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON "public"."project_repository_mappings" USING "btree" ("project_id", "repository_id");
+
+
+
+CREATE UNIQUE INDEX "schema_file_path_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("path", "project_id");
+
+
+
+CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("project_id");
 
 
 
@@ -606,11 +623,6 @@ ALTER TABLE ONLY "public"."github_pull_requests"
 
 ALTER TABLE ONLY "public"."github_repositories"
     ADD CONSTRAINT "github_repositories_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."github_schema_file_paths"
-    ADD CONSTRAINT "github_schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -640,7 +652,17 @@ ALTER TABLE ONLY "public"."knowledge_suggestions"
 
 
 ALTER TABLE ONLY "public"."migrations"
-    ADD CONSTRAINT "migration_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "migration_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mapping_migration_id_fkey" FOREIGN KEY ("migration_id") REFERENCES "public"."migrations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mapping_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -719,6 +741,11 @@ ALTER TABLE ONLY "public"."review_suggestion_snippets"
 
 
 
+ALTER TABLE ONLY "public"."schema_file_paths"
+    ADD CONSTRAINT "schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -793,6 +820,16 @@ CREATE POLICY "service_role_can_update_all_projects" ON "public"."projects" FOR 
 
 
 COMMENT ON POLICY "service_role_can_update_all_projects" ON "public"."projects" IS 'Service role can update any project (for jobs)';
+
+
+
+ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "users_same_organization_select_policy" ON "public"."users" FOR SELECT TO "authenticated" USING (((EXISTS ( SELECT 1
+   FROM ("public"."organization_members" "om1"
+     JOIN "public"."organization_members" "om2" ON (("om1"."organization_id" = "om2"."organization_id")))
+  WHERE (("om1"."user_id" = "users"."id") AND ("om2"."user_id" = "auth"."uid"())))) OR ("id" = "auth"."uid"())));
 
 
 
@@ -1036,12 +1073,6 @@ GRANT ALL ON TABLE "public"."github_repositories" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "anon";
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "authenticated";
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."invitations" TO "anon";
 GRANT ALL ON TABLE "public"."invitations" TO "authenticated";
 GRANT ALL ON TABLE "public"."invitations" TO "service_role";
@@ -1057,6 +1088,12 @@ GRANT ALL ON TABLE "public"."knowledge_suggestion_doc_mappings" TO "service_role
 GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "anon";
 GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "authenticated";
 GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."migration_pull_request_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."migration_pull_request_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."migration_pull_request_mappings" TO "service_role";
 
 
 
@@ -1123,6 +1160,12 @@ GRANT ALL ON TABLE "public"."review_feedbacks" TO "service_role";
 GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "anon";
 GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "authenticated";
 GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "anon";
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "authenticated";
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "service_role";
 
 
 

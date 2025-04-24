@@ -11,6 +11,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 ## Recent Changes
 
 1. **Updated SettingsHeader Component with Figma Design**: Enhanced the SettingsHeader component to match Figma design specifications:
+
    - Created three new icon components in the UI package: `BookMarked`, `Users`, and `GitPullRequestArrow`
    - Updated the UI package's index.ts to export the new icons
    - Modified the SettingsHeader component to use the specified icons:
@@ -26,6 +27,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
      - Removed the need for a separate switch statement by storing icons with their respective tabs
 
 2. **Switched AI Model from Anthropic to OpenAI**: Changed the AI model used in prompt generators from ChatAnthropic to ChatOpenAI:
+
    - Updated all three prompt generator files (generateDocsSuggestion, generateReview, generateSchemaOverride) to use ChatOpenAI
    - Changed the model from 'claude-3-7-sonnet-latest' to 'o3-mini-2025-01-31'
    - Created index.ts files for the generateSchemaOverride and generateDocsSuggestion directories
@@ -33,13 +35,15 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Updated package.json to replace @langchain/anthropic with @langchain/openai v0.5.5
    - This change standardizes the AI model usage across the application and potentially improves performance and cost-efficiency
 
-2. **Added Reasoning Field to knowledge_suggestions**: Enhanced the knowledge_suggestions table to store the rationale behind schema override update suggestions:
+3. **Added Reasoning Field to knowledge_suggestions**: Enhanced the knowledge_suggestions table to store the rationale behind schema override update suggestions:
+
    - Created a migration to add a `reasoning` TEXT field with a default empty string value
    - Updated the database.types.ts file to include the new field in the type definitions
    - Modified the KnowledgeSuggestionDetailPage.tsx component to display the reasoning field when available
    - This enhancement helps users understand the context and rationale behind schema override update suggestions, enabling more informed decisions when approving suggestions
 
-2. **overall_reviews to knowledge_suggestions Relationship**: Implemented a relationship between overall_reviews and knowledge_suggestions tables:
+4. **overall_reviews to knowledge_suggestions Relationship**: Implemented a relationship between overall_reviews and knowledge_suggestions tables:
+
    - Created a new intermediate table `overall_review_knowledge_suggestion_mappings` to link overall_reviews and knowledge_suggestions
    - Modified `processCreateKnowledgeSuggestion.ts` to accept an optional `overall_review_id` parameter
    - Implemented `createOverallReviewMapping` function to create mappings in the overall_review_knowledge_suggestion_mappings table
@@ -48,7 +52,8 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Implemented proper navigation using the urlgen utility for type-safe route generation
    - This allows users to track and navigate to knowledge_suggestions from the MigrationDetailPage
 
-2. **Optimized knowledge_suggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
+5. **Optimized knowledge_suggestion Creation**: Enhanced the `processCreateKnowledgeSuggestion.ts` function to avoid creating unnecessary suggestions:
+
    - Implemented content comparison to check if document content has changed before creating a suggestion
    - Refactored the function into smaller, focused helper functions to reduce cognitive complexity
    - Improved type safety with proper type definitions and return types
@@ -56,19 +61,22 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Enhanced error handling with more specific error messages
    - This optimization prevents duplicate suggestions when content hasn't changed
 
-2. **knowledge_suggestions and github_doc_file_paths Integration**: Implemented a connection between knowledge_suggestions and github_doc_file_paths tables:
+6. **knowledge_suggestions and github_doc_file_paths Integration**: Implemented a connection between knowledge_suggestions and github_doc_file_paths tables:
+
    - Created a new intermediate table `knowledge_suggestion_doc_mappings` to link knowledge_suggestions and github_doc_file_paths
    - Modified `processCreateKnowledgeSuggestion.ts` to create mappings for existing docs when creating a Doc Suggestion
    - Updated `approveKnowledgeSuggestion.ts` to create github_doc_file_paths entries and mappings for new docs
    - Refactored code to reduce cognitive complexity and improve type safety
    - This ensures that newly created knowledge suggestions are properly included in reviews
 
-3. **Database Migration Documentation**: Created comprehensive documentation for the Supabase migration workflow:
+7. **Database Migration Documentation**: Created comprehensive documentation for the Supabase migration workflow:
+
    - Added detailed migration guidelines in `docs/migrationOpsContext.md`
    - Documented schema design patterns in `docs/schemaPatterns.md`
    - Added Supabase migration commands to package.json
 
-4. **Supabase Component Implementation**: Implemented Supabase for database access in key components:
+8. **Supabase Component Implementation**: Implemented Supabase for database access in key components:
+
    - ProjectBranchesListPage component
    - KnowledgeSuggestionDetailPage component
    - Implemented proper handling of date fields by converting string dates to Date objects
@@ -76,52 +84,59 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Added comprehensive error handling for Supabase queries
    - Handled array-based return format for nested relationships in Supabase
 
-5. **Enhanced Review Generation with PR Context**: Improved the review generation functionality to incorporate deeper context from pull requests:
+9. **Enhanced Review Generation with PR Context**: Improved the review generation functionality to incorporate deeper context from pull requests:
+
    - Added `getIssueComments` function to fetch PR comments using the GitHub API
    - Modified `processGenerateReview.ts` to fetch PR description and comments
    - Updated type definitions to use `fileChanges` instead of `schemaChanges` for better clarity
    - Enhanced prompt templates to include PR description and comments sections
    - Updated all related files for consistent terminology
 
-6. **Schema Override Generation**: Implemented a new pipeline that creates and stores schema override suggestions based on PR reviews, including:
-   - New task (`generateSchemaOverrideSuggestionTask`) triggered after a review is saved
-   - Processing function (`processGenerateSchemaOverride`) for generating schema override suggestions
-   - Integration with `createKnowledgeSuggestionTask` to store generated schema override
-   - Enhanced prompt with current schema override context for more informed suggestions
-   - Added schema files content to the AI prompt for better context and more accurate suggestions
-   - Created reusable utility function for fetching schema files content
-   - Type-safe validation of existing schema override using Valibot
+10. **Schema Override Generation**: Implemented a new pipeline that creates and stores schema override suggestions based on PR reviews, including:
 
-7. **Database Schema Optimization**:
-   - Removed unused Doc and DocVersion models
-   - Renamed `watch_schema_file_patterns` table to `github_schema_file_paths`
-   - Changed from pattern matching to direct path comparison for schema file management
+    - New task (`generateSchemaOverrideSuggestionTask`) triggered after a review is saved
+    - Processing function (`processGenerateSchemaOverride`) for generating schema override suggestions
+    - Integration with `createKnowledgeSuggestionTask` to store generated schema override
+    - Enhanced prompt with current schema override context for more informed suggestions
+    - Added schema files content to the AI prompt for better context and more accurate suggestions
+    - Created reusable utility function for fetching schema files content
+    - Type-safe validation of existing schema override using Valibot
 
-8. **Supabase JS Integration**:
-   - Implemented Supabase JS for database access in the document viewer page
-   - Created optimized queries using nested joins
-   - Developed type-safe implementation with proper handling of bigint fields and nested relationships
-   - Standardized Supabase client usage with a shared createClient function
-   - Extended Supabase implementation to ProjectBranchesListPage and KnowledgeSuggestionDetailPage components
+11. **Database Schema Optimization**:
 
-9. **Document Management**:
-   - Implemented text document viewer page at `/app/projects/[projectId]/docs/[branchOrCommit]/[...slug]`
-   - Created documentation list page at `/app/projects/[projectId]/ref/[branchOrCommit]/docs`
-   - Added dynamic branch name management for KnowledgeSuggestion operations
+    - Removed unused Doc and DocVersion models
+    - Renamed `watch_schema_file_patterns` table to `schema_file_paths`
+    - Changed from pattern matching to direct path comparison for schema file management
+
+12. **Supabase JS Integration**:
+
+    - Implemented Supabase JS for database access in the document viewer page
+    - Created optimized queries using nested joins
+    - Developed type-safe implementation with proper handling of bigint fields and nested relationships
+    - Standardized Supabase client usage with a shared createClient function
+    - Extended Supabase implementation to ProjectBranchesListPage and KnowledgeSuggestionDetailPage components
+
+13. **Document Management**:
+    - Implemented text document viewer page at `/app/projects/[projectId]/docs/[branchOrCommit]/[...slug]`
+    - Created documentation list page at `/app/projects/[projectId]/ref/[branchOrCommit]/docs`
+    - Added dynamic branch name management for KnowledgeSuggestion operations
 
 ## Next Steps
 
 1. **Enhance Supabase Implementation**:
+
    - Implement Supabase RPC for robust transaction management
    - Ensure consistent Supabase type updates with database schema changes
 
 2. **Enhance AI Components**:
+
    - Improve review prompt template for more detailed analysis
    - Implement continuous learning from past reviews
    - Refine suggestion accuracy and relevance
    - Continue enhancing AI prompts with additional context for better results
 
 3. **Schema Change Detection**:
+
    - Further enhance detection to better identify relevant migration files
    - Improve analysis of database migrations
 
@@ -132,23 +147,27 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 ## Active Decisions and Considerations
 
 1. **Database Access Strategy**:
+
    - Using Supabase for database migrations and access
    - Leveraging Supabase's optimized query capabilities
    - Standardizing the data access layer
    - Handling type compatibility issues, particularly with bigint fields and nested relationships
 
 2. **Testing Approach**:
+
    - Using direct testing with Supabase instead of mocking
    - Creating real records in the database for testing
    - Running actual functions with test records
    - Cleaning up test data after tests
 
 3. **Transaction Management**:
+
    - Moving away from manual rollback processing
    - Planning to implement Supabase RPC for transaction management
    - Ensuring consistent approach across the application
 
 4. **Schema File Management**:
+
    - Using direct path comparison instead of pattern matching
    - Providing more precise and efficient approach
    - Aligning with existing github_doc_file_paths model
@@ -161,6 +180,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 ## Important Patterns and Preferences
 
 1. **Code Implementation**:
+
    - Use TypeScript for all components and functions
    - Use early returns for readability
    - Use CSS Modules for styling
@@ -173,6 +193,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Break down complex functions into smaller, focused helper functions
 
 2. **Code Quality Process**:
+
    - Use `pnpm fmt` to format code according to project standards
    - Use `pnpm lint` to check for code quality issues and type errors
    - Run these commands before committing changes to ensure consistent code quality
@@ -180,12 +201,14 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - The linter checks both code style (using Biome) and type correctness (using TypeScript)
 
 3. **Deployment Process**:
+
    - Use trigger.dev CLI for deploying background jobs
    - Run `npx trigger.dev deploy --dry-run` to verify deployment without applying changes
    - Run `npx trigger.dev deploy` to deploy to production
    - CI/CD pipelines use `pnpm deploy:jobs` command defined in the root package.json
 
-3. **Component Implementation**:
+4. **Component Implementation**:
+
    - Use named exports instead of default exports
    - Prioritize CSS Variables from @liam-hq/ui
    - Prefer UI components from @liam-hq/ui
@@ -193,7 +216,8 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - When implementing designs from Figma using the Figma MCP tool, always reference 'frontend/packages/ui/src/styles/Dark/variables.css' for colors, padding, gap, spacing, and borderRadius values
    - When specifying colors, prioritize semantic color definitions (e.g., --primary-accent, --global-foreground) and avoid using --color- prefixed variables whenever possible
 
-4. **Database Access**:
+5. **Database Access**:
+
    - Use type assertions for Supabase types
    - Handle bigint to number conversions
    - Properly type nested relationship data
@@ -202,7 +226,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Follow migration guidelines in `docs/migrationOpsContext.md` when creating database migrations
    - Adhere to schema design patterns in `docs/schemaPatterns.md` for consistent database design
 
-5. **Function Organization**:
+6. **Function Organization**:
    - Separate business logic into dedicated function files
    - Call functions from task definitions
    - Chain tasks to form complete workflows
@@ -211,6 +235,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 ## Learnings and Project Insights
 
 1. **Supabase Integration**:
+
    - Supabase provides an efficient migration workflow for schema changes
    - Supabase JS provides optimized queries with nested joins
    - Type compatibility requires careful handling
@@ -218,6 +243,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Proper type validation is essential for data integrity
 
 2. **AI Prompt Engineering**:
+
    - Providing existing context to AI prompts significantly improves output quality
    - Including actual schema files in prompts enables more accurate and contextually relevant suggestions
    - Type-safe validation of AI inputs and outputs ensures data consistency
@@ -225,16 +251,19 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Reusable utility functions for context gathering improve maintainability
 
 3. **Schema Management**:
+
    - Direct path comparison is more precise than pattern matching
    - Consistent naming conventions improve code readability
    - Standardized client usage ensures consistent behavior
 
 4. **AI Components**:
+
    - Review prompt template quality directly impacts analysis quality
    - Continuous learning is essential for improving accuracy
    - Schema override generation requires accurate analysis of changes
 
 5. **Document Management**:
+
    - GitHub integration provides more direct document handling
    - Dynamic branch name management increases flexibility
    - Centralized view of documentation improves user experience
