@@ -4,14 +4,9 @@ import { LiamLogoMark, LiamMigrationLogo } from '@/logos'
 import { urlgen } from '@/utils/routes'
 import { LayoutGrid } from '@liam-hq/ui/src/icons'
 import clsx from 'clsx'
-import {
-  type ComponentProps,
-  type FC,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type FC, useCallback, useEffect, useRef, useState } from 'react'
+import type { Organization } from '../services/getOrganization'
+import type { OrganizationsByUserId } from '../services/getOrganizationsByUserId'
 import styles from './GlobalNav.module.css'
 import itemStyles from './Item.module.css'
 import { LinkItem, type LinkItemProps } from './LinkItem'
@@ -26,10 +21,8 @@ const items: LinkItemProps[] = [
 ]
 
 type Props = {
-  currentOrganization: ComponentProps<
-    typeof OrganizationItem
-  >['currentOrganization']
-  organizations: ComponentProps<typeof OrganizationItem>['organizations']
+  currentOrganization: Organization | null
+  organizations: OrganizationsByUserId | null
 }
 
 export const GlobalNav: FC<Props> = ({
@@ -121,13 +114,15 @@ export const GlobalNav: FC<Props> = ({
         </div>
 
         <div className={styles.navSection}>
-          <OrganizationItem
-            isExpanded={isExpanded}
-            currentOrganization={currentOrganization}
-            organizations={organizations}
-            open={organizationMenuOpen}
-            onOpenChange={handleOrganizationMenuOpenChange}
-          />
+          {currentOrganization && (
+            <OrganizationItem
+              isExpanded={isExpanded}
+              currentOrganization={currentOrganization}
+              organizations={organizations ?? []}
+              open={organizationMenuOpen}
+              onOpenChange={handleOrganizationMenuOpenChange}
+            />
+          )}
 
           {items.map((item) => (
             <LinkItem
