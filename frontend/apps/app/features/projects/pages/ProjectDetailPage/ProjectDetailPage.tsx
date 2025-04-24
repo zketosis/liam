@@ -37,22 +37,6 @@ export const ProjectDetailPage: FC<Props> = async ({ projectId }) => {
         </div>
         <div className={styles.headerActions}>
           <Link
-            href={urlgen('projects/[projectId]/migrations', {
-              projectId,
-            })}
-            className={styles.actionButton}
-          >
-            View Migrations
-          </Link>
-          <Link
-            href={urlgen('projects/[projectId]/docs', {
-              projectId,
-            })}
-            className={styles.actionButton}
-          >
-            View Docs
-          </Link>
-          <Link
             href={`/app/projects/${project.id}/branches`}
             className={styles.actionButton}
           >

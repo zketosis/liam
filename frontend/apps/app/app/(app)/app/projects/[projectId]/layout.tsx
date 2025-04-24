@@ -34,13 +34,30 @@ export default async function ProjectLayout({ children, params }: LayoutProps) {
   const parsedParams = v.safeParse(paramsSchema, await params)
   if (!parsedParams.success) return notFound()
 
+  // Extract branchOrCommit from the URL path
+  const headersList = await headers()
+  const urlPath = headersList.get('x-url-path') || ''
+  const pathSegments = urlPath.split('/')
+
+  // Find the index of 'ref' in the path and get the next segment as branchOrCommit
+  const refIndex = pathSegments.findIndex(
+    (segment: string) => segment === 'ref',
+  )
+  const branchOrCommit =
+    refIndex !== -1 && pathSegments.length > refIndex + 1
+      ? pathSegments[refIndex + 1]
+      : 'main' // TODO: get default branch from API(using currentOrganization)
+
   return (
     <div className={styles.container}>
       <div className={styles.contentContainer}>
         <h1 className={styles.heading}>Project</h1>
 
         <TabsRoot defaultValue={defaultTabFromPath || PROJECT_TAB.PROJECT}>
-          <ProjectHeader projectId={parsedParams.output.projectId} />
+          <ProjectHeader
+            projectId={parsedParams.output.projectId}
+            branchOrCommit={branchOrCommit}
+          />
           <TabsContent
             value={PROJECT_TAB.PROJECT}
             className={styles.tabContent}
