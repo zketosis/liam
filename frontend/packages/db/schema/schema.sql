@@ -19,6 +19,13 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
 
+CREATE EXTENSION IF NOT EXISTS "pgsodium";
+
+
+
+
+
+
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
@@ -219,19 +226,6 @@ CREATE TABLE IF NOT EXISTS "public"."github_repositories" (
 ALTER TABLE "public"."github_repositories" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "path" "text" NOT NULL,
-    "project_id" "uuid" NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    "format" "public"."schema_format_enum" NOT NULL
-);
-
-
-ALTER TABLE "public"."github_schema_file_paths" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."invitations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "email" "text" NOT NULL,
@@ -428,6 +422,19 @@ CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippets" (
 ALTER TABLE "public"."review_suggestion_snippets" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."schema_file_paths" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "path" "text" NOT NULL,
+    "project_id" "uuid" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "format" "public"."schema_format_enum" NOT NULL
+);
+
+
+ALTER TABLE "public"."schema_file_paths" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" NOT NULL,
     "name" "text" NOT NULL,
@@ -463,12 +470,7 @@ ALTER TABLE ONLY "public"."github_repositories"
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_paths"
-    ADD CONSTRAINT "github_schema_file_path_path_project_id_key" UNIQUE ("path", "project_id");
-
-
-
-ALTER TABLE ONLY "public"."github_schema_file_paths"
+ALTER TABLE ONLY "public"."schema_file_paths"
     ADD CONSTRAINT "github_schema_file_path_pkey" PRIMARY KEY ("id");
 
 
@@ -585,10 +587,6 @@ CREATE UNIQUE INDEX "github_repository_owner_name_key" ON "public"."github_repos
 
 
 
-CREATE UNIQUE INDEX "github_schema_file_path_project_id_key" ON "public"."github_schema_file_paths" USING "btree" ("project_id");
-
-
-
 CREATE INDEX "idx_project_organization_id" ON "public"."projects" USING "btree" ("organization_id");
 
 
@@ -625,6 +623,14 @@ CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON
 
 
 
+CREATE UNIQUE INDEX "schema_file_path_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("path", "project_id");
+
+
+
+CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("project_id");
+
+
+
 CREATE OR REPLACE TRIGGER "set_knowledge_suggestions_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."knowledge_suggestions" FOR EACH ROW EXECUTE FUNCTION "public"."set_knowledge_suggestions_organization_id"();
 
 
@@ -646,11 +652,6 @@ ALTER TABLE ONLY "public"."github_pull_requests"
 
 ALTER TABLE ONLY "public"."github_repositories"
     ADD CONSTRAINT "github_repositories_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."github_schema_file_paths"
-    ADD CONSTRAINT "github_schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -771,6 +772,11 @@ ALTER TABLE ONLY "public"."review_feedbacks"
 
 ALTER TABLE ONLY "public"."review_suggestion_snippets"
     ADD CONSTRAINT "review_suggestion_snippet_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."schema_file_paths"
+    ADD CONSTRAINT "schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1101,6 +1107,15 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+
+
+
+
+
+
+
+
+
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
@@ -1155,12 +1170,6 @@ GRANT ALL ON TABLE "public"."github_pull_requests" TO "service_role";
 GRANT ALL ON TABLE "public"."github_repositories" TO "anon";
 GRANT ALL ON TABLE "public"."github_repositories" TO "authenticated";
 GRANT ALL ON TABLE "public"."github_repositories" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "anon";
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "authenticated";
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "service_role";
 
 
 
@@ -1254,15 +1263,15 @@ GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "anon";
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "authenticated";
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."users" TO "anon";
 GRANT ALL ON TABLE "public"."users" TO "authenticated";
 GRANT ALL ON TABLE "public"."users" TO "service_role";
-
-
-
-
-
-
 
 
 

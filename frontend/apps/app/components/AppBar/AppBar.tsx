@@ -210,14 +210,12 @@ export const AppBar = ({
             onOpenChange={setIsProjectOpen}
           >
             <DropdownMenuTrigger asChild>
-              <button type="button" className={styles.breadcrumbTrigger}>
-                <BreadcrumbItem
-                  label={project?.name || 'Project Name'}
-                  icon={<ProjectIcon color="rgba(255, 255, 255, 0.2)" />}
-                  isProject={true}
-                  isActive={isProjectOpen}
-                />
-              </button>
+              <BreadcrumbItem
+                label={project?.name || 'Project Name'}
+                icon={<ProjectIcon color="rgba(255, 255, 255, 0.2)" />}
+                isProject={true}
+                isActive={isProjectOpen}
+              />
             </DropdownMenuTrigger>
             <ProjectsDropdown
               projects={projectsListData.projects} // Display all projects
@@ -243,14 +241,12 @@ export const AppBar = ({
               onOpenChange={setIsBranchOpen}
             >
               <DropdownMenuTrigger asChild>
-                <button type="button" className={styles.breadcrumbTrigger}>
-                  <BreadcrumbItem
-                    label={selectedBranch.name}
-                    tag={selectedBranch.tag}
-                    isProject={false}
-                    isActive={isBranchOpen}
-                  />
-                </button>
+                <BreadcrumbItem
+                  label={selectedBranch.name}
+                  tag={selectedBranch.tag}
+                  isProject={false}
+                  isActive={isBranchOpen}
+                />
               </DropdownMenuTrigger>
               <BranchDropdown
                 branches={branchesList.branches}
@@ -289,7 +285,10 @@ export const AppBar = ({
 }
 
 const BreadcrumbItem = forwardRef<HTMLButtonElement, BreadcrumbItemProps>(
-  ({ label, tag, onClick, isActive = false, isProject = false }, ref) => {
+  (
+    { label, tag, onClick, isActive = false, isProject = false, ...props },
+    ref,
+  ) => {
     const textClassName = isProject
       ? `${styles.breadcrumbText} ${styles.projectText}`
       : `${styles.breadcrumbText} ${styles.branchText}`
@@ -300,6 +299,7 @@ const BreadcrumbItem = forwardRef<HTMLButtonElement, BreadcrumbItemProps>(
         className={`${styles.breadcrumbItem} ${isActive ? styles.active : ''}`}
         onClick={onClick}
         type="button"
+        {...props}
       >
         {isProject && (
           <div className={styles.breadcrumbIcon}>

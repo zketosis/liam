@@ -140,7 +140,7 @@ async function getMigrationContents(migrationId: string) {
   }
 
   const { data: schemaPath, error: pathError } = await supabase
-    .from('github_schema_file_paths')
+    .from('schema_file_paths')
     .select('path')
     .eq('project_id', overallReview.project_id || '')
     .single()
@@ -231,13 +231,13 @@ export const MigrationDetailPage: FC<Props> = async ({
   return (
     <main className={styles.wrapper}>
       <Link
-        href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
+        href={urlgen('projects/[projectId]/ref/[branchOrCommit]/migrations', {
           projectId,
           branchOrCommit,
         })}
         className={styles.backLink}
       >
-        ← Back to Project Detail
+        ← Back to Migrations List
       </Link>
 
       <div className={styles.heading}>

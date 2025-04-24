@@ -16,7 +16,7 @@ const getRawContents = (dirPath: string): string[] => {
 
     if (stat?.isDirectory()) {
       results.push(...getRawContents(filePath))
-    } else {
+    } else if (file.endsWith('.mdx')) {
       const content = fs.readFileSync(filePath, 'utf8')
       if (
         filePath === path.resolve(dirPath, 'index.mdx') &&

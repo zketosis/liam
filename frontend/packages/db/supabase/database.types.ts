@@ -174,41 +174,6 @@ export type Database = {
           },
         ]
       }
-      github_schema_file_paths: {
-        Row: {
-          created_at: string
-          format: Database['public']['Enums']['schema_format_enum']
-          id: string
-          path: string
-          project_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          format: Database['public']['Enums']['schema_format_enum']
-          id?: string
-          path: string
-          project_id: string
-          updated_at: string
-        }
-        Update: {
-          created_at?: string
-          format?: Database['public']['Enums']['schema_format_enum']
-          id?: string
-          path?: string
-          project_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'github_schema_file_path_project_id_fkey'
-            columns: ['project_id']
-            isOneToOne: false
-            referencedRelation: 'projects'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       invitations: {
         Row: {
           email: string
@@ -795,6 +760,41 @@ export type Database = {
             columns: ['review_feedback_id']
             isOneToOne: false
             referencedRelation: 'review_feedbacks'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      schema_file_paths: {
+        Row: {
+          created_at: string
+          format: Database['public']['Enums']['schema_format_enum']
+          id: string
+          path: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          format: Database['public']['Enums']['schema_format_enum']
+          id?: string
+          path: string
+          project_id: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          format?: Database['public']['Enums']['schema_format_enum']
+          id?: string
+          path?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'schema_file_path_project_id_fkey'
+            columns: ['project_id']
+            isOneToOne: false
+            referencedRelation: 'projects'
             referencedColumns: ['id']
           },
         ]
