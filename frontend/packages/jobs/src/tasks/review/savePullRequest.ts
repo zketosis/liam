@@ -93,7 +93,7 @@ async function getSchemaPathForProject(
   projectId: string,
 ): Promise<string> {
   const { data, error } = await supabase
-    .from('github_schema_file_paths')
+    .from('schema_file_paths')
     .select('path')
     .eq('project_id', projectId)
     .single()

@@ -171,7 +171,7 @@ export const inviteMember = async (formData: FormData) => {
   // TODO: Send email to user
 
   revalidatePath(
-    '/(app)/app/organizations/[organizationId]/settings/members/page.tsx',
+    `/app/organizations/${organizationId}/settings/members`,
     'page',
   )
 

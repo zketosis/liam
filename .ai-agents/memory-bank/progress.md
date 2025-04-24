@@ -30,7 +30,7 @@
 - Schema override generation pipeline that creates and stores schema override suggestions based on PR reviews, with context-aware prompts that include both existing schema override and actual schema files content for more accurate suggestions.
 - Reusable utility function for fetching schema files content that can be used across different components of the application.
 - Type-safe implementation of Supabase queries with proper handling of bigint fields and nested relationships.
-- Improved schema file management with the github_schema_file_paths table (renamed from watch_schema_file_patterns) and direct path comparison instead of pattern matching.
+- Improved schema file management with the schema_file_paths table (renamed from watch_schema_file_patterns) and direct path comparison instead of pattern matching.
 - Standardized Supabase client usage across the codebase using a shared createClient function.
 - Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
 - Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
@@ -83,7 +83,7 @@ As part of the transition to Supabase JS, manual rollback processing has been re
 
 The testing approach uses a direct testing strategy with Supabase. We create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This approach provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments.
 
-The schema file management has been improved by renaming the `watch_schema_file_patterns` table to `github_schema_file_paths` and changing from pattern matching to direct path comparison. This provides a more precise and efficient approach to schema file management, aligning with the existing `github_doc_file_paths` model and providing a more consistent approach to file path handling across the application. The implementation includes a migration file that handles the table rename and data transfer, updates to all affected components to use the new table name and field names, and standardization of Supabase client usage across the codebase.
+The schema file management has been improved by renaming the `watch_schema_file_patterns` table to `schema_file_paths` and changing from pattern matching to direct path comparison. This provides a more precise and efficient approach to schema file management, aligning with the existing `github_doc_file_paths` model and providing a more consistent approach to file path handling across the application. The implementation includes a migration file that handles the table rename and data transfer, updates to all affected components to use the new table name and field names, and standardization of Supabase client usage across the codebase.
 
 A standardized Supabase migration workflow has been documented in `docs/migrationOpsContext.md`. This document provides detailed guidance on the migration workflow, deployment system, key constraints, and SQL guidelines for creating migrations. Additionally, the `docs/schemaPatterns.md` document defines reusable patterns and rules for database schema design, ensuring consistency across the project. The Supabase migration workflow uses commands like `supabase:migration:new` and `supabase:migration:up` to manage database schema changes.
 

@@ -140,7 +140,7 @@ async function getMigrationContents(migrationId: string) {
   }
 
   const { data: schemaPath, error: pathError } = await supabase
-    .from('github_schema_file_paths')
+    .from('schema_file_paths')
     .select('path')
     .eq('project_id', overallReview.project_id || '')
     .single()
