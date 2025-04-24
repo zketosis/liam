@@ -23,8 +23,12 @@ export async function CommonLayout({ children }: CommonLayoutProps) {
 
   return (
     <div className={styles.layout}>
-      <OrgCookie orgId={organization.id} />
-      <GlobalNav currentOrganization={organization} />
+      {organization && (
+        <>
+          <OrgCookie orgId={organization.id} />
+          <GlobalNav currentOrganization={organization} />
+        </>
+      )}
       <div className={styles.mainContent}>
         <ClientAppBar avatarInitial="L" avatarColor="var(--color-teal-800)" />
         <main className={styles.content}>{children}</main>

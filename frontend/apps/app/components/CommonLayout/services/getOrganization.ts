@@ -1,7 +1,7 @@
 import { createClient } from '@/libs/db/server'
 import type { QueryData } from '@liam-hq/db'
 
-export async function getOrganization(organizationId: string) {
+async function query(organizationId: string) {
   const supabase = await createClient()
 
   return await supabase
@@ -11,4 +11,12 @@ export async function getOrganization(organizationId: string) {
     .single()
 }
 
-export type Organization = QueryData<ReturnType<typeof getOrganization>>
+export async function getOrganization(organizationId: string | null) {
+  if (!organizationId) {
+    return { data: null, error: null }
+  }
+
+  return query(organizationId)
+}
+
+export type Organization = QueryData<ReturnType<typeof query>>
