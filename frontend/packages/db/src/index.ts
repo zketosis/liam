@@ -5,7 +5,10 @@ import {
 import { createClient as _createClient } from '@supabase/supabase-js'
 import type { Database } from '../supabase/database.types'
 
-export type { EmailOtpType } from '@supabase/supabase-js'
+export type {
+  EmailOtpType,
+  QueryData,
+} from '@supabase/supabase-js'
 export type { Database } from '../supabase/database.types'
 export type { Tables } from '../supabase/database.types'
 

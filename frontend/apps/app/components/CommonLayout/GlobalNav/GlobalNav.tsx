@@ -4,7 +4,7 @@ import { LiamLogoMark, LiamMigrationLogo } from '@/logos'
 import { urlgen } from '@/utils/routes'
 import { LayoutGrid } from '@liam-hq/ui/src/icons'
 import clsx from 'clsx'
-import { type FC, useState } from 'react'
+import { type ComponentProps, type FC, useState } from 'react'
 import styles from './GlobalNav.module.css'
 import itemStyles from './Item.module.css'
 import { LinkItem, type LinkItemProps } from './LinkItem'
@@ -18,7 +18,13 @@ const items: LinkItemProps[] = [
   },
 ]
 
-export const GlobalNav: FC = () => {
+type Props = {
+  currentOrganization: ComponentProps<
+    typeof OrganizationItem
+  >['currentOrganization']
+}
+
+export const GlobalNav: FC<Props> = ({ currentOrganization }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const handleNavMouseEnter = () => {
@@ -56,7 +62,10 @@ export const GlobalNav: FC = () => {
         </div>
 
         <div className={styles.navSection}>
-          <OrganizationItem isExpanded={isExpanded} />
+          <OrganizationItem
+            isExpanded={isExpanded}
+            currentOrganization={currentOrganization}
+          />
 
           {items.map((item) => (
             <LinkItem
