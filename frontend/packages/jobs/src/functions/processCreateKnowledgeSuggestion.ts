@@ -1,4 +1,3 @@
-import type { KnowledgeSuggestionsTableOverrides } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
 import { createClient } from '../libs/supabase'
 
@@ -220,7 +219,7 @@ export const processCreateKnowledgeSuggestion = async (
     }
 
     // Create the knowledge suggestion
-    const supabase = createClient<KnowledgeSuggestionsTableOverrides>()
+    const supabase = createClient()
     const now = new Date().toISOString()
     const { data: knowledgeSuggestion, error: createError } = await supabase
       .from('knowledge_suggestions')
