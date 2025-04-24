@@ -4,9 +4,12 @@ BEGIN;
 ALTER TABLE "public"."knowledge_suggestions" ADD COLUMN "organization_id" UUID;
 
 UPDATE "public"."knowledge_suggestions" ks
-SET "organization_id" = p."organization_id"
-FROM "public"."projects" p
-WHERE ks."project_id" = p."id";
+SET "organization_id" = (
+  SELECT p."organization_id"
+  FROM "public"."projects" p
+  WHERE p."id" = ks."project_id"
+  LIMIT 1
+);
 
 ALTER TABLE "public"."knowledge_suggestions" 
   ALTER COLUMN "organization_id" SET NOT NULL;
