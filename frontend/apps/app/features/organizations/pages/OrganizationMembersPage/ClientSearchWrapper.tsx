@@ -1,8 +1,10 @@
 'use client'
 
 import { Button, ToastProvider } from '@liam-hq/ui'
+import { useRouter } from 'next/navigation'
 import { type FC, useState } from 'react'
 import styles from './ClientSearchWrapper.module.css'
+import { InvitationItem } from './InvitationItem'
 import { InviteMemberModal } from './InviteMemberModal'
 import { MemberItem } from './MemberItem'
 import { SearchInput } from './SearchInput'
@@ -32,16 +34,19 @@ interface ClientSearchWrapperProps {
   members: Member[]
   invites: Invite[]
   organizationId: string
+  currentUserId: string
 }
 
 export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
   members = [],
   invites = [],
   organizationId,
+  currentUserId,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+  const router = useRouter()
 
   // Filter members based on search query
   const filteredMembers = members?.filter(
@@ -65,10 +70,12 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
     setIsInviteModalOpen(true)
   }
 
-  // TODO: Implement more options functionality
-  const handleMoreOptions = (_id: string) => {
-    setLoading(true)
-    setTimeout(() => setLoading(false), 300)
+  const handleRemoveSuccess = (isSelf: boolean) => {
+    if (isSelf) {
+      router.push('/app/organizations')
+    } else {
+      router.refresh()
+    }
   }
 
   // Generate a deterministic avatar color based on user ID or email
@@ -114,11 +121,16 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
               filteredMembers.map((member) => (
                 <MemberItem
                   key={member.id}
+                  id={member.id}
                   name={member.user.name}
                   email={member.user.email}
                   initial={getInitial(member.user.name)}
                   avatarColor={getAvatarColor(member.user.id)}
-                  onMoreOptions={() => handleMoreOptions(member.id)}
+                  organizationId={organizationId}
+                  isSelf={member.user.id === currentUserId}
+                  onRemoveSuccess={() =>
+                    handleRemoveSuccess(member.user.id === currentUserId)
+                  }
                 />
               ))
             ) : (
@@ -132,13 +144,11 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
           <div className={styles.membersList}>
             {filteredInvites && filteredInvites.length > 0 ? (
               filteredInvites.map((invite) => (
-                <MemberItem
+                <InvitationItem
                   key={invite.id}
-                  name={invite.email.split('@')[0]}
                   email={invite.email}
                   initial={invite.email.charAt(0).toUpperCase()}
                   avatarColor={getAvatarColor(invite.email)}
-                  onMoreOptions={() => handleMoreOptions(invite.id)}
                 />
               ))
             ) : (
