@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type FC, type ReactNode, useMemo } from 'react'
-import itemStyles from './Item.module.css'
+import itemStyles from '../Item.module.css'
 import styles from './LinkItem.module.css'
 
 export type LinkItemProps = {
