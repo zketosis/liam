@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Montserrat } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import type React from 'react'
 import './globals.css'
 import { GTMConsent, GtagScript } from '@/libs/gtm'
@@ -7,7 +7,7 @@ import { GTM_ID } from '@/libs/gtm'
 import { ToastProvider } from '@liam-hq/ui'
 import { GoogleTagManager } from '@next/third-parties/google'
 
-const montserrat = Montserrat({
+const inter = Inter({
   subsets: ['latin'],
 })
 
@@ -41,7 +41,7 @@ export default function RootLayout({
         <GtagScript />
         <GTMConsent />
       </>
-      <body className={montserrat.className}>
+      <body className={inter.className}>
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
