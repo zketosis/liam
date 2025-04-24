@@ -8,7 +8,7 @@ import type { Database } from '../supabase/database.types'
 export type { EmailOtpType } from '@supabase/supabase-js'
 export type { Database } from '../supabase/database.types'
 export type { Tables } from '../supabase/database.types'
-export type { AppDatabaseOverrides } from './types/supabase-overrides/index'
+export type { AppDatabaseOverrides } from './types'
 
 // for Server Components
 export const createServerClient = _createServerClient<Database>

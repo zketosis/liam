@@ -1,1 +1,1 @@
-export type { AppDatabaseOverrides } from './supabase-overrides/index'
+export type { AppDatabaseOverrides } from './supabase-overrides'
