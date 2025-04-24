@@ -50,43 +50,33 @@ export default async function ProjectLayout({ children, params }: LayoutProps) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.contentContainer}>
-        <h1 className={styles.heading}>Project</h1>
-
-        <TabsRoot defaultValue={defaultTabFromPath || PROJECT_TAB.PROJECT}>
-          <ProjectHeader
-            projectId={parsedParams.output.projectId}
-            branchOrCommit={branchOrCommit}
-          />
-          <TabsContent
-            value={PROJECT_TAB.PROJECT}
-            className={styles.tabContent}
-          >
-            {children}
-          </TabsContent>
-          <TabsContent value={PROJECT_TAB.SCHEMA} className={styles.tabContent}>
-            {children}
-          </TabsContent>
-          <TabsContent
-            value={PROJECT_TAB.MIGRATIONS}
-            className={styles.tabContent}
-          >
-            {children}
-          </TabsContent>
-          <TabsContent value={PROJECT_TAB.DOCS} className={styles.tabContent}>
-            {children}
-          </TabsContent>
-          <TabsContent value={PROJECT_TAB.RULE} className={styles.tabContent}>
-            {children}
-          </TabsContent>
-          <TabsContent
-            value={PROJECT_TAB.SETTINGS}
-            className={styles.tabContent}
-          >
-            {children}
-          </TabsContent>
-        </TabsRoot>
-      </div>
+      <TabsRoot defaultValue={defaultTabFromPath || PROJECT_TAB.PROJECT}>
+        <ProjectHeader
+          projectId={parsedParams.output.projectId}
+          branchOrCommit={branchOrCommit}
+        />
+        <TabsContent value={PROJECT_TAB.PROJECT} className={styles.tabContent}>
+          {children}
+        </TabsContent>
+        <TabsContent value={PROJECT_TAB.SCHEMA} className={styles.tabContent}>
+          {children}
+        </TabsContent>
+        <TabsContent
+          value={PROJECT_TAB.MIGRATIONS}
+          className={styles.tabContent}
+        >
+          {children}
+        </TabsContent>
+        <TabsContent value={PROJECT_TAB.DOCS} className={styles.tabContent}>
+          {children}
+        </TabsContent>
+        <TabsContent value={PROJECT_TAB.RULE} className={styles.tabContent}>
+          {children}
+        </TabsContent>
+        <TabsContent value={PROJECT_TAB.SETTINGS} className={styles.tabContent}>
+          {children}
+        </TabsContent>
+      </TabsRoot>
     </div>
   )
 }
