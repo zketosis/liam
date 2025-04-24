@@ -812,6 +812,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: {
+          p_organization_id: string
+          p_user_id: string
+          p_user_email: string
+        }
+        Returns: Json
+      }
       invite_organization_member: {
         Args: {
           p_email: string
