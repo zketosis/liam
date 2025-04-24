@@ -8,17 +8,19 @@ import * as v from 'valibot'
 
 // Define schema for form data validation
 const acceptInvitationSchema = v.object({
-  organizationId: v.string('Organization ID is required'),
+  token: v.string('Token is required'),
 })
 
 // Define schema for RPC response validation
 const acceptInvitationResultSchema = v.union([
   v.object({
     success: v.literal(true),
+    organizationId: v.string(),
     error: v.null(),
   }),
   v.object({
     success: v.literal(false),
+    organizationId: v.null(),
     error: v.string(),
   }),
 ])
@@ -30,7 +32,7 @@ const acceptInvitationResultSchema = v.union([
 export async function acceptInvitation(formData: FormData) {
   // Parse and validate form data
   const formDataObject = {
-    organizationId: formData.get('organizationId'),
+    token: formData.get('token'),
   }
 
   const parsedData = v.safeParse(acceptInvitationSchema, formDataObject)
@@ -41,7 +43,7 @@ export async function acceptInvitation(formData: FormData) {
     } as const
   }
 
-  const { organizationId } = parsedData.output
+  const { token } = parsedData.output
   const supabase = await createClient()
 
   // Get current user
@@ -60,9 +62,7 @@ export async function acceptInvitation(formData: FormData) {
   // Note: Type assertion is used here because the database.types.ts needs to be regenerated
   // after the migration is applied to include the new accept_invitation function
   const { data, error } = await supabase.rpc('accept_invitation', {
-    p_organization_id: organizationId,
-    p_user_id: user.id,
-    p_user_email: user.email,
+    p_token: token,
   })
 
   if (error) {
@@ -84,6 +84,7 @@ export async function acceptInvitation(formData: FormData) {
   if (!result.output.success) {
     return result.output
   }
+  const { organizationId } = result.output
 
   // Revalidate relevant paths
   revalidatePath(

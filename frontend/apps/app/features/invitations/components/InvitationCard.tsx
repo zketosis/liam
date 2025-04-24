@@ -2,23 +2,22 @@
 
 import { acceptInvitation } from '@/features/invitations/actions'
 import { LiamLogoMark } from '@/logos'
-import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { Button } from '@liam-hq/ui'
 import { useState } from 'react'
 import styles from './InvitationCard.module.css'
 
 interface InvitationCardProps {
-  invitation: Tables<'invitations'> & {
-    organizations: { name: string }
-  }
+  organizationName: string | null
+  token: string
   currentUser: {
     id: string
-    email: string
+    email: string | undefined
   }
 }
 
 export function InvitationCard({
-  invitation,
+  organizationName,
+  token,
   currentUser,
 }: InvitationCardProps) {
   const [isLoading, setIsLoading] = useState(false)
@@ -44,41 +43,43 @@ export function InvitationCard({
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.content}>
-          <div className={styles.logo}>
-            <LiamLogoMark />
-          </div>
+          {organizationName && (
+            <>
+              <div className={styles.logo}>
+                <LiamLogoMark />
+              </div>
 
-          <h1 className={styles.greeting}>
-            [temp components] Hi, {currentUser.email}!
-          </h1>
+              <h1 className={styles.greeting}>
+                [temp components] Hi, {currentUser.email}!
+              </h1>
 
-          <p className={styles.description}>
-            You've been invited to join {invitation.organizations.name}{' '}
-            organization on Liam Migration.
-            <br />
-            <br />
-            Please accept the invitation below to join.
-          </p>
+              <p className={styles.description}>
+                You've been invited to join {organizationName} organization on
+                Liam Migration.
+                <br />
+                <br />
+                Please accept the invitation below to join.
+              </p>
+            </>
+          )}
         </div>
 
         <div className={styles.actions}>
-          <form action={handleAccept}>
-            <input
-              type="hidden"
-              name="organizationId"
-              value={invitation.organization_id}
-            />
+          {organizationName && (
+            <form action={handleAccept}>
+              <input type="hidden" name="token" value={token} />
 
-            <Button
-              type="submit"
-              className={styles.button}
-              disabled={isLoading}
-              isLoading={isLoading}
-              loadingIndicatorType="content"
-            >
-              Accept Invite
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                className={styles.button}
+                disabled={isLoading}
+                isLoading={isLoading}
+                loadingIndicatorType="content"
+              >
+                Accept Invite
+              </Button>
+            </form>
+          )}
 
           {error && <p className={styles.error}>{error}</p>}
         </div>

@@ -1,14 +1,20 @@
 'use server'
-
 import { createClient } from '@/libs/db/server'
-import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { redirect } from 'next/navigation'
+import * as v from 'valibot'
+
+// Define schema for RPC response validation
+const getInvitationDataResultSchema = v.union([
+  v.object({
+    organizationName: v.nullable(v.string()),
+  }),
+])
 
 /**
  * Server action to get invitation data for a specific organization
  * Fetches the invitation and organization data for the current user
  */
-export async function getInvitationData(organizationId: string) {
+export async function getInvitationData(token: string) {
   const supabase = await createClient()
 
   // Get current user
@@ -20,27 +26,28 @@ export async function getInvitationData(organizationId: string) {
     // Redirect to login if not authenticated
     redirect('/app/login')
   }
-
-  // Get invitation and organization data
-  const { data: invitation, error: invitationError } = await supabase
-    .from('invitations')
-    .select('*, organizations:organization_id(name)')
-    .eq('organization_id', organizationId)
-    .eq('email', user.email || '')
-    .single()
-
-  if (invitationError || !invitation) {
-    // Invitation not found or error
-    redirect('/app')
+  const currentUser = {
+    id: user.id,
+    email: user.email,
   }
 
-  return {
-    invitation: invitation as Tables<'invitations'> & {
-      organizations: { name: string }
-    },
-    currentUser: {
-      id: user.id,
-      email: user.email || '',
-    },
+  // Get invitation and organization data using RPC function
+  const { data, error } = await supabase.rpc('get_invitation_data', {
+    p_token: token,
+  })
+  if (error) {
+    console.error('Error get invitation data:', JSON.stringify(error, null, 2))
   }
+  const result = v.safeParse(getInvitationDataResultSchema, data)
+  if (!result.success) {
+    console.error(
+      `Invalid response from server: ${result.issues.map((issue) => issue.message).join(', ')}`,
+    )
+    return {
+      organizationName: null,
+      currentUser,
+    }
+  }
+  const { organizationName } = result.output
+  return { organizationName, currentUser }
 }

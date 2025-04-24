@@ -9,7 +9,6 @@ export default async function Page() {
   if (error || !data?.user) {
     redirect(urlgen('login'))
   }
-  const { user } = data
 
   const { data: organizationMembers, error: orgError } = await supabase
     .from('organization_members')
@@ -19,32 +18,6 @@ export default async function Page() {
 
   if (orgError) {
     console.error('Error fetching organization members:', orgError)
-  }
-
-  // NOTE: check invitations before redirect to organization/new
-  if (user.email !== undefined) {
-    const { data: invitation, error: invitationError } = await supabase
-      .from('invitations')
-      .select('organization_id')
-      .eq('email', user.email)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
-
-    if (invitationError) {
-      console.error(
-        'Error fetching invitations:',
-        JSON.stringify(invitationError, null, 2),
-      )
-    }
-    if (invitation) {
-      const { organization_id } = invitation
-      redirect(
-        urlgen('invitations/organizations/[organizationId]', {
-          organizationId: organization_id,
-        }),
-      )
-    }
   }
 
   if (!organizationMembers || organizationMembers.length === 0) {
