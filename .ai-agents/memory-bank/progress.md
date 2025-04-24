@@ -24,7 +24,6 @@
   - Document viewer page with optimized queries using nested joins
   - ProjectBranchesListPage component for listing project branches
   - KnowledgeSuggestionDetailPage component for displaying and approving suggestions
-  - ProjectDetailPage component for showing project details and related migrations
 - Dynamic branch name management for KnowledgeSuggestion operations, replacing hardcoded branch names.
 - Streamlined database schema with removal of unused Doc and DocVersion models, focusing on GitHub-integrated document management.
 - Schema override generation pipeline that creates and stores schema override suggestions based on PR reviews, with context-aware prompts that include both existing schema override and actual schema files content for more accurate suggestions.
@@ -57,7 +56,7 @@
 
 The project is currently focused on enhancing the Reviewer User experience, with AI-driven analysis and suggestions integrated into the migration review process. The initial release prioritizes the Reviewer User, with Builder User features planned for future phases.
 
-Several key components are now using Supabase for database access, including the ProjectBranchesListPage, KnowledgeSuggestionDetailPage, and ProjectDetailPage components. These implementations use Supabase's optimized query capabilities with nested joins for efficient data retrieval, demonstrating patterns for handling complex relationships and proper error handling. The ProjectDetailPage implementation addressed a specific challenge with Supabase's array-based return format for nested relationships, providing a pattern for handling similar cases in future implementations.
+Several key components are now using Supabase for database access, including the ProjectBranchesListPage and KnowledgeSuggestionDetailPage components. These implementations use Supabase's optimized query capabilities with nested joins for efficient data retrieval, demonstrating patterns for handling complex relationships and proper error handling.
 
 The core review pipeline is now operational, connecting GitHub webhooks to AI-powered review generation and PR comment posting. This enables automatic review of database schema changes when pull requests are opened or updated.
 

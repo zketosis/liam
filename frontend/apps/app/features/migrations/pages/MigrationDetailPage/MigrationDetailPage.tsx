@@ -231,13 +231,13 @@ export const MigrationDetailPage: FC<Props> = async ({
   return (
     <main className={styles.wrapper}>
       <Link
-        href={urlgen('projects/[projectId]/ref/[branchOrCommit]', {
+        href={urlgen('projects/[projectId]/ref/[branchOrCommit]/migrations', {
           projectId,
           branchOrCommit,
         })}
         className={styles.backLink}
       >
-        ← Back to Project Detail
+        ← Back to Migrations List
       </Link>
 
       <div className={styles.heading}>
