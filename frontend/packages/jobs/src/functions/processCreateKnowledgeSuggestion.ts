@@ -224,8 +224,6 @@ export const processCreateKnowledgeSuggestion = async (
     const { data: knowledgeSuggestion, error: createError } = await supabase
       .from('knowledge_suggestions')
       .insert({
-        // Add a dummy organization_id that will be overwritten by the DB trigger
-        organization_id: 'will-be-set-by-trigger',
         type,
         title,
         path,
@@ -236,7 +234,7 @@ export const processCreateKnowledgeSuggestion = async (
         trace_id: traceId || null,
         reasoning: payload.reasoning || null,
         updated_at: now,
-      })
+      } as any)
       .select()
       .single()
 
