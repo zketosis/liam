@@ -1,9 +1,6 @@
 import { createClient as _createClient } from '@liam-hq/db'
-import type { AppDatabaseOverrides } from '@liam-hq/db'
 
-export type SupabaseClient = ReturnType<
-  typeof _createClient<AppDatabaseOverrides>
->
+export type SupabaseClient = ReturnType<typeof _createClient>
 
 export function createClient(): SupabaseClient {
   const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL']
@@ -13,5 +10,5 @@ export function createClient(): SupabaseClient {
     throw new Error('Missing Supabase environment variables')
   }
 
-  return _createClient<AppDatabaseOverrides>(supabaseUrl, supabaseKey)
+  return _createClient(supabaseUrl, supabaseKey)
 }
