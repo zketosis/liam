@@ -10,7 +10,7 @@ export type { Database } from '../supabase/database.types'
 export type { Tables } from '../supabase/database.types'
 export type {
   MergeDeep,
-  DatabaseWithOverrides,
+  KnowledgeSuggestionsTableOverrides,
 } from './types/supabase-overrides'
 
 // for Server Components
@@ -20,4 +20,4 @@ export const createServerClient = _createServerClient<Database>
 export const createBrowserClient = _createBrowserClient<Database>
 
 // for Jobs
-export const createClient = _createClient<Database>
+export const createClient = _createClient

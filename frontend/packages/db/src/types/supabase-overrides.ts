@@ -1,5 +1,3 @@
-import type { Database } from '../../supabase/database.types'
-
 export type MergeDeep<T, U> = {
   [K in keyof T & keyof U]: MergeDeep<T[K], U[K]>
 } & Omit<T, keyof U> &
@@ -14,10 +12,3 @@ export type KnowledgeSuggestionsTableOverrides = {
     }
   }
 }
-
-export type DatabaseWithOverrides = MergeDeep<
-  Database,
-  {
-    public: KnowledgeSuggestionsTableOverrides
-  }
->

@@ -1,8 +1,10 @@
-import { createClient as _createClient } from '@liam-hq/db'
+import { type Database, createClient as _createClient } from '@liam-hq/db'
 
-export type SupabaseClient = ReturnType<typeof _createClient>
+export type SupabaseClient<T = Database> = ReturnType<typeof _createClient<T>>
 
-export function createClient(): SupabaseClient {
+export function createClient<T = Database>(): ReturnType<
+  typeof _createClient<T>
+> {
   const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL']
   const supabaseKey = process.env['SUPABASE_SERVICE_ROLE_KEY']
 
@@ -10,5 +12,5 @@ export function createClient(): SupabaseClient {
     throw new Error('Missing Supabase environment variables')
   }
 
-  return _createClient(supabaseUrl, supabaseKey)
+  return _createClient<T>(supabaseUrl, supabaseKey)
 }

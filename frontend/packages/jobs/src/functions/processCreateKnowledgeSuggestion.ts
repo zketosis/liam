@@ -1,3 +1,4 @@
+import type { KnowledgeSuggestionsTableOverrides } from '@liam-hq/db'
 import { getFileContent } from '@liam-hq/github'
 import { createClient } from '../libs/supabase'
 
@@ -219,7 +220,7 @@ export const processCreateKnowledgeSuggestion = async (
     }
 
     // Create the knowledge suggestion
-    const supabase = createClient()
+    const supabase = createClient<KnowledgeSuggestionsTableOverrides>()
     const now = new Date().toISOString()
     const { data: knowledgeSuggestion, error: createError } = await supabase
       .from('knowledge_suggestions')
@@ -234,7 +235,8 @@ export const processCreateKnowledgeSuggestion = async (
         trace_id: traceId || null,
         reasoning: payload.reasoning || null,
         updated_at: now,
-      } as any)
+        organization_id: null,
+      })
       .select()
       .single()
 
