@@ -1,9 +1,7 @@
 import type { LayoutProps } from '@/app/types'
 import { TabsContent, TabsRoot } from '@liam-hq/ui'
 import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
 import { safeParse } from 'valibot'
-import * as v from 'valibot'
 import { SettingsHeader } from './components/SettingsHeader'
 import {
   SETTINGS_TAB,
@@ -11,10 +9,6 @@ import {
   type SettingsTabValue,
 } from './constants'
 import styles from './layout.module.css'
-
-const paramsSchema = v.object({
-  organizationId: v.string(),
-})
 
 const getDefaultTabFromPath = async (): Promise<
   SettingsTabValue | undefined
@@ -31,11 +25,8 @@ const getDefaultTabFromPath = async (): Promise<
 
 export default async function OrganizationSettingsLayout({
   children,
-  params,
 }: LayoutProps) {
   const defaultTabFromPath = await getDefaultTabFromPath()
-  const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) return notFound()
 
   return (
     <div className={styles.container}>
