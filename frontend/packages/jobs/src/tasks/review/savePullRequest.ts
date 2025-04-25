@@ -112,27 +112,20 @@ async function fetchSchemaFileContent(
   schemaPath: string,
   branchRef: string,
 ): Promise<SchemaFile> {
-  try {
-    const { content } = await getFileContent(
-      `${repository.owner}/${repository.name}`,
-      schemaPath,
-      branchRef,
-      Number(repository.github_installation_identifier),
-    )
+  const { content } = await getFileContent(
+    `${repository.owner}/${repository.name}`,
+    schemaPath,
+    branchRef,
+    Number(repository.github_installation_identifier),
+  )
 
-    if (!content) {
-      throw new Error(`No content found for schema file: ${schemaPath}`)
-    }
+  if (!content) {
+    throw new Error(`No content found for schema file: ${schemaPath}`)
+  }
 
-    return {
-      filename: schemaPath,
-      content,
-    }
-  } catch (error) {
-    console.error(`Error fetching content for ${schemaPath}:`, error)
-    throw new Error(
-      `Failed to fetch schema file content: ${error instanceof Error ? error.message : String(error)}`,
-    )
+  return {
+    filename: schemaPath,
+    content,
   }
 }
 
@@ -310,39 +303,34 @@ export const savePullRequestTask = task({
   run: async (payload: SavePullRequestPayload) => {
     logger.log('Executing PR save task:', { payload })
 
-    try {
-      const result = await processSavePullRequest(payload)
-      logger.info('Successfully saved PR to database:', { prId: result.prId })
+    const result = await processSavePullRequest(payload)
+    logger.info('Successfully saved PR to database:', { prId: result.prId })
 
-      const supabase = createClient()
-      const { data: repository, error: repositoryError } = await supabase
-        .from('github_repositories')
-        .select('*')
-        .eq('id', result.repositoryId)
-        .single()
+    const supabase = createClient()
+    const { data: repository, error: repositoryError } = await supabase
+      .from('github_repositories')
+      .select('*')
+      .eq('id', result.repositoryId)
+      .single()
 
-      if (repositoryError || !repository) {
-        throw new Error(
-          `Repository not found: ${JSON.stringify(repositoryError)}`,
-        )
-      }
-
-      await generateReviewTask.trigger({
-        pullRequestId: result.prId,
-        projectId: payload.projectId,
-        repositoryId: repository.id,
-        branchName: result.branchName,
-        owner: repository.owner,
-        name: repository.name,
-        pullRequestNumber: payload.prNumber,
-        schemaFile: result.schemaFile,
-        fileChanges: result.fileChanges,
-      })
-
-      return result
-    } catch (error) {
-      logger.error('Error in savePullRequest task:', { error })
-      throw error
+    if (repositoryError || !repository) {
+      throw new Error(
+        `Repository not found: ${JSON.stringify(repositoryError)}`,
+      )
     }
+
+    await generateReviewTask.trigger({
+      pullRequestId: result.prId,
+      projectId: payload.projectId,
+      repositoryId: repository.id,
+      branchName: result.branchName,
+      owner: repository.owner,
+      name: repository.name,
+      pullRequestNumber: payload.prNumber,
+      schemaFile: result.schemaFile,
+      fileChanges: result.fileChanges,
+    })
+
+    return result
   },
 })

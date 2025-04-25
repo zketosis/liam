@@ -17,16 +17,11 @@ export async function fetchOrganizationData(
   owner: string,
   repo: string,
 ) {
-  try {
-    if (!installationId || !owner || !repo) {
-      return null
-    }
-    const orgInfo = await getOrganizationInfo(installationId, owner, repo)
-    return orgInfo?.avatar_url || null
-  } catch (error) {
-    console.error('Failed to fetch organization info:', error)
+  if (!installationId || !owner || !repo) {
     return null
   }
+  const orgInfo = await getOrganizationInfo(installationId, owner, repo)
+  return orgInfo?.avatar_url || null
 }
 
 // Server component

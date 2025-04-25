@@ -104,19 +104,14 @@ export const createKnowledgeSuggestionTask = task({
     reviewFeedbackId?: string | null
   }) => {
     logger.log('Executing create knowledge suggestion task:', { payload })
-    try {
-      const result = await processCreateKnowledgeSuggestion(payload)
-      logger.info(
-        result.suggestionId === null
-          ? 'Knowledge suggestion creation skipped due to matching content'
-          : 'Successfully created knowledge suggestion:',
-        { suggestionId: result.suggestionId },
-      )
-      return result
-    } catch (error) {
-      logger.error('Error in createKnowledgeSuggestion task:', { error })
-      throw error
-    }
+    const result = await processCreateKnowledgeSuggestion(payload)
+    logger.info(
+      result.suggestionId === null
+        ? 'Knowledge suggestion creation skipped due to matching content'
+        : 'Successfully created knowledge suggestion:',
+      { suggestionId: result.suggestionId },
+    )
+    return result
   },
 })
 
@@ -133,68 +128,63 @@ export const generateKnowledgeFromFeedbackTask = task({
     reviewFeedbackId: string
   }) => {
     logger.log('Executing generate knowledge from feedback task:', { payload })
-    try {
-      const { suggestions, traceId } = await processGenerateDocsSuggestion({
-        review: payload.review,
+    const { suggestions, traceId } = await processGenerateDocsSuggestion({
+      review: payload.review,
+      projectId: payload.projectId,
+      branchOrCommit: payload.branch,
+    })
+    logger.log('Generated docs suggestions:', { suggestions, traceId })
+
+    for (const key of DOC_FILES) {
+      const suggestion = suggestions[key]
+      if (!suggestion || !suggestion.content) {
+        logger.warn(`No content found for suggestion key: ${key}`)
+        continue
+      }
+
+      await createKnowledgeSuggestionTask.trigger({
         projectId: payload.projectId,
-        branchOrCommit: payload.branch,
-      })
-      logger.log('Generated docs suggestions:', { suggestions, traceId })
-
-      for (const key of DOC_FILES) {
-        const suggestion = suggestions[key]
-        if (!suggestion || !suggestion.content) {
-          logger.warn(`No content found for suggestion key: ${key}`)
-          continue
-        }
-
-        await createKnowledgeSuggestionTask.trigger({
-          projectId: payload.projectId,
-          type: 'DOCS',
-          title: 'Docs update related to feedback',
-          path: `docs/${key}`,
-          content: suggestion.content,
-          branch: payload.branch,
-          traceId,
-          reasoning: suggestion.reasoning || '',
-          overallReviewId: payload.overallReview.id,
-          reviewFeedbackId: payload.reviewFeedbackId,
-        })
-      }
-
-      const result = await processGenerateSchemaOverride({
+        type: 'DOCS',
+        title: 'Docs update related to feedback',
+        path: `docs/${key}`,
+        content: suggestion.content,
+        branch: payload.branch,
+        traceId,
+        reasoning: suggestion.reasoning || '',
         overallReviewId: payload.overallReview.id,
-        review: payload.review,
+        reviewFeedbackId: payload.reviewFeedbackId,
       })
-      logger.info('Generated schema meta suggestion:', { result })
+    }
 
-      if (result.createNeeded) {
-        // Create a knowledge suggestion with the schema meta using the returned information
-        await createKnowledgeSuggestionTask.trigger({
-          projectId: result.projectId,
-          type: 'SCHEMA',
-          title: result.title,
-          path: SCHEMA_OVERRIDE_FILE_PATH,
-          content: JSON.stringify(result.override, null, 2),
-          branch: result.branchName,
-          traceId: result.traceId,
-          reasoning: result.reasoning || '',
-          overallReviewId: result.overallReviewId,
-          reviewFeedbackId: payload.reviewFeedbackId,
-        })
-        logger.info('Knowledge suggestion creation triggered')
-      } else {
-        logger.info(
-          'No schema meta update needed, skipping knowledge suggestion creation',
-        )
-      }
+    const result = await processGenerateSchemaOverride({
+      overallReviewId: payload.overallReview.id,
+      review: payload.review,
+    })
+    logger.info('Generated schema meta suggestion:', { result })
 
-      return {
-        success: true,
-      }
-    } catch (error) {
-      logger.error('Error in generateKnowledgeFromFeedback task:', { error })
-      throw error
+    if (result.createNeeded) {
+      // Create a knowledge suggestion with the schema meta using the returned information
+      await createKnowledgeSuggestionTask.trigger({
+        projectId: result.projectId,
+        type: 'SCHEMA',
+        title: result.title,
+        path: SCHEMA_OVERRIDE_FILE_PATH,
+        content: JSON.stringify(result.override, null, 2),
+        branch: result.branchName,
+        traceId: result.traceId,
+        reasoning: result.reasoning || '',
+        overallReviewId: result.overallReviewId,
+        reviewFeedbackId: payload.reviewFeedbackId,
+      })
+      logger.info('Knowledge suggestion creation triggered')
+    } else {
+      logger.info(
+        'No schema meta update needed, skipping knowledge suggestion creation',
+      )
+    }
+
+    return {
+      success: true,
     }
   },
 })
