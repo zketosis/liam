@@ -21,7 +21,7 @@ type KindEnum =
 /**
  * Converts database category format to review schema kind format
  */
-export function categoryToKind(
+function categoryToKind(
   category: CategoryEnum | string | null | undefined,
 ): KindEnum {
   if (!category) return 'Migration Safety' // Default value
