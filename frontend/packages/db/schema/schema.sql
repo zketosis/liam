@@ -246,6 +246,7 @@ declare
   v_is_member boolean;
   v_invite_by_user_id uuid;
   v_existing_invite_id uuid;
+  v_new_token uuid;
   v_result jsonb;
 begin
   -- Start transaction
@@ -261,6 +262,7 @@ begin
     ) then
       v_result := jsonb_build_object(
         'success', false,
+        'invitation_token', null,
         'error', 'inviter user does not exist'
       );
       return v_result;
@@ -278,11 +280,14 @@ begin
     if v_is_member then
       v_result := jsonb_build_object(
         'success', false,
+        'invitation_token', null,
         'error', 'this user is already a member of the organization'
       );
       return v_result;
     end if;
     
+    v_new_token := gen_random_uuid();
+
     -- Check if invitation already exists
     select id into v_existing_invite_id
     from invitations
@@ -296,10 +301,14 @@ begin
       set invited_at = current_timestamp,
       expired_at = current_timestamp + interval '7 days',
       invite_by_user_id = v_invite_by_user_id,
-      token = gen_random_uuid()
+      token = v_new_token
       where id = v_existing_invite_id;
       
-      v_result := jsonb_build_object('success', true, 'error', null);
+      v_result := jsonb_build_object(
+        'success', true,
+        'invitation_token', v_new_token,
+        'error', null
+      );
     else
       -- Create new invitation
       insert into invitations (
@@ -307,16 +316,22 @@ begin
         email,
         invited_at,
         expired_at,
-        invite_by_user_id
+        invite_by_user_id,
+        token
       ) values (
         p_organization_id,
         lower(p_email),
         current_timestamp,
         current_timestamp + interval '7 days',
-        v_invite_by_user_id
+        v_invite_by_user_id,
+        v_new_token
       );
       
-      v_result := jsonb_build_object('success', true, 'error', null);
+      v_result := jsonb_build_object(
+        'success', true,
+        'invitation_token', v_new_token,
+        'error', null
+      );
     end if;
     
     -- Commit transaction
@@ -325,6 +340,7 @@ begin
     -- Handle any errors
     v_result := jsonb_build_object(
       'success', false,
+      'invitation_token', null,
       'error', sqlerrm
     );
     return v_result;
