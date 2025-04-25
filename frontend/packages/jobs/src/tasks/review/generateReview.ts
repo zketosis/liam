@@ -71,7 +71,7 @@ export const processGenerateReview = async (
     }
 
     const { data: docPaths, error: docPathsError } = await supabase
-      .from('github_doc_file_paths')
+      .from('doc_file_paths')
       .select('*')
       .eq('project_id', payload.projectId)
       .eq('is_review_enabled', true)

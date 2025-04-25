@@ -49,34 +49,32 @@ export default async function ProjectLayout({ children, params }: LayoutProps) {
       : 'main' // TODO: get default branch from API(using currentOrganization)
 
   return (
-    <div className={styles.container}>
-      <TabsRoot defaultValue={defaultTabFromPath || PROJECT_TAB.PROJECT}>
-        <ProjectHeader
-          projectId={parsedParams.output.projectId}
-          branchOrCommit={branchOrCommit}
-        />
-        <TabsContent value={PROJECT_TAB.PROJECT} className={styles.tabContent}>
-          {children}
-        </TabsContent>
-        <TabsContent value={PROJECT_TAB.SCHEMA} className={styles.tabContent}>
-          {children}
-        </TabsContent>
-        <TabsContent
-          value={PROJECT_TAB.MIGRATIONS}
-          className={styles.tabContent}
-        >
-          {children}
-        </TabsContent>
-        <TabsContent value={PROJECT_TAB.DOCS} className={styles.tabContent}>
-          {children}
-        </TabsContent>
-        <TabsContent value={PROJECT_TAB.RULE} className={styles.tabContent}>
-          {children}
-        </TabsContent>
-        <TabsContent value={PROJECT_TAB.SETTINGS} className={styles.tabContent}>
-          {children}
-        </TabsContent>
-      </TabsRoot>
-    </div>
+    <TabsRoot
+      defaultValue={defaultTabFromPath || PROJECT_TAB.PROJECT}
+      className={styles.container}
+    >
+      <ProjectHeader
+        projectId={parsedParams.output.projectId}
+        branchOrCommit={branchOrCommit}
+      />
+      <TabsContent value={PROJECT_TAB.PROJECT} className={styles.tabContent}>
+        {children}
+      </TabsContent>
+      <TabsContent value={PROJECT_TAB.SCHEMA} className={styles.tabContent}>
+        {children}
+      </TabsContent>
+      <TabsContent value={PROJECT_TAB.MIGRATIONS} className={styles.tabContent}>
+        {children}
+      </TabsContent>
+      <TabsContent value={PROJECT_TAB.DOCS} className={styles.tabContent}>
+        {children}
+      </TabsContent>
+      <TabsContent value={PROJECT_TAB.RULE} className={styles.tabContent}>
+        {children}
+      </TabsContent>
+      <TabsContent value={PROJECT_TAB.SETTINGS} className={styles.tabContent}>
+        {children}
+      </TabsContent>
+    </TabsRoot>
   )
 }
