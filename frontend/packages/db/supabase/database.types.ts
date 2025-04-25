@@ -34,7 +34,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      github_doc_file_paths: {
+      doc_file_paths: {
         Row: {
           created_at: string
           id: string
@@ -222,31 +222,31 @@ export type Database = {
       knowledge_suggestion_doc_mappings: {
         Row: {
           created_at: string
-          github_doc_file_path_id: string
+          doc_file_path_id: string
           id: string
           knowledge_suggestion_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
-          github_doc_file_path_id: string
+          doc_file_path_id: string
           id?: string
           knowledge_suggestion_id: string
           updated_at: string
         }
         Update: {
           created_at?: string
-          github_doc_file_path_id?: string
+          doc_file_path_id?: string
           id?: string
           knowledge_suggestion_id?: string
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey'
-            columns: ['github_doc_file_path_id']
+            foreignKeyName: 'knowledge_suggestion_doc_mapping_doc_file_path_id_fkey'
+            columns: ['doc_file_path_id']
             isOneToOne: false
-            referencedRelation: 'github_doc_file_paths'
+            referencedRelation: 'doc_file_paths'
             referencedColumns: ['id']
           },
           {

@@ -1,12 +1,11 @@
 import { createClient } from '@/libs/db/server'
 import { describe, expect, it } from 'vitest'
-import { getGitHubDocFilePaths } from './getGitHubDocFilePaths'
+import { getDocFilePaths } from './getDocFilePaths'
 
-describe('getGitHubDocFilePaths', () => {
+describe('getDocFilePaths', () => {
   it.skip('should return doc file paths with correct structure', async () => {
     const supabase = await createClient()
 
-    // Create test project
     const { data: project } = await supabase
       .from('projects')
       .insert({
@@ -16,16 +15,14 @@ describe('getGitHubDocFilePaths', () => {
       .select()
       .single()
 
-    // Fail the test if project doesn't exist
     expect(project).not.toBeNull()
 
     if (!project) {
       throw new Error('Project is null')
     }
 
-    // Create test doc file path
     const { data: docFilePath } = await supabase
-      .from('github_doc_file_paths')
+      .from('doc_file_paths')
       .insert({
         path: 'test/path.md',
         project_id: project.id,
@@ -37,7 +34,7 @@ describe('getGitHubDocFilePaths', () => {
 
     expect(docFilePath).not.toBeNull()
 
-    const paths = await getGitHubDocFilePaths(project.id.toString())
+    const paths = await getDocFilePaths(project.id.toString())
 
     expect(paths).not.toBeNull()
     expect(paths.length).toBeGreaterThan(0)
@@ -47,7 +44,7 @@ describe('getGitHubDocFilePaths', () => {
   })
 
   it('should return empty array when no paths exist', async () => {
-    const paths = await getGitHubDocFilePaths('999999')
+    const paths = await getDocFilePaths('999999')
     expect(paths).toEqual([])
   })
 })
