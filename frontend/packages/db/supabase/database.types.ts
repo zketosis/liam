@@ -339,7 +339,6 @@ export type Database = {
           created_at: string
           id: string
           migration_id: string
-          organization_id: string
           pull_request_id: string
           updated_at: string
         }
@@ -347,7 +346,6 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id: string
-          organization_id: string
           pull_request_id: string
           updated_at: string
         }
@@ -355,7 +353,6 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id?: string
-          organization_id?: string
           pull_request_id?: string
           updated_at?: string
         }
@@ -372,13 +369,6 @@ export type Database = {
             columns: ['pull_request_id']
             isOneToOne: false
             referencedRelation: 'github_pull_requests'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'migration_pull_request_mappings_organization_id_fkey'
-            columns: ['organization_id']
-            isOneToOne: false
-            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
