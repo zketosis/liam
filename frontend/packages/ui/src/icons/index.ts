@@ -1,3 +1,4 @@
+export * from './ErdIcon'
 export * from './InfoIcon'
 export * from './FacebookIcon'
 export * from './DiamondIcon'
@@ -18,6 +19,7 @@ export {
   ChevronsUpDown,
   ChevronUp,
   CircleHelp,
+  ClipboardList,
   Copy,
   Download,
   Ellipsis,
@@ -30,6 +32,7 @@ export {
   Group,
   Hash,
   KeyRound,
+  Library,
   Link,
   Lock,
   Menu,
