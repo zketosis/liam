@@ -177,24 +177,30 @@ export type Database = {
       invitations: {
         Row: {
           email: string
+          expired_at: string
           id: string
           invite_by_user_id: string
           invited_at: string | null
           organization_id: string
+          token: string
         }
         Insert: {
           email: string
+          expired_at?: string
           id?: string
           invite_by_user_id: string
           invited_at?: string | null
           organization_id: string
+          token?: string
         }
         Update: {
           email?: string
+          expired_at?: string
           id?: string
           invite_by_user_id?: string
           invited_at?: string | null
           organization_id?: string
+          token?: string
         }
         Relationships: [
           {
@@ -822,12 +828,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      get_invitation_data: {
+        Args: { p_token: string }
+        Returns: Json
+      }
       invite_organization_member: {
-        Args: {
-          p_email: string
-          p_organization_id: string
-          p_invite_by_user_id: string
-        }
+        Args: { p_email: string; p_organization_id: string }
         Returns: Json
       }
       sync_existing_users: {

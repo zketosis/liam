@@ -108,6 +108,118 @@ CREATE TYPE "public"."severity_enum" AS ENUM (
 ALTER TYPE "public"."severity_enum" OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."accept_invitation"("p_token" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+declare
+  v_user_id uuid;
+  v_organization_id uuid;
+  v_invitation_id uuid;
+  v_result jsonb;
+begin
+  -- Start transaction
+  begin
+    v_user_id := auth.uid();
+
+    -- Verify the invitation exists
+    select
+      i.id, i.organization_id into v_invitation_id, v_organization_id
+    from invitations i
+    join
+      auth.users au on lower(i.email) = lower(au.email)
+    where
+      i.token = p_token
+      and au.id = v_user_id
+      and au.email_confirmed_at is not null
+      and current_timestamp < i.expired_at
+    limit 1;
+
+    if v_invitation_id is null then
+      v_result := jsonb_build_object(
+        'success', false,
+        'organizationId', null,
+        'error', 'Invitation not found or already accepted'
+      );
+      return v_result;
+    end if;
+
+    -- Create organization member record
+    insert into organization_members (
+      user_id,
+      organization_id,
+      joined_at
+    ) values (
+      v_user_id,
+      v_organization_id,
+      current_timestamp
+    );
+
+    -- Delete the invitation
+    delete from invitations
+    where id = v_invitation_id;
+
+    -- Return success
+    v_result := jsonb_build_object(
+      'success', true,
+      'organizationId', v_organization_id,
+      'error', null
+    );
+    return v_result;
+  exception when others then
+    -- Handle any errors
+    v_result := jsonb_build_object(
+      'success', false,
+      'organizationId', null,
+      'error', sqlerrm
+    );
+    return v_result;
+  end;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."accept_invitation"("p_token" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_invitation_data"("p_token" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+declare
+  v_user_id uuid;
+  v_organization_name text;
+  v_result jsonb;
+begin
+  -- Start transaction
+  begin
+    v_user_id := auth.uid();
+
+    select 
+      o.name into v_organization_name
+    from 
+      invitations i
+    join 
+      organizations o on i.organization_id = o.id
+    join 
+      auth.users au on lower(i.email) = lower(au.email)
+    where 
+      i.token = p_token
+      and au.id = v_user_id
+      and au.email_confirmed_at is not null
+      and current_timestamp < i.expired_at
+    limit 1;
+
+    v_result := jsonb_build_object(
+      'organizationName', v_organization_name
+    );
+    return v_result;
+  end;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."get_invitation_data"("p_token" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -127,16 +239,33 @@ $$;
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") RETURNS "jsonb"
-    LANGUAGE "plpgsql" SECURITY DEFINER
+CREATE OR REPLACE FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_is_member boolean;
+  v_invite_by_user_id uuid;
   v_existing_invite_id uuid;
   v_result jsonb;
 begin
   -- Start transaction
   begin
+    v_invite_by_user_id := auth.uid();
+
+    -- Check inviter is a valid user
+    if not exists (
+      select 1
+      from organization_members om
+      where om.user_id = v_invite_by_user_id
+      and om.organization_id = p_organization_id
+    ) then
+      v_result := jsonb_build_object(
+        'success', false,
+        'error', 'inviter user does not exist'
+      );
+      return v_result;
+    end if;
+
     -- Check if user is already a member
     select exists(
       select 1
@@ -164,7 +293,10 @@ begin
     -- If invitation exists, update it
     if v_existing_invite_id is not null then
       update invitations
-      set invited_at = current_timestamp
+      set invited_at = current_timestamp,
+      expired_at = current_timestamp + interval '7 days',
+      invite_by_user_id = v_invite_by_user_id,
+      token = gen_random_uuid()
       where id = v_existing_invite_id;
       
       v_result := jsonb_build_object('success', true, 'error', null);
@@ -173,13 +305,15 @@ begin
       insert into invitations (
         organization_id,
         email,
-        invite_by_user_id,
-        invited_at
+        invited_at,
+        expired_at,
+        invite_by_user_id
       ) values (
         p_organization_id,
         lower(p_email),
-        p_invite_by_user_id,
-        current_timestamp
+        current_timestamp,
+        current_timestamp + interval '7 days',
+        v_invite_by_user_id
       );
       
       v_result := jsonb_build_object('success', true, 'error', null);
@@ -199,7 +333,7 @@ end;
 $$;
 
 
-ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") OWNER TO "postgres";
+ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."set_knowledge_suggestions_organization_id"() RETURNS "trigger"
@@ -299,7 +433,9 @@ CREATE TABLE IF NOT EXISTS "public"."invitations" (
     "email" "text" NOT NULL,
     "invite_by_user_id" "uuid" NOT NULL,
     "organization_id" "uuid" NOT NULL,
-    "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    "token" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "expired_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -545,6 +681,11 @@ ALTER TABLE ONLY "public"."schema_file_paths"
 
 ALTER TABLE ONLY "public"."invitations"
     ADD CONSTRAINT "invitations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_token_key" UNIQUE ("token");
 
 
 
@@ -1175,15 +1316,24 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_invitation_data"("p_token" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_invitation_data"("p_token" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") TO "anon";
-GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid", "p_invite_by_user_id" "uuid") TO "service_role";
+GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "service_role";
 
 
 
