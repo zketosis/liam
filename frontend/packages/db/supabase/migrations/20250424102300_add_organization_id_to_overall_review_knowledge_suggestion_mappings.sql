@@ -51,69 +51,9 @@ COMMENT ON POLICY "authenticated_users_can_select_org_overall_review_knowledge_s
   ON "public"."overall_review_knowledge_suggestion_mappings" 
   IS 'Authenticated users can only view mappings belonging to organizations they are members of';
 
-CREATE POLICY "authenticated_users_can_insert_org_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  FOR INSERT TO "authenticated" 
-  WITH CHECK (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-COMMENT ON POLICY "authenticated_users_can_insert_org_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  IS 'Authenticated users can only create mappings in organizations they are members of';
-
-CREATE POLICY "authenticated_users_can_update_org_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  FOR UPDATE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  ))) 
-  WITH CHECK (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-COMMENT ON POLICY "authenticated_users_can_update_org_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  IS 'Authenticated users can only update mappings in organizations they are members of';
-
-CREATE POLICY "authenticated_users_can_delete_org_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  FOR DELETE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-COMMENT ON POLICY "authenticated_users_can_delete_org_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  IS 'Authenticated users can only delete mappings in organizations they are members of';
-
-CREATE POLICY "service_role_can_select_all_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  FOR SELECT TO "service_role" 
-  USING (true);
-
 CREATE POLICY "service_role_can_insert_all_overall_review_knowledge_suggestion_mappings" 
   ON "public"."overall_review_knowledge_suggestion_mappings" 
   FOR INSERT TO "service_role" 
   WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  FOR UPDATE TO "service_role" 
-  USING (true) 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_overall_review_knowledge_suggestion_mappings" 
-  ON "public"."overall_review_knowledge_suggestion_mappings" 
-  FOR DELETE TO "service_role" 
-  USING (true);
 
 COMMIT;
