@@ -592,36 +592,15 @@ importers:
       '@langchain/openai':
         specifier: 0.5.6
         version: 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
-      '@liam-hq/db':
-        specifier: workspace:*
-        version: link:../db
-      '@liam-hq/db-structure':
-        specifier: workspace:*
-        version: link:../db-structure
-      '@liam-hq/github':
-        specifier: workspace:*
-        version: link:../github
-      '@sentry/node':
-        specifier: 9.12.0
-        version: 9.12.0
-      '@trigger.dev/build':
-        specifier: 3.3.17
-        version: 3.3.17(typescript@5.8.3)
       '@trigger.dev/sdk':
         specifier: 3.3.17
         version: 3.3.17(zod@3.24.3)
       '@valibot/to-json-schema':
         specifier: 1.0.0
         version: 1.0.0(valibot@1.0.0(typescript@5.8.3))
-      langfuse:
-        specifier: 3.37.2
-        version: 3.37.2
       langfuse-langchain:
         specifier: 3.37.2
         version: 3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1))
-      minimatch:
-        specifier: 10.0.1
-        version: 10.0.1
       uuid:
         specifier: 11.1.0
         version: 11.1.0
@@ -638,9 +617,6 @@ importers:
       '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
-      '@sentry/esbuild-plugin':
-        specifier: 3.3.1
-        version: 3.3.1
       '@types/json-schema':
         specifier: 7.0.15
         version: 7.0.15
@@ -653,9 +629,6 @@ importers:
       dotenv:
         specifier: 16.5.0
         version: 16.5.0
-      glob:
-        specifier: 11.0.1
-        version: 11.0.1
       json-schema:
         specifier: 0.4.0
         version: 0.4.0
@@ -3172,20 +3145,12 @@ packages:
     resolution: {integrity: sha512-yBzRn3GEUSv1RPtE4xB4LnuH74ZxtdoRJ5cmQ9i6mzlmGDxlrnKuvem5++AolZTE9oJqAD3Tx2rd1PqmpWnLoA==}
     engines: {node: '>= 14'}
 
-  '@sentry/babel-plugin-component-annotate@3.3.1':
-    resolution: {integrity: sha512-5GOxGT7lZN+I8A7Vp0rWY+726FDKEw8HnFiebe51rQrMbfGfCu2Aw9uSM0nT9OG6xhV6WvGccIcCszTPs4fUZQ==}
-    engines: {node: '>= 14'}
-
   '@sentry/browser@9.12.0':
     resolution: {integrity: sha512-4xQYoZqi+VVhNvlhWiwRd57+SMr3Og4sLjuayAA+zIp1Wx/bDcIld697cugLwml/BR+mVJI2eokkgh1CBl6zag==}
     engines: {node: '>=18'}
 
   '@sentry/bundler-plugin-core@3.2.4':
     resolution: {integrity: sha512-YMj9XW5W2JA89EeweE7CPKLDz245LBsI1JhCmqpt/bjSvmsSIAAPsLYnvIJBS3LQFm0OhtG8NB54PTi96dAcMA==}
-    engines: {node: '>= 14'}
-
-  '@sentry/bundler-plugin-core@3.3.1':
-    resolution: {integrity: sha512-Dd6xaWb293j9otEJ1yJqG2Ra6zB49OPzMNdIkdP8wdY+S9UFQE5PyKTyredmPY7hqCc005OrUQZolIIo9Zl13A==}
     engines: {node: '>= 14'}
 
   '@sentry/cli-darwin@2.42.2':
@@ -3237,10 +3202,6 @@ packages:
   '@sentry/core@9.12.0':
     resolution: {integrity: sha512-jOqQK/90uzHmsBvkPTj/DAEFvA5poX4ZRyC7LE1zjg4F5jdOp3+M4W3qCy0CkSTu88Zu5VWBoppCU2Bs34XEqg==}
     engines: {node: '>=18'}
-
-  '@sentry/esbuild-plugin@3.3.1':
-    resolution: {integrity: sha512-NkzLpi6VYhvo+vBGuLIUNFcqA5atJIC7Eo1fwHYHmCo64FenPdWbPQOtsiyTpWEMgawrshw+7ipGkqm2X+h93g==}
-    engines: {node: '>= 14'}
 
   '@sentry/nextjs@9.12.0':
     resolution: {integrity: sha512-sCKbziX/ofQXuCuoRkOC4oGH2L44nnvrJyLSiWpZ/4wC/5MN/O5pE7XZfT3+sVfVdqlpWo0zjblvuga6I9vw9A==}
@@ -10929,8 +10890,6 @@ snapshots:
 
   '@sentry/babel-plugin-component-annotate@3.2.4': {}
 
-  '@sentry/babel-plugin-component-annotate@3.3.1': {}
-
   '@sentry/browser@9.12.0':
     dependencies:
       '@sentry-internal/browser-utils': 9.12.0
@@ -10943,20 +10902,6 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.10
       '@sentry/babel-plugin-component-annotate': 3.2.4
-      '@sentry/cli': 2.42.2
-      dotenv: 16.5.0
-      find-up: 5.0.0
-      glob: 9.3.5
-      magic-string: 0.30.8
-      unplugin: 1.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-
-  '@sentry/bundler-plugin-core@3.3.1':
-    dependencies:
-      '@babel/core': 7.26.10
-      '@sentry/babel-plugin-component-annotate': 3.3.1
       '@sentry/cli': 2.42.2
       dotenv: 16.5.0
       find-up: 5.0.0
@@ -11008,15 +10953,6 @@ snapshots:
       - supports-color
 
   '@sentry/core@9.12.0': {}
-
-  '@sentry/esbuild-plugin@3.3.1':
-    dependencies:
-      '@sentry/bundler-plugin-core': 3.3.1
-      unplugin: 1.0.1
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   '@sentry/nextjs@9.12.0(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(next@15.3.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.99.5(esbuild@0.25.2))':
     dependencies:
