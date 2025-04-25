@@ -464,14 +464,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'overall_review_knowledge_suggestion_ma_knowledge_suggestion_id_fkey'
+            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_knowledge_suggestio'
             columns: ['knowledge_suggestion_id']
             isOneToOne: false
             referencedRelation: 'knowledge_suggestions'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'overall_review_knowledge_suggestion_ma_overall_review_id_fkey'
+            foreignKeyName: 'overall_review_knowledge_suggestion_mapping_overall_review_id_f'
             columns: ['overall_review_id']
             isOneToOne: false
             referencedRelation: 'overall_reviews'

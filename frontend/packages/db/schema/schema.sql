@@ -400,9 +400,7 @@ CREATE TABLE IF NOT EXISTS "public"."overall_review_pull_request_mappings" (
     "overall_review_id" "uuid" NOT NULL,
     "pull_request_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    PRIMARY KEY ("id"),
-    CONSTRAINT "overall_review_pull_request_mapping_overall_review_id_pull_request_id_key" UNIQUE ("overall_review_id", "pull_request_id")
+    "updated_at" timestamp(3) with time zone NOT NULL
 );
 
 
@@ -411,13 +409,13 @@ ALTER TABLE "public"."overall_review_pull_request_mappings" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "migration_id" "uuid" NOT NULL,
     "review_comment" "text",
     "reviewed_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
     "branch_name" "text" NOT NULL,
-    "trace_id" "text"
+    "trace_id" "text",
+    "migration_id" "uuid" NOT NULL
 );
 
 
@@ -608,6 +606,16 @@ ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
 
 ALTER TABLE ONLY "public"."overall_reviews"
     ADD CONSTRAINT "overall_review_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."overall_review_pull_request_mappings"
+    ADD CONSTRAINT "overall_review_pull_request_mapping_overall_review_id_pull_requ" UNIQUE ("overall_review_id", "pull_request_id");
+
+
+
+ALTER TABLE ONLY "public"."overall_review_pull_request_mappings"
+    ADD CONSTRAINT "overall_review_pull_request_mappings_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1301,6 +1309,12 @@ GRANT ALL ON TABLE "public"."organizations" TO "service_role";
 GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "anon";
 GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "authenticated";
 GRANT ALL ON TABLE "public"."overall_review_knowledge_suggestion_mappings" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."overall_review_pull_request_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."overall_review_pull_request_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."overall_review_pull_request_mappings" TO "service_role";
 
 
 
