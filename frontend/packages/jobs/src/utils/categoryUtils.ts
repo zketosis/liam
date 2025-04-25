@@ -3,7 +3,7 @@
  */
 
 // Category type used in the database
-type CategoryEnum =
+export type CategoryEnum =
   | 'MIGRATION_SAFETY'
   | 'DATA_INTEGRITY'
   | 'PERFORMANCE_IMPACT'
@@ -11,7 +11,7 @@ type CategoryEnum =
   | 'SECURITY_OR_SCALABILITY'
 
 // Kind type used in the review schema
-type KindEnum =
+export type KindEnum =
   | 'Migration Safety'
   | 'Data Integrity'
   | 'Performance Impact'
@@ -21,7 +21,7 @@ type KindEnum =
 /**
  * Converts database category format to review schema kind format
  */
-function categoryToKind(
+export function categoryToKind(
   category: CategoryEnum | string | null | undefined,
 ): KindEnum {
   if (!category) return 'Migration Safety' // Default value
