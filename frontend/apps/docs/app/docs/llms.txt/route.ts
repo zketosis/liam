@@ -54,7 +54,7 @@ const getContents = (dirPath: string): MDXFile[] => {
       const relativePath = path
         .relative(path.resolve(process.cwd(), 'content/docs'), filePath)
         .replace(/(\/?index)?\.mdx$/, '')
-      const url = `${baseUrl}/docs/${relativePath}`
+      const url = new URL(`docs/${relativePath}`, baseUrl).toString()
 
       results.push({
         path: relativePath,
