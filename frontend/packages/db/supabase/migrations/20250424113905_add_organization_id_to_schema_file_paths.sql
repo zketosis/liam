@@ -82,38 +82,9 @@ COMMENT ON POLICY "authenticated_users_can_update_org_schema_file_paths"
   ON "public"."schema_file_paths" 
   IS 'Authenticated users can only update schema file paths in organizations they are members of';
 
-CREATE POLICY "authenticated_users_can_delete_org_schema_file_paths" 
-  ON "public"."schema_file_paths" 
-  FOR DELETE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-COMMENT ON POLICY "authenticated_users_can_delete_org_schema_file_paths" 
-  ON "public"."schema_file_paths" 
-  IS 'Authenticated users can only delete schema file paths in organizations they are members of';
-
 CREATE POLICY "service_role_can_select_all_schema_file_paths" 
   ON "public"."schema_file_paths" 
   FOR SELECT TO "service_role" 
-  USING (true);
-
-CREATE POLICY "service_role_can_insert_all_schema_file_paths" 
-  ON "public"."schema_file_paths" 
-  FOR INSERT TO "service_role" 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_schema_file_paths" 
-  ON "public"."schema_file_paths" 
-  FOR UPDATE TO "service_role" 
-  USING (true) 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_schema_file_paths" 
-  ON "public"."schema_file_paths" 
-  FOR DELETE TO "service_role" 
   USING (true);
 
 COMMIT;
