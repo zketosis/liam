@@ -2,9 +2,34 @@
 
 import { type SupabaseClient, createClient } from '@/libs/db/server'
 import { generateKnowledgeFromFeedbackTask } from '@liam-hq/jobs'
-import type { Review, ReviewFeedback } from '@liam-hq/jobs/src/types'
-import { categoryToKind } from '@liam-hq/jobs/src/utils/categoryUtils'
+import type { Review } from '@liam-hq/jobs/src/types'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import * as v from 'valibot'
+
+type ReviewFeedback = Tables<'review_feedbacks'>
+
+type KindEnum =
+  | 'Migration Safety'
+  | 'Data Integrity'
+  | 'Performance Impact'
+  | 'Project Rules Consistency'
+  | 'Security or Scalability'
+
+function categoryToKind(
+  category: string | null | undefined,
+): KindEnum {
+  if (!category) return 'Migration Safety' // Default value
+
+  const mapping: Record<string, KindEnum> = {
+    MIGRATION_SAFETY: 'Migration Safety',
+    DATA_INTEGRITY: 'Data Integrity',
+    PERFORMANCE_IMPACT: 'Performance Impact',
+    PROJECT_RULES_CONSISTENCY: 'Project Rules Consistency',
+    SECURITY_OR_SCALABILITY: 'Security or Scalability',
+  }
+
+  return mapping[category] || 'Migration Safety'
+}
 
 const requestSchema = v.object({
   feedbackId: v.pipe(v.string()),
