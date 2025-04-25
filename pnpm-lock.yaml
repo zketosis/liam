@@ -592,6 +592,15 @@ importers:
       '@langchain/openai':
         specifier: 0.5.6
         version: 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
+      '@liam-hq/db':
+        specifier: workspace:*
+        version: link:../db
+      '@liam-hq/db-structure':
+        specifier: workspace:*
+        version: link:../db-structure
+      '@liam-hq/github':
+        specifier: workspace:*
+        version: link:../github
       '@sentry/node':
         specifier: 9.12.0
         version: 9.12.0
@@ -607,6 +616,9 @@ importers:
       langfuse-langchain:
         specifier: 3.37.2
         version: 3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1))
+      minimatch:
+        specifier: 10.0.1
+        version: 10.0.1
       uuid:
         specifier: 11.1.0
         version: 11.1.0
