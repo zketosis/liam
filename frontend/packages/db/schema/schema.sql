@@ -19,13 +19,6 @@ CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
 
 
-CREATE EXTENSION IF NOT EXISTS "pgsodium";
-
-
-
-
-
-
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
@@ -1188,15 +1181,6 @@ GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
 
 
 
