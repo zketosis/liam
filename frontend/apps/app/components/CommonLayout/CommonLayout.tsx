@@ -48,7 +48,7 @@ export async function CommonLayout({ children }: CommonLayoutProps) {
         </>
       )}
       <div className={styles.mainContent}>
-        <ClientAppBar avatarInitial="L" avatarColor="var(--color-teal-800)" />
+        <ClientAppBar avatarUrl={authUser.user?.user_metadata?.avatar_url} />
         <main className={styles.content}>{children}</main>
       </div>
     </div>
