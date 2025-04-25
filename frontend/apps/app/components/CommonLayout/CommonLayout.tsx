@@ -1,10 +1,12 @@
 import { getOrganizationId } from '@/features/organizations/services/getOrganizationId'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { ClientAppBar } from './ClientAppBar'
+import { AppBar } from './AppBar'
 import styles from './CommonLayout.module.css'
 import { GlobalNav } from './GlobalNav'
 import { OrgCookie } from './OrgCookie'
+import { extractProjectPathParts } from './services/extractProjectPathParts'
 import { getAuthUser } from './services/getAuthUser'
 import { getOrganization } from './services/getOrganization'
 import { getOrganizationsByUserId } from './services/getOrganizationsByUserId'
@@ -14,6 +16,10 @@ type CommonLayoutProps = {
 }
 
 export async function CommonLayout({ children }: CommonLayoutProps) {
+  const headersList = await headers()
+  const urlPath = headersList.get('x-url-path') || ''
+  const { projectId, branchOrCommit } = extractProjectPathParts(urlPath)
+
   const organizationId = await getOrganizationId()
   const { data: organization } = await getOrganization(organizationId)
 
@@ -34,7 +40,10 @@ export async function CommonLayout({ children }: CommonLayoutProps) {
         organizations={organizations}
       />
       <div className={styles.mainContent}>
-        <ClientAppBar avatarUrl={authUser.user?.user_metadata?.avatar_url} />
+        <AppBar
+          currentProjectId={projectId}
+          currentBranchOrCommit={branchOrCommit}
+        />
         <main className={styles.content}>{children}</main>
       </div>
     </div>
