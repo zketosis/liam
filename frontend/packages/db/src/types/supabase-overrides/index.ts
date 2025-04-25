@@ -4,11 +4,13 @@ import type { KnowledgeSuggestionsOverride } from './knowledge_suggestions'
 import type { OverallReviewKnowledgeSuggestionMappingsOverride } from './overall_review_knowledge_suggestion_mappings'
 import type { OverallReviewsOverride } from './overall_reviews'
 import type { ReviewFeedbacksOverride } from './review_feedbacks'
+import type { ReviewFeedbackCommentsOverride } from './review_feedback_comments'
 
 export type AppDatabaseOverrides = MergeDeep<
   DatabaseGenerated,
   KnowledgeSuggestionsOverride &
     OverallReviewKnowledgeSuggestionMappingsOverride &
     OverallReviewsOverride &
-    ReviewFeedbacksOverride
+    ReviewFeedbacksOverride &
+    ReviewFeedbackCommentsOverride
 >
