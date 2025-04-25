@@ -142,7 +142,7 @@ begin
       );
       return v_result;
     end if;
-    
+
     -- Create organization member record
     insert into organization_members (
       user_id,
@@ -153,11 +153,11 @@ begin
       v_organization_id,
       current_timestamp
     );
-    
+
     -- Delete the invitation
     delete from invitations
     where id = v_invitation_id;
-    
+
     -- Return success
     v_result := jsonb_build_object(
       'success', true,
@@ -1238,7 +1238,6 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "service_role";
 

@@ -33,7 +33,7 @@ begin
       );
       return v_result;
     end if;
-    
+
     -- Create organization member record
     insert into organization_members (
       user_id,
@@ -44,11 +44,11 @@ begin
       v_organization_id,
       current_timestamp
     );
-    
+
     -- Delete the invitation
     delete from invitations
     where id = v_invitation_id;
-    
+
     -- Return success
     v_result := jsonb_build_object(
       'success', true,
@@ -68,4 +68,4 @@ begin
 end;
 $$ language plpgsql security definer;
 
-revoke all on function get_invitation_data(uuid) from anon;
+revoke all on function accept_invitation(uuid) from anon;
