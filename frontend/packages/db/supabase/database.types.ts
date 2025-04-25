@@ -34,7 +34,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      github_doc_file_paths: {
+      doc_file_paths: {
         Row: {
           created_at: string
           id: string
@@ -177,24 +177,30 @@ export type Database = {
       invitations: {
         Row: {
           email: string
+          expired_at: string
           id: string
           invite_by_user_id: string
           invited_at: string | null
           organization_id: string
+          token: string
         }
         Insert: {
           email: string
+          expired_at?: string
           id?: string
           invite_by_user_id: string
           invited_at?: string | null
           organization_id: string
+          token?: string
         }
         Update: {
           email?: string
+          expired_at?: string
           id?: string
           invite_by_user_id?: string
           invited_at?: string | null
           organization_id?: string
+          token?: string
         }
         Relationships: [
           {
@@ -216,31 +222,31 @@ export type Database = {
       knowledge_suggestion_doc_mappings: {
         Row: {
           created_at: string
-          github_doc_file_path_id: string
+          doc_file_path_id: string
           id: string
           knowledge_suggestion_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
-          github_doc_file_path_id: string
+          doc_file_path_id: string
           id?: string
           knowledge_suggestion_id: string
           updated_at: string
         }
         Update: {
           created_at?: string
-          github_doc_file_path_id?: string
+          doc_file_path_id?: string
           id?: string
           knowledge_suggestion_id?: string
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey'
-            columns: ['github_doc_file_path_id']
+            foreignKeyName: 'knowledge_suggestion_doc_mapping_doc_file_path_id_fkey'
+            columns: ['doc_file_path_id']
             isOneToOne: false
-            referencedRelation: 'github_doc_file_paths'
+            referencedRelation: 'doc_file_paths'
             referencedColumns: ['id']
           },
           {
@@ -445,6 +451,7 @@ export type Database = {
           created_at: string
           id: string
           knowledge_suggestion_id: string
+          organization_id: string
           overall_review_id: string
           updated_at: string
         }
@@ -452,6 +459,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id: string
+          organization_id: string
           overall_review_id: string
           updated_at: string
         }
@@ -459,6 +467,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string
+          organization_id?: string
           overall_review_id?: string
           updated_at?: string
         }
@@ -477,6 +486,13 @@ export type Database = {
             referencedRelation: 'overall_reviews'
             referencedColumns: ['id']
           },
+          {
+            foreignKeyName: 'overall_review_knowledge_suggestion_mappings_organization_id_fk'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
         ]
       }
       overall_reviews: {
@@ -484,8 +500,7 @@ export type Database = {
           branch_name: string
           created_at: string
           id: string
-          project_id: string | null
-          pull_request_id: string
+          migration_id: string
           review_comment: string | null
           reviewed_at: string
           trace_id: string | null
@@ -495,8 +510,7 @@ export type Database = {
           branch_name: string
           created_at?: string
           id?: string
-          project_id?: string | null
-          pull_request_id: string
+          migration_id: string
           review_comment?: string | null
           reviewed_at?: string
           trace_id?: string | null
@@ -506,8 +520,7 @@ export type Database = {
           branch_name?: string
           created_at?: string
           id?: string
-          project_id?: string | null
-          pull_request_id?: string
+          migration_id?: string
           review_comment?: string | null
           reviewed_at?: string
           trace_id?: string | null
@@ -515,17 +528,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'overall_review_project_id_fkey'
-            columns: ['project_id']
+            foreignKeyName: 'overall_review_migration_id_fkey'
+            columns: ['migration_id']
             isOneToOne: false
-            referencedRelation: 'projects'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'overall_review_pull_request_id_fkey'
-            columns: ['pull_request_id']
-            isOneToOne: false
-            referencedRelation: 'github_pull_requests'
+            referencedRelation: 'migrations'
             referencedColumns: ['id']
           },
         ]
@@ -822,12 +828,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      get_invitation_data: {
+        Args: { p_token: string }
+        Returns: Json
+      }
       invite_organization_member: {
-        Args: {
-          p_email: string
-          p_organization_id: string
-          p_invite_by_user_id: string
-        }
+        Args: { p_email: string; p_organization_id: string }
         Returns: Json
       }
       sync_existing_users: {
