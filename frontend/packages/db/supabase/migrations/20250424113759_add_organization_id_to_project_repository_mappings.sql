@@ -64,43 +64,9 @@ COMMENT ON POLICY "authenticated_users_can_insert_org_project_repository_mapping
   ON "public"."project_repository_mappings" 
   IS 'Authenticated users can only create project repository mappings in organizations they are members of';
 
-CREATE POLICY "authenticated_users_can_update_org_project_repository_mappings" 
-  ON "public"."project_repository_mappings" 
-  FOR UPDATE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  ))) 
-  WITH CHECK (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-COMMENT ON POLICY "authenticated_users_can_update_org_project_repository_mappings" 
-  ON "public"."project_repository_mappings" 
-  IS 'Authenticated users can only update project repository mappings in organizations they are members of';
-
 CREATE POLICY "service_role_can_select_all_project_repository_mappings" 
   ON "public"."project_repository_mappings" 
   FOR SELECT TO "service_role" 
-  USING (true);
-
-CREATE POLICY "service_role_can_insert_all_project_repository_mappings" 
-  ON "public"."project_repository_mappings" 
-  FOR INSERT TO "service_role" 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_project_repository_mappings" 
-  ON "public"."project_repository_mappings" 
-  FOR UPDATE TO "service_role" 
-  USING (true) 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_project_repository_mappings" 
-  ON "public"."project_repository_mappings" 
-  FOR DELETE TO "service_role" 
   USING (true);
 
 COMMIT;
