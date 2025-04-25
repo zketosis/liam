@@ -71,38 +71,6 @@ CREATE POLICY "authenticated_users_can_select_org_review_feedback_knowledge_sugg
     WHERE ("organization_members"."user_id" = "auth"."uid"())
   )));
 
-CREATE POLICY "authenticated_users_can_insert_org_review_feedback_knowledge_suggestion_mappings" 
-  ON "public"."review_feedback_knowledge_suggestion_mappings" 
-  FOR INSERT TO "authenticated" 
-  WITH CHECK (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-CREATE POLICY "authenticated_users_can_update_org_review_feedback_knowledge_suggestion_mappings" 
-  ON "public"."review_feedback_knowledge_suggestion_mappings" 
-  FOR UPDATE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  ))) 
-  WITH CHECK (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-CREATE POLICY "authenticated_users_can_delete_org_review_feedback_knowledge_suggestion_mappings" 
-  ON "public"."review_feedback_knowledge_suggestion_mappings" 
-  FOR DELETE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
 CREATE POLICY "service_role_can_select_all_review_feedback_knowledge_suggestion_mappings" 
   ON "public"."review_feedback_knowledge_suggestion_mappings" 
   FOR SELECT TO "service_role" 
@@ -112,16 +80,5 @@ CREATE POLICY "service_role_can_insert_all_review_feedback_knowledge_suggestion_
   ON "public"."review_feedback_knowledge_suggestion_mappings" 
   FOR INSERT TO "service_role" 
   WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_review_feedback_knowledge_suggestion_mappings" 
-  ON "public"."review_feedback_knowledge_suggestion_mappings" 
-  FOR UPDATE TO "service_role" 
-  USING (true) 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_review_feedback_knowledge_suggestion_mappings" 
-  ON "public"."review_feedback_knowledge_suggestion_mappings" 
-  FOR DELETE TO "service_role" 
-  USING (true);
 
 COMMIT;
