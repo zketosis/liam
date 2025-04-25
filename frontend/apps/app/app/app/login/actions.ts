@@ -28,12 +28,8 @@ export async function login(formData: FormData) {
   const returnTo = formReturnTo ? formReturnTo.toString() : '/app'
 
   // Clear the returnTo cookie since we've used it
-  try {
-    const cookieStore = await cookies()
-    cookieStore.delete('returnTo')
-  } catch (error) {
-    console.error('Error clearing cookie:', error)
-  }
+  const cookieStore = await cookies()
+  cookieStore.delete('returnTo')
 
   const redirectTo = getAuthCallbackUrl({
     provider: 'github',
