@@ -35,16 +35,15 @@ const extractFrontmatter = (content: string): Frontmatter | null => {
 
 const getContents = (dirPath: string): MDXFile[] => {
   const results: MDXFile[] = []
-  const list = fs.readdirSync(dirPath)
+  const list = fs.readdirSync(dirPath, { withFileTypes: true })
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3002'
 
   for (const file of list) {
-    const filePath = path.resolve(dirPath, file)
-    const stat = fs.statSync(filePath)
+    const filePath = path.resolve(dirPath, file.name)
 
-    if (stat?.isDirectory()) {
+    if (file.isDirectory()) {
       results.push(...getContents(filePath))
-    } else if (file.endsWith('.mdx')) {
+    } else if (file.name.endsWith('.mdx')) {
       const content = fs.readFileSync(filePath, 'utf8')
       const frontmatter = extractFrontmatter(content)
 

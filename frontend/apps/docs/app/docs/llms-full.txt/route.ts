@@ -9,14 +9,13 @@ const getRawContents = (dirPath: string): string[] => {
   const results: string[] = []
   let rootIndexContent: string | null = null
 
-  const list = fs.readdirSync(dirPath)
+  const list = fs.readdirSync(dirPath, { withFileTypes: true })
   for (const file of list) {
-    const filePath = path.resolve(dirPath, file)
-    const stat = fs.statSync(filePath)
+    const filePath = path.resolve(dirPath, file.name)
 
-    if (stat?.isDirectory()) {
+    if (file.isDirectory()) {
       results.push(...getRawContents(filePath))
-    } else if (file.endsWith('.mdx')) {
+    } else if (file.name.endsWith('.mdx')) {
       const content = fs.readFileSync(filePath, 'utf8')
       if (
         filePath === path.resolve(dirPath, 'index.mdx') &&
