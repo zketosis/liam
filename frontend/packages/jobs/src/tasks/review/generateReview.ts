@@ -125,9 +125,7 @@ export const processGenerateReview = async (
   const prDescription = prDetails.body || 'No description provided.'
 
   const formattedComments = prComments
-    .map(
-      (comment) => `${comment.user?.login || 'Anonymous'}: ${comment.body}`,
-    )
+    .map((comment) => `${comment.user?.login || 'Anonymous'}: ${comment.body}`)
     .join('\n\n')
 
   // Fetch schema information with overrides

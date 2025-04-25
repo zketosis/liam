@@ -285,11 +285,7 @@ export const generateSchemaOverride = async (
     currentSchemaOverride: currentSchemaOverride
       ? JSON.stringify(currentSchemaOverride, null, 2)
       : '{}',
-    schemaOverrideJsonSchema: JSON.stringify(
-      schemaOverrideJsonSchema,
-      null,
-      2,
-    ),
+    schemaOverrideJsonSchema: JSON.stringify(schemaOverrideJsonSchema, null, 2),
     evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
   }
 

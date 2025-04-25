@@ -33,7 +33,7 @@ export const CommentList = ({
     if (onCommentsLoaded) {
       onCommentsLoaded(fetchedComments.length)
     }
-    
+
     setIsLoading(false)
   }, [reviewFeedbackId, onCommentsLoaded])
 

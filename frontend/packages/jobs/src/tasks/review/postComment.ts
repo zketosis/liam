@@ -69,13 +69,8 @@ async function generateERDLink({
 export async function postComment(
   payload: PostCommentPayload,
 ): Promise<{ success: boolean; message: string }> {
-  const {
-    reviewComment,
-    pullRequestId,
-    repositoryId,
-    projectId,
-    branchName,
-  } = payload
+  const { reviewComment, pullRequestId, repositoryId, projectId, branchName } =
+    payload
   const supabase = createClient()
 
   const { data: repository, error: repoError } = await supabase

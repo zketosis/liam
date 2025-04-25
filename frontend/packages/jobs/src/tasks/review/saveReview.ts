@@ -56,10 +56,7 @@ export const processSaveReview = async (
   }))
 
   const { data: insertedFeedbacks, error: reviewFeedbacksError } =
-    await supabase
-      .from('review_feedbacks')
-      .insert(reviewFeedbacks)
-      .select('id')
+    await supabase.from('review_feedbacks').insert(reviewFeedbacks).select('id')
 
   if (reviewFeedbacksError || !insertedFeedbacks) {
     throw new Error(
@@ -147,7 +144,7 @@ export const saveReviewTask = task({
   id: 'save-review',
   run: async (payload: ReviewResponse) => {
     logger.log('Executing review save task:', { payload })
-    
+
     const { overallReviewId } = await processSaveReview(payload)
 
     logger.log('Creating knowledge suggestions for docs')

@@ -45,7 +45,7 @@ export const EditableContent = ({
     if (onContentSaved) {
       onContentSaved(editedContent)
     }
-    
+
     setIsSaving(false)
   }
 
