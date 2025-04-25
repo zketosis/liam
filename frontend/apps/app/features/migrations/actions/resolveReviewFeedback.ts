@@ -1,9 +1,9 @@
 'use server'
 
 import { type SupabaseClient, createClient } from '@/libs/db/server'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { generateKnowledgeFromFeedbackTask } from '@liam-hq/jobs'
 import type { Review } from '@liam-hq/jobs/src/types'
-import type { Tables } from '@liam-hq/db/supabase/database.types'
 import * as v from 'valibot'
 
 type ReviewFeedback = Tables<'review_feedbacks'>
@@ -15,9 +15,7 @@ type KindEnum =
   | 'Project Rules Consistency'
   | 'Security or Scalability'
 
-function categoryToKind(
-  category: string | null | undefined,
-): KindEnum {
+function categoryToKind(category: string | null | undefined): KindEnum {
   if (!category) return 'Migration Safety' // Default value
 
   const mapping: Record<string, KindEnum> = {
