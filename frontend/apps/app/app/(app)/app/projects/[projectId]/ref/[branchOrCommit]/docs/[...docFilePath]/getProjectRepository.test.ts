@@ -58,7 +58,6 @@ describe('getProjectRepository', () => {
     await supabase.from('project_repository_mappings').insert({
       project_id: project.id,
       repository_id: repository.id,
-      organization_id: organization.id,
       updated_at: new Date().toISOString(),
     })
 
