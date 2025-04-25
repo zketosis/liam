@@ -1,4 +1,4 @@
-import { Avatar, ChevronRight, ChevronsUpDown } from '@liam-hq/ui'
+import { AvatarWithImage, ChevronRight, ChevronsUpDown } from '@liam-hq/ui'
 import { DropdownMenuRoot, DropdownMenuTrigger } from '@liam-hq/ui'
 import type { ComponentProps, ReactNode } from 'react'
 import { forwardRef, useState } from 'react'
@@ -47,8 +47,7 @@ type AppBarProps = {
   onProjectClick?: () => void
   onBranchClick?: () => void
   onAvatarClick?: () => void
-  avatarInitial?: string
-  avatarColor?: string
+  avatarUrl?: string
   minimal?: boolean
   projectsList?: ProjectsList
   branchesList?: BranchesList
@@ -62,8 +61,7 @@ export const AppBar = ({
   onProjectClick,
   onBranchClick,
   onAvatarClick,
-  avatarInitial = 'L',
-  avatarColor = 'var(--avatar-background)',
+  avatarUrl,
   minimal = false,
   projectsList,
   branchesList: propsBranchesList,
@@ -189,12 +187,14 @@ export const AppBar = ({
     return (
       <div className={`${styles.appBar} ${styles.minimal}`} {...props}>
         <div className={styles.rightSection}>
-          <Avatar
-            initial={avatarInitial}
-            size="sm"
-            color={avatarColor}
-            onClick={onAvatarClick}
-          />
+          {avatarUrl && (
+            <AvatarWithImage
+              src={avatarUrl}
+              alt="User profile"
+              size="sm"
+              onClick={onAvatarClick}
+            />
+          )}
         </div>
       </div>
     )
@@ -273,12 +273,14 @@ export const AppBar = ({
       </div>
 
       <div className={styles.rightSection}>
-        <Avatar
-          initial={avatarInitial}
-          size="sm"
-          color={avatarColor}
-          onClick={onAvatarClick}
-        />
+        {avatarUrl && (
+          <AvatarWithImage
+            src={avatarUrl}
+            alt="User profile"
+            size="sm"
+            onClick={onAvatarClick}
+          />
+        )}
       </div>
     </div>
   )
