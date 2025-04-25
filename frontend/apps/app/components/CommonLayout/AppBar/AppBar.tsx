@@ -2,7 +2,7 @@ import { AvatarWithImage } from '@/components'
 import { ChevronRight } from '@/icons'
 import type { FC } from 'react'
 import styles from './AppBar.module.css'
-import { BranchDropdownMenu } from './BranchDropdownMenu/BranchDropdownMenu'
+import { BranchDropdownMenu } from './BranchDropdownMenu'
 import { ProjectsDropdownMenu } from './ProjectsDropdownMenu'
 import { getAuthUser } from './services/getAuthUser'
 
