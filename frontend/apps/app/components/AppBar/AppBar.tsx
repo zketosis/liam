@@ -47,8 +47,6 @@ type AppBarProps = {
   onProjectClick?: () => void
   onBranchClick?: () => void
   onAvatarClick?: () => void
-  avatarInitial?: string
-  avatarColor?: string
   avatarUrl?: string
   minimal?: boolean
   projectsList?: ProjectsList
