@@ -451,6 +451,7 @@ export type Database = {
           created_at: string
           id: string
           knowledge_suggestion_id: string
+          organization_id: string
           overall_review_id: string
           updated_at: string
         }
@@ -458,6 +459,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id: string
+          organization_id: string
           overall_review_id: string
           updated_at: string
         }
@@ -465,6 +467,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string
+          organization_id?: string
           overall_review_id?: string
           updated_at?: string
         }
@@ -481,6 +484,13 @@ export type Database = {
             columns: ['overall_review_id']
             isOneToOne: false
             referencedRelation: 'overall_reviews'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'overall_review_knowledge_suggestion_mappings_organization_id_fk'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
