@@ -21,15 +21,21 @@ async function getFeedbackData(supabase: SupabaseClient, feedbackId: string) {
       *,
       overallReview:overall_review_id(
         id,
-        project_id,
-        pullRequest:pull_request_id(
+        migration:migration_id(
           id,
-          repository_id,
-          pull_number,
-          repository:repository_id(
-            owner,
-            name,
-            github_installation_identifier
+          project_id,
+          migration_pull_request_mappings(
+            pull_request_id,
+            pullRequest:pull_request_id(
+              id,
+              repository_id,
+              pull_number,
+              repository:repository_id(
+                owner,
+                name,
+                github_installation_identifier
+              )
+            )
           )
         ),
         branch_name
@@ -73,7 +79,7 @@ async function updateFeedbackAsResolved(
 }
 
 /**
- * Fetches complete OverallReview data
+ * Fetches complete OverallReview data with migration details
  */
 async function getCompleteOverallReview(
   supabase: SupabaseClient,
@@ -81,7 +87,13 @@ async function getCompleteOverallReview(
 ) {
   const { data, error } = await supabase
     .from('overall_reviews')
-    .select('*')
+    .select(`
+      *,
+      migration:migration_id(
+        id,
+        project_id
+      )
+    `)
     .eq('id', overallReviewId)
     .single()
 
@@ -91,8 +103,8 @@ async function getCompleteOverallReview(
     )
   }
 
-  if (!data.project_id) {
-    throw new Error('Project ID not found in OverallReview')
+  if (!data.migration || !data.migration.project_id) {
+    throw new Error('Project ID not found in associated migration')
   }
 
   return data
@@ -198,7 +210,7 @@ export const resolveReviewFeedback = async (data: {
 
     // Trigger knowledge generation task
     const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId: completeOverallReview.project_id || '',
+      projectId: completeOverallReview.migration.project_id || '',
       review: reviewFormatted,
       title: `Knowledge from resolved feedback #${feedbackId}`,
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,

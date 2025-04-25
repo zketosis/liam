@@ -5,13 +5,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
 } from '@/components'
+import { setOrganizationIdCookie } from '@/features/organizations/services/setOrganizationIdCookie'
 import { Plus } from '@/icons'
 import { urlgen } from '@/utils/routes'
 import { useRouter } from 'next/navigation'
 import { type FC, useCallback } from 'react'
 import type { Organization } from '../../../services/getOrganization'
 import type { OrganizationsByUserId } from '../../../services/getOrganizationsByUserId'
-import { setOrganizationIdCookie } from '../../../services/setOrganizationIdCookie'
 import styles from './OrganizationDropdownContent.module.css'
 
 type Props = {

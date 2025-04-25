@@ -47,22 +47,10 @@ export const inviteMember = async (formData: FormData) => {
   const { email, organizationId } = parsedData.output
   const supabase = await createClient()
 
-  // Get current user
-  const currentUser = await supabase.auth.getUser()
-  const userId = currentUser.data.user?.id
-
-  if (!userId) {
-    return {
-      success: false,
-      error: 'User not authenticated',
-    } as const
-  }
-
   // Call the RPC function to handle the invitation atomically
   const { data, error } = await supabase.rpc('invite_organization_member', {
     p_email: email,
     p_organization_id: organizationId,
-    p_invite_by_user_id: userId,
   })
 
   if (error) {
