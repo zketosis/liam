@@ -490,8 +490,7 @@ export type Database = {
           branch_name: string
           created_at: string
           id: string
-          project_id: string | null
-          pull_request_id: string
+          migration_id: string
           review_comment: string | null
           reviewed_at: string
           trace_id: string | null
@@ -501,8 +500,7 @@ export type Database = {
           branch_name: string
           created_at?: string
           id?: string
-          project_id?: string | null
-          pull_request_id: string
+          migration_id: string
           review_comment?: string | null
           reviewed_at?: string
           trace_id?: string | null
@@ -512,8 +510,7 @@ export type Database = {
           branch_name?: string
           created_at?: string
           id?: string
-          project_id?: string | null
-          pull_request_id?: string
+          migration_id?: string
           review_comment?: string | null
           reviewed_at?: string
           trace_id?: string | null
@@ -521,17 +518,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'overall_review_project_id_fkey'
-            columns: ['project_id']
+            foreignKeyName: 'overall_review_migration_id_fkey'
+            columns: ['migration_id']
             isOneToOne: false
-            referencedRelation: 'projects'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'overall_review_pull_request_id_fkey'
-            columns: ['pull_request_id']
-            isOneToOne: false
-            referencedRelation: 'github_pull_requests'
+            referencedRelation: 'migrations'
             referencedColumns: ['id']
           },
         ]
