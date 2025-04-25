@@ -1,5 +1,5 @@
 'use server'
-
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/libs/db/server'
@@ -19,10 +19,26 @@ function getAuthCallbackUrl({
   return `${url}app/auth/callback/${provider}?next=${encodeURIComponent(next)}`
 }
 
-export async function login() {
+export async function login(formData: FormData) {
   const supabase = await createClient()
 
-  const redirectTo = getAuthCallbackUrl({ provider: 'github' })
+  // Get the returnTo path from the form data
+  // This will be set by the login page which reads from the cookie
+  const formReturnTo = formData.get('returnTo')
+  const returnTo = formReturnTo ? formReturnTo.toString() : '/app'
+
+  // Clear the returnTo cookie since we've used it
+  try {
+    const cookieStore = await cookies()
+    cookieStore.delete('returnTo')
+  } catch (error) {
+    console.error('Error clearing cookie:', error)
+  }
+
+  const redirectTo = getAuthCallbackUrl({
+    provider: 'github',
+    next: returnTo,
+  })
 
   const provider = 'github'
   const { error, data } = await supabase.auth.signInWithOAuth({
