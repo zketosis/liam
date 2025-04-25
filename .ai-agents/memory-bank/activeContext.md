@@ -121,6 +121,14 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
     - Created documentation list page at `/app/projects/[projectId]/ref/[branchOrCommit]/docs`
     - Added dynamic branch name management for KnowledgeSuggestion operations
 
+14. **Renamed github_doc_file_paths Table to doc_file_paths**: Simplified database table naming:
+
+    - Created a migration to rename the "github_doc_file_paths" table to "doc_file_paths"
+    - Renamed the "github_doc_file_path_id" column in "knowledge_suggestion_doc_mappings" to "doc_file_path_id"
+    - Updated foreign key constraints and indexes to reference the new table name
+    - Updated all code references to use the new table name
+    - This change provides a more consistent naming approach across the application
+
 ## Next Steps
 
 1. **Enhance Supabase Implementation**:

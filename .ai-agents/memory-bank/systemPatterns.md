@@ -31,7 +31,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Intermediate Mapping Tables**: For many-to-many relationships between entities, we use intermediate mapping tables (e.g., overall_review_knowledge_suggestion_mappings, knowledge_suggestion_doc_mappings) to maintain clean separation of concerns and enable flexible relationship management.
 - **Transaction Management**: Moving away from manual rollback processing in server actions to a more robust approach using Supabase RPC for transaction management. This will provide a consistent and reliable way to handle database transactions across the application.
 - **Direct Path Comparison**: Using direct path comparison instead of pattern matching for schema file detection, providing a more precise and efficient approach to schema file management.
-- **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as schema_file_paths and doc_file_paths for GitHub-integrated file management.
+- **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as schema_file_paths and doc_file_paths for file management, with a focus on simplicity and clarity.
 - **Context-Enriched AI Prompts**: The AI review generation incorporates multiple sources of context (PR descriptions, comments, documentation, schema files, and code changes) to provide more comprehensive and relevant analysis.
 
 ## Component Relationships

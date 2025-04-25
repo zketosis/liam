@@ -2,6 +2,12 @@
 
 ## What Works
 
+- Renamed github_doc_file_paths table to doc_file_paths:
+  - Created a migration to rename the table and related columns
+  - Updated foreign key constraints and indexes to reference the new table name
+  - Updated all code references to use the new table name
+  - Provides a more consistent naming approach across the application
+
 - Enhanced SettingsHeader component to match Figma design specifications, including:
   - Created three new icon components in the UI package: `BookMarked`, `Users`, and `GitPullRequestArrow`
   - Updated the UI package's index.ts to export the new icons
