@@ -1,23 +1,14 @@
-import type { PageProps } from '@/app/types'
+import { getOrganizationId } from '@/components/CommonLayout/services/getOrganizationId'
 import { ProjectsPage } from '@/features/projects/pages'
-import { migrationFlag } from '@/libs'
 import { createClient } from '@/libs/db/server'
 import { notFound } from 'next/navigation'
-import * as v from 'valibot'
 
-const paramsSchema = v.object({
-  organizationId: v.string(),
-})
+export default async function Page() {
+  const organizationId = await getOrganizationId()
 
-export default async function Page({ params }: PageProps) {
-  const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) return notFound()
-  const { organizationId } = parsedParams.output
-
-  const migrationEnabled = await migrationFlag()
-
-  if (!migrationEnabled) {
-    notFound()
+  // TODO: Reconsider what screen should be displayed to the user when organizationId is not available
+  if (organizationId == null) {
+    return null
   }
 
   const supabase = await createClient()

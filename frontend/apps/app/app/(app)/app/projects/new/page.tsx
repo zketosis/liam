@@ -1,19 +1,17 @@
-import type { PageProps } from '@/app/types'
+import { getOrganizationId } from '@/components/CommonLayout/services/getOrganizationId'
 import { ProjectNewPage } from '@/features/projects/pages'
 import { createClient } from '@/libs/db/server'
 import { getInstallations } from '@liam-hq/github'
 import { notFound } from 'next/navigation'
-import * as v from 'valibot'
 
-const paramsSchema = v.object({
-  organizationId: v.string(),
-})
+export default async function NewProjectPage() {
+  const organizationId = await getOrganizationId()
 
-export default async function NewProjectPage({ params }: PageProps) {
-  const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) return notFound()
+  // TODO: Reconsider what screen should be displayed to the user when organizationId is not available
+  if (organizationId == null) {
+    return null
+  }
 
-  const { organizationId } = parsedParams.output
   const supabase = await createClient()
   const {
     data: { user },
