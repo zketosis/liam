@@ -32,6 +32,7 @@ export {
   Group,
   Hash,
   KeyRound,
+  Library,
   Link,
   Lock,
   Menu,

@@ -10,8 +10,7 @@ type ClientAppBarProps = {
   project?: DBProject | null
   branchName?: string
   branchTag?: string
-  avatarInitial?: string
-  avatarColor?: string
+  avatarUrl?: string
 }
 
 // Client-side function to fetch project data
@@ -54,8 +53,7 @@ export function ClientAppBar({
   project: initialProject,
   branchName = 'main', // TODO: get branch name from database
   branchTag = 'production', // TODO: get branch tag from database
-  avatarInitial = 'L',
-  avatarColor = 'var(--color-teal-800)',
+  avatarUrl,
 }: ClientAppBarProps) {
   const pathname = usePathname()
   const [project, setProject] = useState<DBProject | null>(
@@ -150,8 +148,7 @@ export function ClientAppBar({
       project={project ? toUIProject(project) : undefined}
       branchName={branchName}
       branchTag={branchTag}
-      avatarInitial={avatarInitial}
-      avatarColor={avatarColor}
+      avatarUrl={avatarUrl}
       minimal={isMinimal}
       projectsList={projectsListProp}
     />

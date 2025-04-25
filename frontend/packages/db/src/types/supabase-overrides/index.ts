@@ -5,5 +5,6 @@ import type { OverallReviewKnowledgeSuggestionMappingsOverride } from './overall
 
 export type AppDatabaseOverrides = MergeDeep<
   DatabaseGenerated,
-  KnowledgeSuggestionsOverride & OverallReviewKnowledgeSuggestionMappingsOverride
+  KnowledgeSuggestionsOverride &
+    OverallReviewKnowledgeSuggestionMappingsOverride
 >
