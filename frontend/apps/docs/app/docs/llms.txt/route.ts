@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-static'
 
 interface MDXFile {
+  path: string // relative
   title: string
   url: string
   description?: string
@@ -51,13 +52,13 @@ const getContents = (dirPath: string): MDXFile[] => {
         continue
       }
 
-      const relativePath = path.relative(
-        path.resolve(process.cwd(), 'content/docs'),
-        filePath,
-      )
-      const url = `${baseUrl}/docs/${relativePath.replace('.mdx', '').replace(/\/index$/, '')}`
+      const relativePath = path
+        .relative(path.resolve(process.cwd(), 'content/docs'), filePath)
+        .replace(/(\/?index)?\.mdx$/, '')
+      const url = `${baseUrl}/docs/${relativePath}`
 
       results.push({
+        path: relativePath,
         title: frontmatter.title,
         url,
         ...(frontmatter.description && {
@@ -67,7 +68,9 @@ const getContents = (dirPath: string): MDXFile[] => {
     }
   }
 
-  return results
+  return results.sort((a, b) =>
+    a.path.localeCompare(b.path, 'en', { numeric: true }),
+  )
 }
 
 export function GET() {
