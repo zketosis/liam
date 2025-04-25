@@ -57,15 +57,15 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
    - Implemented content comparison to check if document content has changed before creating a suggestion
    - Refactored the function into smaller, focused helper functions to reduce cognitive complexity
    - Improved type safety with proper type definitions and return types
-   - Optimized database queries by caching the github_doc_file_paths query result
+   - Optimized database queries by caching the doc_file_paths query result
    - Enhanced error handling with more specific error messages
    - This optimization prevents duplicate suggestions when content hasn't changed
 
-6. **knowledge_suggestions and github_doc_file_paths Integration**: Implemented a connection between knowledge_suggestions and github_doc_file_paths tables:
+6. **knowledge_suggestions and doc_file_paths Integration**: Implemented a connection between knowledge_suggestions and doc_file_paths tables:
 
-   - Created a new intermediate table `knowledge_suggestion_doc_mappings` to link knowledge_suggestions and github_doc_file_paths
+   - Created a new intermediate table `knowledge_suggestion_doc_mappings` to link knowledge_suggestions and doc_file_paths
    - Modified `processCreateKnowledgeSuggestion.ts` to create mappings for existing docs when creating a Doc Suggestion
-   - Updated `approveKnowledgeSuggestion.ts` to create github_doc_file_paths entries and mappings for new docs
+   - Updated `approveKnowledgeSuggestion.ts` to create doc_file_paths entries and mappings for new docs
    - Refactored code to reduce cognitive complexity and improve type safety
    - This ensures that newly created knowledge suggestions are properly included in reviews
 
@@ -121,6 +121,14 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
     - Created documentation list page at `/app/projects/[projectId]/ref/[branchOrCommit]/docs`
     - Added dynamic branch name management for KnowledgeSuggestion operations
 
+14. **Renamed github_doc_file_paths Table to doc_file_paths**: Simplified database table naming:
+
+    - Created a migration to rename the "github_doc_file_paths" table to "doc_file_paths"
+    - Renamed the "github_doc_file_path_id" column in "knowledge_suggestion_doc_mappings" to "doc_file_path_id"
+    - Updated foreign key constraints and indexes to reference the new table name
+    - Updated all code references to use the new table name
+    - This change provides a more consistent naming approach across the application
+
 ## Next Steps
 
 1. **Enhance Supabase Implementation**:
@@ -170,7 +178,7 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
 
    - Using direct path comparison instead of pattern matching
    - Providing more precise and efficient approach
-   - Aligning with existing github_doc_file_paths model
+   - Aligning with existing doc_file_paths model
 
 5. **Function Organization**:
    - Breaking down complex functions into smaller, focused helper functions
