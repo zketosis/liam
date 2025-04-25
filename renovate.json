@@ -3,12 +3,13 @@
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
+    ":automergeRequireAllStatusChecks",
     "helpers:pinGitHubActionDigestsToSemver"
   ],
   "lockFileMaintenance": {
     "enabled": true
   },
-  "minimumReleaseAge": "3 days",
+  "minimumReleaseAge": "14 days",
   "packageRules": [
     {
       "groupName": "fumadocs",
@@ -24,6 +25,11 @@
         "^langfuse$",
         "^langfuse-langchain$"
       ]
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true             
     }
   ]
 }

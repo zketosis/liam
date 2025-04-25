@@ -101,7 +101,7 @@ async function getMigrationContents(migrationId: string) {
         )
       )
     `)
-    .eq('pull_request_id', pullRequest.id)
+    .eq('migration_id', migrationId)
     .order('created_at', { ascending: false })
     .limit(1)
     .single()
@@ -142,12 +142,12 @@ async function getMigrationContents(migrationId: string) {
   const { data: schemaPath, error: pathError } = await supabase
     .from('schema_file_paths')
     .select('path')
-    .eq('project_id', overallReview.project_id || '')
+    .eq('project_id', migration.project_id)
     .single()
 
   if (pathError) {
     console.warn(
-      `No schema path found for project ${overallReview.project_id}: ${JSON.stringify(pathError)}`,
+      `No schema path found for project ${migration.project_id}: ${JSON.stringify(pathError)}`,
     )
     return {
       migration,
@@ -165,7 +165,7 @@ async function getMigrationContents(migrationId: string) {
     path: urlgen(
       'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]',
       {
-        projectId: `${overallReview.project_id}`,
+        projectId: `${migration.project_id}`,
         branchOrCommit: prDetails.head.ref,
         schemaFilePath: filename,
       },
