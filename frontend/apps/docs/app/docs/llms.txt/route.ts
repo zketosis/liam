@@ -86,8 +86,7 @@ const getIndent = (path: string): string => {
 export function GET() {
   const contents = getContents(path.resolve(process.cwd(), 'content/docs'))
 
-  const llmsText = `
-# Liam ERD
+  const llmsText = `# Liam ERD
 
 ## Docs
 

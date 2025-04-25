@@ -40,8 +40,7 @@ export function GET() {
     path.resolve(process.cwd(), 'content/docs'),
   )
 
-  const content = `
-# Liam ERD
+  const content = `# Liam ERD
 
 ${rawContents.join('\n\n')}
 `
