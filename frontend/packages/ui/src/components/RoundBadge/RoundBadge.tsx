@@ -1,5 +1,3 @@
-'use client'
-
 import clsx from 'clsx'
 import type { ComponentProps, ReactNode } from 'react'
 import styles from './RoundBadge.module.css'
