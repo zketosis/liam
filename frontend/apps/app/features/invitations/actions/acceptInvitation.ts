@@ -1,6 +1,6 @@
 'use server'
 
-import { setOrganizationIdCookie } from '@/components/CommonLayout/services/setOrganizationIdCookie'
+import { setOrganizationIdCookie } from '@/features/organizations/services/setOrganizationIdCookie'
 import { createClient } from '@/libs/db/server'
 import { routeDefinitions } from '@/utils/routes/routeDefinitions'
 import { revalidatePath } from 'next/cache'

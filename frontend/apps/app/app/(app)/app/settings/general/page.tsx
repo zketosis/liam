@@ -1,4 +1,4 @@
-import { getOrganizationId } from '@/components/CommonLayout/services/getOrganizationId'
+import { getOrganizationId } from '@/features/organizations/services/getOrganizationId'
 import { GeneralPage } from './GeneralPage'
 
 export default async function Page() {

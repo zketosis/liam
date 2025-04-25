@@ -1,5 +1,5 @@
-import { getOrganizationId } from '@/components/CommonLayout/services/getOrganizationId'
 import { OrganizationMembersPage } from '@/features/organizations/pages/OrganizationMembersPage'
+import { getOrganizationId } from '@/features/organizations/services/getOrganizationId'
 import { createClient } from '@/libs/db/server'
 import { notFound } from 'next/navigation'
 
