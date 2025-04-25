@@ -18,8 +18,6 @@ type KindEnum =
   | 'Project Rules Consistency'
   | 'Security or Scalability'
 
-
-
 /**
  * Converts review schema kind format to database category format
  */
