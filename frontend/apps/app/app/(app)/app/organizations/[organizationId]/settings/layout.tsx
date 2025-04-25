@@ -43,7 +43,7 @@ export default async function OrganizationSettingsLayout({
         <h1 className={styles.heading}>Settings</h1>
 
         <TabsRoot defaultValue={defaultTabFromPath}>
-          <SettingsHeader organizationId={parsedParams.output.organizationId} />
+          <SettingsHeader />
           <TabsContent
             value={SETTINGS_TAB.GENERAL}
             className={styles.tabContent}

@@ -7,24 +7,10 @@ export type RouteDefinitions = {
   'projects/[projectId]/settings': (params: { projectId: string }) => string
   'organizations/new': string
   organizations: string
-  'organizations/[organizationId]/projects': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/projects/new': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/settings/general': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/settings/members': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/settings/billing': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/settings/projects': (params: {
-    organizationId: string
-  }) => string
+  'settings/general': string
+  'settings/members': string
+  'settings/billing': string
+  'settings/projects': string
   'invitations/tokens/[token]': (params: {
     token: string
   }) => string
@@ -76,24 +62,10 @@ export const routeDefinitions: RouteDefinitions = {
   'projects/new': '/app/projects/new',
   'organizations/new': '/app/organizations/new',
   organizations: '/app/organizations',
-  'organizations/[organizationId]/projects': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/projects`
-  },
-  'organizations/[organizationId]/projects/new': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/projects/new`
-  },
-  'organizations/[organizationId]/settings/general': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/settings/general`
-  },
-  'organizations/[organizationId]/settings/members': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/settings/members`
-  },
-  'organizations/[organizationId]/settings/billing': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/settings/billing`
-  },
-  'organizations/[organizationId]/settings/projects': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/settings/projects`
-  },
+  'settings/general': '/app/settings/general',
+  'settings/members': '/app/settings/members',
+  'settings/billing': '/app/settings/billing',
+  'settings/projects': '/app/settings/projects',
   'invitations/tokens/[token]': ({ token }) => {
     return `/app/invitations/tokens/${token}`
   },

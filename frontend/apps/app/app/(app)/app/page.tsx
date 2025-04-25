@@ -37,16 +37,8 @@ export default async function Page() {
   }
 
   if (projects && projects.length > 0) {
-    redirect(
-      urlgen('organizations/[organizationId]/projects', {
-        organizationId: organizationId.toString(),
-      }),
-    )
+    redirect(urlgen('projects'))
   }
 
-  redirect(
-    urlgen('organizations/[organizationId]/projects/new', {
-      organizationId: organizationId.toString(),
-    }),
-  )
+  redirect(urlgen('projects/new'))
 }

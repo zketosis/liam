@@ -33,12 +33,7 @@ export const OrganizationDropdownContent: FC<Props> = ({
     async (organizationId: string) => {
       await setOrganizationIdCookie(organizationId)
 
-      // TODO: Change the destination (since organizations/[organizationId]/projects page is planned to be deprecated)
-      router.push(
-        urlgen('organizations/[organizationId]/projects', {
-          organizationId,
-        }),
-      )
+      router.refresh()
     },
     [router],
   )
