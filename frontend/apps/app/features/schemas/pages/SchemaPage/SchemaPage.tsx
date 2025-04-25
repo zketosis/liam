@@ -172,10 +172,10 @@ export const SchemaPage: FC<Props> = async ({
   return (
     <TabsRoot defaultValue={DEFAULT_SCHEMA_TAB} className={styles.wrapper}>
       <SchemaHeader />
-      <TabsContent value={SCHEMA_TAB.ERD}>
+      <TabsContent value={SCHEMA_TAB.ERD} className={styles.tabsContent}>
         <ERDEditor {...contentProps} />
       </TabsContent>
-      <TabsContent value={SCHEMA_TAB.EDITOR}>
+      <TabsContent value={SCHEMA_TAB.EDITOR} className={styles.tabsContent}>
         <OverrideEditor />
       </TabsContent>
     </TabsRoot>

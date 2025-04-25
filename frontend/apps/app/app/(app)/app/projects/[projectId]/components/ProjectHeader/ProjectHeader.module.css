@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: var(--spacing-2);
   border-bottom: 1px solid var(--global-border);
 }
@@ -45,4 +46,19 @@
   width: 100%;
   height: 1px;
   background-color: var(--primary-accent);
+}
+
+.knowledgeSuggestionButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1half);
+  margin-left: auto;
+}
+
+.knowledgeSuggestionButton:hover {
+  background-color: var(--global-muted-background);
+}
+
+.knowledgeSuggestionBadge {
+  margin-left: var(--spacing-1);
 }
