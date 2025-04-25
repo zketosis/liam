@@ -13,7 +13,7 @@ async function getGithubSchemaFilePath(projectId: string) {
     const projectId_num = projectId
     const supabase = await createClient()
     const { data: gitHubSchemaFilePath, error } = await supabase
-      .from('github_schema_file_paths')
+      .from('schema_file_paths')
       .select('*')
       .eq('project_id', projectId_num)
       .single()

@@ -1,6 +1,6 @@
 import { urlgen } from '@/utils/routes'
 import { notFound } from 'next/navigation'
-import { EmptyProjectsState } from '../../components/EmptyProjectsState'
+import { EmptyProjectsState } from '../../components'
 import styles from './ProjectsPage.module.css'
 import { ServerProjectsDataProvider } from './ServerProjectsDataProvider'
 import {
@@ -30,6 +30,7 @@ export async function ProjectsPage({
         <h1 className={styles.heading}>Projects</h1>
         {projects === null || projects.length === 0 ? (
           <EmptyProjectsState
+            projects={projects}
             createProjectHref={
               currentOrganization
                 ? urlgen('organizations/[organizationId]/projects/new', {

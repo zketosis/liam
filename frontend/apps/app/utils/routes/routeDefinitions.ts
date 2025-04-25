@@ -3,8 +3,8 @@ export type RouteDefinitions = {
   projects: string
   'projects/new': string
   'projects/[projectId]': (params: { projectId: string }) => string
-  'projects/[projectId]/migrations': (params: { projectId: string }) => string
-  'projects/[projectId]/docs': (params: { projectId: string }) => string
+  'projects/[projectId]/rule': (params: { projectId: string }) => string
+  'projects/[projectId]/settings': (params: { projectId: string }) => string
   'organizations/new': string
   organizations: string
   'organizations/[organizationId]/projects': (params: {
@@ -25,6 +25,9 @@ export type RouteDefinitions = {
   'organizations/[organizationId]/settings/projects': (params: {
     organizationId: string
   }) => string
+  'invitations/tokens/[token]': (params: {
+    token: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]': (params: {
     projectId: string
     branchOrCommit: string
@@ -38,10 +41,18 @@ export type RouteDefinitions = {
     branchOrCommit: string
     migrationId: string
   }) => string
+  'projects/[projectId]/ref/[branchOrCommit]/schema': (params: {
+    projectId: string
+    branchOrCommit: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]': (params: {
     projectId: string
     branchOrCommit: string
     schemaFilePath: string
+  }) => string
+  'projects/[projectId]/ref/[branchOrCommit]/docs': (params: {
+    projectId: string
+    branchOrCommit: string
   }) => string
   'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions': (params: {
     projectId: string
@@ -83,14 +94,17 @@ export const routeDefinitions: RouteDefinitions = {
   'organizations/[organizationId]/settings/projects': ({ organizationId }) => {
     return `/app/organizations/${organizationId}/settings/projects`
   },
+  'invitations/tokens/[token]': ({ token }) => {
+    return `/app/invitations/tokens/${token}`
+  },
   'projects/[projectId]': ({ projectId }) => {
     return `/app/projects/${projectId}`
   },
-  'projects/[projectId]/migrations': ({ projectId }) => {
-    return `/app/projects/${projectId}/migrations`
+  'projects/[projectId]/rule': ({ projectId }) => {
+    return `/app/projects/${projectId}/rule`
   },
-  'projects/[projectId]/docs': ({ projectId }) => {
-    return `/app/projects/${projectId}/docs`
+  'projects/[projectId]/settings': ({ projectId }) => {
+    return `/app/projects/${projectId}/settings`
   },
   'projects/[projectId]/ref/[branchOrCommit]': ({
     projectId,
@@ -136,6 +150,20 @@ export const routeDefinitions: RouteDefinitions = {
   }) => {
     const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
     return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/migrations/${migrationId}`
+  },
+  'projects/[projectId]/ref/[branchOrCommit]/schema': ({
+    projectId,
+    branchOrCommit,
+  }) => {
+    const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
+    return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/schema`
+  },
+  'projects/[projectId]/ref/[branchOrCommit]/docs': ({
+    projectId,
+    branchOrCommit,
+  }) => {
+    const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
+    return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/docs`
   },
   'projects/[projectId]/ref/[branchOrCommit]/docs/[docFilePath]': ({
     projectId,

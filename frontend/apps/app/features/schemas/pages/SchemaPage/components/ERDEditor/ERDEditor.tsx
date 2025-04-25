@@ -15,6 +15,7 @@ import {
   useState,
 } from 'react'
 import { parse } from 'valibot'
+import styles from './ERDEditor.module.css'
 
 type Props = {
   schema: Schema
@@ -91,7 +92,7 @@ export const ERDEditor: FC<Props> = ({
   const canUpdateFile = Boolean(projectId && branchOrCommit)
 
   return (
-    <div style={{ height: '100dvh', position: 'relative' }}>
+    <div className={styles.wrapper}>
       <VersionProvider version={version}>
         <ERDRenderer
           defaultSidebarOpen={defaultSidebarOpen}

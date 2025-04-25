@@ -61,9 +61,8 @@
   position: relative;
 }
 
-.breadcrumbTrigger {
-  all: unset;
-  cursor: pointer;
+.breadcrumbItem:focus {
+  outline-color: var(--primary-color);
 }
 
 .breadcrumbItem:hover {

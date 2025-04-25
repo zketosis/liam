@@ -5,11 +5,11 @@
   "main": "src/index.ts",
   "dependencies": {
     "@langchain/core": "0.3.45",
-    "@langchain/openai": "0.5.5",
+    "@langchain/openai": "0.5.6",
     "@liam-hq/db": "workspace:*",
     "@liam-hq/db-structure": "workspace:*",
     "@liam-hq/github": "workspace:*",
-    "@sentry/node": "9.12.0",
+    "@sentry/node": "9.14.0",
     "@trigger.dev/build": "3.3.17",
     "@trigger.dev/sdk": "3.3.17",
     "@valibot/to-json-schema": "1.0.0",
@@ -32,7 +32,7 @@
     "json-schema": "0.4.0",
     "trigger.dev": "3.3.17",
     "typescript": "5.8.3",
-    "vitest": "3.1.1"
+    "vitest": "3.1.2"
   },
   "scripts": {
     "deploy": "trigger deploy",

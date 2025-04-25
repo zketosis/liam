@@ -94,7 +94,7 @@ describe('checkSchemaChanges', () => {
     try {
       // Create a test schema path for the project
       const { data: schemaPath, error: schemaPathError } = await supabase
-        .from('github_schema_file_paths')
+        .from('schema_file_paths')
         .insert({
           path: 'migrations/2024_update.sql',
           project_id: project.id,
@@ -142,10 +142,7 @@ describe('checkSchemaChanges', () => {
       expect(result).toEqual({ shouldContinue: true })
 
       // Clean up the schema path
-      await supabase
-        .from('github_schema_file_paths')
-        .delete()
-        .eq('id', schemaPath.id)
+      await supabase.from('schema_file_paths').delete().eq('id', schemaPath.id)
     } finally {
       // Clean up the project
       await supabase.from('projects').delete().eq('id', project.id)

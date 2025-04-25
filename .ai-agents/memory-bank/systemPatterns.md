@@ -1,11 +1,13 @@
 # System Patterns
 
 ## System Architecture
+
 Liam Migration is designed to integrate seamlessly with existing development workflows, particularly through its GitHub App integration. It leverages AI components to provide intelligent analysis and suggestions during the migration review process.
 
 The project uses a monorepo structure managed with pnpm workspaces, allowing for maintenance of multiple packages and applications in a single repository while sharing dependencies and code.
 
 ## Key Technical Decisions
+
 - **AI-Driven Analysis**: The use of AI to automatically analyze migration impacts, predict risks, and suggest optimizations is central to the product's value proposition.
 - **GitHub Integration**: The integration with GitHub repositories allows for automated comments and review approvals, streamlining the development process.
 - **OSS and Paid Plan Coexistence**: The product is designed to coexist with its OSS version, offering high-value features in paid plans to ensure a sustainable business model.
@@ -13,10 +15,11 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **TypeScript-First**: All components and functions are written in TypeScript to ensure type safety and improve developer experience.
 - **Database Access Strategy**: Using Supabase JS for database access to leverage Supabase's optimized query capabilities and standardize the data access layer. This requires careful handling of type compatibility issues, particularly with bigint fields and nested relationships.
 - **Type Safety Approach**: When working with Supabase, we use type assertions carefully to bridge the gap between the Supabase types and our application's expected types, particularly for nested queries and bigint fields.
-- **Schema File Management Strategy**: Using direct path comparison instead of pattern matching for schema file detection, with the github_schema_file_paths table (renamed from watch_schema_file_patterns) to store exact file paths.
+- **Schema File Management Strategy**: Using direct path comparison instead of pattern matching for schema file detection, with the schema_file_paths table (renamed from watch_schema_file_patterns) to store exact file paths.
 - **Standardized Supabase Client Usage**: Using a shared createClient function across the codebase to ensure consistent Supabase client creation and usage.
 
 ## Design Patterns
+
 - **Modular Architecture**: The system is built with a modular architecture to allow for easy integration and extension of features.
 - **Function Separation**: Business logic is separated into dedicated function files that are called from task definitions, making the code more modular and testable.
 - **Task Pipeline**: A series of tasks are chained together to form a complete workflow, with each task responsible for a specific part of the process.
@@ -28,10 +31,11 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Intermediate Mapping Tables**: For many-to-many relationships between entities, we use intermediate mapping tables (e.g., overall_review_knowledge_suggestion_mappings, knowledge_suggestion_doc_mappings) to maintain clean separation of concerns and enable flexible relationship management.
 - **Transaction Management**: Moving away from manual rollback processing in server actions to a more robust approach using Supabase RPC for transaction management. This will provide a consistent and reliable way to handle database transactions across the application.
 - **Direct Path Comparison**: Using direct path comparison instead of pattern matching for schema file detection, providing a more precise and efficient approach to schema file management.
-- **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as github_schema_file_paths and github_doc_file_paths for GitHub-integrated file management.
+- **Consistent Naming Conventions**: Using consistent naming conventions across the codebase, such as schema_file_paths and github_doc_file_paths for GitHub-integrated file management.
 - **Context-Enriched AI Prompts**: The AI review generation incorporates multiple sources of context (PR descriptions, comments, documentation, schema files, and code changes) to provide more comprehensive and relevant analysis.
 
 ## Component Relationships
+
 - **GitHub Webhook Handler**: Receives webhook events from GitHub, extracts schema changes, and triggers the review process.
 - **Task Pipeline**: A series of tasks (savePullRequestTask → generateReviewTask → saveReviewTask → postCommentTask → generateDocsSuggestionTask/generateSchemaOverrideSuggestionTask → createKnowledgeSuggestionTask) that process the schema changes, generate reviews, and create knowledge suggestions.
 - **Review Agent**: Works closely with the GitHub App to provide real-time analysis and feedback on migration changes.
@@ -41,6 +45,7 @@ The project uses a monorepo structure managed with pnpm workspaces, allowing for
 - **Schema Override Generator**: Analyzes PR reviews and schema changes to generate schema override enhancements that improve the schema without changing the core schema.
 
 ## Repository Structure
+
 The project follows a structured organization with clear separation of concerns:
 
 - **Apps**: Contains the main web applications (app, docs, erd-sample, migration-web)
