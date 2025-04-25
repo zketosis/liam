@@ -47,7 +47,7 @@ async function getProject(projectId: string) {
   }
 
   const { data: docPaths, error: docPathsError } = await supabase
-    .from('github_doc_file_paths')
+    .from('doc_file_paths')
     .select('path')
     .eq('project_id', projectId)
 
