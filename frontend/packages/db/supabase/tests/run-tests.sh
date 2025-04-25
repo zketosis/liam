@@ -8,17 +8,6 @@ if ! command -v pnpm &> /dev/null; then
     exit 1
 fi
 
-# Find the project root directory (where .github is located)
-cd $(pwd)
-while [ ! -d ".github" ] && [ "$(pwd)" != "/" ]; do
-    cd ..
-done
-
-if [ ! -d ".github" ]; then
-    echo "Could not find project root directory with .github folder"
-    exit 1
-fi
-
 PROJECT_ROOT=$(pwd)
 echo "Project root: $PROJECT_ROOT"
 
@@ -33,7 +22,7 @@ fi
 
 # Set up the testing environment
 echo "Setting up the testing environment..."
-PGPASSWORD=postgres psql -U postgres -d postgres -h localhost -p 54322 -f "$PROJECT_ROOT/.github/workflows/setup-testing.sql"
+PGPASSWORD=postgres psql -U postgres -d postgres -h localhost -p 54322 -f "$PROJECT_ROOT/frontend/packages/db/supabase/setup-testing.sql"
 
 # Change to the directory with the tests
 cd "$PROJECT_ROOT/frontend/packages/db/supabase"
