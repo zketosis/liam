@@ -174,62 +174,33 @@ export type Database = {
           },
         ]
       }
-      github_schema_file_paths: {
-        Row: {
-          created_at: string
-          format: Database['public']['Enums']['schema_format_enum']
-          id: string
-          path: string
-          project_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          format: Database['public']['Enums']['schema_format_enum']
-          id?: string
-          path: string
-          project_id: string
-          updated_at: string
-        }
-        Update: {
-          created_at?: string
-          format?: Database['public']['Enums']['schema_format_enum']
-          id?: string
-          path?: string
-          project_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'github_schema_file_path_project_id_fkey'
-            columns: ['project_id']
-            isOneToOne: false
-            referencedRelation: 'projects'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       invitations: {
         Row: {
           email: string
+          expired_at: string
           id: string
           invite_by_user_id: string
           invited_at: string | null
           organization_id: string
+          token: string
         }
         Insert: {
           email: string
+          expired_at?: string
           id?: string
           invite_by_user_id: string
           invited_at?: string | null
           organization_id: string
+          token?: string
         }
         Update: {
           email?: string
+          expired_at?: string
           id?: string
           invite_by_user_id?: string
           invited_at?: string | null
           organization_id?: string
+          token?: string
         }
         Relationships: [
           {
@@ -295,6 +266,7 @@ export type Database = {
           created_at: string
           file_sha: string | null
           id: string
+          organization_id: string
           path: string
           project_id: string
           reasoning: string | null
@@ -310,6 +282,7 @@ export type Database = {
           created_at?: string
           file_sha?: string | null
           id?: string
+          organization_id: string
           path: string
           project_id: string
           reasoning?: string | null
@@ -325,6 +298,7 @@ export type Database = {
           created_at?: string
           file_sha?: string | null
           id?: string
+          organization_id?: string
           path?: string
           project_id?: string
           reasoning?: string | null
@@ -339,6 +313,13 @@ export type Database = {
             columns: ['project_id']
             isOneToOne: false
             referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'knowledge_suggestions_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -789,6 +770,41 @@ export type Database = {
           },
         ]
       }
+      schema_file_paths: {
+        Row: {
+          created_at: string
+          format: Database['public']['Enums']['schema_format_enum']
+          id: string
+          path: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          format: Database['public']['Enums']['schema_format_enum']
+          id?: string
+          path: string
+          project_id: string
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          format?: Database['public']['Enums']['schema_format_enum']
+          id?: string
+          path?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'schema_file_path_project_id_fkey'
+            columns: ['project_id']
+            isOneToOne: false
+            referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       users: {
         Row: {
           email: string
@@ -812,6 +828,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      get_invitation_data: {
+        Args: { p_token: string }
+        Returns: Json
+      }
+      invite_organization_member: {
+        Args: { p_email: string; p_organization_id: string }
+        Returns: Json
+      }
       sync_existing_users: {
         Args: Record<PropertyKey, never>
         Returns: undefined
