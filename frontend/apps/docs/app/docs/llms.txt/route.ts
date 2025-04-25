@@ -73,6 +73,17 @@ const getContents = (dirPath: string): MDXFile[] => {
   )
 }
 
+/**
+ * Returns an indentation string based on the number of slashes in the path.
+ *
+ * @param path - A string that may contain slashes (/)
+ * @returns A string of spaces: 4 spaces per slash in the path
+ */
+const getIndent = (path: string): string => {
+  const count = (path.match(/\//g) || []).length
+  return ' '.repeat(count * 4)
+}
+
 export function GET() {
   const contents = getContents(path.resolve(process.cwd(), 'content/docs'))
 
@@ -83,7 +94,7 @@ export function GET() {
 
 ${contents
   .map((file) => {
-    const base = `- [${file.title}](${file.url})`
+    const base = `${getIndent(file.path)}- [${file.title}](${file.url})`
     return file.description ? `${base}: ${file.description}` : base
   })
   .join('\n')}
