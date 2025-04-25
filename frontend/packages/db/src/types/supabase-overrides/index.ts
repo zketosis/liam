@@ -3,10 +3,12 @@ import type { Database as DatabaseGenerated } from '../../../supabase/database.t
 import type { KnowledgeSuggestionsOverride } from './knowledge_suggestions'
 import type { OverallReviewKnowledgeSuggestionMappingsOverride } from './overall_review_knowledge_suggestion_mappings'
 import type { OverallReviewsOverride } from './overall_reviews'
+import type { ReviewFeedbacksOverride } from './review_feedbacks'
 
 export type AppDatabaseOverrides = MergeDeep<
   DatabaseGenerated,
   KnowledgeSuggestionsOverride &
     OverallReviewKnowledgeSuggestionMappingsOverride &
-    OverallReviewsOverride
+    OverallReviewsOverride &
+    ReviewFeedbacksOverride
 >
