@@ -56,6 +56,7 @@ export const addProject = async (formData: FormData) => {
     .insert({
       project_id: project.id,
       repository_id: repository.id,
+      organization_id: organizationId,
       updated_at: now,
     })
 
