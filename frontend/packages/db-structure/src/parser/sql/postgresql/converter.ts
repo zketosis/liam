@@ -12,6 +12,7 @@ import type {
 import { type Result, err, ok } from 'neverthrow'
 import type {
   Columns,
+  Constraints,
   ForeignKeyConstraintReferenceOption,
   Relationship,
   Table,
@@ -208,7 +209,6 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
         ) || false
     )
   }
-
   /**
    * Check if a column is not null
    */
@@ -329,10 +329,12 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     tableName: string,
   ): {
     columns: Columns
+    constraints: Constraints
     tableRelationships: Relationship[]
     tableErrors: ProcessError[]
   } {
     const columns: Columns = {}
+    const constraints: Constraints = {}
     const tableRelationships: Relationship[] = []
     const tableErrors: ProcessError[] = []
 
@@ -354,19 +356,23 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
       }
     }
 
-    return { columns, tableRelationships, tableErrors }
+    return { columns, constraints, tableRelationships, tableErrors }
   }
 
   /**
    * Create a table object
    */
-  function createTableObject(tableName: string, columns: Columns): void {
+  function createTableObject(
+    tableName: string,
+    columns: Columns,
+    constraints: Constraints,
+  ): void {
     tables[tableName] = {
       name: tableName,
       columns,
       comment: null,
       indexes: {},
-      constraints: {},
+      constraints,
     }
   }
 
@@ -381,13 +387,11 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     if (!tableName) return
 
     // Process table elements
-    const { columns, tableRelationships, tableErrors } = processTableElements(
-      createStmt.tableElts,
-      tableName,
-    )
+    const { columns, constraints, tableRelationships, tableErrors } =
+      processTableElements(createStmt.tableElts, tableName)
 
     // Create table object
-    createTableObject(tableName, columns)
+    createTableObject(tableName, columns, constraints)
 
     // Add relationships and errors
     for (const relationship of tableRelationships) {
@@ -443,7 +447,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
             type,
           },
         },
-        constraints: {},
+        constraints: tables[tableName]?.constraints || {},
       }
     }
   }
