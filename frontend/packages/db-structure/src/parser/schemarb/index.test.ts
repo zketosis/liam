@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import type { Table } from '../../schema/index.js'
 import {
   aCheckConstraint,
@@ -11,20 +11,9 @@ import {
   aUniqueConstraint,
   anIndex,
 } from '../../schema/index.js'
-import * as GenerateRandomIdentifier from './generateRandomIdentifier.js'
 import { UnsupportedTokenError, processor } from './index.js'
 
 import { createParserTestCases } from '../__tests__/index.js'
-
-beforeEach(() => {
-  vi.spyOn(GenerateRandomIdentifier, 'generateRandomIdentifier')
-    .mockImplementationOnce((length) => `[identifier(${length})_#1]`)
-    .mockImplementation(() => {
-      throw Error(
-        '"generateRandomIdentifier" is called more times than expected. Please add additional "mockImplementationOnce" calls if need',
-      )
-    })
-})
 
 describe(processor, () => {
   const userTable = (override?: Partial<Table>) =>
@@ -336,8 +325,8 @@ describe(processor, () => {
           name: 'PRIMARY_id',
           columnName: 'id',
         }),
-        'fk_rails_[identifier(10)_#1]': aForeignKeyConstraint({
-          name: 'fk_rails_[identifier(10)_#1]',
+        users_id_to_posts_user_id: aForeignKeyConstraint({
+          name: 'users_id_to_posts_user_id',
           columnName: 'user_id',
           targetTableName: 'users',
           targetColumnName: 'id',

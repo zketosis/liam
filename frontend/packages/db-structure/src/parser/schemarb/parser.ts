@@ -50,7 +50,6 @@ import {
   handleOneToOneRelationships,
 } from '../utils/index.js'
 import { convertColumnType } from './convertColumnType.js'
-import { generateRandomIdentifier } from './generateRandomIdentifier.js'
 import { loadPrism } from './loadPrism.js'
 import { singularize } from './singularize.js'
 
@@ -429,16 +428,14 @@ function extractForeignKeyOptions(
   }
 
   if (relation.name === '') {
-    relation.name = defaultRelationshipName(
+    const relationshipName = defaultRelationshipName(
       relation.primaryTableName,
       relation.primaryColumnName,
       relation.foreignTableName,
       relation.foreignColumnName,
     )
-  }
-
-  if (foreignKeyConstraint.name === '') {
-    foreignKeyConstraint.name = `fk_rails_${generateRandomIdentifier(10)}`
+    relation.name = relationshipName
+    foreignKeyConstraint.name = relationshipName
   }
 }
 
