@@ -50,6 +50,7 @@ import {
   handleOneToOneRelationships,
 } from '../utils/index.js'
 import { convertColumnType } from './convertColumnType.js'
+import { generateRandomIdentifier } from './generateRandomIdentifier.js'
 import { loadPrism } from './loadPrism.js'
 import { singularize } from './singularize.js'
 
@@ -422,7 +423,9 @@ function extractForeignKeyOptions(
 
   // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
   if (relation.foreignColumnName === '') {
-    relation.foreignColumnName = `${singularize(relation.primaryTableName)}_id`
+    const columnName = `${singularize(relation.primaryTableName)}_id`
+    relation.foreignColumnName = columnName
+    foreignKeyConstraint.columnName = columnName
   }
 
   if (relation.name === '') {
@@ -432,6 +435,10 @@ function extractForeignKeyOptions(
       relation.foreignTableName,
       relation.foreignColumnName,
     )
+  }
+
+  if (foreignKeyConstraint.name === '') {
+    foreignKeyConstraint.name = `fk_rails_${generateRandomIdentifier(10)}`
   }
 }
 
