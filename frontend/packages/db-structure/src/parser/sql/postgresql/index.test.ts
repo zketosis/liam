@@ -25,6 +25,14 @@ describe(processor, () => {
             ...override?.indexes,
           },
           comment: override?.comment ?? null,
+          constraints: {
+            ...override?.constraints,
+            PRIMARY_id: {
+              name: 'PRIMARY_id',
+              type: 'PRIMARY KEY',
+              columnName: 'id',
+            },
+          },
         }),
       },
     })
@@ -117,7 +125,24 @@ describe(processor, () => {
         );
       `)
 
-      expect(value).toEqual(parserTestCases.unique)
+      expect(value).toEqual(
+        userTable({
+          columns: {
+            mention: aColumn({
+              name: 'mention',
+              type: 'text',
+              unique: true,
+            }),
+          },
+          constraints: {
+            UNIQUE_mention: {
+              name: 'UNIQUE_mention',
+              type: 'UNIQUE',
+              columnName: 'mention',
+            },
+          },
+        }),
+      )
     })
 
     it('index (unique: false)', async () => {

@@ -1,17 +1,18 @@
 import type {
   AlterTableStmt,
   CommentStmt,
-  Constraint,
   CreateStmt,
   IndexStmt,
   List,
   Node,
+  Constraint as PgConstraint,
   String as PgString,
   RawStmt,
 } from '@pgsql/types'
 import { type Result, err, ok } from 'neverthrow'
 import type {
   Columns,
+  Constraint,
   Constraints,
   ForeignKeyConstraintReferenceOption,
   Relationship,
@@ -36,8 +37,8 @@ function isStringNode(node: Node | undefined): node is { String: PgString } {
   )
 }
 
-function isConstraintNode(node: Node): node is { Constraint: Constraint } {
-  return (node as { Constraint: Constraint }).Constraint !== undefined
+function isConstraintNode(node: Node): node is { Constraint: PgConstraint } {
+  return (node as { Constraint: PgConstraint }).Constraint !== undefined
 }
 
 // ON UPDATE or ON DELETE subclauses for foreign key
@@ -71,7 +72,7 @@ function extractDefaultValueFromConstraints(
 
   const constraintNodes = constraints.filter(isConstraintNode)
   for (const c of constraintNodes) {
-    const constraint = (c as { Constraint: Constraint }).Constraint
+    const constraint = (c as { Constraint: PgConstraint }).Constraint
 
     // Skip if not a default constraint or missing required properties
     if (
@@ -106,7 +107,7 @@ function extractDefaultValueFromConstraints(
 const constraintToRelationship = (
   foreignTableName: string,
   foreignColumnName: string,
-  constraint: Constraint,
+  constraint: PgConstraint,
 ): Result<Relationship | undefined, UnexpectedTokenWarningError> => {
   if (constraint.contype !== 'CONSTR_FOREIGN') {
     return ok(undefined)
@@ -254,6 +255,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     tableName: string,
   ): {
     column: [string, Column]
+    constraints: [string, Constraint][]
     relationships: Relationship[]
     errors: ProcessError[]
   } {
@@ -274,6 +276,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
             comment: null,
           },
         ],
+        constraints: [],
         relationships: [],
         errors: [],
       }
@@ -292,6 +295,29 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
       unique: isUnique(colDef.constraints),
       notNull: isNotNull(colDef.constraints),
       comment: null, // TODO
+    }
+
+    const constraints: [string, Constraint][] = []
+    if (isPrimaryKey(colDef.constraints)) {
+      const constraintName = `PRIMARY_${columnName}`
+      constraints.push([
+        constraintName,
+        {
+          name: constraintName,
+          type: 'PRIMARY KEY',
+          columnName,
+        },
+      ])
+    } else if (isUnique(colDef.constraints)) {
+      const constraintName = `UNIQUE_${columnName}`
+      constraints.push([
+        constraintName,
+        {
+          name: constraintName,
+          type: 'UNIQUE',
+          columnName,
+        },
+      ])
     }
 
     // Process relationships from constraints
@@ -316,6 +342,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
 
     return {
       column: [columnName, column],
+      constraints,
       relationships: columnRelationships,
       errors: columnErrors,
     }
@@ -343,6 +370,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
       if ('ColumnDef' in elt) {
         const {
           column,
+          constraints: columnConstraints,
           relationships: colRelationships,
           errors: colErrors,
         } = processColumnDef(elt.ColumnDef, tableName)
@@ -351,6 +379,9 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
           columns[column[0]] = column[1]
         }
 
+        for (const [name, constraint] of columnConstraints) {
+          constraints[name] = constraint
+        }
         tableRelationships.push(...colRelationships)
         tableErrors.push(...colErrors)
       }
@@ -568,7 +599,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
    */
   function processForeignKeyConstraint(
     foreignTableName: string,
-    constraint: { Constraint: Constraint },
+    constraint: { Constraint: PgConstraint },
   ): void {
     const foreignColumnName =
       constraint.Constraint.fk_attrs?.[0] &&
