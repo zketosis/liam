@@ -13,7 +13,7 @@ async function getGithubSchemaFilePath(projectId: string) {
     const projectId_num = projectId
     const supabase = await createClient()
     const { data: gitHubSchemaFilePath, error } = await supabase
-      .from('github_schema_file_paths')
+      .from('schema_file_paths')
       .select('*')
       .eq('project_id', projectId_num)
       .single()
@@ -42,7 +42,7 @@ export const ContentForSchema: FC<Props> = async ({
   branchOrCommit,
 }) => {
   const repository =
-    suggestion.projects.project_repository_mappings[0]?.repositories
+    suggestion.projects.project_repository_mappings[0]?.github_repositories
   const repositoryFullName = `${repository.owner}/${repository.name}`
 
   const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)
@@ -53,7 +53,7 @@ export const ContentForSchema: FC<Props> = async ({
     repositoryFullName,
     filePath,
     branchOrCommit,
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
   )
 
   const { value: schema, errors } =

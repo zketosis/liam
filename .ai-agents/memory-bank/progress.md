@@ -2,6 +2,12 @@
 
 ## What Works
 
+- Renamed github_doc_file_paths table to doc_file_paths:
+  - Created a migration to rename the table and related columns
+  - Updated foreign key constraints and indexes to reference the new table name
+  - Updated all code references to use the new table name
+  - Provides a more consistent naming approach across the application
+
 - Enhanced SettingsHeader component to match Figma design specifications, including:
   - Created three new icon components in the UI package: `BookMarked`, `Users`, and `GitPullRequestArrow`
   - Updated the UI package's index.ts to export the new icons
@@ -19,25 +25,24 @@
 - Modular architecture with separate functions for review generation and comment posting.
 - knowledge_suggestions database model for storing and managing AI-generated suggestions for Schema and Docs updates, now with a reasoning field to provide context and rationale for suggestions.
 - Text document viewer page that renders raw text content from GitHub repositories.
-- Documentation list page that displays all github_doc_file_paths entries for a project with links to individual document pages.
+- Documentation list page that displays all doc_file_paths entries for a project with links to individual document pages.
 - Supabase JS integration for database access in multiple components, including:
   - Document viewer page with optimized queries using nested joins
   - ProjectBranchesListPage component for listing project branches
   - KnowledgeSuggestionDetailPage component for displaying and approving suggestions
-  - ProjectDetailPage component for showing project details and related migrations
 - Dynamic branch name management for KnowledgeSuggestion operations, replacing hardcoded branch names.
 - Streamlined database schema with removal of unused Doc and DocVersion models, focusing on GitHub-integrated document management.
 - Schema override generation pipeline that creates and stores schema override suggestions based on PR reviews, with context-aware prompts that include both existing schema override and actual schema files content for more accurate suggestions.
 - Reusable utility function for fetching schema files content that can be used across different components of the application.
 - Type-safe implementation of Supabase queries with proper handling of bigint fields and nested relationships.
-- Improved schema file management with the github_schema_file_paths table (renamed from watch_schema_file_patterns) and direct path comparison instead of pattern matching.
+- Improved schema file management with the schema_file_paths table (renamed from watch_schema_file_patterns) and direct path comparison instead of pattern matching.
 - Standardized Supabase client usage across the codebase using a shared createClient function.
 - Enhanced review generation with PR context, incorporating pull request descriptions and comments for more comprehensive analysis.
 - Improved naming consistency throughout the codebase, with `fileChanges` replacing `schemaChanges` for better clarity.
 - Standardized Supabase database migration workflow documented.
-- Implemented knowledge_suggestion_doc_mappings table to link knowledge_suggestions and github_doc_file_paths tables, ensuring newly created knowledge suggestions are properly included in reviews.
+- Implemented knowledge_suggestion_doc_mappings table to link knowledge_suggestions and doc_file_paths tables, ensuring newly created knowledge suggestions are properly included in reviews.
 - Enhanced processCreateKnowledgeSuggestion.ts to create mappings for existing docs when creating a Doc Suggestion.
-- Updated approveKnowledgeSuggestion.ts to create github_doc_file_paths entries and mappings for new docs when approving a Doc Suggestion.
+- Updated approveKnowledgeSuggestion.ts to create doc_file_paths entries and mappings for new docs when approving a Doc Suggestion.
 - Optimized knowledge_suggestion creation to avoid duplicate suggestions by checking if content has changed before creating a new suggestion.
 - Refactored complex functions into smaller, focused helper functions to reduce cognitive complexity and improve maintainability.
 - Improved type safety with proper type definitions and return types for functions.
@@ -57,7 +62,7 @@
 
 The project is currently focused on enhancing the Reviewer User experience, with AI-driven analysis and suggestions integrated into the migration review process. The initial release prioritizes the Reviewer User, with Builder User features planned for future phases.
 
-Several key components are now using Supabase for database access, including the ProjectBranchesListPage, KnowledgeSuggestionDetailPage, and ProjectDetailPage components. These implementations use Supabase's optimized query capabilities with nested joins for efficient data retrieval, demonstrating patterns for handling complex relationships and proper error handling. The ProjectDetailPage implementation addressed a specific challenge with Supabase's array-based return format for nested relationships, providing a pattern for handling similar cases in future implementations.
+Several key components are now using Supabase for database access, including the ProjectBranchesListPage and KnowledgeSuggestionDetailPage components. These implementations use Supabase's optimized query capabilities with nested joins for efficient data retrieval, demonstrating patterns for handling complex relationships and proper error handling.
 
 The core review pipeline is now operational, connecting GitHub webhooks to AI-powered review generation and PR comment posting. This enables automatic review of database schema changes when pull requests are opened or updated.
 
@@ -73,9 +78,9 @@ These improvements align with the project's focus on code quality, maintainabili
 
 A new text document viewer page has been implemented at `/app/projects/[projectId]/docs/[branchOrCommit]/[...slug]` that fetches and displays raw text content from GitHub repositories. The implementation uses a single optimized Supabase query with nested joins to efficiently retrieve all necessary data.
 
-A documentation list page has been implemented at `/app/projects/[projectId]/ref/[branchOrCommit]/docs` that displays all github_doc_file_paths entries for a project. The page provides links to individual document pages and shows the review status of each document. This enhances the user experience by providing a centralized view of all documentation files associated with a project.
+A documentation list page has been implemented at `/app/projects/[projectId]/ref/[branchOrCommit]/docs` that displays all doc_file_paths entries for a project. The page provides links to individual document pages and shows the review status of each document. This enhances the user experience by providing a centralized view of all documentation files associated with a project.
 
-The database schema has been optimized by removing the unused Doc and DocVersion models. Document management is now fully handled through the github_doc_file_paths model, which provides a more direct integration with GitHub repositories. This change reflects the project's shift towards tighter GitHub integration and a more streamlined approach to document handling.
+The database schema has been optimized by removing the unused Doc and DocVersion models. Document management is now fully handled through the doc_file_paths model, which provides a more direct integration with GitHub repositories. This change reflects the project's shift towards tighter GitHub integration and a more streamlined approach to document handling.
 
 A new schema override generation pipeline has been implemented that creates and stores schema override suggestions based on PR reviews. This pipeline includes a new task (`generateSchemaOverrideSuggestionTask`) that is triggered after a review is saved, a processing function (`processGenerateSchemaOverride`) that fetches data from the database and generates schema override suggestions, and integration with the existing `createKnowledgeSuggestionTask` to store the generated schema override in the knowledge_suggestions table. The implementation includes proper type handling for Supabase queries, addressing challenges with bigint fields and nested relationships. Recent enhancements include fetching and passing both the current schema override and actual schema files content to the AI prompt, allowing for more informed and contextually relevant suggestions that build upon existing schema override rather than generating from scratch. A reusable utility function has been created to fetch schema files content, which can be used in other parts of the application. The implementation also includes type-safe validation of the existing schema override using Valibot's `safeParse` function.
 
@@ -83,7 +88,7 @@ As part of the transition to Supabase JS, manual rollback processing has been re
 
 The testing approach uses a direct testing strategy with Supabase. We create real records in the database, run the actual functions with these records, and then clean up the test data afterwards. This approach provides more realistic tests that verify the actual functions with real database interactions, leveraging Supabase's ability to be executed directly in test environments.
 
-The schema file management has been improved by renaming the `watch_schema_file_patterns` table to `github_schema_file_paths` and changing from pattern matching to direct path comparison. This provides a more precise and efficient approach to schema file management, aligning with the existing `github_doc_file_paths` model and providing a more consistent approach to file path handling across the application. The implementation includes a migration file that handles the table rename and data transfer, updates to all affected components to use the new table name and field names, and standardization of Supabase client usage across the codebase.
+The schema file management has been improved by renaming the `watch_schema_file_patterns` table to `schema_file_paths` and changing from pattern matching to direct path comparison. This provides a more precise and efficient approach to schema file management, aligning with the existing `doc_file_paths` model and providing a more consistent approach to file path handling across the application. The implementation includes a migration file that handles the table rename and data transfer, updates to all affected components to use the new table name and field names, and standardization of Supabase client usage across the codebase.
 
 A standardized Supabase migration workflow has been documented in `docs/migrationOpsContext.md`. This document provides detailed guidance on the migration workflow, deployment system, key constraints, and SQL guidelines for creating migrations. Additionally, the `docs/schemaPatterns.md` document defines reusable patterns and rules for database schema design, ensuring consistency across the project. The Supabase migration workflow uses commands like `supabase:migration:new` and `supabase:migration:up` to manage database schema changes.
 

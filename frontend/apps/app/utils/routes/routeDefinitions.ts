@@ -3,18 +3,16 @@ export type RouteDefinitions = {
   projects: string
   'projects/new': string
   'projects/[projectId]': (params: { projectId: string }) => string
-  'projects/[projectId]/migrations': (params: { projectId: string }) => string
-  'projects/[projectId]/docs': (params: { projectId: string }) => string
+  'projects/[projectId]/rule': (params: { projectId: string }) => string
+  'projects/[projectId]/settings': (params: { projectId: string }) => string
   'organizations/new': string
   organizations: string
-  'organizations/[organizationId]': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/projects': (params: {
-    organizationId: string
-  }) => string
-  'organizations/[organizationId]/projects/new': (params: {
-    organizationId: string
+  'settings/general': string
+  'settings/members': string
+  'settings/billing': string
+  'settings/projects': string
+  'invitations/tokens/[token]': (params: {
+    token: string
   }) => string
   'projects/[projectId]/ref/[branchOrCommit]': (params: {
     projectId: string
@@ -29,10 +27,18 @@ export type RouteDefinitions = {
     branchOrCommit: string
     migrationId: string
   }) => string
+  'projects/[projectId]/ref/[branchOrCommit]/schema': (params: {
+    projectId: string
+    branchOrCommit: string
+  }) => string
   'projects/[projectId]/ref/[branchOrCommit]/schema/[...schemaFilePath]': (params: {
     projectId: string
     branchOrCommit: string
     schemaFilePath: string
+  }) => string
+  'projects/[projectId]/ref/[branchOrCommit]/docs': (params: {
+    projectId: string
+    branchOrCommit: string
   }) => string
   'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions': (params: {
     projectId: string
@@ -56,23 +62,21 @@ export const routeDefinitions: RouteDefinitions = {
   'projects/new': '/app/projects/new',
   'organizations/new': '/app/organizations/new',
   organizations: '/app/organizations',
-  'organizations/[organizationId]': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}`
-  },
-  'organizations/[organizationId]/projects': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/projects`
-  },
-  'organizations/[organizationId]/projects/new': ({ organizationId }) => {
-    return `/app/organizations/${organizationId}/projects/new`
+  'settings/general': '/app/settings/general',
+  'settings/members': '/app/settings/members',
+  'settings/billing': '/app/settings/billing',
+  'settings/projects': '/app/settings/projects',
+  'invitations/tokens/[token]': ({ token }) => {
+    return `/app/invitations/tokens/${token}`
   },
   'projects/[projectId]': ({ projectId }) => {
     return `/app/projects/${projectId}`
   },
-  'projects/[projectId]/migrations': ({ projectId }) => {
-    return `/app/projects/${projectId}/migrations`
+  'projects/[projectId]/rule': ({ projectId }) => {
+    return `/app/projects/${projectId}/rule`
   },
-  'projects/[projectId]/docs': ({ projectId }) => {
-    return `/app/projects/${projectId}/docs`
+  'projects/[projectId]/settings': ({ projectId }) => {
+    return `/app/projects/${projectId}/settings`
   },
   'projects/[projectId]/ref/[branchOrCommit]': ({
     projectId,
@@ -118,6 +122,20 @@ export const routeDefinitions: RouteDefinitions = {
   }) => {
     const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
     return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/migrations/${migrationId}`
+  },
+  'projects/[projectId]/ref/[branchOrCommit]/schema': ({
+    projectId,
+    branchOrCommit,
+  }) => {
+    const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
+    return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/schema`
+  },
+  'projects/[projectId]/ref/[branchOrCommit]/docs': ({
+    projectId,
+    branchOrCommit,
+  }) => {
+    const encodedBranchOrCommit = encodeURIComponent(branchOrCommit)
+    return `/app/projects/${projectId}/ref/${encodedBranchOrCommit}/docs`
   },
   'projects/[projectId]/ref/[branchOrCommit]/docs/[docFilePath]': ({
     projectId,

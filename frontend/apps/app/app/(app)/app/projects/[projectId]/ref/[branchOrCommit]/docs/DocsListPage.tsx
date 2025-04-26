@@ -1,6 +1,6 @@
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
-import { getGitHubDocFilePaths } from './getGitHubDocFilePaths'
+import { getDocFilePaths } from './getDocFilePaths'
 
 interface DocsListPageProps {
   projectId: string
@@ -11,7 +11,7 @@ export const DocsListPage = async ({
   projectId,
   branchOrCommit,
 }: DocsListPageProps) => {
-  const docFilePaths = await getGitHubDocFilePaths(projectId)
+  const docFilePaths = await getDocFilePaths(projectId)
 
   if (!docFilePaths || docFilePaths.length === 0) {
     return (

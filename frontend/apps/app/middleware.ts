@@ -63,7 +63,20 @@ export async function updateSession(request: NextRequest) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/app/login'
-    return NextResponse.redirect(url)
+
+    // Create the redirect response
+    const redirectResponse = NextResponse.redirect(url)
+
+    // Also store the return URL in a cookie
+    redirectResponse.cookies.set('returnTo', request.nextUrl.pathname, {
+      path: '/',
+      maxAge: 60 * 60, // 1 hour expiration
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    })
+
+    return redirectResponse
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
@@ -83,7 +96,12 @@ export async function updateSession(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+  const response = await updateSession(request)
+  // NOTE: Set the x-url-path header to allow extracting the current path in layout.tsx and other components
+  // @see: https://github.com/vercel/next.js/issues/43704#issuecomment-1411186664
+  response.headers.set('x-url-path', request.nextUrl.pathname)
+
+  return response
 }
 
 export const config = {

@@ -19,10 +19,18 @@ export const processGenerateSchemaOverride = async (
       .from('overall_reviews')
       .select(`
         *,
-        pull_requests(*,
-          repositories(*)
-        ),
-        projects(*)
+        migration:migration_id(
+          id,
+          project_id,
+          migration_pull_request_mappings(
+            pull_request_id,
+            github_pull_requests(
+              id,
+              pull_number,
+              github_repositories(*)
+            )
+          )
+        )
       `)
       .eq('id', payload.overallReviewId)
       .single()
@@ -33,24 +41,32 @@ export const processGenerateSchemaOverride = async (
       )
     }
 
-    const { pull_requests, projects } = overallReview
-    if (!pull_requests) {
+    if (!overallReview.migration) {
       throw new Error(
-        `Pull request not found for overall review ${payload.overallReviewId}`,
+        `Migration not found for overall review ${payload.overallReviewId}`,
       )
     }
 
-    if (!projects) {
+    const projectId = overallReview.migration.project_id
+    if (!projectId) {
       throw new Error(
-        `Project not found for overall review ${payload.overallReviewId}`,
+        `Project not found for migration ${overallReview.migration.id}`,
       )
     }
 
-    const repositories = pull_requests.repositories
+    // Get the pull request from the mapping
+    const pullRequestMapping =
+      overallReview.migration.migration_pull_request_mappings[0]
+    if (!pullRequestMapping || !pullRequestMapping.github_pull_requests) {
+      throw new Error(
+        `Pull request not found for migration ${overallReview.migration.id}`,
+      )
+    }
+
+    const pullRequest = pullRequestMapping.github_pull_requests
+    const repositories = pullRequest.github_repositories
     if (!repositories) {
-      throw new Error(
-        `Repository not found for pull request ${pull_requests.id}`,
-      )
+      throw new Error(`Repository not found for pull request ${pullRequest.id}`)
     }
 
     const predefinedRunId = uuidv4()
@@ -60,10 +76,10 @@ export const processGenerateSchemaOverride = async (
     const repositoryFullName = `${repositories.owner}/${repositories.name}`
     const { currentSchemaOverride, overriddenSchema } =
       await fetchSchemaInfoWithOverrides(
-        projects.id,
+        projectId,
         overallReview.branch_name,
         repositoryFullName,
-        repositories.installation_id,
+        repositories.github_installation_identifier,
       )
 
     const schemaOverrideResult = await generateSchemaOverride(
@@ -85,10 +101,10 @@ export const processGenerateSchemaOverride = async (
     return {
       createNeeded: true,
       override: schemaOverrideResult.override,
-      projectId: projects.id,
-      pullRequestNumber: Number(pull_requests.pull_number), // Convert bigint to number
+      projectId: projectId,
+      pullRequestNumber: Number(pullRequest.pull_number), // Convert bigint to number
       branchName: overallReview.branch_name, // Get branchName from overallReview
-      title: `Schema meta update from PR #${Number(pull_requests.pull_number)}`,
+      title: `Schema meta update from PR #${Number(pullRequest.pull_number)}`,
       traceId: predefinedRunId,
       reasoning: schemaOverrideResult.reasoning,
       overallReviewId: payload.overallReviewId,

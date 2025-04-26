@@ -1,10 +1,33 @@
 'use server'
 
 import { type SupabaseClient, createClient } from '@/libs/db/server'
+import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { generateKnowledgeFromFeedbackTask } from '@liam-hq/jobs'
-import type { Review, ReviewFeedback } from '@liam-hq/jobs/src/types'
-import { categoryToKind } from '@liam-hq/jobs/src/utils/categoryUtils'
+import type { Review } from '@liam-hq/jobs/src/types'
 import * as v from 'valibot'
+
+type ReviewFeedback = Tables<'review_feedbacks'>
+
+type KindEnum =
+  | 'Migration Safety'
+  | 'Data Integrity'
+  | 'Performance Impact'
+  | 'Project Rules Consistency'
+  | 'Security or Scalability'
+
+function categoryToKind(category: string | null | undefined): KindEnum {
+  if (!category) return 'Migration Safety' // Default value
+
+  const mapping: Record<string, KindEnum> = {
+    MIGRATION_SAFETY: 'Migration Safety',
+    DATA_INTEGRITY: 'Data Integrity',
+    PERFORMANCE_IMPACT: 'Performance Impact',
+    PROJECT_RULES_CONSISTENCY: 'Project Rules Consistency',
+    SECURITY_OR_SCALABILITY: 'Security or Scalability',
+  }
+
+  return mapping[category] || 'Migration Safety'
+}
 
 const requestSchema = v.object({
   feedbackId: v.pipe(v.string()),
@@ -19,20 +42,26 @@ async function getFeedbackData(supabase: SupabaseClient, feedbackId: string) {
     .from('review_feedbacks')
     .select(`
       *,
-      overallReview:overallReviewId(
+      overallReview:overall_review_id(
         id,
-        projectId,
-        pullRequest:pullRequestId(
+        migration:migration_id(
           id,
-          repositoryId,
-          pullNumber,
-          repository:repositoryId(
-            owner,
-            name,
-            installationId
+          project_id,
+          migration_pull_request_mappings(
+            pull_request_id,
+            pullRequest:pull_request_id(
+              id,
+              repository_id,
+              pull_number,
+              repository:repository_id(
+                owner,
+                name,
+                github_installation_identifier
+              )
+            )
           )
         ),
-        branchName
+        branch_name
       )
     `)
     .eq('id', feedbackId)
@@ -73,7 +102,7 @@ async function updateFeedbackAsResolved(
 }
 
 /**
- * Fetches complete OverallReview data
+ * Fetches complete OverallReview data with migration details
  */
 async function getCompleteOverallReview(
   supabase: SupabaseClient,
@@ -81,7 +110,13 @@ async function getCompleteOverallReview(
 ) {
   const { data, error } = await supabase
     .from('overall_reviews')
-    .select('*')
+    .select(`
+      *,
+      migration:migration_id(
+        id,
+        project_id
+      )
+    `)
     .eq('id', overallReviewId)
     .single()
 
@@ -91,8 +126,8 @@ async function getCompleteOverallReview(
     )
   }
 
-  if (!data.project_id) {
-    throw new Error('Project ID not found in OverallReview')
+  if (!data.migration || !data.migration.project_id) {
+    throw new Error('Project ID not found in associated migration')
   }
 
   return data
@@ -198,7 +233,7 @@ export const resolveReviewFeedback = async (data: {
 
     // Trigger knowledge generation task
     const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId: completeOverallReview.project_id || '',
+      projectId: completeOverallReview.migration.project_id || '',
       review: reviewFormatted,
       title: `Knowledge from resolved feedback #${feedbackId}`,
       reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,

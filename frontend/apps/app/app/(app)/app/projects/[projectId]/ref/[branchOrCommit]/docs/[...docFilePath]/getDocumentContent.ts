@@ -1,7 +1,7 @@
 import { getFileContent } from '@liam-hq/github'
 import { getProjectRepository } from './getProjectRepository'
 
-export interface DocumentContentParams {
+interface DocumentContentParams {
   projectId: string
   branchOrCommit: string
   docFilePath: string[]
@@ -27,7 +27,7 @@ export const getDocumentContent = async ({
       repositoryFullName,
       filePath,
       branchOrCommit,
-      repository.installation_id,
+      repository.github_installation_identifier,
     )
 
     return fileData.content

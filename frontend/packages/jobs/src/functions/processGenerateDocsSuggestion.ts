@@ -14,7 +14,7 @@ export const DOC_FILES = [
   'migrationOpsContext.md',
 ] as const
 
-export type DocFile = (typeof DOC_FILES)[number]
+type DocFile = (typeof DOC_FILES)[number]
 
 export async function processGenerateDocsSuggestion(payload: {
   review: Review
@@ -32,17 +32,17 @@ export async function processGenerateDocsSuggestion(payload: {
       .from('project_repository_mappings')
       .select(`
         *,
-        repositories(*)
+        github_repositories(*)
       `)
       .eq('project_id', payload.projectId)
       .limit(1)
       .maybeSingle()
 
-    if (error || !projectRepo?.repositories) {
+    if (error || !projectRepo?.github_repositories) {
       throw new Error('Repository information not found')
     }
 
-    const repository = projectRepo.repositories
+    const repository = projectRepo.github_repositories
     const repositoryFullName = `${repository.owner}/${repository.name}`
     const branch = payload.branchOrCommit || 'main'
 
@@ -54,7 +54,7 @@ export async function processGenerateDocsSuggestion(payload: {
           repositoryFullName,
           filePath,
           branch,
-          Number(repository.installation_id),
+          Number(repository.github_installation_identifier),
         )
 
         return {
@@ -97,7 +97,7 @@ export async function processGenerateDocsSuggestion(payload: {
       payload.projectId,
       branch,
       repositoryFullName,
-      repository.installation_id,
+      repository.github_installation_identifier,
     )
 
     const result = await generateDocsSuggestion(

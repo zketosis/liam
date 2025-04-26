@@ -12,11 +12,11 @@ export const getProjects = async (organizationId?: string) => {
       updated_at,
       organization_id,
       project_repository_mappings:project_repository_mappings(
-        repository:repositories(
+        repository:github_repositories(
           id,
           name,
           owner,
-          installation_id
+          github_installation_identifier
         )
       )
     `)

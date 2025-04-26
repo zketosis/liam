@@ -1,5 +1,6 @@
 import { urlgen } from '@/utils/routes'
-import { EmptyProjectsState } from '../../components/EmptyProjectsState'
+import { notFound } from 'next/navigation'
+import { EmptyProjectsState } from '../../components'
 import styles from './ProjectsPage.module.css'
 import { ServerProjectsDataProvider } from './ServerProjectsDataProvider'
 import {
@@ -11,13 +12,17 @@ import { getProjects } from './getProjects'
 export async function ProjectsPage({
   organizationId,
 }: {
-  organizationId?: string
+  organizationId: string
 }) {
-  const currentOrganization = organizationId
-    ? await getCurrentOrganization(organizationId)
-    : await getCurrentOrganization()
+  const currentOrganization = await getCurrentOrganization(organizationId)
+
+  if (!currentOrganization) {
+    console.error('Organization not found')
+    return notFound()
+  }
+
   await getUserOrganizations() // Fetch for future use
-  const projects = await getProjects(currentOrganization?.id)
+  const projects = await getProjects(currentOrganization.id)
 
   return (
     <div className={styles.container}>
@@ -25,11 +30,10 @@ export async function ProjectsPage({
         <h1 className={styles.heading}>Projects</h1>
         {projects === null || projects.length === 0 ? (
           <EmptyProjectsState
+            projects={projects}
             createProjectHref={
               currentOrganization
-                ? urlgen('organizations/[organizationId]/projects/new', {
-                    organizationId: currentOrganization.id,
-                  })
+                ? urlgen('projects/new')
                 : urlgen('organizations/new')
             }
           />

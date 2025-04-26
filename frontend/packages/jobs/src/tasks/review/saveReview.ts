@@ -15,7 +15,7 @@ export const processSaveReview = async (
   try {
     const supabase = createClient()
     const { data: pullRequest, error: pullRequestError } = await supabase
-      .from('pull_requests')
+      .from('github_pull_requests')
       .select('*')
       .eq('id', payload.pullRequestId)
       .single()
@@ -28,11 +28,22 @@ export const processSaveReview = async (
 
     const now = new Date().toISOString()
 
+    const { data: mappingData, error: mappingError } = await supabase
+      .from('migration_pull_request_mappings')
+      .select('migration_id')
+      .eq('pull_request_id', pullRequest.id)
+      .single()
+
+    if (mappingError || !mappingData) {
+      throw new Error(
+        `No migration found for pull request: ${JSON.stringify(mappingError)}`,
+      )
+    }
+
     const { data: overallReview, error: overallReviewError } = await supabase
       .from('overall_reviews')
       .insert({
-        project_id: payload.projectId,
-        pull_request_id: pullRequest.id,
+        migration_id: mappingData.migration_id,
         review_comment: payload.review.bodyMarkdown,
         branch_name: payload.branchName,
         trace_id: payload.traceId,

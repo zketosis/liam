@@ -16,7 +16,7 @@
     "@liam-hq/github": "workspace:*",
     "@liam-hq/jobs": "workspace:*",
     "@liam-hq/ui": "workspace:*",
-    "@next/third-parties": "15.3.0",
+    "@next/third-parties": "15.3.1",
     "@octokit/auth-app": "7.2.1",
     "@octokit/rest": "21.1.1",
     "@prisma/client": "6.6.0",
@@ -30,9 +30,9 @@
     "diff": "7.0.0",
     "dotenv": "16.5.0",
     "flags": "3.2.0",
-    "langfuse": "3.37.1",
-    "langfuse-langchain": "3.37.1",
-    "next": "15.3.0",
+    "langfuse": "3.37.2",
+    "langfuse-langchain": "3.37.2",
+    "next": "15.3.1",
     "react": "18.3.1",
     "react-dom": "18",
     "ts-pattern": "5.7.0",
@@ -51,7 +51,7 @@
     "esbuild": "0.25.2",
     "typed-css-modules": "0.9.1",
     "typescript": "5.8.3",
-    "vitest": "3.1.1"
+    "vitest": "3.1.2"
   },
   "scripts": {
     "build": "pnpm gen && next build",

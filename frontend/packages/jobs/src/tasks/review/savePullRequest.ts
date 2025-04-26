@@ -12,7 +12,7 @@ type SavePullRequestPayload = {
   projectId: string
 }
 
-export type SavePullRequestResult = {
+type SavePullRequestResult = {
   success: boolean
   prId: string
   repositoryId: string
@@ -39,7 +39,8 @@ export type SavePullRequestResult = {
 
 type Repository = {
   id: string
-  installation_id: number
+  github_installation_identifier: number
+  github_repository_identifier: number
   owner: string
   name: string
 }
@@ -72,7 +73,7 @@ async function getRepositoryFromProjectId(
     .from('project_repository_mappings')
     .select(`
       *,
-      repositories(*)
+      github_repositories(*)
     `)
     .eq('project_id', projectId)
     .limit(1)
@@ -84,7 +85,7 @@ async function getRepositoryFromProjectId(
     )
   }
 
-  return projectMapping.repositories
+  return projectMapping.github_repositories
 }
 
 async function getSchemaPathForProject(
@@ -92,7 +93,7 @@ async function getSchemaPathForProject(
   projectId: string,
 ): Promise<string> {
   const { data, error } = await supabase
-    .from('github_schema_file_paths')
+    .from('schema_file_paths')
     .select('path')
     .eq('project_id', projectId)
     .single()
@@ -116,7 +117,7 @@ async function fetchSchemaFileContent(
       `${repository.owner}/${repository.name}`,
       schemaPath,
       branchRef,
-      Number(repository.installation_id),
+      Number(repository.github_installation_identifier),
     )
 
     if (!content) {
@@ -152,7 +153,7 @@ async function getOrCreatePullRequestRecord(
   pullNumber: number,
 ): Promise<{ id: string }> {
   const { data: existingPR } = await supabase
-    .from('pull_requests')
+    .from('github_pull_requests')
     .select('id')
     .eq('repository_id', repositoryId)
     .eq('pull_number', pullNumber)
@@ -164,7 +165,7 @@ async function getOrCreatePullRequestRecord(
 
   const now = new Date().toISOString()
   const { data: newPR, error: createPRError } = await supabase
-    .from('pull_requests')
+    .from('github_pull_requests')
     .insert({
       repository_id: repositoryId,
       pull_number: pullNumber,
@@ -185,24 +186,27 @@ async function getOrCreatePullRequestRecord(
 async function createOrUpdateMigrationRecord(
   supabase: SupabaseClient,
   pullRequestId: string,
+  projectId: string,
   title: string,
 ): Promise<void> {
-  const { data: existingMigration } = await supabase
-    .from('migrations')
-    .select('id')
+  // Get existing migration mapping for this PR
+  const { data: existingMapping } = await supabase
+    .from('migration_pull_request_mappings')
+    .select('migration_id')
     .eq('pull_request_id', pullRequestId)
     .maybeSingle()
 
   const now = new Date().toISOString()
 
-  if (existingMigration) {
+  if (existingMapping) {
+    // If mapping exists, update the associated migration
     const { error: updateMigrationError } = await supabase
       .from('migrations')
       .update({
         title,
         updated_at: now,
       })
-      .eq('id', existingMigration.id)
+      .eq('id', existingMapping.migration_id)
 
     if (updateMigrationError) {
       throw new Error(
@@ -210,17 +214,35 @@ async function createOrUpdateMigrationRecord(
       )
     }
   } else {
-    const { error: createMigrationError } = await supabase
+    // Create a new migration with project_id
+    const { data: newMigration, error: createMigrationError } = await supabase
       .from('migrations')
       .insert({
-        pull_request_id: pullRequestId,
+        project_id: projectId,
         title,
         updated_at: now,
       })
+      .select()
+      .single()
 
-    if (createMigrationError) {
+    if (createMigrationError || !newMigration) {
       throw new Error(
         `Failed to create migration: ${JSON.stringify(createMigrationError)}`,
+      )
+    }
+
+    // Create a mapping between the new migration and the pull request
+    const { error: createMappingError } = await supabase
+      .from('migration_pull_request_mappings')
+      .insert({
+        migration_id: newMigration.id,
+        pull_request_id: pullRequestId,
+        updated_at: now,
+      })
+
+    if (createMappingError) {
+      throw new Error(
+        `Failed to create migration mapping: ${JSON.stringify(createMappingError)}`,
       )
     }
   }
@@ -237,7 +259,7 @@ export async function processSavePullRequest(
   )
 
   const fileChanges = await getPullRequestFiles(
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -246,7 +268,7 @@ export async function processSavePullRequest(
   const schemaPath = await getSchemaPathForProject(supabase, payload.projectId)
 
   const prDetails = await getPullRequestDetails(
-    Number(repository.installation_id),
+    Number(repository.github_installation_identifier),
     repository.owner,
     repository.name,
     payload.prNumber,
@@ -266,7 +288,12 @@ export async function processSavePullRequest(
     payload.prNumber,
   )
 
-  await createOrUpdateMigrationRecord(supabase, prRecord.id, prDetails.title)
+  await createOrUpdateMigrationRecord(
+    supabase,
+    prRecord.id,
+    payload.projectId,
+    prDetails.title,
+  )
 
   return {
     success: true,
@@ -289,7 +316,7 @@ export const savePullRequestTask = task({
 
       const supabase = createClient()
       const { data: repository, error: repositoryError } = await supabase
-        .from('repositories')
+        .from('github_repositories')
         .select('*')
         .eq('id', result.repositoryId)
         .single()

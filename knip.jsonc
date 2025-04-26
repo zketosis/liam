@@ -1,0 +1,75 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+
+  // Entry files are the starting point for Knip to find more source files and external dependencies
+  "entry": ["frontend/packages/cli/bin/cli.ts"],
+
+  // Files to ignore when analyzing
+  "ignore": [
+    // - config files
+    "frontend/turbo/generators/config.ts",
+    "frontend/packages/jobs/trigger.config.ts",
+    "frontend/apps/docs/source.config.ts",
+    // - Generated files may contain unused exports
+    "frontend/packages/db/supabase/database.types.ts",
+    // - Script for workaround
+    "frontend/apps/app/scripts/install-prisma-internals.mjs",
+    // - Script file which is read from trigger.config.ts
+    "frontend/packages/jobs/src/trigger/jobs.ts",
+
+    // TODO: Temporarily ignore issues in the following files. Will be addressed later
+    "frontend/packages/db-structure/src/parser.ts",
+    "frontend/packages/db-structure/src/parser/index.ts",
+    "frontend/packages/erd-core/src/features/erd/components/ERDRenderer/AppBar/ExportButton/ExportButton.tsx",
+    "frontend/packages/erd-core/src/features/erd/components/ERDRenderer/AppBar/ExportButton/index.ts",
+    "frontend/packages/erd-core/src/features/erd/components/ERDRenderer/Toolbar/ViewControlButton/ViewControlButton.tsx",
+    "frontend/packages/erd-core/src/features/erd/components/ERDRenderer/Toolbar/ViewControlButton/index.ts",
+    "frontend/packages/db-structure/src/schema/schema.ts",
+    "frontend/packages/db-structure/src/parser/sql/postgresql/parser.ts",
+    "frontend/packages/db-structure/src/schema/overrideSchema.ts",
+    "frontend/packages/cli/vite-plugins/remove-import-wasi.ts",
+    "frontend/packages/cli/vite-plugins/set-env.ts",
+    "frontend/packages/erd-core/src/features/erd/types.ts",
+    "frontend/packages/erd-core/src/features/erd/components/ERDContent/components/RelationshipEdge/type.ts",
+    "frontend/packages/ui/src/components/Toast/types.ts",
+    "frontend/apps/docs/components/CopyButton/CopyButton.tsx",
+    "frontend/apps/docs/app/docs/sitemap.ts"
+  ],
+
+  // TODO: Review ignoreDependencies configuration later
+  // Dependencies to ignore when analyzing
+  "ignoreDependencies": [
+    "@octokit/auth-app",
+    "@octokit/rest",
+    "@octokit/openapi-types",
+    "@prisma/client",
+    "@prisma/internals",
+    "@trigger.dev/build",
+    "@trigger.dev/sdk",
+    "langfuse",
+    "langfuse-langchain",
+    "@langchain/core",
+    "zod",
+    "ts-pattern",
+    "minimatch",
+    "destyle.css",
+    "json-refs",
+    "json-schema-to-zod",
+    "glob",
+    "@vitest/coverage-v8",
+    "@types/gtag.js",
+    "esbuild",
+    "@types/mdx",
+    "postcss",
+    "@types/glob",
+    "@biomejs/biome",
+    "@sentry/node",
+    "@sentry/esbuild-plugin",
+    "@liam-hq/cli",
+    "@liam-hq/configs",
+    "@turbo/gen"
+  ],
+
+  // TODO: Review ignoreBinaries configuration later
+  "ignoreBinaries": ["playwright", "supabase:start", "supabase:gen"]
+}

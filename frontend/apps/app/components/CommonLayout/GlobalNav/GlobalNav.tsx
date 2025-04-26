@@ -4,7 +4,9 @@ import { LiamLogoMark, LiamMigrationLogo } from '@/logos'
 import { urlgen } from '@/utils/routes'
 import { LayoutGrid } from '@liam-hq/ui/src/icons'
 import clsx from 'clsx'
-import { type FC, useState } from 'react'
+import { type FC, useCallback, useEffect, useRef, useState } from 'react'
+import type { Organization } from '../services/getOrganization'
+import type { OrganizationsByUserId } from '../services/getOrganizationsByUserId'
 import styles from './GlobalNav.module.css'
 import itemStyles from './Item.module.css'
 import { LinkItem, type LinkItemProps } from './LinkItem'
@@ -18,20 +20,76 @@ const items: LinkItemProps[] = [
   },
 ]
 
-export const GlobalNav: FC = () => {
+type Props = {
+  currentOrganization: Organization | null
+  organizations: OrganizationsByUserId | null
+}
+
+export const GlobalNav: FC<Props> = ({
+  currentOrganization,
+  organizations,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [organizationMenuOpen, setOrganizationMenuOpen] = useState(false)
+
+  const navRef = useRef<HTMLDivElement>(null)
+  const mousePositionRef = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      mousePositionRef.current = { x: event.clientX, y: event.clientY }
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [])
+
+  const isMouseOverNav = useCallback((): boolean => {
+    if (!navRef.current) return false
+
+    const { x, y } = mousePositionRef.current
+
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return false
+
+    const elementAtPoint = document.elementFromPoint(x, y)
+    return elementAtPoint !== null && navRef.current.contains(elementAtPoint)
+  }, [])
 
   const handleNavMouseEnter = () => {
     setIsExpanded(true)
   }
 
   const handleNavMouseLeave = () => {
-    setIsExpanded(false)
+    // NOTE: Keep isExpanded as true when the OrganizationItem menu is open
+    if (!organizationMenuOpen) {
+      setIsExpanded(false)
+    }
   }
+
+  const handleOrganizationMenuOpenChange = useCallback(
+    (open: boolean) => {
+      setOrganizationMenuOpen(open)
+
+      if (open) {
+        // NOTE: Force isExpanded to true when the menu is opened
+        setIsExpanded(true)
+      } else {
+        // NOTE: When the menu is closed, set isExpanded to false only if the mouse is not over the navigation
+        if (!isMouseOverNav()) {
+          setIsExpanded(false)
+        }
+      }
+    },
+    [isMouseOverNav],
+  )
 
   return (
     <div className={styles.globalNavContainer}>
       <nav
+        ref={navRef}
         className={clsx(
           styles.globalNav,
           isExpanded && styles.globalNavExpanded,
@@ -56,7 +114,15 @@ export const GlobalNav: FC = () => {
         </div>
 
         <div className={styles.navSection}>
-          <OrganizationItem isExpanded={isExpanded} />
+          {currentOrganization && (
+            <OrganizationItem
+              isExpanded={isExpanded}
+              currentOrganization={currentOrganization}
+              organizations={organizations ?? []}
+              open={organizationMenuOpen}
+              onOpenChange={handleOrganizationMenuOpenChange}
+            />
+          )}
 
           {items.map((item) => (
             <LinkItem

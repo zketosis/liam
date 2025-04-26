@@ -11,6 +11,7 @@ export const addProject = async (formData: FormData) => {
   const repositoryOwner = formData.get('repositoryOwner') as string
   const installationId = formData.get('installationId') as string
   const organizationId = formData.get('organizationId') as string
+  const repositoryIdentifier = formData.get('repositoryIdentifier') as string
 
   const supabase = await createClient()
   const now = new Date().toISOString()
@@ -33,12 +34,13 @@ export const addProject = async (formData: FormData) => {
 
   // Create repository
   const { data: repository, error: repositoryError } = await supabase
-    .from('repositories')
+    .from('github_repositories')
     .insert({
       name: repositoryName,
       owner: repositoryOwner,
-      installation_id: Number(installationId),
-      is_active: true,
+      github_installation_identifier: Number(installationId),
+      github_repository_identifier: Number(repositoryIdentifier),
+      organization_id: organizationId,
       updated_at: now,
     })
     .select()

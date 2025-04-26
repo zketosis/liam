@@ -22,7 +22,7 @@ export const fetchSchemaFileContent = async (
     const supabase = createClient()
 
     const { data: schemaFilePath, error: pathError } = await supabase
-      .from('github_schema_file_paths')
+      .from('schema_file_paths')
       .select('path, format')
       .eq('project_id', projectId)
       .single()

@@ -108,6 +108,118 @@ CREATE TYPE "public"."severity_enum" AS ENUM (
 ALTER TYPE "public"."severity_enum" OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."accept_invitation"("p_token" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+declare
+  v_user_id uuid;
+  v_organization_id uuid;
+  v_invitation_id uuid;
+  v_result jsonb;
+begin
+  -- Start transaction
+  begin
+    v_user_id := auth.uid();
+
+    -- Verify the invitation exists
+    select
+      i.id, i.organization_id into v_invitation_id, v_organization_id
+    from invitations i
+    join
+      auth.users au on lower(i.email) = lower(au.email)
+    where
+      i.token = p_token
+      and au.id = v_user_id
+      and au.email_confirmed_at is not null
+      and current_timestamp < i.expired_at
+    limit 1;
+
+    if v_invitation_id is null then
+      v_result := jsonb_build_object(
+        'success', false,
+        'organizationId', null,
+        'error', 'Invitation not found or already accepted'
+      );
+      return v_result;
+    end if;
+
+    -- Create organization member record
+    insert into organization_members (
+      user_id,
+      organization_id,
+      joined_at
+    ) values (
+      v_user_id,
+      v_organization_id,
+      current_timestamp
+    );
+
+    -- Delete the invitation
+    delete from invitations
+    where id = v_invitation_id;
+
+    -- Return success
+    v_result := jsonb_build_object(
+      'success', true,
+      'organizationId', v_organization_id,
+      'error', null
+    );
+    return v_result;
+  exception when others then
+    -- Handle any errors
+    v_result := jsonb_build_object(
+      'success', false,
+      'organizationId', null,
+      'error', sqlerrm
+    );
+    return v_result;
+  end;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."accept_invitation"("p_token" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_invitation_data"("p_token" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+declare
+  v_user_id uuid;
+  v_organization_name text;
+  v_result jsonb;
+begin
+  -- Start transaction
+  begin
+    v_user_id := auth.uid();
+
+    select 
+      o.name into v_organization_name
+    from 
+      invitations i
+    join 
+      organizations o on i.organization_id = o.id
+    join 
+      auth.users au on lower(i.email) = lower(au.email)
+    where 
+      i.token = p_token
+      and au.id = v_user_id
+      and au.email_confirmed_at is not null
+      and current_timestamp < i.expired_at
+    limit 1;
+
+    v_result := jsonb_build_object(
+      'organizationName', v_organization_name
+    );
+    return v_result;
+  end;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."get_invitation_data"("p_token" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO ''
@@ -125,6 +237,137 @@ $$;
 
 
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    AS $$
+declare
+  v_is_member boolean;
+  v_invite_by_user_id uuid;
+  v_existing_invite_id uuid;
+  v_result jsonb;
+begin
+  -- Start transaction
+  begin
+    v_invite_by_user_id := auth.uid();
+
+    -- Check inviter is a valid user
+    if not exists (
+      select 1
+      from organization_members om
+      where om.user_id = v_invite_by_user_id
+      and om.organization_id = p_organization_id
+    ) then
+      v_result := jsonb_build_object(
+        'success', false,
+        'error', 'inviter user does not exist'
+      );
+      return v_result;
+    end if;
+
+    -- Check if user is already a member
+    select exists(
+      select 1
+      from organization_members om
+      join users u on om.user_id = u.id
+      where om.organization_id = p_organization_id
+      and lower(u.email) = lower(p_email)
+    ) into v_is_member;
+    
+    if v_is_member then
+      v_result := jsonb_build_object(
+        'success', false,
+        'error', 'this user is already a member of the organization'
+      );
+      return v_result;
+    end if;
+    
+    -- Check if invitation already exists
+    select id into v_existing_invite_id
+    from invitations
+    where organization_id = p_organization_id
+    and lower(email) = lower(p_email)
+    limit 1;
+    
+    -- If invitation exists, update it
+    if v_existing_invite_id is not null then
+      update invitations
+      set invited_at = current_timestamp,
+      expired_at = current_timestamp + interval '7 days',
+      invite_by_user_id = v_invite_by_user_id,
+      token = gen_random_uuid()
+      where id = v_existing_invite_id;
+      
+      v_result := jsonb_build_object('success', true, 'error', null);
+    else
+      -- Create new invitation
+      insert into invitations (
+        organization_id,
+        email,
+        invited_at,
+        expired_at,
+        invite_by_user_id
+      ) values (
+        p_organization_id,
+        lower(p_email),
+        current_timestamp,
+        current_timestamp + interval '7 days',
+        v_invite_by_user_id
+      );
+      
+      v_result := jsonb_build_object('success', true, 'error', null);
+    end if;
+    
+    -- Commit transaction
+    return v_result;
+  exception when others then
+    -- Handle any errors
+    v_result := jsonb_build_object(
+      'success', false,
+      'error', sqlerrm
+    );
+    return v_result;
+  end;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_knowledge_suggestions_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."projects" 
+    WHERE "id" = NEW.project_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_knowledge_suggestions_organization_id"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."knowledge_suggestions" 
+    WHERE "id" = NEW.knowledge_suggestion_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
@@ -150,7 +393,7 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 
-CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
+CREATE TABLE IF NOT EXISTS "public"."doc_file_paths" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "path" "text" NOT NULL,
     "is_review_enabled" boolean DEFAULT true NOT NULL,
@@ -160,26 +403,66 @@ CREATE TABLE IF NOT EXISTS "public"."github_doc_file_paths" (
 );
 
 
-ALTER TABLE "public"."github_doc_file_paths" OWNER TO "postgres";
+ALTER TABLE "public"."doc_file_paths" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."github_schema_file_paths" (
+CREATE TABLE IF NOT EXISTS "public"."github_pull_request_comments" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "path" "text" NOT NULL,
-    "project_id" "uuid" NOT NULL,
+    "github_pull_request_id" "uuid" NOT NULL,
+    "github_comment_identifier" bigint NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    "format" "public"."schema_format_enum" NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL
 );
 
 
-ALTER TABLE "public"."github_schema_file_paths" OWNER TO "postgres";
+ALTER TABLE "public"."github_pull_request_comments" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."github_pull_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pull_number" bigint NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "repository_id" "uuid" NOT NULL
+);
+
+
+ALTER TABLE "public"."github_pull_requests" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."github_repositories" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "owner" "text" NOT NULL,
+    "github_installation_identifier" integer NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "github_repository_identifier" integer NOT NULL,
+    "organization_id" "uuid" NOT NULL
+);
+
+
+ALTER TABLE "public"."github_repositories" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."invitations" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "email" "text" NOT NULL,
+    "invite_by_user_id" "uuid" NOT NULL,
+    "organization_id" "uuid" NOT NULL,
+    "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    "token" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "expired_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."invitations" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestion_doc_mappings" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "knowledge_suggestion_id" "uuid" NOT NULL,
-    "github_doc_file_path_id" "uuid" NOT NULL,
+    "doc_file_path_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
@@ -201,31 +484,32 @@ CREATE TABLE IF NOT EXISTS "public"."knowledge_suggestions" (
     "updated_at" timestamp(3) with time zone NOT NULL,
     "branch_name" "text" NOT NULL,
     "trace_id" "text",
-    "reasoning" "text" DEFAULT ''::"text"
+    "reasoning" "text" DEFAULT ''::"text",
+    "organization_id" "uuid" NOT NULL
 );
 
 
 ALTER TABLE "public"."knowledge_suggestions" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."membership_invites" (
+CREATE TABLE IF NOT EXISTS "public"."migration_pull_request_mappings" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "email" "text" NOT NULL,
-    "invite_by_user_id" "uuid" NOT NULL,
-    "organization_id" "uuid" NOT NULL,
-    "invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+    "migration_id" "uuid" NOT NULL,
+    "pull_request_id" "uuid" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
 );
 
 
-ALTER TABLE "public"."membership_invites" OWNER TO "postgres";
+ALTER TABLE "public"."migration_pull_request_mappings" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."migrations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "title" "text" NOT NULL,
-    "pull_request_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "project_id" "uuid" NOT NULL
 );
 
 
@@ -257,7 +541,8 @@ CREATE TABLE IF NOT EXISTS "public"."overall_review_knowledge_suggestion_mapping
     "overall_review_id" "uuid" NOT NULL,
     "knowledge_suggestion_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -266,14 +551,13 @@ ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" OWNER TO "po
 
 CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "project_id" "uuid",
-    "pull_request_id" "uuid" NOT NULL,
     "review_comment" "text",
     "reviewed_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
     "branch_name" "text" NOT NULL,
-    "trace_id" "text"
+    "trace_id" "text",
+    "migration_id" "uuid" NOT NULL
 );
 
 
@@ -302,33 +586,6 @@ CREATE TABLE IF NOT EXISTS "public"."projects" (
 
 
 ALTER TABLE "public"."projects" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."pull_requests" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "pull_number" bigint NOT NULL,
-    "comment_id" bigint,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL,
-    "repository_id" "uuid" NOT NULL
-);
-
-
-ALTER TABLE "public"."pull_requests" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."repositories" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "owner" "text" NOT NULL,
-    "installation_id" integer NOT NULL,
-    "is_active" boolean DEFAULT true NOT NULL,
-    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."repositories" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
@@ -386,6 +643,19 @@ CREATE TABLE IF NOT EXISTS "public"."review_suggestion_snippets" (
 ALTER TABLE "public"."review_suggestion_snippets" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."schema_file_paths" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "path" "text" NOT NULL,
+    "project_id" "uuid" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "format" "public"."schema_format_enum" NOT NULL
+);
+
+
+ALTER TABLE "public"."schema_file_paths" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" NOT NULL,
     "name" "text" NOT NULL,
@@ -396,18 +666,43 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
 ALTER TABLE "public"."users" OWNER TO "postgres";
 
 
-ALTER TABLE ONLY "public"."github_doc_file_paths"
+ALTER TABLE ONLY "public"."doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_paths"
-    ADD CONSTRAINT "github_schema_file_path_path_project_id_key" UNIQUE ("path", "project_id");
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_github_comment_identifier_key" UNIQUE ("github_comment_identifier");
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_paths"
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_github_pull_request_id_key" UNIQUE ("github_pull_request_id");
+
+
+
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."github_repositories"
+    ADD CONSTRAINT "github_repository_github_repository_identifier_organization_id_" UNIQUE ("github_repository_identifier", "organization_id");
+
+
+
+ALTER TABLE ONLY "public"."schema_file_paths"
     ADD CONSTRAINT "github_schema_file_path_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_token_key" UNIQUE ("token");
 
 
 
@@ -421,13 +716,18 @@ ALTER TABLE ONLY "public"."knowledge_suggestions"
 
 
 
-ALTER TABLE ONLY "public"."membership_invites"
-    ADD CONSTRAINT "membership_invites_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."migrations"
     ADD CONSTRAINT "migration_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mapping_migration_id_pull_request_id_key" UNIQUE ("migration_id", "pull_request_id");
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mappings_pkey" PRIMARY KEY ("id");
 
 
 
@@ -466,12 +766,12 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 
 
-ALTER TABLE ONLY "public"."pull_requests"
+ALTER TABLE ONLY "public"."github_pull_requests"
     ADD CONSTRAINT "pull_request_pkey" PRIMARY KEY ("id");
 
 
 
-ALTER TABLE ONLY "public"."repositories"
+ALTER TABLE ONLY "public"."github_repositories"
     ADD CONSTRAINT "repository_pkey" PRIMARY KEY ("id");
 
 
@@ -501,11 +801,15 @@ ALTER TABLE ONLY "public"."users"
 
 
 
-CREATE UNIQUE INDEX "github_doc_file_path_path_project_id_key" ON "public"."github_doc_file_paths" USING "btree" ("path", "project_id");
+CREATE UNIQUE INDEX "doc_file_path_path_project_id_key" ON "public"."doc_file_paths" USING "btree" ("path", "project_id");
 
 
 
-CREATE UNIQUE INDEX "github_schema_file_path_project_id_key" ON "public"."github_schema_file_paths" USING "btree" ("project_id");
+CREATE UNIQUE INDEX "github_pull_request_repository_id_pull_number_key" ON "public"."github_pull_requests" USING "btree" ("repository_id", "pull_number");
+
+
+
+CREATE UNIQUE INDEX "github_repository_owner_name_key" ON "public"."github_repositories" USING "btree" ("owner", "name");
 
 
 
@@ -517,19 +821,15 @@ CREATE INDEX "idx_review_feedback_comment_review_feedback_id" ON "public"."revie
 
 
 
-CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public"."knowledge_suggestion_doc_mappings" USING "btree" ("knowledge_suggestion_id", "github_doc_file_path_id");
+CREATE INDEX "invitations_email_idx" ON "public"."invitations" USING "btree" ("email");
 
 
 
-CREATE INDEX "membership_invites_email_idx" ON "public"."membership_invites" USING "btree" ("email");
+CREATE INDEX "invitations_organization_id_idx" ON "public"."invitations" USING "btree" ("organization_id");
 
 
 
-CREATE INDEX "membership_invites_org_id_idx" ON "public"."membership_invites" USING "btree" ("organization_id");
-
-
-
-CREATE UNIQUE INDEX "migration_pull_request_id_key" ON "public"."migrations" USING "btree" ("pull_request_id");
+CREATE UNIQUE INDEX "knowledge_suggestion_doc_mapping_unique_mapping" ON "public"."knowledge_suggestion_doc_mappings" USING "btree" ("knowledge_suggestion_id", "doc_file_path_id");
 
 
 
@@ -549,26 +849,54 @@ CREATE UNIQUE INDEX "project_repository_mapping_project_id_repository_id_key" ON
 
 
 
-CREATE UNIQUE INDEX "pull_request_repository_id_pull_number_key" ON "public"."pull_requests" USING "btree" ("repository_id", "pull_number");
+CREATE UNIQUE INDEX "schema_file_path_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("path", "project_id");
 
 
 
-CREATE UNIQUE INDEX "repository_owner_name_key" ON "public"."repositories" USING "btree" ("owner", "name");
+CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("project_id");
 
 
 
-ALTER TABLE ONLY "public"."github_doc_file_paths"
+CREATE OR REPLACE TRIGGER "set_knowledge_suggestions_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."knowledge_suggestions" FOR EACH ROW EXECUTE FUNCTION "public"."set_knowledge_suggestions_organization_id"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_overall_review_knowledge_suggestion_mappings_organization_i" BEFORE INSERT OR UPDATE ON "public"."overall_review_knowledge_suggestion_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"();
+
+
+
+ALTER TABLE ONLY "public"."doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
-ALTER TABLE ONLY "public"."github_schema_file_paths"
-    ADD CONSTRAINT "github_schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY "public"."github_pull_request_comments"
+    ADD CONSTRAINT "github_pull_request_comments_github_pull_request_id_fkey" FOREIGN KEY ("github_pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."github_pull_requests"
+    ADD CONSTRAINT "github_pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."github_repositories"
+    ADD CONSTRAINT "github_repositories_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_invite_by_user_id_fkey" FOREIGN KEY ("invite_by_user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
 
 
 
 ALTER TABLE ONLY "public"."knowledge_suggestion_doc_mappings"
-    ADD CONSTRAINT "knowledge_suggestion_doc_mapping_github_doc_file_path_id_fkey" FOREIGN KEY ("github_doc_file_path_id") REFERENCES "public"."github_doc_file_paths"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "knowledge_suggestion_doc_mapping_doc_file_path_id_fkey" FOREIGN KEY ("doc_file_path_id") REFERENCES "public"."doc_file_paths"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -582,18 +910,23 @@ ALTER TABLE ONLY "public"."knowledge_suggestions"
 
 
 
-ALTER TABLE ONLY "public"."membership_invites"
-    ADD CONSTRAINT "membership_invites_invite_by_user_id_fkey" FOREIGN KEY ("invite_by_user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."membership_invites"
-    ADD CONSTRAINT "membership_invites_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
+ALTER TABLE ONLY "public"."knowledge_suggestions"
+    ADD CONSTRAINT "knowledge_suggestions_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
 ALTER TABLE ONLY "public"."migrations"
-    ADD CONSTRAINT "migration_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "migration_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mapping_migration_id_fkey" FOREIGN KEY ("migration_id") REFERENCES "public"."migrations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mapping_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -617,13 +950,13 @@ ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
 
 
 
-ALTER TABLE ONLY "public"."overall_reviews"
-    ADD CONSTRAINT "overall_review_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
+    ADD CONSTRAINT "overall_review_knowledge_suggestion_mappings_organization_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
 ALTER TABLE ONLY "public"."overall_reviews"
-    ADD CONSTRAINT "overall_review_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."pull_requests"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "overall_review_migration_id_fkey" FOREIGN KEY ("migration_id") REFERENCES "public"."migrations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -638,12 +971,7 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 
 ALTER TABLE ONLY "public"."project_repository_mappings"
-    ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
-
-ALTER TABLE ONLY "public"."pull_requests"
-    ADD CONSTRAINT "pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+    ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -677,6 +1005,11 @@ ALTER TABLE ONLY "public"."review_suggestion_snippets"
 
 
 
+ALTER TABLE ONLY "public"."schema_file_paths"
+    ADD CONSTRAINT "schema_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -684,6 +1017,16 @@ CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."project
 
 
 COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" IS 'Authenticated users can only delete projects in organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only create knowledge suggestions in organizations they are members of';
 
 
 
@@ -697,6 +1040,26 @@ COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."project
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only view knowledge suggestions belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_overall_review_knowledge_sug" ON "public"."overall_review_knowledge_suggestion_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_overall_review_knowledge_sug" ON "public"."overall_review_knowledge_suggestion_mappings" IS 'Authenticated users can only view mappings belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -704,6 +1067,18 @@ CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."project
 
 
 COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" IS 'Authenticated users can only view projects belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_update_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"())))) WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_update_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only update knowledge suggestions in organizations they are members of';
 
 
 
@@ -719,7 +1094,17 @@ COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."pro
 
 
 
+ALTER TABLE "public"."knowledge_suggestions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "service_role_can_delete_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR DELETE TO "service_role" USING (true);
+
 
 
 CREATE POLICY "service_role_can_delete_all_projects" ON "public"."projects" FOR DELETE TO "service_role" USING (true);
@@ -727,6 +1112,14 @@ CREATE POLICY "service_role_can_delete_all_projects" ON "public"."projects" FOR 
 
 
 COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."projects" IS 'Service role can delete any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_insert_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
+CREATE POLICY "service_role_can_insert_all_overall_review_knowledge_suggestion" ON "public"."overall_review_knowledge_suggestion_mappings" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
 
@@ -738,6 +1131,10 @@ COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" 
 
 
 
+CREATE POLICY "service_role_can_select_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "service_role" USING (true);
+
+
+
 CREATE POLICY "service_role_can_select_all_projects" ON "public"."projects" FOR SELECT TO "service_role" USING (true);
 
 
@@ -746,11 +1143,25 @@ COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."projects" 
 
 
 
+CREATE POLICY "service_role_can_update_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_update_all_projects" ON "public"."projects" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
 
 
 
 COMMENT ON POLICY "service_role_can_update_all_projects" ON "public"."projects" IS 'Service role can update any project (for jobs)';
+
+
+
+ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "users_same_organization_select_policy" ON "public"."users" FOR SELECT TO "authenticated" USING (((EXISTS ( SELECT 1
+   FROM ("public"."organization_members" "om1"
+     JOIN "public"."organization_members" "om2" ON (("om1"."organization_id" = "om2"."organization_id")))
+  WHERE (("om1"."user_id" = "users"."id") AND ("om2"."user_id" = "auth"."uid"())))) OR ("id" = "auth"."uid"())));
 
 
 
@@ -943,9 +1354,36 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."accept_invitation"("p_token" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_invitation_data"("p_token" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_invitation_data"("p_token" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "service_role";
 
 
 
@@ -970,15 +1408,33 @@ GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "anon";
-GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "authenticated";
-GRANT ALL ON TABLE "public"."github_doc_file_paths" TO "service_role";
+GRANT ALL ON TABLE "public"."doc_file_paths" TO "anon";
+GRANT ALL ON TABLE "public"."doc_file_paths" TO "authenticated";
+GRANT ALL ON TABLE "public"."doc_file_paths" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "anon";
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "authenticated";
-GRANT ALL ON TABLE "public"."github_schema_file_paths" TO "service_role";
+GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "anon";
+GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_pull_request_comments" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."github_pull_requests" TO "anon";
+GRANT ALL ON TABLE "public"."github_pull_requests" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_pull_requests" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."github_repositories" TO "anon";
+GRANT ALL ON TABLE "public"."github_repositories" TO "authenticated";
+GRANT ALL ON TABLE "public"."github_repositories" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."invitations" TO "anon";
+GRANT ALL ON TABLE "public"."invitations" TO "authenticated";
+GRANT ALL ON TABLE "public"."invitations" TO "service_role";
 
 
 
@@ -994,9 +1450,9 @@ GRANT ALL ON TABLE "public"."knowledge_suggestions" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."membership_invites" TO "anon";
-GRANT ALL ON TABLE "public"."membership_invites" TO "authenticated";
-GRANT ALL ON TABLE "public"."membership_invites" TO "service_role";
+GRANT ALL ON TABLE "public"."migration_pull_request_mappings" TO "anon";
+GRANT ALL ON TABLE "public"."migration_pull_request_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."migration_pull_request_mappings" TO "service_role";
 
 
 
@@ -1042,18 +1498,6 @@ GRANT ALL ON TABLE "public"."projects" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."pull_requests" TO "anon";
-GRANT ALL ON TABLE "public"."pull_requests" TO "authenticated";
-GRANT ALL ON TABLE "public"."pull_requests" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."repositories" TO "anon";
-GRANT ALL ON TABLE "public"."repositories" TO "authenticated";
-GRANT ALL ON TABLE "public"."repositories" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."review_feedback_comments" TO "anon";
 GRANT ALL ON TABLE "public"."review_feedback_comments" TO "authenticated";
 GRANT ALL ON TABLE "public"."review_feedback_comments" TO "service_role";
@@ -1075,6 +1519,12 @@ GRANT ALL ON TABLE "public"."review_feedbacks" TO "service_role";
 GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "anon";
 GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "authenticated";
 GRANT ALL ON TABLE "public"."review_suggestion_snippets" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "anon";
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "authenticated";
+GRANT ALL ON TABLE "public"."schema_file_paths" TO "service_role";
 
 
 
