@@ -63,10 +63,4 @@ CREATE POLICY "service_role_can_insert_all_overall_reviews"
   FOR INSERT TO "service_role" 
   WITH CHECK (true);
 
-CREATE POLICY "service_role_can_update_all_overall_reviews" 
-  ON "public"."overall_reviews" 
-  FOR UPDATE TO "service_role" 
-  USING (true)
-  WITH CHECK (true);
-
 COMMIT;
