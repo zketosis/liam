@@ -51,26 +51,21 @@ export async function updateOrganizationAction(
     return { success: false, error: 'Organization name cannot be empty' }
   }
 
-  try {
-    const organizationId = organizationIdResult.output
-    const name = nameResult.output
+  const organizationId = organizationIdResult.output
+  const name = nameResult.output
 
-    const result = await updateOrganizationName(organizationId, name)
+  const result = await updateOrganizationName(organizationId, name)
 
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.error || 'Failed to update organization name',
-      }
-    }
-
+  if (!result.success) {
     return {
-      success: true,
-      message: 'Organization name has been successfully updated',
+      success: false,
+      error: result.error || 'Failed to update organization name',
     }
-  } catch (error) {
-    console.error('Error updating organization:', error)
-    return { success: false, error: 'An unexpected error occurred' }
+  }
+
+  return {
+    success: true,
+    message: 'Organization name has been successfully updated',
   }
 }
 
@@ -97,40 +92,35 @@ export async function deleteOrganizationAction(
     return { success: false, error: 'Confirmation text is required' }
   }
 
-  try {
-    const organizationId = organizationIdResult.output
-    const confirmText = confirmTextResult.output
+  const organizationId = organizationIdResult.output
+  const confirmText = confirmTextResult.output
 
-    // Get the organization details to verify the name
-    const organization = await getOrganizationDetails(organizationId)
-    const organizationName = organization?.name
-    if (!organization) {
-      return { success: false, error: 'Organization not found' }
-    }
+  // Get the organization details to verify the name
+  const organization = await getOrganizationDetails(organizationId)
+  const organizationName = organization?.name
+  if (!organization) {
+    return { success: false, error: 'Organization not found' }
+  }
 
-    // Verify that the confirmation text matches the organization name
-    if (confirmText !== organization.name) {
-      return {
-        success: false,
-        error: 'Confirmation text does not match organization name',
-      }
-    }
-
-    const result = await deleteOrganization(organizationId)
-
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.error || 'Failed to delete organization',
-      }
-    }
-
+  // Verify that the confirmation text matches the organization name
+  if (confirmText !== organization.name) {
     return {
-      success: true,
-      message: `Organization "${organizationName}" has been deleted successfully`,
+      success: false,
+      error: 'Confirmation text does not match organization name',
     }
-  } catch (error) {
-    console.error('Error deleting organization:', error)
-    return { success: false, error: 'An unexpected error occurred' }
+  }
+
+  const result = await deleteOrganization(organizationId)
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: result.error || 'Failed to delete organization',
+    }
+  }
+
+  return {
+    success: true,
+    message: `Organization "${organizationName}" has been deleted successfully`,
   }
 }

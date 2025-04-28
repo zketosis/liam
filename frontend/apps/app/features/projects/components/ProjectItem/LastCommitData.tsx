@@ -8,23 +8,18 @@ export async function fetchLastCommitData(
   owner: string,
   repo: string,
 ) {
-  try {
-    if (!installationId || !owner || !repo) {
-      return null
-    }
-
-    const commitInfo = await getLastCommit(installationId, owner, repo)
-
-    if (commitInfo) {
-      return {
-        author: commitInfo.author,
-        date: commitInfo.date,
-      }
-    }
-
-    return null
-  } catch (error) {
-    console.error('Failed to fetch last commit info:', error)
+  if (!installationId || !owner || !repo) {
     return null
   }
+
+  const commitInfo = await getLastCommit(installationId, owner, repo)
+
+  if (commitInfo) {
+    return {
+      author: commitInfo.author,
+      date: commitInfo.date,
+    }
+  }
+
+  return null
 }
