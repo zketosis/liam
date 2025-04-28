@@ -18,7 +18,7 @@ import styles from './InstallationSelector.module.css'
 
 type Props = {
   installations: Installation[]
-  organizationId?: string
+  organizationId: string
 }
 
 export const InstallationSelector: FC<Props> = ({
@@ -80,10 +80,7 @@ export const InstallationSelector: FC<Props> = ({
           'installationId',
           selectedInstallation?.id.toString() || '',
         )
-
-        if (organizationId) {
-          formData.set('organizationId', organizationId.toString())
-        }
+        formData.set('organizationId', organizationId.toString())
 
         await addProject(formData)
         // This point is not reached because a redirect occurs on success

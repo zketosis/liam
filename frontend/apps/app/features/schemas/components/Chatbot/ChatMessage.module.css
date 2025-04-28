@@ -1,0 +1,126 @@
+.messageContainer {
+  display: flex;
+  margin-bottom: 12px;
+  max-width: 80%;
+}
+
+.userMessage {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.botMessage {
+  margin-right: auto;
+  justify-content: flex-start;
+}
+
+.messageContent {
+  padding: 10px 14px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.userMessage .messageContent {
+  background-color: var(--primary-accent);
+  color: var(--global-background);
+}
+
+.botMessage .messageContent {
+  background-color: var(--global-foreground-subtle);
+  color: var(--global-foreground);
+}
+
+.messageText {
+  font-size: var(--font-size-3);
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.messageTime {
+  font-size: var(--font-size-1);
+  opacity: 0.7;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Markdown styles */
+.messageText :global(h1),
+.messageText :global(h2),
+.messageText :global(h3),
+.messageText :global(h4),
+.messageText :global(h5),
+.messageText :global(h6) {
+  font-weight: 600;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.messageText :global(h1) {
+  font-size: var(--font-size-5);
+}
+
+.messageText :global(h2) {
+  font-size: var(--font-size-4);
+}
+
+.messageText :global(h3) {
+  font-size: var(--font-size-3);
+}
+
+.messageText :global(p) {
+  margin-bottom: 0.5em;
+}
+
+.messageText :global(ul),
+.messageText :global(ol) {
+  margin-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.messageText :global(li) {
+  margin-bottom: 0.25em;
+}
+
+.messageText :global(code) {
+  font-family: var(--code-font);
+  background-color: var(--global-foreground-subtle);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.messageText :global(pre) {
+  background-color: var(--global-foreground-subtle);
+  padding: 0.75em;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 0.5em;
+}
+
+.messageText :global(pre code) {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.messageText :global(a) {
+  color: var(--primary-accent);
+  text-decoration: underline;
+}
+
+.messageText :global(table) {
+  border-collapse: collapse;
+  margin-bottom: 0.5em;
+  width: 100%;
+}
+
+.messageText :global(th),
+.messageText :global(td) {
+  border: 1px solid var(--global-foreground-subtle);
+  padding: 0.5em;
+  text-align: left;
+}
+
+.messageText :global(th) {
+  background-color: var(--global-foreground-subtle);
+}

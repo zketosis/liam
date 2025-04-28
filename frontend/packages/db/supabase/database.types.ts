@@ -105,6 +105,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          organization_id: string
           pull_number: number
           repository_id: string
           updated_at: string
@@ -112,6 +113,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          organization_id: string
           pull_number: number
           repository_id: string
           updated_at: string
@@ -119,6 +121,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          organization_id?: string
           pull_number?: number
           repository_id?: string
           updated_at?: string
@@ -129,6 +132,13 @@ export type Database = {
             columns: ['repository_id']
             isOneToOne: false
             referencedRelation: 'github_repositories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'github_pull_requests_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -367,6 +377,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          organization_id: string
           project_id: string
           title: string
           updated_at: string
@@ -374,6 +385,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          organization_id: string
           project_id: string
           title: string
           updated_at: string
@@ -381,6 +393,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          organization_id?: string
           project_id?: string
           title?: string
           updated_at?: string
@@ -391,6 +404,13 @@ export type Database = {
             columns: ['project_id']
             isOneToOne: false
             referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'migrations_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -540,6 +560,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          organization_id: string
           project_id: string
           repository_id: string
           updated_at: string
@@ -547,6 +568,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          organization_id: string
           project_id: string
           repository_id: string
           updated_at: string
@@ -554,6 +576,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          organization_id?: string
           project_id?: string
           repository_id?: string
           updated_at?: string
@@ -571,6 +594,13 @@ export type Database = {
             columns: ['repository_id']
             isOneToOne: false
             referencedRelation: 'github_repositories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'project_repository_mappings_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
