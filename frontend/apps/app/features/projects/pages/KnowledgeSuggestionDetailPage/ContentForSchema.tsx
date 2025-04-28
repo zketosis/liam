@@ -1,7 +1,7 @@
 import { createClient } from '@/libs/db/server'
 import { parse } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
-import { notFound } from 'next/navigation'
+
 import type { FC } from 'react'
 import { processOverrideContent } from '../../actions/processOverrideContent'
 import { getOriginalDocumentContent } from '../../utils/getOriginalDocumentContent'
@@ -18,7 +18,7 @@ async function getGithubSchemaFilePath(projectId: string) {
     .single()
 
   if (error || !gitHubSchemaFilePath) {
-    notFound()
+    throw new Error('Schema file path not found')
   }
 
   return gitHubSchemaFilePath
