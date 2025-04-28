@@ -1,5 +1,5 @@
 import { langfuseHandler } from '@/lib/langfuse/langfuseHandler'
-import { AIMessage, HumanMessage } from '@langchain/core/messages'
+import {} from '@langchain/core/messages'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { Document } from 'langchain/document'
@@ -201,12 +201,13 @@ export async function POST(request: Request) {
     )
   }
 
-  // Format chat history
-  const formattedHistory = history
-    ? history.map((msg: [string, string]) =>
-        msg[0] === 'Human' ? new HumanMessage(msg[1]) : new AIMessage(msg[1]),
-      )
-    : []
+  // Format chat history for prompt template
+  const formattedChatHistory =
+    history && history.length > 0
+      ? history
+          .map((msg: [string, string]) => `${msg[0]}: ${msg[1]}`)
+          .join('\n')
+      : 'No previous conversation.'
 
   // Convert schema to text and create chain
   const schemaText = convertSchemaToText(schemaData)
@@ -216,15 +217,7 @@ export async function POST(request: Request) {
   const response = await chain.invoke(
     {
       input: message,
-      chat_history:
-        formattedHistory.length > 0
-          ? formattedHistory
-              .map(
-                (msg: AIMessage | HumanMessage) =>
-                  `${msg._getType()}: ${msg.content}`,
-              )
-              .join('\n')
-          : 'No previous conversation.',
+      chat_history: formattedChatHistory,
     },
     {
       callbacks: [langfuseHandler],
