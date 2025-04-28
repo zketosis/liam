@@ -1804,12 +1804,6 @@ GRANT ALL ON FUNCTION "public"."sync_existing_users"() TO "service_role";
 
 
 
-
-
-
-
-
-
 GRANT ALL ON TABLE "public"."doc_file_paths" TO "anon";
 GRANT ALL ON TABLE "public"."doc_file_paths" TO "authenticated";
 GRANT ALL ON TABLE "public"."doc_file_paths" TO "service_role";
@@ -1940,6 +1934,12 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQ
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
+
+
+
+
+
+
 
 
 
