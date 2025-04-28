@@ -124,3 +124,36 @@
 .messageText :global(th) {
   background-color: var(--global-foreground-subtle);
 }
+
+/* GitHub Flavored Markdown specific styles */
+
+/* Task lists */
+.messageText :global(input[type="checkbox"]) {
+  margin-right: 0.5em;
+  pointer-events: none;
+}
+
+.messageText :global(li:has(input[type="checkbox"])) {
+  list-style-type: none;
+  margin-left: -1em;
+}
+
+/* Strikethrough */
+.messageText :global(del) {
+  text-decoration: line-through;
+  color: var(--global-foreground-muted);
+}
+
+/* Autolinks */
+.messageText :global(a.autolink) {
+  color: var(--primary-accent);
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+/* Table wrapper to enable horizontal scrolling for wide tables */
+.messageText :global(table) {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
