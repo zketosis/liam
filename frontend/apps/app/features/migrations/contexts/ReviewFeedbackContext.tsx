@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 
-type ReviewFeedback = Tables<'review_feedbacks'> & {
+type ReviewFeedback = Omit<Tables<'review_feedbacks'>, 'organization_id'> & {
   review_suggestion_snippets: Array<{
     id: string
     filename: string
