@@ -123,7 +123,6 @@ const createVectorStore = async (schemaData: SchemaData) => {
 const createChatChain = async (vectorStore: MemoryVectorStore) => {
   const model = new ChatOpenAI({
     modelName: 'o4-mini-2025-04-16',
-    temperature: 0,
   })
 
   // Create a prompt template
