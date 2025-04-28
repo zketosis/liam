@@ -36,14 +36,9 @@ export function LastCommitDataWrapper({
 
   useEffect(() => {
     async function loadData() {
-      try {
-        const data = await fetchLastCommitData(installationId, owner, repo)
-        setCommitInfo(data)
-      } catch (error) {
-        console.error('Error fetching commit data:', error)
-      } finally {
-        setIsLoading(false)
-      }
+      const data = await fetchLastCommitData(installationId, owner, repo)
+      setCommitInfo(data)
+      setIsLoading(false)
     }
 
     loadData()

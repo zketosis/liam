@@ -35,9 +35,7 @@ export const OrganizationsPage: FC<{
           {organizations.map((organization) => (
             <Link
               key={organization.id}
-              href={urlgen('organizations/[organizationId]/projects', {
-                organizationId: `${organization.id}`,
-              })}
+              href={urlgen('projects')}
               className={styles.organizationCard}
             >
               <h2>{organization.name || 'Untitled Organization'}</h2>

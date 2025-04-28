@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { TabsContent, TabsRoot } from '@/components'
+import { ChatbotButton } from '@/features/schemas/components/Chatbot'
 import { createClient } from '@/libs/db/server'
 import { parse, setPrismWasmUrl } from '@liam-hq/db-structure/parser'
 import { getFileContent } from '@liam-hq/github'
@@ -178,6 +179,7 @@ export const SchemaPage: FC<Props> = async ({
       <TabsContent value={SCHEMA_TAB.EDITOR} className={styles.tabsContent}>
         <OverrideEditor />
       </TabsContent>
+      <ChatbotButton schemaData={contentProps.schema} />
     </TabsRoot>
   )
 }

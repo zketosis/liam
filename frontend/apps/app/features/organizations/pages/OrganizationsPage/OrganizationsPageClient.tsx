@@ -10,18 +10,14 @@ export function OrganizationsPageClient() {
     // Check for stored toast notification data
     const storedToast = sessionStorage.getItem('organization_deleted')
     if (storedToast) {
-      try {
-        const toastData = JSON.parse(storedToast)
-        toast({
-          title: toastData.title,
-          description: toastData.description,
-          status: toastData.status,
-        })
-        // Remove the stored data after displaying
-        sessionStorage.removeItem('organization_deleted')
-      } catch (error) {
-        console.error('Failed to parse toast data:', error)
-      }
+      const toastData = JSON.parse(storedToast)
+      toast({
+        title: toastData.title,
+        description: toastData.description,
+        status: toastData.status,
+      })
+      // Remove the stored data after displaying
+      sessionStorage.removeItem('organization_deleted')
     }
   }, [toast])
 

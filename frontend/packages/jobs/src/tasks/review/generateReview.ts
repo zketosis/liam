@@ -55,106 +55,99 @@ export type ReviewResponse = {
 export const processGenerateReview = async (
   payload: GenerateReviewPayload,
 ): Promise<{ review: Review; traceId: string }> => {
-  try {
-    const supabase = createClient()
+  const supabase = createClient()
 
-    const { data: repository, error: repositoryError } = await supabase
-      .from('github_repositories')
-      .select('github_installation_identifier')
-      .eq('id', payload.repositoryId)
-      .single()
+  const { data: repository, error: repositoryError } = await supabase
+    .from('github_repositories')
+    .select('github_installation_identifier')
+    .eq('id', payload.repositoryId)
+    .single()
 
-    if (repositoryError || !repository) {
-      throw new Error(
-        `Repository with ID ${payload.repositoryId} not found: ${JSON.stringify(repositoryError)}`,
-      )
-    }
+  if (repositoryError || !repository) {
+    throw new Error(
+      `Repository with ID ${payload.repositoryId} not found: ${JSON.stringify(repositoryError)}`,
+    )
+  }
 
-    const { data: docPaths, error: docPathsError } = await supabase
-      .from('doc_file_paths')
-      .select('*')
-      .eq('project_id', payload.projectId)
-      .eq('is_review_enabled', true)
+  const { data: docPaths, error: docPathsError } = await supabase
+    .from('doc_file_paths')
+    .select('*')
+    .eq('project_id', payload.projectId)
+    .eq('is_review_enabled', true)
 
-    if (docPathsError) {
-      throw new Error(
-        `Error fetching doc paths: ${JSON.stringify(docPathsError)}`,
-      )
-    }
+  if (docPathsError) {
+    throw new Error(
+      `Error fetching doc paths: ${JSON.stringify(docPathsError)}`,
+    )
+  }
 
-    const docsContentArray = await Promise.all(
-      docPaths.map(async (docPath: { path: string }) => {
-        try {
-          const fileData = await getFileContent(
-            `${payload.owner}/${payload.name}`,
-            docPath.path,
-            payload.branchName,
-            Number(repository.github_installation_identifier),
-          )
+  const docsContentArray = await Promise.all(
+    docPaths.map(async (docPath: { path: string }) => {
+      try {
+        const fileData = await getFileContent(
+          `${payload.owner}/${payload.name}`,
+          docPath.path,
+          payload.branchName,
+          Number(repository.github_installation_identifier),
+        )
 
-          if (!fileData.content) {
-            console.warn(`No content found for ${docPath.path}`)
-            return null
-          }
-
-          return `# ${docPath.path}\n\n${fileData.content}`
-        } catch (error) {
-          console.error(`Error fetching content for ${docPath.path}:`, error)
+        if (!fileData.content) {
+          console.warn(`No content found for ${docPath.path}`)
           return null
         }
-      }),
-    )
 
-    const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
+        return `# ${docPath.path}\n\n${fileData.content}`
+      } catch (error) {
+        console.error(`Error fetching content for ${docPath.path}:`, error)
+        return null
+      }
+    }),
+  )
 
-    const predefinedRunId = uuidv4()
+  const docsContent = docsContentArray.filter(Boolean).join('\n\n---\n\n')
 
-    const prDetails = await getPullRequestDetails(
-      Number(repository.github_installation_identifier),
-      payload.owner,
-      payload.name,
-      payload.pullRequestNumber,
-    )
+  const predefinedRunId = uuidv4()
 
-    const prComments = await getIssueComments(
-      Number(repository.github_installation_identifier),
-      payload.owner,
-      payload.name,
-      payload.pullRequestNumber,
-    )
+  const prDetails = await getPullRequestDetails(
+    Number(repository.github_installation_identifier),
+    payload.owner,
+    payload.name,
+    payload.pullRequestNumber,
+  )
 
-    const prDescription = prDetails.body || 'No description provided.'
+  const prComments = await getIssueComments(
+    Number(repository.github_installation_identifier),
+    payload.owner,
+    payload.name,
+    payload.pullRequestNumber,
+  )
 
-    const formattedComments = prComments
-      .map(
-        (comment) => `${comment.user?.login || 'Anonymous'}: ${comment.body}`,
-      )
-      .join('\n\n')
+  const prDescription = prDetails.body || 'No description provided.'
 
-    // Fetch schema information with overrides
-    const { overriddenSchema } = await fetchSchemaInfoWithOverrides(
-      payload.projectId,
-      payload.branchName,
-      `${payload.owner}/${payload.name}`,
-      repository.github_installation_identifier,
-    )
+  const formattedComments = prComments
+    .map((comment) => `${comment.user?.login || 'Anonymous'}: ${comment.body}`)
+    .join('\n\n')
 
-    const callbacks = [langfuseLangchainHandler]
-    const review = await generateReview(
-      docsContent,
-      overriddenSchema,
-      payload.fileChanges,
-      prDescription,
-      formattedComments,
-      callbacks,
-      predefinedRunId,
-    )
+  // Fetch schema information with overrides
+  const { overriddenSchema } = await fetchSchemaInfoWithOverrides(
+    payload.projectId,
+    payload.branchName,
+    `${payload.owner}/${payload.name}`,
+    repository.github_installation_identifier,
+  )
 
-    return { review: review, traceId: predefinedRunId }
-  } catch (error) {
-    console.error('Error generating review:', error)
-    throw error
-  }
+  const callbacks = [langfuseLangchainHandler]
+  const review = await generateReview(
+    docsContent,
+    overriddenSchema,
+    payload.fileChanges,
+    prDescription,
+    formattedComments,
+    callbacks,
+    predefinedRunId,
+  )
+
+  return { review: review, traceId: predefinedRunId }
 }
 
 export const generateReviewTask = task({
