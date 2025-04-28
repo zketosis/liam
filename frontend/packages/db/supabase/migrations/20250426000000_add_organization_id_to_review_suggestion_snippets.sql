@@ -51,25 +51,9 @@ COMMENT ON POLICY "authenticated_users_can_select_org_review_suggestion_snippets
   ON "public"."review_suggestion_snippets" 
   IS 'Authenticated users can only view review suggestion snippets belonging to organizations they are members of';
 
-CREATE POLICY "service_role_can_select_all_review_suggestion_snippets" 
-  ON "public"."review_suggestion_snippets" 
-  FOR SELECT TO "service_role" 
-  USING (true);
-
 CREATE POLICY "service_role_can_insert_all_review_suggestion_snippets" 
   ON "public"."review_suggestion_snippets" 
   FOR INSERT TO "service_role" 
   WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_review_suggestion_snippets" 
-  ON "public"."review_suggestion_snippets" 
-  FOR UPDATE TO "service_role" 
-  USING (true)
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_review_suggestion_snippets" 
-  ON "public"."review_suggestion_snippets" 
-  FOR DELETE TO "service_role" 
-  USING (true);
 
 COMMIT;
