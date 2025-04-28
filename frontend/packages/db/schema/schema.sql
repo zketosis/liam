@@ -352,6 +352,24 @@ $$;
 ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."prevent_delete_last_organization_member"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  -- Check if this is the last member in the organization
+  IF (SELECT COUNT(*) FROM organization_members WHERE organization_id = OLD.organization_id) <= 1 THEN
+    RAISE EXCEPTION 'Cannot remove the last member of an organization';
+  END IF;
+
+  -- If not the last member, allow the deletion
+  RETURN OLD;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."prevent_delete_last_organization_member"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_knowledge_suggestions_organization_id"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -906,6 +924,14 @@ CREATE UNIQUE INDEX "schema_file_path_path_project_id_key" ON "public"."schema_f
 
 
 CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_paths" USING "btree" ("project_id");
+
+
+
+CREATE OR REPLACE TRIGGER "check_last_organization_member" BEFORE DELETE ON "public"."organization_members" FOR EACH ROW EXECUTE FUNCTION "public"."prevent_delete_last_organization_member"();
+
+
+
+COMMENT ON TRIGGER "check_last_organization_member" ON "public"."organization_members" IS 'Prevents deletion of the last member of an organization to ensure organizations always have at least one member';
 
 
 
@@ -1494,6 +1520,12 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "anon";
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "service_role";
 
 
 
