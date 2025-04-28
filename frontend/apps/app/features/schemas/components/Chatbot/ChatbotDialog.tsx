@@ -9,7 +9,7 @@ import {
 } from '@liam-hq/ui'
 import type { FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import type { SchemaData } from '../../../../app/api/chat/route'
+import type { SchemaData, TableGroupData } from '../../../../app/api/chat/route'
 import { ChatInput } from './ChatInput'
 import { ChatMessage, type ChatMessageProps } from './ChatMessage'
 import styles from './ChatbotDialog.module.css'
@@ -18,12 +18,14 @@ interface ChatbotDialogProps {
   isOpen: boolean
   onClose: () => void
   schemaData: SchemaData
+  tableGroups?: Record<string, TableGroupData>
 }
 
 export const ChatbotDialog: FC<ChatbotDialogProps> = ({
   isOpen,
   onClose,
   schemaData,
+  tableGroups,
 }) => {
   const [messages, setMessages] = useState<
     (ChatMessageProps & { id: string })[]
@@ -70,6 +72,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
         body: JSON.stringify({
           message: content,
           schemaData,
+          tableGroups,
           history,
         }),
       })
