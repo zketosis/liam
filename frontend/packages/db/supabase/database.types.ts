@@ -39,6 +39,7 @@ export type Database = {
           created_at: string
           id: string
           is_review_enabled: boolean
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -47,6 +48,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_review_enabled?: boolean
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -55,11 +57,19 @@ export type Database = {
           created_at?: string
           id?: string
           is_review_enabled?: boolean
+          organization_id?: string
           path?: string
           project_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: 'doc_file_paths_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'github_doc_file_path_project_id_fkey'
             columns: ['project_id']
