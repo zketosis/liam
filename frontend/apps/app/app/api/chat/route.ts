@@ -2,7 +2,6 @@ import { AIMessage, HumanMessage } from '@langchain/core/messages'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
 import { OpenAIEmbeddings } from '@langchain/openai'
-import * as Sentry from '@sentry/nextjs'
 import { createStuffDocumentsChain } from 'langchain/chains/combine_documents'
 import { createRetrievalChain } from 'langchain/chains/retrieval'
 import { Document } from 'langchain/document'
@@ -112,24 +111,17 @@ const convertSchemaToTexts = (schema: SchemaData): Document[] => {
 
 // Create vector store from schema data
 const createVectorStore = async (schemaData: SchemaData) => {
-  try {
-    const documents = convertSchemaToTexts(schemaData)
-    return await MemoryVectorStore.fromDocuments(
-      documents,
-      new OpenAIEmbeddings(),
-    )
-  } catch (error) {
-    Sentry.captureException(error)
-    console.error('Error creating vector store:', error)
-    throw error
-  }
+  const documents = convertSchemaToTexts(schemaData)
+  return await MemoryVectorStore.fromDocuments(
+    documents,
+    new OpenAIEmbeddings(),
+  )
 }
 
 // Create chat chain
 const createChatChain = async (vectorStore: MemoryVectorStore) => {
   const model = new ChatOpenAI({
-    modelName: 'gpt-4',
-    temperature: 0,
+    modelName: 'o4-mini-2025-04-16',
   })
 
   // Create a prompt template
@@ -168,37 +160,39 @@ Based on the context information, provide a helpful answer to the question.
 }
 
 export async function POST(request: Request) {
-  try {
-    const { message, schemaData, history } = await request.json()
+  const { message, schemaData, history } = await request.json()
 
-    // Create vector store and chain
-    const vectorStore = await createVectorStore(schemaData)
-    const chain = await createChatChain(vectorStore)
+  if (!message || typeof message !== 'string' || !message.trim()) {
+    return NextResponse.json({ error: 'Message is required' }, { status: 400 })
+  }
 
-    // Format chat history
-    const formattedHistory = history
-      ? history.map((msg: [string, string]) =>
-          msg[0] === 'Human' ? new HumanMessage(msg[1]) : new AIMessage(msg[1]),
-        )
-      : []
-
-    // Generate response
-    const response = await chain.invoke({
-      input: message,
-      chat_history: formattedHistory,
-    })
-
-    return NextResponse.json({
-      response: {
-        text: response.answer,
-      },
-    })
-  } catch (error) {
-    Sentry.captureException(error)
-    console.error('Error in chat API:', error)
+  if (!schemaData || typeof schemaData !== 'object') {
     return NextResponse.json(
-      { error: 'Failed to process chat request' },
-      { status: 500 },
+      { error: 'Valid schema data is required' },
+      { status: 400 },
     )
   }
+
+  // Create vector store and chain
+  const vectorStore = await createVectorStore(schemaData)
+  const chain = await createChatChain(vectorStore)
+
+  // Format chat history
+  const formattedHistory = history
+    ? history.map((msg: [string, string]) =>
+        msg[0] === 'Human' ? new HumanMessage(msg[1]) : new AIMessage(msg[1]),
+      )
+    : []
+
+  // Generate response
+  const response = await chain.invoke({
+    input: message,
+    chat_history: formattedHistory,
+  })
+
+  return NextResponse.json({
+    response: {
+      text: response.answer,
+    },
+  })
 }
