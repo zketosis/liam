@@ -2,12 +2,12 @@ BEGIN;
 
 ALTER TABLE "public"."overall_reviews" ADD COLUMN "organization_id" UUID;
 
-UPDATE "public"."overall_reviews" or
+UPDATE "public"."overall_reviews" ovr
 SET "organization_id" = (
   SELECT p."organization_id"
   FROM "public"."migrations" m
   JOIN "public"."projects" p ON m."project_id" = p."id"
-  WHERE m."id" = or."migration_id"
+  WHERE m."id" = ovr."migration_id"
   LIMIT 1
 );
 

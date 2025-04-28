@@ -421,6 +421,24 @@ $$;
 ALTER FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_overall_reviews_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT p."organization_id"
+    FROM "public"."migrations" m
+    JOIN "public"."projects" p ON m."project_id" = p."id"
+    WHERE m."id" = NEW.migration_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_overall_reviews_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_project_repository_mappings_organization_id"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -626,7 +644,8 @@ CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
     "updated_at" timestamp(3) with time zone NOT NULL,
     "branch_name" "text" NOT NULL,
     "trace_id" "text",
-    "migration_id" "uuid" NOT NULL
+    "migration_id" "uuid" NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -947,6 +966,10 @@ CREATE OR REPLACE TRIGGER "set_overall_review_knowledge_suggestion_mappings_orga
 
 
 
+CREATE OR REPLACE TRIGGER "set_overall_reviews_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."overall_reviews" FOR EACH ROW EXECUTE FUNCTION "public"."set_overall_reviews_organization_id"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_project_repository_mappings_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."project_repository_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_project_repository_mappings_organization_id"();
 
 
@@ -1048,6 +1071,11 @@ ALTER TABLE ONLY "public"."overall_review_knowledge_suggestion_mappings"
 
 ALTER TABLE ONLY "public"."overall_reviews"
     ADD CONSTRAINT "overall_review_migration_id_fkey" FOREIGN KEY ("migration_id") REFERENCES "public"."migrations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."overall_reviews"
+    ADD CONSTRAINT "overall_reviews_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1176,6 +1204,16 @@ COMMENT ON POLICY "authenticated_users_can_select_org_overall_review_knowledge_s
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_overall_reviews" ON "public"."overall_reviews" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_overall_reviews" ON "public"."overall_reviews" IS 'Authenticated users can only view overall reviews belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_project_repository_mappings" ON "public"."project_repository_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1229,6 +1267,9 @@ ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."overall_reviews" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."project_repository_mappings" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1259,6 +1300,10 @@ CREATE POLICY "service_role_can_insert_all_overall_review_knowledge_suggestion" 
 
 
 
+CREATE POLICY "service_role_can_insert_all_overall_reviews" ON "public"."overall_reviews" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_insert_all_projects" ON "public"."projects" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
@@ -1272,6 +1317,10 @@ CREATE POLICY "service_role_can_select_all_knowledge_suggestions" ON "public"."k
 
 
 CREATE POLICY "service_role_can_select_all_migrations" ON "public"."migrations" FOR SELECT TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_select_all_overall_reviews" ON "public"."overall_reviews" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1544,6 +1593,12 @@ GRANT ALL ON FUNCTION "public"."set_migrations_organization_id"() TO "service_ro
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "service_role";
 
 
 
