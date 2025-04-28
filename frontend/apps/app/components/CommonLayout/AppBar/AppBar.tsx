@@ -7,8 +7,8 @@ import { ProjectsDropdownMenu } from './ProjectsDropdownMenu'
 import { getAuthUser } from './services/getAuthUser'
 
 type Props = {
-  currentProjectId: string | null
-  currentBranchOrCommit: string | null
+  currentProjectId?: string
+  currentBranchOrCommit?: string
 }
 
 export const AppBar: FC<Props> = async ({

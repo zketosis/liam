@@ -246,6 +246,7 @@ declare
   v_is_member boolean;
   v_invite_by_user_id uuid;
   v_existing_invite_id uuid;
+  v_new_token uuid;
   v_result jsonb;
 begin
   -- Start transaction
@@ -261,6 +262,7 @@ begin
     ) then
       v_result := jsonb_build_object(
         'success', false,
+        'invitation_token', null,
         'error', 'inviter user does not exist'
       );
       return v_result;
@@ -278,11 +280,14 @@ begin
     if v_is_member then
       v_result := jsonb_build_object(
         'success', false,
+        'invitation_token', null,
         'error', 'this user is already a member of the organization'
       );
       return v_result;
     end if;
     
+    v_new_token := gen_random_uuid();
+
     -- Check if invitation already exists
     select id into v_existing_invite_id
     from invitations
@@ -296,10 +301,14 @@ begin
       set invited_at = current_timestamp,
       expired_at = current_timestamp + interval '7 days',
       invite_by_user_id = v_invite_by_user_id,
-      token = gen_random_uuid()
+      token = v_new_token
       where id = v_existing_invite_id;
       
-      v_result := jsonb_build_object('success', true, 'error', null);
+      v_result := jsonb_build_object(
+        'success', true,
+        'invitation_token', v_new_token,
+        'error', null
+      );
     else
       -- Create new invitation
       insert into invitations (
@@ -307,16 +316,22 @@ begin
         email,
         invited_at,
         expired_at,
-        invite_by_user_id
+        invite_by_user_id,
+        token
       ) values (
         p_organization_id,
         lower(p_email),
         current_timestamp,
         current_timestamp + interval '7 days',
-        v_invite_by_user_id
+        v_invite_by_user_id,
+        v_new_token
       );
       
-      v_result := jsonb_build_object('success', true, 'error', null);
+      v_result := jsonb_build_object(
+        'success', true,
+        'invitation_token', v_new_token,
+        'error', null
+      );
     end if;
     
     -- Commit transaction
@@ -325,6 +340,7 @@ begin
     -- Handle any errors
     v_result := jsonb_build_object(
       'success', false,
+      'invitation_token', null,
       'error', sqlerrm
     );
     return v_result;
@@ -334,6 +350,24 @@ $$;
 
 
 ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."prevent_delete_last_organization_member"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  -- Check if this is the last member in the organization
+  IF (SELECT COUNT(*) FROM organization_members WHERE organization_id = OLD.organization_id) <= 1 THEN
+    RAISE EXCEPTION 'Cannot remove the last member of an organization';
+  END IF;
+
+  -- If not the last member, allow the deletion
+  RETURN OLD;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."prevent_delete_last_organization_member"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."set_knowledge_suggestions_organization_id"() RETURNS "trigger"
@@ -353,6 +387,23 @@ $$;
 ALTER FUNCTION "public"."set_knowledge_suggestions_organization_id"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_migrations_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."projects" 
+    WHERE "id" = NEW.project_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_migrations_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -368,6 +419,58 @@ $$;
 
 
 ALTER FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_overall_reviews_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT p."organization_id"
+    FROM "public"."migrations" m
+    JOIN "public"."projects" p ON m."project_id" = p."id"
+    WHERE m."id" = NEW.migration_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_overall_reviews_organization_id"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_project_repository_mappings_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."projects" 
+    WHERE "id" = NEW.project_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_project_repository_mappings_organization_id"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_review_feedbacks_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."overall_reviews" 
+    WHERE "id" = NEW.overall_review_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_review_feedbacks_organization_id"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
@@ -509,7 +612,8 @@ CREATE TABLE IF NOT EXISTS "public"."migrations" (
     "title" "text" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "project_id" "uuid" NOT NULL
+    "project_id" "uuid" NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -557,7 +661,8 @@ CREATE TABLE IF NOT EXISTS "public"."overall_reviews" (
     "updated_at" timestamp(3) with time zone NOT NULL,
     "branch_name" "text" NOT NULL,
     "trace_id" "text",
-    "migration_id" "uuid" NOT NULL
+    "migration_id" "uuid" NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -569,7 +674,8 @@ CREATE TABLE IF NOT EXISTS "public"."project_repository_mappings" (
     "project_id" "uuid" NOT NULL,
     "repository_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -623,7 +729,8 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedbacks" (
     "updated_at" timestamp(3) with time zone NOT NULL,
     "suggestion" "text" NOT NULL,
     "resolved_at" timestamp(3) with time zone,
-    "resolution_comment" "text"
+    "resolution_comment" "text",
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -857,11 +964,35 @@ CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_p
 
 
 
+CREATE OR REPLACE TRIGGER "check_last_organization_member" BEFORE DELETE ON "public"."organization_members" FOR EACH ROW EXECUTE FUNCTION "public"."prevent_delete_last_organization_member"();
+
+
+
+COMMENT ON TRIGGER "check_last_organization_member" ON "public"."organization_members" IS 'Prevents deletion of the last member of an organization to ensure organizations always have at least one member';
+
+
+
 CREATE OR REPLACE TRIGGER "set_knowledge_suggestions_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."knowledge_suggestions" FOR EACH ROW EXECUTE FUNCTION "public"."set_knowledge_suggestions_organization_id"();
 
 
 
+CREATE OR REPLACE TRIGGER "set_migrations_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."migrations" FOR EACH ROW EXECUTE FUNCTION "public"."set_migrations_organization_id"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_overall_review_knowledge_suggestion_mappings_organization_i" BEFORE INSERT OR UPDATE ON "public"."overall_review_knowledge_suggestion_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_overall_reviews_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."overall_reviews" FOR EACH ROW EXECUTE FUNCTION "public"."set_overall_reviews_organization_id"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_project_repository_mappings_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."project_repository_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_project_repository_mappings_organization_id"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_review_feedbacks_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."review_feedbacks" FOR EACH ROW EXECUTE FUNCTION "public"."set_review_feedbacks_organization_id"();
 
 
 
@@ -930,6 +1061,11 @@ ALTER TABLE ONLY "public"."migration_pull_request_mappings"
 
 
 
+ALTER TABLE ONLY "public"."migrations"
+    ADD CONSTRAINT "migrations_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."organization_members"
     ADD CONSTRAINT "organization_member_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
 
@@ -960,6 +1096,11 @@ ALTER TABLE ONLY "public"."overall_reviews"
 
 
 
+ALTER TABLE ONLY "public"."overall_reviews"
+    ADD CONSTRAINT "overall_reviews_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."projects"
     ADD CONSTRAINT "project_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -972,6 +1113,11 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 ALTER TABLE ONLY "public"."project_repository_mappings"
     ADD CONSTRAINT "project_repository_mapping_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."project_repository_mappings"
+    ADD CONSTRAINT "project_repository_mappings_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -997,6 +1143,11 @@ ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
 
 ALTER TABLE ONLY "public"."review_feedbacks"
     ADD CONSTRAINT "review_feedback_overall_review_id_fkey" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."review_feedbacks"
+    ADD CONSTRAINT "review_feedbacks_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1030,6 +1181,16 @@ COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON 
 
 
 
+CREATE POLICY "authenticated_users_can_insert_org_project_repository_mappings" ON "public"."project_repository_mappings" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_project_repository_mappings" ON "public"."project_repository_mappings" IS 'Authenticated users can only create project repository mappings in organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."projects" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1050,6 +1211,16 @@ COMMENT ON POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON 
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_migrations" ON "public"."migrations" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_migrations" ON "public"."migrations" IS 'Authenticated users can only view migrations belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_overall_review_knowledge_sug" ON "public"."overall_review_knowledge_suggestion_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1060,6 +1231,26 @@ COMMENT ON POLICY "authenticated_users_can_select_org_overall_review_knowledge_s
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_overall_reviews" ON "public"."overall_reviews" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_overall_reviews" ON "public"."overall_reviews" IS 'Authenticated users can only view overall reviews belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_project_repository_mappings" ON "public"."project_repository_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_project_repository_mappings" ON "public"."project_repository_mappings" IS 'Authenticated users can only view project repository mappings belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1067,6 +1258,16 @@ CREATE POLICY "authenticated_users_can_select_org_projects" ON "public"."project
 
 
 COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."projects" IS 'Authenticated users can only view projects belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_review_feedbacks" ON "public"."review_feedbacks" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_review_feedbacks" ON "public"."review_feedbacks" IS 'Authenticated users can only view review feedbacks belonging to organizations they are members of';
 
 
 
@@ -1094,13 +1295,37 @@ COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."pro
 
 
 
+CREATE POLICY "authenticated_users_can_update_org_review_feedbacks" ON "public"."review_feedbacks" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"())))) WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_update_org_review_feedbacks" ON "public"."review_feedbacks" IS 'Authenticated users can only update review feedbacks belonging to organizations they are members of';
+
+
+
 ALTER TABLE "public"."knowledge_suggestions" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."overall_reviews" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."project_repository_mappings" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."review_feedbacks" ENABLE ROW LEVEL SECURITY;
 
 
 CREATE POLICY "service_role_can_delete_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR DELETE TO "service_role" USING (true);
@@ -1119,7 +1344,15 @@ CREATE POLICY "service_role_can_insert_all_knowledge_suggestions" ON "public"."k
 
 
 
+CREATE POLICY "service_role_can_insert_all_migrations" ON "public"."migrations" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_insert_all_overall_review_knowledge_suggestion" ON "public"."overall_review_knowledge_suggestion_mappings" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
+CREATE POLICY "service_role_can_insert_all_overall_reviews" ON "public"."overall_reviews" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
 
@@ -1131,7 +1364,23 @@ COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" 
 
 
 
+CREATE POLICY "service_role_can_insert_all_review_feedbacks" ON "public"."review_feedbacks" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_select_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_select_all_migrations" ON "public"."migrations" FOR SELECT TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_select_all_overall_reviews" ON "public"."overall_reviews" FOR SELECT TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_select_all_project_repository_mappings" ON "public"."project_repository_mappings" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1144,6 +1393,10 @@ COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."projects" 
 
 
 CREATE POLICY "service_role_can_update_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "service_role_can_update_all_migrations" ON "public"."migrations" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
 
 
 
@@ -1375,15 +1628,45 @@ GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p
 
 
 
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "anon";
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."set_migrations_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_migrations_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_migrations_organization_id"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_review_feedbacks_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_review_feedbacks_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_review_feedbacks_organization_id"() TO "service_role";
 
 
 

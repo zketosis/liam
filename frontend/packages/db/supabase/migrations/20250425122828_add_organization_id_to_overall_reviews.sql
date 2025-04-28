@@ -2,12 +2,12 @@ BEGIN;
 
 ALTER TABLE "public"."overall_reviews" ADD COLUMN "organization_id" UUID;
 
-UPDATE "public"."overall_reviews" or
+UPDATE "public"."overall_reviews" ovr
 SET "organization_id" = (
   SELECT p."organization_id"
   FROM "public"."migrations" m
   JOIN "public"."projects" p ON m."project_id" = p."id"
-  WHERE m."id" = or."migration_id"
+  WHERE m."id" = ovr."migration_id"
   LIMIT 1
 );
 
@@ -61,12 +61,6 @@ CREATE POLICY "service_role_can_select_all_overall_reviews"
 CREATE POLICY "service_role_can_insert_all_overall_reviews" 
   ON "public"."overall_reviews" 
   FOR INSERT TO "service_role" 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_overall_reviews" 
-  ON "public"."overall_reviews" 
-  FOR UPDATE TO "service_role" 
-  USING (true)
   WITH CHECK (true);
 
 COMMIT;
