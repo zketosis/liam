@@ -179,7 +179,10 @@ export const SchemaPage: FC<Props> = async ({
       <TabsContent value={SCHEMA_TAB.EDITOR} className={styles.tabsContent}>
         <OverrideEditor />
       </TabsContent>
-      <ChatbotButton schemaData={contentProps.schema} />
+      <ChatbotButton
+        schemaData={contentProps.schema}
+        tableGroups={contentProps.tableGroups}
+      />
     </TabsRoot>
   )
 }

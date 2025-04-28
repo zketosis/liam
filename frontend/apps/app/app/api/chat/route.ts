@@ -28,10 +28,16 @@ export interface RelationshipData {
   type?: string
 }
 
+export interface TableGroupData {
+  name?: string
+  tables?: string[]
+  comment?: string | null
+}
+
 export interface SchemaData {
   tables?: Record<string, TableData>
   relationships?: Record<string, RelationshipData>
-  tableGroups?: Record<string, unknown>
+  tableGroups?: Record<string, TableGroupData>
 }
 
 // Convert table data to text document
@@ -83,6 +89,31 @@ Type: ${relationshipData.type || 'unknown'}\n`
   })
 }
 
+// Convert table groups to text document
+const tableGroupsToText = (
+  tableGroups: Record<string, TableGroupData> | undefined,
+): string => {
+  if (!tableGroups) return ''
+
+  let tableGroupsText = ''
+
+  for (const [groupId, groupData] of Object.entries(tableGroups)) {
+    tableGroupsText += `Group ID: ${groupId}\n`
+
+    if (groupData.name) {
+      tableGroupsText += `Name: ${String(groupData.name)}\n`
+    }
+
+    if (groupData.tables && Array.isArray(groupData.tables)) {
+      tableGroupsText += `Tables: ${groupData.tables.join(', ')}\n`
+    }
+
+    tableGroupsText += '\n'
+  }
+
+  return tableGroupsText
+}
+
 // Convert schema data to text format
 const convertSchemaToText = (schema: SchemaData): string => {
   let schemaText = 'FULL DATABASE SCHEMA:\n\n'
@@ -108,6 +139,13 @@ const convertSchemaToText = (schema: SchemaData): string => {
       )
       schemaText = `${schemaText}${relationshipDoc.pageContent}\n\n`
     }
+  }
+
+  // Process table groups
+  if (schema.tableGroups && Object.keys(schema.tableGroups).length > 0) {
+    schemaText += 'TABLE GROUPS:\n\n'
+    const tableGroupsText = tableGroupsToText(schema.tableGroups)
+    schemaText = `${schemaText}${tableGroupsText}\n`
   }
 
   return schemaText
