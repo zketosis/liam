@@ -12,14 +12,23 @@
   width: 100%;
   max-width: 400px;
   border-radius: var(--border-radius-xl);
+  background: var(
+    --Auth-Background,
+    linear-gradient(
+      179deg,
+      var(--primary-gradation-overlay-start, rgba(29, 237, 131, 0.12)) 0.79%,
+      var(--primary-gradation-overlay-end, rgba(29, 237, 131, 0.0)) 99.35%
+    )
+  );
   padding: var(--spacing-10);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-8);
-  background-color: var(--color-green-alpha-10);
-  backdrop-filter: blur(5px);
-  box-shadow: inset 0px 4px 80px 0px rgba(29, 237, 131, 0.1);
+
+  /* emphasize-shadow */
+  box-shadow: 0px 4px 80px 0px rgba(29, 237, 131, 0.1) inset;
+  backdrop-filter: blur(2.5px);
 }
 
 .card::before {
@@ -52,34 +61,33 @@
   width: 100%;
 }
 
-.logo {
-  margin-bottom: var(--spacing-2);
-}
-
 .greeting {
   font-family: var(--main-font);
   font-size: var(--font-size-6);
   font-weight: 400;
   color: var(--global-foreground);
   text-align: center;
-  margin-bottom: var(--spacing-2);
 }
 
 .description {
   font-family: var(--main-font);
   font-size: var(--font-size-3);
   font-weight: 400;
-  color: var(--color-white-alpha-70);
+  color: var(--overlay-70, rgba(255, 255, 255, 0.7));
   text-align: left;
   width: 100%;
   line-height: 1.5;
+  align-self: stretch;
+}
+
+.organizationName {
+  font-weight: 700;
 }
 
 .actions {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: var(--spacing-4);
 }
 
 .button {
@@ -87,6 +95,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 36px;
   padding: var(--spacing-1) var(--spacing-3);
   background-color: var(--color-green-400);
   color: var(--color-black-alpha-100);

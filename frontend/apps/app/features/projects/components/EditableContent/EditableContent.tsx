@@ -37,20 +37,16 @@ export const EditableContent = ({
   }
 
   const handleSave = async (formData: FormData) => {
-    try {
-      setIsSaving(true)
-      await updateKnowledgeSuggestionContent(formData)
-      setSavedContent(editedContent)
-      setIsEditing(false)
+    setIsSaving(true)
+    await updateKnowledgeSuggestionContent(formData)
+    setSavedContent(editedContent)
+    setIsEditing(false)
 
-      if (onContentSaved) {
-        onContentSaved(editedContent)
-      }
-    } catch (error) {
-      console.error('Error saving content:', error)
-    } finally {
-      setIsSaving(false)
+    if (onContentSaved) {
+      onContentSaved(editedContent)
     }
+
+    setIsSaving(false)
   }
 
   return (
