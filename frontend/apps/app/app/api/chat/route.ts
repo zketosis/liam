@@ -2,11 +2,7 @@ import { langfuseHandler } from '@/lib/langfuse/langfuseHandler'
 import { AIMessage, HumanMessage } from '@langchain/core/messages'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
-import { OpenAIEmbeddings } from '@langchain/openai'
-import { createStuffDocumentsChain } from 'langchain/chains/combine_documents'
-import { createRetrievalChain } from 'langchain/chains/retrieval'
 import { Document } from 'langchain/document'
-import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { NextResponse } from 'next/server'
 
 // Define types for schema data
@@ -87,71 +83,44 @@ Type: ${relationshipData.type || 'unknown'}\n`
   })
 }
 
-// Convert schema data to text chunks for vector storage
-const convertSchemaToTexts = (schema: SchemaData): Document[] => {
-  const documents: Document[] = []
+// Convert schema data to text format
+const convertSchemaToText = (schema: SchemaData): string => {
+  let schemaText = 'FULL DATABASE SCHEMA:\n\n'
 
   // Process tables
   if (schema.tables) {
+    schemaText += 'TABLES:\n\n'
     for (const [tableName, tableData] of Object.entries(schema.tables)) {
-      documents.push(tableToDocument(tableName, tableData))
+      const tableDoc = tableToDocument(tableName, tableData)
+      schemaText = `${schemaText}${tableDoc.pageContent}\n\n`
     }
   }
 
   // Process relationships
   if (schema.relationships) {
+    schemaText += 'RELATIONSHIPS:\n\n'
     for (const [relationshipName, relationshipData] of Object.entries(
       schema.relationships,
     )) {
-      documents.push(relationshipToDocument(relationshipName, relationshipData))
+      const relationshipDoc = relationshipToDocument(
+        relationshipName,
+        relationshipData,
+      )
+      schemaText = `${schemaText}${relationshipDoc.pageContent}\n\n`
     }
   }
 
-  return documents
+  return schemaText
 }
 
-// Generate a summary of the schema
-const generateSchemaSummary = (schemaData: SchemaData): string => {
-  const tableCount = schemaData.tables
-    ? Object.keys(schemaData.tables).length
-    : 0
-  const relationshipCount = schemaData.relationships
-    ? Object.keys(schemaData.relationships).length
-    : 0
-
-  let tableNames = 'None'
-  if (schemaData.tables && tableCount > 0) {
-    tableNames = Object.keys(schemaData.tables).join(', ')
-  }
-
-  return `
-Schema Summary:
-- Total Tables: ${tableCount}
-- Table Names: ${tableNames}
-- Total Relationships: ${relationshipCount}
-`
-}
-
-// Create vector store from schema data
-const createVectorStore = async (schemaData: SchemaData) => {
-  const documents = convertSchemaToTexts(schemaData)
-  return await MemoryVectorStore.fromDocuments(
-    documents,
-    new OpenAIEmbeddings(),
-  )
-}
-
-// Create chat chain
-const createChatChain = async (
-  vectorStore: MemoryVectorStore,
-  schemaSummary: string,
-) => {
+// Create chat chain with full schema context
+const createChatChain = async (schemaText: string) => {
   const model = new ChatOpenAI({
     modelName: 'o4-mini-2025-04-16',
     callbacks: [langfuseHandler],
   })
 
-  // Create a prompt template
+  // Create a prompt template with full schema context and chat history
   const prompt = ChatPromptTemplate.fromTemplate(`
 You are a database schema expert.
 Answer questions about the user's schema and provide advice on database design.
@@ -165,27 +134,18 @@ Follow these guidelines:
 
 Your goal is to help users understand and optimize their database schemas.
 
-${schemaSummary}
+Complete Schema Information:
+${schemaText}
 
-Context information:
-{context}
+Previous conversation:
+{chat_history}
 
 Question: {input}
 
-Based on the schema summary and context information, provide a helpful answer to the question.
+Based on the schema information provided and considering any previous conversation, answer the question thoroughly and accurately.
 `)
 
-  // Create a document chain
-  const documentChain = await createStuffDocumentsChain({
-    llm: model,
-    prompt,
-  })
-
-  // Create the retrieval chain
-  return createRetrievalChain({
-    retriever: vectorStore.asRetriever(),
-    combineDocsChain: documentChain,
-  })
+  return prompt.pipe(model)
 }
 
 export async function POST(request: Request) {
@@ -202,11 +162,6 @@ export async function POST(request: Request) {
     )
   }
 
-  // Create vector store and chain
-  const vectorStore = await createVectorStore(schemaData)
-  const schemaSummary = generateSchemaSummary(schemaData)
-  const chain = await createChatChain(vectorStore, schemaSummary)
-
   // Format chat history
   const formattedHistory = history
     ? history.map((msg: [string, string]) =>
@@ -214,11 +169,23 @@ export async function POST(request: Request) {
       )
     : []
 
+  // Convert schema to text and create chain
+  const schemaText = convertSchemaToText(schemaData)
+  const chain = await createChatChain(schemaText)
+
   // Generate response with Langfuse tracing
   const response = await chain.invoke(
     {
       input: message,
-      chat_history: formattedHistory,
+      chat_history:
+        formattedHistory.length > 0
+          ? formattedHistory
+              .map(
+                (msg: AIMessage | HumanMessage) =>
+                  `${msg._getType()}: ${msg.content}`,
+              )
+              .join('\n')
+          : 'No previous conversation.',
     },
     {
       callbacks: [langfuseHandler],
@@ -234,7 +201,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     response: {
-      text: response.answer,
+      text: response.content,
     },
   })
 }
