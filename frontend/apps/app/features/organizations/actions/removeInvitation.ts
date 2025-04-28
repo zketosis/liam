@@ -31,7 +31,6 @@ export async function removeInvitation(formData: FormData) {
     .from('invitations')
     .delete()
     .eq('id', invitationId)
-    .eq('organization_id', organizationId)
 
   if (error) {
     console.error('Error removing invitation:', error)
