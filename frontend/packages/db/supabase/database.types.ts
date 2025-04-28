@@ -714,6 +714,7 @@ export type Database = {
           created_at: string
           id: string
           knowledge_suggestion_id: string | null
+          organization_id: string
           review_feedback_id: string | null
           updated_at: string
         }
@@ -721,6 +722,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string | null
+          organization_id: string
           review_feedback_id?: string | null
           updated_at: string
         }
@@ -728,6 +730,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string | null
+          organization_id?: string
           review_feedback_id?: string | null
           updated_at?: string
         }
@@ -744,6 +747,13 @@ export type Database = {
             columns: ['review_feedback_id']
             isOneToOne: false
             referencedRelation: 'review_feedbacks'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'review_feedback_knowledge_suggestion_mappings_organization_id_f'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]

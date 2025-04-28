@@ -506,6 +506,36 @@ $$;
 ALTER FUNCTION "public"."set_project_repository_mappings_organization_id"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  IF NEW.knowledge_suggestion_id IS NOT NULL THEN
+    NEW.organization_id := (
+      SELECT "organization_id" 
+      FROM "public"."knowledge_suggestions" 
+      WHERE "id" = NEW.knowledge_suggestion_id
+    );
+  ELSIF NEW.review_feedback_id IS NOT NULL THEN
+    NEW.organization_id := (
+      SELECT p."organization_id"
+      FROM "public"."review_feedbacks" rf
+      JOIN "public"."overall_reviews" orv ON rf."overall_review_id" = orv."id"
+      JOIN "public"."projects" p ON orv."project_id" = p."id"
+      WHERE rf."id" = NEW.review_feedback_id
+    );
+  ELSE
+    RAISE EXCEPTION 'Either knowledge_suggestion_id or review_feedback_id must be provided';
+  END IF;
+  
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_schema_file_paths_organization_id"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -765,7 +795,8 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedback_knowledge_suggestion_mappin
     "review_feedback_id" "uuid",
     "knowledge_suggestion_id" "uuid",
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -1057,6 +1088,10 @@ CREATE OR REPLACE TRIGGER "set_project_repository_mappings_organization_id_trigg
 
 
 
+CREATE OR REPLACE TRIGGER "set_review_feedback_knowledge_suggestion_mappings_organization_" BEFORE INSERT OR UPDATE ON "public"."review_feedback_knowledge_suggestion_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_schema_file_paths_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."schema_file_paths" FOR EACH ROW EXECUTE FUNCTION "public"."set_schema_file_paths_organization_id"();
 
 
@@ -1221,6 +1256,11 @@ ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
 
 
 
+ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
+    ADD CONSTRAINT "review_feedback_knowledge_suggestion_mappings_organization_id_f" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."review_feedbacks"
     ADD CONSTRAINT "review_feedback_overall_review_id_fkey" FOREIGN KEY ("overall_review_id") REFERENCES "public"."overall_reviews"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -1381,6 +1421,12 @@ COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."pro
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_review_feedback_knowledge_su" ON "public"."review_feedback_knowledge_suggestion_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_schema_file_paths" ON "public"."schema_file_paths" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1454,6 +1500,9 @@ ALTER TABLE "public"."project_repository_mappings" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."schema_file_paths" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1501,6 +1550,10 @@ COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" 
 
 
 
+CREATE POLICY "service_role_can_insert_all_review_feedback_knowledge_suggestio" ON "public"."review_feedback_knowledge_suggestion_mappings" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_select_all_doc_file_paths" ON "public"."doc_file_paths" FOR SELECT TO "service_role" USING (true);
 
 
@@ -1534,6 +1587,10 @@ CREATE POLICY "service_role_can_select_all_projects" ON "public"."projects" FOR 
 
 
 COMMENT ON POLICY "service_role_can_select_all_projects" ON "public"."projects" IS 'Service role can view all projects (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_select_all_review_feedback_knowledge_suggestio" ON "public"."review_feedback_knowledge_suggestion_mappings" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1828,6 +1885,12 @@ GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings
 GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"() TO "service_role";
 
 
 

@@ -8,11 +8,14 @@ import type { MigrationPullRequestMappingsOverride } from './migration_pull_requ
 import type { MigrationsOverride } from './migrations'
 import type { OverallReviewKnowledgeSuggestionMappingsOverride } from './overall_review_knowledge_suggestion_mappings'
 import type { ProjectRepositoryMappingsOverride } from './project_repository_mappings'
+import type { ReviewFeedbackKnowledgeSuggestionMappingsOverride } from './review_feedback_knowledge_suggestion_mappings'
 import type { SchemaFilePathsOverride } from './schema_file_paths'
 
 export type AppDatabaseOverrides = MergeDeep<
   DatabaseGenerated,
   KnowledgeSuggestionsOverride &
+    ReviewFeedbackKnowledgeSuggestionMappingsOverride &
+    OverallReviewKnowledgeSuggestionMappingsOverride &
     GithubPullRequestsOverride &
     MigrationPullRequestMappingsOverride &
     GithubPullRequestCommentsOverride &
