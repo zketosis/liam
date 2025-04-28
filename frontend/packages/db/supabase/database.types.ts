@@ -85,6 +85,7 @@ export type Database = {
           github_comment_identifier: number
           github_pull_request_id: string
           id: string
+          organization_id: string
           updated_at: string
         }
         Insert: {
@@ -92,6 +93,7 @@ export type Database = {
           github_comment_identifier: number
           github_pull_request_id: string
           id?: string
+          organization_id: string
           updated_at: string
         }
         Update: {
@@ -99,6 +101,7 @@ export type Database = {
           github_comment_identifier?: number
           github_pull_request_id?: string
           id?: string
+          organization_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -107,6 +110,13 @@ export type Database = {
             columns: ['github_pull_request_id']
             isOneToOne: true
             referencedRelation: 'github_pull_requests'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'github_pull_request_comments_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -349,6 +359,7 @@ export type Database = {
           created_at: string
           id: string
           migration_id: string
+          organization_id: string
           pull_request_id: string
           updated_at: string
         }
@@ -356,6 +367,7 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id: string
+          organization_id: string
           pull_request_id: string
           updated_at: string
         }
@@ -363,6 +375,7 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id?: string
+          organization_id?: string
           pull_request_id?: string
           updated_at?: string
         }
@@ -379,6 +392,13 @@ export type Database = {
             columns: ['pull_request_id']
             isOneToOne: false
             referencedRelation: 'github_pull_requests'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'migration_pull_request_mappings_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
