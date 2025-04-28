@@ -51,20 +51,14 @@ async function getKnowledgeSuggestionDetail(
   projectId: string,
   suggestionId: string,
 ) {
-  try {
-    // Get the knowledge suggestion with project info
-    const suggestion = await getSuggestionWithProject(suggestionId, projectId)
+  // Get the knowledge suggestion with project info
+  const suggestion = await getSuggestionWithProject(suggestionId, projectId)
 
-    if (!suggestion) {
-      console.error('Error fetching knowledge suggestion')
-      notFound()
-    }
-
-    return suggestion
-  } catch (error) {
-    console.error('Error fetching knowledge suggestion detail:', error)
+  if (!suggestion) {
     notFound()
   }
+
+  return suggestion
 }
 
 export const KnowledgeSuggestionDetailPage: FC<Props> = async ({

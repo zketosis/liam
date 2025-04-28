@@ -3,7 +3,6 @@ import {
   createServerClient as _createServerClient,
 } from '@supabase/ssr'
 import { createClient as _createClient } from '@supabase/supabase-js'
-import type { Database } from '../supabase/database.types'
 import type { AppDatabaseOverrides } from './types'
 
 export type {
@@ -15,10 +14,10 @@ export type { Tables } from '../supabase/database.types'
 export type { AppDatabaseOverrides } from './types'
 
 // for Server Components
-export const createServerClient = _createServerClient<Database>
+export const createServerClient = _createServerClient<AppDatabaseOverrides>
 
 // for Client Components
-export const createBrowserClient = _createBrowserClient<Database>
+export const createBrowserClient = _createBrowserClient<AppDatabaseOverrides>
 
 // for Jobs
 export const createClient = _createClient<AppDatabaseOverrides>

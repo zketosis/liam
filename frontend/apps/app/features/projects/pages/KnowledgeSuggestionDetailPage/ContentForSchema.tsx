@@ -9,25 +9,19 @@ import { ContentForSchemaSection } from './ContentForSchemaSection'
 import type { SuggestionWithProject } from './KnowledgeSuggestionDetailPage'
 
 async function getGithubSchemaFilePath(projectId: string) {
-  try {
-    const projectId_num = projectId
-    const supabase = await createClient()
-    const { data: gitHubSchemaFilePath, error } = await supabase
-      .from('schema_file_paths')
-      .select('*')
-      .eq('project_id', projectId_num)
-      .single()
+  const projectId_num = projectId
+  const supabase = await createClient()
+  const { data: gitHubSchemaFilePath, error } = await supabase
+    .from('schema_file_paths')
+    .select('*')
+    .eq('project_id', projectId_num)
+    .single()
 
-    if (error || !gitHubSchemaFilePath) {
-      console.error('Error fetching github schema file path:', error)
-      notFound()
-    }
-
-    return gitHubSchemaFilePath
-  } catch (error) {
-    console.error('Error fetching github schema file path:', error)
+  if (error || !gitHubSchemaFilePath) {
     notFound()
   }
+
+  return gitHubSchemaFilePath
 }
 
 type Props = {
