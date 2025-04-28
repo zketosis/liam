@@ -30,7 +30,7 @@ export const OrganizationNewPage: FC = () => {
     const result = await createOrganization(name)
 
     if (result.success) {
-      // Set the organization ID cookie before redirecting
+      // Set the organization ID cookie
       await setOrganizationIdCookie(result.organizationId)
       router.push(urlgen('projects/new'))
     } else {
