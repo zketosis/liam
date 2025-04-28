@@ -2,6 +2,7 @@
 
 import type { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import styles from './ChatMessage.module.css'
 
 export interface ChatMessageProps {
@@ -31,7 +32,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
           <div className={styles.messageText}>{content}</div>
         ) : (
           <div className={styles.messageText}>
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         )}
         <div className={styles.messageTime}>{formattedTime}</div>
