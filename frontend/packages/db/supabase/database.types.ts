@@ -642,6 +642,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          organization_id: string
           review_feedback_id: string
           updated_at: string
           user_id: string
@@ -650,6 +651,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          organization_id: string
           review_feedback_id: string
           updated_at: string
           user_id: string
@@ -658,6 +660,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          organization_id?: string
           review_feedback_id?: string
           updated_at?: string
           user_id?: string
@@ -675,6 +678,13 @@ export type Database = {
             columns: ['user_id']
             isOneToOne: false
             referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'review_feedback_comments_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
