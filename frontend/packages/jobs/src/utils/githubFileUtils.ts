@@ -18,58 +18,47 @@ export const fetchSchemaFileContent = async (
   repositoryFullName: string,
   installationId: number,
 ): Promise<{ content: string; format: SupportedFormat }> => {
-  try {
-    const supabase = createClient()
+  const supabase = createClient()
 
-    const { data: schemaFilePath, error: pathError } = await supabase
-      .from('schema_file_paths')
-      .select('path, format')
-      .eq('project_id', projectId)
-      .single()
+  const { data: schemaFilePath, error: pathError } = await supabase
+    .from('schema_file_paths')
+    .select('path, format')
+    .eq('project_id', projectId)
+    .single()
 
-    if (pathError || !schemaFilePath) {
-      throw new Error(
-        `No schema path found for project ${projectId}: ${JSON.stringify(pathError)}`,
-      )
-    }
+  if (pathError || !schemaFilePath) {
+    throw new Error(
+      `No schema path found for project ${projectId}: ${JSON.stringify(pathError)}`,
+    )
+  }
 
-    if (!schemaFilePath.format) {
-      throw new Error(
-        `No format found for schema file path ${schemaFilePath.path}`,
-      )
-    }
+  if (!schemaFilePath.format) {
+    throw new Error(
+      `No format found for schema file path ${schemaFilePath.path}`,
+    )
+  }
 
-    // Validate the format against supported formats
-    const formatResult = safeParse(supportedFormatSchema, schemaFilePath.format)
-    if (!formatResult.success) {
-      throw new Error(`Unsupported format: ${schemaFilePath.format}`)
-    }
+  // Validate the format against supported formats
+  const formatResult = safeParse(supportedFormatSchema, schemaFilePath.format)
+  if (!formatResult.success) {
+    throw new Error(`Unsupported format: ${schemaFilePath.format}`)
+  }
 
-    const validFormat = formatResult.output
+  const validFormat = formatResult.output
 
-    try {
-      const fileData = await getFileContent(
-        repositoryFullName,
-        schemaFilePath.path,
-        branchName,
-        installationId,
-      )
+  const fileData = await getFileContent(
+    repositoryFullName,
+    schemaFilePath.path,
+    branchName,
+    installationId,
+  )
 
-      if (!fileData.content) {
-        throw new Error(`No content found for ${schemaFilePath.path}`)
-      }
+  if (!fileData.content) {
+    throw new Error(`No content found for ${schemaFilePath.path}`)
+  }
 
-      return {
-        content: fileData.content,
-        format: validFormat,
-      }
-    } catch (error) {
-      throw new Error(
-        `Error fetching content for ${schemaFilePath.path}: ${error instanceof Error ? error.message : String(error)}`,
-      )
-    }
-  } catch (error) {
-    console.error('Error fetching schema file content:', error)
-    throw error
+  return {
+    content: fileData.content,
+    format: validFormat,
   }
 }

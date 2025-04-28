@@ -25,25 +25,16 @@ export const CommentList = ({
     setIsLoading(true)
     setError(null)
 
-    try {
-      const fetchedComments = await getReviewFeedbackComments({
-        feedbackId: reviewFeedbackId,
-      })
-      setComments(fetchedComments)
+    const fetchedComments = await getReviewFeedbackComments({
+      feedbackId: reviewFeedbackId,
+    })
+    setComments(fetchedComments)
 
-      if (onCommentsLoaded) {
-        onCommentsLoaded(fetchedComments.length)
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load comments')
-      console.error('Error fetching comments:', err)
-
-      if (onCommentsLoaded) {
-        onCommentsLoaded(0)
-      }
-    } finally {
-      setIsLoading(false)
+    if (onCommentsLoaded) {
+      onCommentsLoaded(fetchedComments.length)
     }
+
+    setIsLoading(false)
   }, [reviewFeedbackId, onCommentsLoaded])
 
   // Fetch comments on mount and when reviewFeedbackId changes

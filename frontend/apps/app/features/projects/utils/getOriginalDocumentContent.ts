@@ -1,5 +1,5 @@
 import { getFileContent } from '@liam-hq/github'
-import { getProjectRepository } from '../../../app/(app)/app/projects/[projectId]/ref/[branchOrCommit]/docs/[...docFilePath]/getProjectRepository'
+import { getProjectRepository } from '../../../app/(app)/app/(with-project-and-branch)/projects/[projectId]/ref/[branchOrCommit]/docs/[...docFilePath]/getProjectRepository'
 
 export async function getOriginalDocumentContent(
   projectId: string,
