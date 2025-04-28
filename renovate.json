@@ -13,23 +13,27 @@
   "packageRules": [
     {
       "groupName": "fumadocs",
-      "matchPackagePatterns": [
-        "^fumadocs-core$",
-        "^fumadocs-mdx$",
-        "^fumadocs-ui$"
+      "matchPackageNames": [
+        "/^fumadocs-core$/",
+        "/^fumadocs-mdx$/",
+        "/^fumadocs-ui$/"
       ]
     },
     {
       "groupName": "langfuse",
-      "matchPackagePatterns": [
-        "^langfuse$",
-        "^langfuse-langchain$"
+      "matchPackageNames": [
+        "/^langfuse$/",
+        "/^langfuse-langchain$/"
       ]
     },
     {
-      "matchUpdateTypes": ["patch"],
-      "matchDepTypes": ["devDependencies"],
-      "automerge": true             
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true
     }
   ]
 }

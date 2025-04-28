@@ -181,98 +181,93 @@ export const processCreateKnowledgeSuggestion = async (
     overallReviewId,
   } = payload
 
-  try {
-    // Get repository information
-    const repo = await getRepositoryInfo(projectId)
-    const repositoryFullName = `${repo.owner}/${repo.name}`
+  // Get repository information
+  const repo = await getRepositoryInfo(projectId)
+  const repositoryFullName = `${repo.owner}/${repo.name}`
 
-    // Get the existing file content and SHA
-    const existingFile = await getFileContent(
-      repositoryFullName,
+  // Get the existing file content and SHA
+  const existingFile = await getFileContent(
+    repositoryFullName,
+    path,
+    branch,
+    Number(repo.installationId),
+  )
+
+  // Default to no docFilePath
+  let docFilePath: { id: string } | null = null
+
+  // For DOCS type, check if content has changed
+  if (type === 'DOCS') {
+    const contentCheck = await hasContentChanged(
+      projectId,
       path,
-      branch,
-      Number(repo.installationId),
+      existingFile.content,
+      content,
     )
 
-    // Default to no docFilePath
-    let docFilePath: { id: string } | null = null
+    // Save docFilePath for later use
+    docFilePath = contentCheck.docFilePath
 
-    // For DOCS type, check if content has changed
-    if (type === 'DOCS') {
-      const contentCheck = await hasContentChanged(
-        projectId,
-        path,
-        existingFile.content,
-        content,
-      )
-
-      // Save docFilePath for later use
-      docFilePath = contentCheck.docFilePath
-
-      // If content hasn't changed, return early
-      if (!contentCheck.hasChanged) {
-        return {
-          suggestionId: null,
-          success: true,
-        }
+    // If content hasn't changed, return early
+    if (!contentCheck.hasChanged) {
+      return {
+        suggestionId: null,
+        success: true,
       }
     }
+  }
 
-    // Create the knowledge suggestion
-    const supabase = createClient()
-    const now = new Date().toISOString()
-    const { data: knowledgeSuggestion, error: createError } = await supabase
-      .from('knowledge_suggestions')
-      .insert({
-        type,
-        title,
-        path,
-        content,
-        file_sha: existingFile.sha,
-        project_id: projectId,
-        branch_name: branch,
-        trace_id: traceId || null,
-        reasoning: payload.reasoning || null,
-        updated_at: now,
-      })
-      .select()
-      .single()
+  // Create the knowledge suggestion
+  const supabase = createClient()
+  const now = new Date().toISOString()
+  const { data: knowledgeSuggestion, error: createError } = await supabase
+    .from('knowledge_suggestions')
+    .insert({
+      type,
+      title,
+      path,
+      content,
+      file_sha: existingFile.sha,
+      project_id: projectId,
+      branch_name: branch,
+      trace_id: traceId || null,
+      reasoning: payload.reasoning || null,
+      updated_at: now,
+    })
+    .select()
+    .single()
 
-    if (createError || !knowledgeSuggestion) {
-      throw new Error(
-        `Failed to create knowledge suggestion: ${createError?.message || 'Unknown error'}`,
-      )
-    }
+  if (createError || !knowledgeSuggestion) {
+    throw new Error(
+      `Failed to create knowledge suggestion: ${createError?.message || 'Unknown error'}`,
+    )
+  }
 
-    // Create doc mapping if needed
-    if (type === 'DOCS' && docFilePath) {
-      await createDocMapping(knowledgeSuggestion.id, docFilePath.id, now)
-    }
+  // Create doc mapping if needed
+  if (type === 'DOCS' && docFilePath) {
+    await createDocMapping(knowledgeSuggestion.id, docFilePath.id, now)
+  }
 
-    // Create OverallReview mapping if overallReviewId is provided
-    if (overallReviewId) {
-      await createOverallReviewMapping(
-        knowledgeSuggestion.id,
-        overallReviewId,
-        now,
-      )
-    }
+  // Create OverallReview mapping if overallReviewId is provided
+  if (overallReviewId) {
+    await createOverallReviewMapping(
+      knowledgeSuggestion.id,
+      overallReviewId,
+      now,
+    )
+  }
 
-    // Create ReviewFeedback mapping if reviewFeedbackId is provided
-    if (payload.reviewFeedbackId) {
-      await createReviewFeedbackMapping(
-        knowledgeSuggestion.id,
-        payload.reviewFeedbackId,
-        now,
-      )
-    }
+  // Create ReviewFeedback mapping if reviewFeedbackId is provided
+  if (payload.reviewFeedbackId) {
+    await createReviewFeedbackMapping(
+      knowledgeSuggestion.id,
+      payload.reviewFeedbackId,
+      now,
+    )
+  }
 
-    return {
-      suggestionId: knowledgeSuggestion.id,
-      success: true,
-    }
-  } catch (error) {
-    console.error('Error in processCreateKnowledgeSuggestion:', error)
-    throw error
+  return {
+    suggestionId: knowledgeSuggestion.id,
+    success: true,
   }
 }

@@ -22,14 +22,9 @@ export function OrganizationDataWrapper({
 
   useEffect(() => {
     async function loadData() {
-      try {
-        const data = await fetchOrganizationData(installationId, owner, repo)
-        setAvatarUrl(data)
-      } catch (error) {
-        console.error('Error fetching organization data:', error)
-      } finally {
-        setIsLoading(false)
-      }
+      const data = await fetchOrganizationData(installationId, owner, repo)
+      setAvatarUrl(data)
+      setIsLoading(false)
     }
 
     loadData()

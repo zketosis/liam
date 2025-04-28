@@ -114,64 +114,59 @@ export const approveKnowledgeSuggestion = async (formData: FormData) => {
   const { suggestionId, repositoryOwner, repositoryName, installationId } =
     parsedData.output
 
-  try {
-    const supabase = await createClient()
+  const supabase = await createClient()
 
-    // Get the knowledge suggestion
-    const { data: suggestion, error: findError } = await supabase
-      .from('knowledge_suggestions')
-      .select('*')
-      .eq('id', suggestionId)
-      .single()
+  // Get the knowledge suggestion
+  const { data: suggestion, error: findError } = await supabase
+    .from('knowledge_suggestions')
+    .select('*')
+    .eq('id', suggestionId)
+    .single()
 
-    if (findError || !suggestion) {
-      throw new Error('Knowledge suggestion not found')
-    }
-
-    // Update the file on GitHub
-    const repositoryFullName = `${repositoryOwner}/${repositoryName}`
-    const result = await createOrUpdateFileContent(
-      repositoryFullName,
-      suggestion.path,
-      suggestion.content,
-      suggestion.title, // Use title as commit message
-      installationId,
-      suggestion.branch_name,
-      suggestion.file_sha || undefined,
-    )
-
-    if (!result.success) {
-      throw new Error('Failed to update file on GitHub')
-    }
-
-    // Update the knowledge suggestion with approvedAt
-    const { error: updateError } = await supabase
-      .from('knowledge_suggestions')
-      .update({ approved_at: new Date().toISOString() })
-      .eq('id', suggestionId)
-
-    if (updateError) {
-      throw new Error('Failed to update knowledge suggestion')
-    }
-
-    // If this is a DOCS type suggestion, handle GitHubDocFilePath creation and mapping
-    if (suggestion.type === 'DOCS') {
-      await handleDocFilePath(supabase, suggestion, suggestionId)
-    }
-
-    // Redirect back to the knowledge suggestion detail page
-    redirect(
-      urlgen(
-        'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
-        {
-          projectId: `${suggestion.project_id}`,
-          branchOrCommit: suggestion.branch_name,
-          id: `${suggestionId}`,
-        },
-      ),
-    )
-  } catch (error) {
-    console.error('Error approving knowledge suggestion:', error)
-    throw error
+  if (findError || !suggestion) {
+    throw new Error('Knowledge suggestion not found')
   }
+
+  // Update the file on GitHub
+  const repositoryFullName = `${repositoryOwner}/${repositoryName}`
+  const result = await createOrUpdateFileContent(
+    repositoryFullName,
+    suggestion.path,
+    suggestion.content,
+    suggestion.title, // Use title as commit message
+    installationId,
+    suggestion.branch_name,
+    suggestion.file_sha || undefined,
+  )
+
+  if (!result.success) {
+    throw new Error('Failed to update file on GitHub')
+  }
+
+  // Update the knowledge suggestion with approvedAt
+  const { error: updateError } = await supabase
+    .from('knowledge_suggestions')
+    .update({ approved_at: new Date().toISOString() })
+    .eq('id', suggestionId)
+
+  if (updateError) {
+    throw new Error('Failed to update knowledge suggestion')
+  }
+
+  // If this is a DOCS type suggestion, handle GitHubDocFilePath creation and mapping
+  if (suggestion.type === 'DOCS') {
+    await handleDocFilePath(supabase, suggestion, suggestionId)
+  }
+
+  // Redirect back to the knowledge suggestion detail page
+  redirect(
+    urlgen(
+      'projects/[projectId]/ref/[branchOrCommit]/knowledge-suggestions/[id]',
+      {
+        projectId: `${suggestion.project_id}`,
+        branchOrCommit: suggestion.branch_name,
+        id: `${suggestionId}`,
+      },
+    ),
+  )
 }
