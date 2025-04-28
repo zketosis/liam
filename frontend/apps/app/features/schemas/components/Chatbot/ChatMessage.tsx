@@ -14,12 +14,15 @@ export interface ChatMessageProps {
 export const ChatMessage: FC<ChatMessageProps> = ({
   content,
   isUser,
-  timestamp = new Date(),
+  timestamp,
 }) => {
-  const formattedTime = timestamp.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  // Only format and display timestamp if it exists
+  const formattedTime = timestamp
+    ? timestamp.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : null
 
   return (
     <div
@@ -35,7 +38,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         )}
-        <div className={styles.messageTime}>{formattedTime}</div>
+        {formattedTime && (
+          <div className={styles.messageTime}>{formattedTime}</div>
+        )}
       </div>
     </div>
   )
