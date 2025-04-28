@@ -35,9 +35,7 @@ export const sendInvitationEmail = async ({
   organizationId,
   invitationToken,
 }: SendInvitationEmailParams) => {
-  // TODO: Enable email sending in preview/production
-  // For now, we don't want to send emails in preview/production
-  if (process.env.NODE_ENV !== 'development' || !process.env.RESEND_API_KEY) {
+  if (!process.env.RESEND_API_KEY) {
     return { success: true, error: null }
   }
 
@@ -76,8 +74,9 @@ export const sendInvitationEmail = async ({
 
   // Send email
   const resend = new Resend(process.env.RESEND_API_KEY)
+  const fromAddress = process.env.RESEND_EMAIL_FROM_ADDRESS || 'liam@resend.dev'
   const { error: emailError } = await resend.emails.send({
-    from: process.env.EMAIL_FROM_ADDRESS || 'onboarding@resend.dev',
+    from: `Liam<${fromAddress}>`,
     to: email,
     subject: `Invitation to join ${orgData.name} on Liam`,
     html: InvitationEmail({
