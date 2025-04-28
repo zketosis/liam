@@ -1,3 +1,5 @@
+BEGIN;
+
 ALTER TABLE "public"."doc_file_paths" ADD COLUMN "organization_id" UUID;
 
 UPDATE "public"."doc_file_paths" dfp
@@ -45,6 +47,10 @@ CREATE POLICY "authenticated_users_can_select_org_doc_file_paths"
     WHERE ("organization_members"."user_id" = "auth"."uid"())
   )));
 
+COMMENT ON POLICY "authenticated_users_can_select_org_doc_file_paths"
+  ON "public"."doc_file_paths"
+  IS 'Authenticated users can select doc file paths for their organization';
+
 CREATE POLICY "authenticated_users_can_insert_org_doc_file_paths" 
   ON "public"."doc_file_paths" 
   FOR INSERT TO "authenticated" 
@@ -54,46 +60,13 @@ CREATE POLICY "authenticated_users_can_insert_org_doc_file_paths"
     WHERE ("organization_members"."user_id" = "auth"."uid"())
   )));
 
-CREATE POLICY "authenticated_users_can_update_org_doc_file_paths" 
-  ON "public"."doc_file_paths" 
-  FOR UPDATE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )))
-  WITH CHECK (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
-
-CREATE POLICY "authenticated_users_can_delete_org_doc_file_paths" 
-  ON "public"."doc_file_paths" 
-  FOR DELETE TO "authenticated" 
-  USING (("organization_id" IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
+COMMENT ON POLICY "authenticated_users_can_insert_org_doc_file_paths"
+  ON "public"."doc_file_paths"
+  IS 'Authenticated users can insert doc file paths for their organization';
 
 CREATE POLICY "service_role_can_select_all_doc_file_paths" 
   ON "public"."doc_file_paths" 
   FOR SELECT TO "service_role" 
   USING (true);
 
-CREATE POLICY "service_role_can_insert_all_doc_file_paths" 
-  ON "public"."doc_file_paths" 
-  FOR INSERT TO "service_role" 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_doc_file_paths" 
-  ON "public"."doc_file_paths" 
-  FOR UPDATE TO "service_role" 
-  USING (true)
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_doc_file_paths" 
-  ON "public"."doc_file_paths" 
-  FOR DELETE TO "service_role" 
-  USING (true);
+COMMIT;
