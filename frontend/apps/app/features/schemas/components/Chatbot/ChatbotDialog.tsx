@@ -40,6 +40,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Scroll to bottom when messages change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We need messages in the dependency array to scroll when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
