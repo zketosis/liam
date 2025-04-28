@@ -109,6 +109,28 @@ const convertSchemaToTexts = (schema: SchemaData): Document[] => {
   return documents
 }
 
+// Generate a summary of the schema
+const generateSchemaSummary = (schemaData: SchemaData): string => {
+  const tableCount = schemaData.tables
+    ? Object.keys(schemaData.tables).length
+    : 0
+  const relationshipCount = schemaData.relationships
+    ? Object.keys(schemaData.relationships).length
+    : 0
+
+  let tableNames = 'None'
+  if (schemaData.tables && tableCount > 0) {
+    tableNames = Object.keys(schemaData.tables).join(', ')
+  }
+
+  return `
+Schema Summary:
+- Total Tables: ${tableCount}
+- Table Names: ${tableNames}
+- Total Relationships: ${relationshipCount}
+`
+}
+
 // Create vector store from schema data
 const createVectorStore = async (schemaData: SchemaData) => {
   const documents = convertSchemaToTexts(schemaData)
@@ -119,7 +141,10 @@ const createVectorStore = async (schemaData: SchemaData) => {
 }
 
 // Create chat chain
-const createChatChain = async (vectorStore: MemoryVectorStore) => {
+const createChatChain = async (
+  vectorStore: MemoryVectorStore,
+  schemaSummary: string,
+) => {
   const model = new ChatOpenAI({
     modelName: 'o4-mini-2025-04-16',
   })
@@ -138,12 +163,14 @@ Follow these guidelines:
 
 Your goal is to help users understand and optimize their database schemas.
 
+${schemaSummary}
+
 Context information:
 {context}
 
 Question: {input}
 
-Based on the context information, provide a helpful answer to the question.
+Based on the schema summary and context information, provide a helpful answer to the question.
 `)
 
   // Create a document chain
@@ -175,7 +202,8 @@ export async function POST(request: Request) {
 
   // Create vector store and chain
   const vectorStore = await createVectorStore(schemaData)
-  const chain = await createChatChain(vectorStore)
+  const schemaSummary = generateSchemaSummary(schemaData)
+  const chain = await createChatChain(vectorStore, schemaSummary)
 
   // Format chat history
   const formattedHistory = history
