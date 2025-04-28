@@ -815,6 +815,7 @@ export type Database = {
           created_at: string
           format: Database['public']['Enums']['schema_format_enum']
           id: string
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -823,6 +824,7 @@ export type Database = {
           created_at?: string
           format: Database['public']['Enums']['schema_format_enum']
           id?: string
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -831,6 +833,7 @@ export type Database = {
           created_at?: string
           format?: Database['public']['Enums']['schema_format_enum']
           id?: string
+          organization_id?: string
           path?: string
           project_id?: string
           updated_at?: string
@@ -841,6 +844,13 @@ export type Database = {
             columns: ['project_id']
             isOneToOne: false
             referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'schema_file_paths_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
