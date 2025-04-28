@@ -1,7 +1,7 @@
-export interface KnowledgeSuggestionsOverride {
+export interface OverallReviewKnowledgeSuggestionMappingsOverride {
   public: {
     Tables: {
-      knowledge_suggestions: {
+      overall_review_knowledge_suggestion_mappings: {
         Insert: {
           organization_id?: string | null
         }

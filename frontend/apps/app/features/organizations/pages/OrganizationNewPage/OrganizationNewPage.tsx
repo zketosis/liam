@@ -29,11 +29,7 @@ export const OrganizationNewPage: FC = () => {
     const result = await createOrganization(name)
 
     if (result.success) {
-      router.push(
-        urlgen('organizations/[organizationId]/projects/new', {
-          organizationId: result.organizationId,
-        }),
-      )
+      router.push(urlgen('projects/new'))
     } else {
       setError(
         result.error || 'Failed to create organization. Please try again.',

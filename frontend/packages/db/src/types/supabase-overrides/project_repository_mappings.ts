@@ -1,7 +1,7 @@
-export interface KnowledgeSuggestionsOverride {
+export interface ProjectRepositoryMappingsOverride {
   public: {
     Tables: {
-      knowledge_suggestions: {
+      project_repository_mappings: {
         Insert: {
           organization_id?: string | null
         }
