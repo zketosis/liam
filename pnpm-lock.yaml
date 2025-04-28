@@ -68,6 +68,12 @@ importers:
       '@codemirror/view':
         specifier: 6.36.5
         version: 6.36.5
+      '@langchain/core':
+        specifier: 0.3.45
+        version: 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
+      '@langchain/openai':
+        specifier: 0.5.6
+        version: 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
       '@lezer/highlight':
         specifier: 1.2.1
         version: 1.2.1
@@ -109,7 +115,7 @@ importers:
         version: 3.3.17(typescript@5.8.3)
       '@trigger.dev/sdk':
         specifier: 3.3.17
-        version: 3.3.17(zod@3.23.8)
+        version: 3.3.17(zod@3.24.3)
       cheerio:
         specifier: 1.0.0
         version: 1.0.0
@@ -131,12 +137,18 @@ importers:
       flags:
         specifier: 3.2.0
         version: 3.2.0(@opentelemetry/api@1.9.0)(next@15.3.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      langchain:
+        specifier: 0.3.24
+        version: 0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1)
       langfuse:
         specifier: 3.37.2
         version: 3.37.2
       langfuse-langchain:
         specifier: 3.37.2
-        version: 3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1))
+        version: 3.37.2(langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1))
+      lucide-react:
+        specifier: 0.501.0
+        version: 0.501.0(react@18.3.1)
       next:
         specifier: 15.3.1
         version: 15.3.1(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -591,10 +603,10 @@ importers:
     dependencies:
       '@langchain/core':
         specifier: 0.3.45
-        version: 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
+        version: 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
       '@langchain/openai':
         specifier: 0.5.6
-        version: 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
+        version: 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)
       '@liam-hq/db':
         specifier: workspace:*
         version: link:../db
@@ -612,13 +624,13 @@ importers:
         version: 3.3.17(typescript@5.8.3)
       '@trigger.dev/sdk':
         specifier: 3.3.17
-        version: 3.3.17(zod@3.24.3)
+        version: 3.3.17(zod@3.23.8)
       '@valibot/to-json-schema':
         specifier: 1.0.0
         version: 1.0.0(valibot@1.0.0(typescript@5.8.3))
       langfuse-langchain:
         specifier: 3.37.2
-        version: 3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1))
+        version: 3.37.2(langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1))
       minimatch:
         specifier: 10.0.1
         version: 10.0.1
@@ -691,7 +703,7 @@ importers:
         version: 3.37.2
       langfuse-langchain:
         specifier: 3.37.2
-        version: 3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1))
+        version: 3.37.2(langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1))
       tsx:
         specifier: 4.19.3
         version: 4.19.3
@@ -5505,9 +5517,6 @@ packages:
   jose@5.9.6:
     resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
 
-  js-tiktoken@1.0.19:
-    resolution: {integrity: sha512-XC63YQeEcS47Y53gg950xiZ4IWmkfMe4p2V9OSaBt26q+p47WHn18izuXzSclCI73B7yGqtfRsT6jcZQI0y08g==}
-
   js-tiktoken@1.0.20:
     resolution: {integrity: sha512-Xlaqhhs8VfCd6Sh7a1cFkZHQbYTLCwVJJWiHVxBYzLPxW0XsoxBy1hitmjkdIjD3Aon5BXLHFwU5O8WUx6HH+A==}
 
@@ -5598,8 +5607,8 @@ packages:
       '@types/node': '>=18'
       typescript: '>=5.0.4'
 
-  langchain@0.3.21:
-    resolution: {integrity: sha512-fpor/V/xJRoLM7s1yQGlUE6aZIe6LLm7ciZcstNbBUYdFpCSigvADsW2cqlBCdbMXJxb5I/z9jznjGnmciJ+aw==}
+  langchain@0.3.24:
+    resolution: {integrity: sha512-BTjiYkUCpWFAmufK8J5zMqc5aUs4eEnAXPWtPe2+R4ZPP+U7bXJSBHAcrB40rQ3VeTdRgMvgDjekOOgCMWut6Q==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/anthropic': '*'
@@ -5669,14 +5678,6 @@ packages:
   langfuse@3.37.2:
     resolution: {integrity: sha512-C4P56hJDNk8vWNJR102JhgyCYXbt3HG19PY0brurlrU4dh5pq91JPt44jyiT5RzUs+NFew//gCkgFEcQd3RogA==}
     engines: {node: '>=18'}
-
-  langsmith@0.3.16:
-    resolution: {integrity: sha512-P3Y0YGHzixgnHuuir2mHZCw6heIeZMFLEmQqVrspy9w57+zwk4PJV6+wP6JrNd/gvt5oKHoN11368GnjO8lE5g==}
-    peerDependencies:
-      openai: '*'
-    peerDependenciesMeta:
-      openai:
-        optional: true
 
   langsmith@0.3.21:
     resolution: {integrity: sha512-klsPStt91LqcO5+FAHOuD2FJMrpKFSqa5H4ANv+YYs/fCdL2Ey9hg/YAFYKsDsCLabzcD1tCt/SN9A9JsIZ9ag==}
@@ -9106,8 +9107,8 @@ snapshots:
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
-      js-tiktoken: 1.0.19
-      langsmith: 0.3.16(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
+      js-tiktoken: 1.0.20
+      langsmith: 0.3.21(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -9123,8 +9124,8 @@ snapshots:
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
-      js-tiktoken: 1.0.19
-      langsmith: 0.3.16(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
+      js-tiktoken: 1.0.20
+      langsmith: 0.3.21(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -9137,7 +9138,7 @@ snapshots:
   '@langchain/openai@0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)':
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
-      js-tiktoken: 1.0.19
+      js-tiktoken: 1.0.20
       openai: 4.94.0(ws@8.18.1)(zod@3.24.3)
       zod: 3.24.3
       zod-to-json-schema: 3.24.5(zod@3.24.3)
@@ -9148,7 +9149,7 @@ snapshots:
   '@langchain/openai@0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)':
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
-      js-tiktoken: 1.0.19
+      js-tiktoken: 1.0.20
       openai: 4.94.0(ws@8.18.1)(zod@3.24.3)
       zod: 3.24.3
       zod-to-json-schema: 3.24.5(zod@3.24.3)
@@ -13766,10 +13767,6 @@ snapshots:
 
   jose@5.9.6: {}
 
-  js-tiktoken@1.0.19:
-    dependencies:
-      base64-js: 1.5.1
-
   js-tiktoken@1.0.20:
     dependencies:
       base64-js: 1.5.1
@@ -13870,7 +13867,7 @@ snapshots:
       zod: 3.24.3
       zod-validation-error: 3.4.0(zod@3.24.3)
 
-  langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1):
+  langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1):
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8))
       '@langchain/openai': 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(ws@8.18.1)
@@ -13893,7 +13890,7 @@ snapshots:
       - openai
       - ws
 
-  langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1):
+  langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1):
     dependencies:
       '@langchain/core': 0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3))
       '@langchain/openai': 0.5.6(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(ws@8.18.1)
@@ -13920,45 +13917,21 @@ snapshots:
     dependencies:
       mustache: 4.2.0
 
-  langfuse-langchain@3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1)):
+  langfuse-langchain@3.37.2(langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1)):
     dependencies:
-      langchain: 0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1)
+      langchain: 0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.23.8)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.23.8))(ws@8.18.1)
       langfuse: 3.37.2
       langfuse-core: 3.37.2
 
-  langfuse-langchain@3.37.2(langchain@0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1)):
+  langfuse-langchain@3.37.2(langchain@0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1)):
     dependencies:
-      langchain: 0.3.21(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1)
+      langchain: 0.3.24(@langchain/core@0.3.45(openai@4.94.0(ws@8.18.1)(zod@3.24.3)))(cheerio@1.0.0)(handlebars@4.7.8)(openai@4.94.0(ws@8.18.1)(zod@3.24.3))(ws@8.18.1)
       langfuse: 3.37.2
       langfuse-core: 3.37.2
 
   langfuse@3.37.2:
     dependencies:
       langfuse-core: 3.37.2
-
-  langsmith@0.3.16(openai@4.94.0(ws@8.18.1)(zod@3.23.8)):
-    dependencies:
-      '@types/uuid': 10.0.0
-      chalk: 4.1.2
-      console-table-printer: 2.12.1
-      p-queue: 6.6.2
-      p-retry: 4.6.2
-      semver: 7.7.1
-      uuid: 10.0.0
-    optionalDependencies:
-      openai: 4.94.0(ws@8.18.1)(zod@3.23.8)
-
-  langsmith@0.3.16(openai@4.94.0(ws@8.18.1)(zod@3.24.3)):
-    dependencies:
-      '@types/uuid': 10.0.0
-      chalk: 4.1.2
-      console-table-printer: 2.12.1
-      p-queue: 6.6.2
-      p-retry: 4.6.2
-      semver: 7.7.1
-      uuid: 10.0.0
-    optionalDependencies:
-      openai: 4.94.0(ws@8.18.1)(zod@3.24.3)
 
   langsmith@0.3.21(openai@4.94.0(ws@8.18.1)(zod@3.23.8)):
     dependencies:
