@@ -33,9 +33,7 @@ export async function ProjectsPage({
             projects={projects}
             createProjectHref={
               currentOrganization
-                ? urlgen('organizations/[organizationId]/projects/new', {
-                    organizationId: currentOrganization.id,
-                  })
+                ? urlgen('projects/new')
                 : urlgen('organizations/new')
             }
           />

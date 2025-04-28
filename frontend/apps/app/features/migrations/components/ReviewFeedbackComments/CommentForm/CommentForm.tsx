@@ -30,20 +30,14 @@ export const CommentForm = ({
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      await addReviewFeedbackComment({
-        feedbackId: reviewFeedbackId,
-        content: content.trim(),
-      })
+    await addReviewFeedbackComment({
+      feedbackId: reviewFeedbackId,
+      content: content.trim(),
+    })
 
-      setContent('')
-      onCommentAdded()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add comment')
-      console.error('Error adding comment:', err)
-    } finally {
-      setIsSubmitting(false)
-    }
+    setContent('')
+    onCommentAdded()
+    setIsSubmitting(false)
   }
 
   return (

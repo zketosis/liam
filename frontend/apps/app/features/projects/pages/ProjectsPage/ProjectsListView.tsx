@@ -82,9 +82,7 @@ export function ProjectsListView({
         <Link
           href={
             organizationId
-              ? urlgen('organizations/[organizationId]/projects/new', {
-                  organizationId: organizationId.toString(),
-                })
+              ? urlgen('projects/new')
               : urlgen('organizations/new')
           }
           className={styles.newProjectButton}

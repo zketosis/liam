@@ -12,48 +12,19 @@ type Props = {
 async function getMigrationsList(projectId: string) {
   const supabase = await createClient()
 
-  // Get repository related to the project
-  const { data: project, error: projectError } = await supabase
-    .from('projects')
+  const { data: migrations, error: migrationsError } = await supabase
+    .from('migrations')
     .select(`
       id,
-      project_repository_mappings!inner (
-        github_repositories!inner (
-          id,
-          name,
-          owner
+      title,
+      created_at,
+      migration_pull_request_mappings (
+        github_pull_requests (
+          pull_number
         )
       )
     `)
-    .eq('id', projectId)
-    .single()
-
-  if (projectError || !project) {
-    console.error('Error fetching project:', projectError)
-    return { migrations: [] }
-  }
-
-  const repositoryId =
-    project.project_repository_mappings[0].github_repositories.id
-
-  // Get PRs related to the repository and fetch migrations related to those PRs
-  // Note: We're not filtering by branch here as the database doesn't store branch information directly
-  // In a real implementation, we would need to fetch PRs associated with the specific branch
-
-  const { data: migrations, error: migrationsError } = await supabase
-    .from('github_pull_requests')
-    .select(`
-      id,
-      pull_number,
-      created_at,
-      repository_id,
-      migrations (
-        id,
-        title,
-        created_at
-      )
-    `)
-    .eq('repository_id', repositoryId)
+    .eq('project_id', projectId)
     .order('created_at', { ascending: false })
 
   if (migrationsError) {
@@ -61,15 +32,14 @@ async function getMigrationsList(projectId: string) {
     return { migrations: [] }
   }
 
-  // Filter only PRs that have migrations
-  const migrationsWithData = migrations
-    .filter((pr) => pr.migrations && pr.migrations.length > 0)
-    .map((pr) => ({
-      id: pr.migrations[0].id,
-      title: pr.migrations[0].title,
-      pullNumber: pr.pull_number,
-      createdAt: pr.migrations[0].created_at,
-    }))
+  const migrationsWithData = migrations.map((migration) => ({
+    id: migration.id,
+    title: migration.title,
+    pullNumber:
+      migration.migration_pull_request_mappings[0]?.github_pull_requests
+        ?.pull_number,
+    createdAt: migration.created_at,
+  }))
 
   return { migrations: migrationsWithData }
 }
@@ -78,7 +48,6 @@ export const MigrationsListPage: FC<Props> = async ({
   projectId,
   branchOrCommit,
 }) => {
-  // Note: In a real implementation, we would use the branchOrCommit parameter to filter migrations
   const { migrations } = await getMigrationsList(projectId)
 
   return (

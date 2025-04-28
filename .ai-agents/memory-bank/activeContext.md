@@ -129,6 +129,16 @@ The current focus is on enhancing the Reviewer User experience with AI-driven an
     - Updated all code references to use the new table name
     - This change provides a more consistent naming approach across the application
 
+15. **Implemented Organization Last Member Protection**: Added database-level constraint to prevent organizations from having zero members:
+
+    - Created a migration to add a BEFORE DELETE trigger on the "organization_members" table
+    - The trigger checks if the member being deleted is the last one in an organization
+    - If it is the last member, the trigger raises an exception to prevent deletion
+    - Enhanced the removeMember server action to handle the specific error and provide a user-friendly message
+    - Improved error handling throughout the application to properly display database error messages
+    - Added comprehensive test cases to verify the constraint works correctly in all scenarios
+    - This enhancement ensures data integrity by preventing organizations from becoming orphaned
+
 ## Next Steps
 
 1. **Enhance Supabase Implementation**:

@@ -38,7 +38,7 @@ export async function removeMember(formData: FormData) {
     console.error('Error removing organization member:', error)
     return {
       success: false,
-      error: 'Failed to remove member',
+      error: error?.message || 'Failed to remove member',
     }
   }
 
