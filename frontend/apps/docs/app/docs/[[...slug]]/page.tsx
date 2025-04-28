@@ -14,13 +14,14 @@ import {
   DocsPage,
   DocsTitle,
 } from 'fumadocs-ui/page'
+import { notFound } from 'next/navigation'
 
 export default async function Page(props: {
   params: Promise<{ slug?: string[] }>
 }) {
   const params = await props.params
   const page = source.getPage(params.slug)
-  if (!page) throw new Error('Page not found')
+  if (!page) notFound()
 
   const MDX = page.data.body
 
@@ -76,7 +77,7 @@ export async function generateMetadata(props: {
 }) {
   const params = await props.params
   const page = source.getPage(params.slug)
-  if (!page) throw new Error('Page not found')
+  if (!page) notFound()
 
   return {
     metadataBase: new URL(baseUrl),
