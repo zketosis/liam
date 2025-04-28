@@ -64,25 +64,9 @@ COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestion_doc_m
   ON "public"."knowledge_suggestion_doc_mappings" 
   IS 'Authenticated users can only create knowledge suggestion doc mappings in organizations they are members of';
 
-CREATE POLICY "service_role_can_select_all_knowledge_suggestion_doc_mappings" 
-  ON "public"."knowledge_suggestion_doc_mappings" 
-  FOR SELECT TO "service_role" 
-  USING (true);
-
 CREATE POLICY "service_role_can_insert_all_knowledge_suggestion_doc_mappings" 
   ON "public"."knowledge_suggestion_doc_mappings" 
   FOR INSERT TO "service_role" 
   WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_knowledge_suggestion_doc_mappings" 
-  ON "public"."knowledge_suggestion_doc_mappings" 
-  FOR UPDATE TO "service_role" 
-  USING (true) 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_delete_all_knowledge_suggestion_doc_mappings" 
-  ON "public"."knowledge_suggestion_doc_mappings" 
-  FOR DELETE TO "service_role" 
-  USING (true);
 
 COMMIT;
