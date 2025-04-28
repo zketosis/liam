@@ -370,6 +370,23 @@ $$;
 ALTER FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_project_repository_mappings_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."projects" 
+    WHERE "id" = NEW.project_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_project_repository_mappings_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."sync_existing_users"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -569,7 +586,8 @@ CREATE TABLE IF NOT EXISTS "public"."project_repository_mappings" (
     "project_id" "uuid" NOT NULL,
     "repository_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -865,6 +883,10 @@ CREATE OR REPLACE TRIGGER "set_overall_review_knowledge_suggestion_mappings_orga
 
 
 
+CREATE OR REPLACE TRIGGER "set_project_repository_mappings_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."project_repository_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_project_repository_mappings_organization_id"();
+
+
+
 ALTER TABLE ONLY "public"."doc_file_paths"
     ADD CONSTRAINT "github_doc_file_path_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -975,6 +997,11 @@ ALTER TABLE ONLY "public"."project_repository_mappings"
 
 
 
+ALTER TABLE ONLY "public"."project_repository_mappings"
+    ADD CONSTRAINT "project_repository_mappings_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."review_feedback_comments"
     ADD CONSTRAINT "review_feedback_comment_review_feedback_id_fkey" FOREIGN KEY ("review_feedback_id") REFERENCES "public"."review_feedbacks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -1030,6 +1057,16 @@ COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON 
 
 
 
+CREATE POLICY "authenticated_users_can_insert_org_project_repository_mappings" ON "public"."project_repository_mappings" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_project_repository_mappings" ON "public"."project_repository_mappings" IS 'Authenticated users can only create project repository mappings in organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."projects" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1057,6 +1094,16 @@ CREATE POLICY "authenticated_users_can_select_org_overall_review_knowledge_sug" 
 
 
 COMMENT ON POLICY "authenticated_users_can_select_org_overall_review_knowledge_sug" ON "public"."overall_review_knowledge_suggestion_mappings" IS 'Authenticated users can only view mappings belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_project_repository_mappings" ON "public"."project_repository_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_project_repository_mappings" ON "public"."project_repository_mappings" IS 'Authenticated users can only view project repository mappings belonging to organizations they are members of';
 
 
 
@@ -1100,6 +1147,9 @@ ALTER TABLE "public"."knowledge_suggestions" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."project_repository_mappings" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1132,6 +1182,10 @@ COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" 
 
 
 CREATE POLICY "service_role_can_select_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_select_all_project_repository_mappings" ON "public"."project_repository_mappings" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1384,6 +1438,12 @@ GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO 
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_overall_review_knowledge_suggestion_mappings_organization_i"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "service_role";
 
 
 
