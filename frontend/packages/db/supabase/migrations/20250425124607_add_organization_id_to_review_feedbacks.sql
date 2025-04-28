@@ -4,9 +4,9 @@ ALTER TABLE "public"."review_feedbacks" ADD COLUMN "organization_id" UUID;
 
 UPDATE "public"."review_feedbacks" rf
 SET "organization_id" = (
-  SELECT or."organization_id"
-  FROM "public"."overall_reviews" or
-  WHERE or."id" = rf."overall_review_id"
+  SELECT ovr."organization_id"
+  FROM "public"."overall_reviews" ovr
+  WHERE ovr."id" = rf."overall_review_id"
   LIMIT 1
 );
 
@@ -51,20 +51,27 @@ COMMENT ON POLICY "authenticated_users_can_select_org_review_feedbacks"
   ON "public"."review_feedbacks" 
   IS 'Authenticated users can only view review feedbacks belonging to organizations they are members of';
 
-CREATE POLICY "service_role_can_select_all_review_feedbacks" 
+CREATE POLICY "authenticated_users_can_update_org_review_feedbacks" 
   ON "public"."review_feedbacks" 
-  FOR SELECT TO "service_role" 
-  USING (true);
+  FOR UPDATE TO "authenticated" 
+  USING (("organization_id" IN ( 
+    SELECT "organization_members"."organization_id"
+    FROM "public"."organization_members"
+    WHERE ("organization_members"."user_id" = "auth"."uid"())
+  ))) 
+  WITH CHECK (("organization_id" IN ( 
+    SELECT "organization_members"."organization_id"
+    FROM "public"."organization_members"
+    WHERE ("organization_members"."user_id" = "auth"."uid"())
+  )));
+
+COMMENT ON POLICY "authenticated_users_can_update_org_review_feedbacks" 
+  ON "public"."review_feedbacks" 
+  IS 'Authenticated users can only update review feedbacks belonging to organizations they are members of';
 
 CREATE POLICY "service_role_can_insert_all_review_feedbacks" 
   ON "public"."review_feedbacks" 
   FOR INSERT TO "service_role" 
-  WITH CHECK (true);
-
-CREATE POLICY "service_role_can_update_all_review_feedbacks" 
-  ON "public"."review_feedbacks" 
-  FOR UPDATE TO "service_role" 
-  USING (true)
   WITH CHECK (true);
 
 COMMIT;
