@@ -31,7 +31,7 @@ const createMapping = async (
     .from('knowledge_suggestion_doc_mappings')
     .insert({
       knowledge_suggestion_id: knowledgeSuggestionId,
-      github_doc_file_path_id: gitHubDocFilePathId,
+      doc_file_path_id: gitHubDocFilePathId,
       updated_at: updatedAt,
     })
 
@@ -50,7 +50,7 @@ const handleDocFilePath = async (
 ) => {
   // Check if there's a GitHubDocFilePath entry for this path
   const { data: docFilePath } = await supabase
-    .from('github_doc_file_paths')
+    .from('doc_file_paths')
     .select('id')
     .eq('project_id', suggestion.project_id)
     .eq('path', suggestion.path)
@@ -60,7 +60,7 @@ const handleDocFilePath = async (
     // Create a new GitHubDocFilePath entry
     const now = new Date().toISOString()
     const { data: newDocFilePath, error: createDocError } = await supabase
-      .from('github_doc_file_paths')
+      .from('doc_file_paths')
       .insert({
         path: suggestion.path,
         is_review_enabled: true,

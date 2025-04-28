@@ -71,7 +71,7 @@ const hasContentChanged = async (
 ): Promise<ContentCheckResult> => {
   const supabase = createClient()
   const { data: docFilePath } = await supabase
-    .from('github_doc_file_paths')
+    .from('doc_file_paths')
     .select('id')
     .eq('project_id', projectId)
     .eq('path', path)
@@ -109,7 +109,7 @@ const createDocMapping = async (
     .from('knowledge_suggestion_doc_mappings')
     .insert({
       knowledge_suggestion_id: knowledgeSuggestionId,
-      github_doc_file_path_id: docFilePathId,
+      doc_file_path_id: docFilePathId,
       updated_at: timestamp,
     })
 

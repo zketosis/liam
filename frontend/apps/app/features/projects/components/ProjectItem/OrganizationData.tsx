@@ -1,15 +1,6 @@
 'use server'
 
 import { getOrganizationInfo } from '@liam-hq/github'
-import { OrganizationIcon } from './OrganizationIcon'
-import { ProjectIcon } from './ProjectIcon'
-import styles from './ProjectItem.module.css'
-
-interface OrganizationDataProps {
-  installationId: number
-  owner: string
-  repo: string
-}
 
 // Separating data fetching function as a server action
 export async function fetchOrganizationData(
@@ -22,19 +13,4 @@ export async function fetchOrganizationData(
   }
   const orgInfo = await getOrganizationInfo(installationId, owner, repo)
   return orgInfo?.avatar_url || null
-}
-
-// Server component
-export async function OrganizationData({
-  installationId,
-  owner,
-  repo,
-}: OrganizationDataProps) {
-  const avatarUrl = await fetchOrganizationData(installationId, owner, repo)
-
-  if (avatarUrl) {
-    return <OrganizationIcon avatarUrl={avatarUrl} owner={owner} />
-  }
-
-  return <ProjectIcon className={styles.projectIcon} />
 }
