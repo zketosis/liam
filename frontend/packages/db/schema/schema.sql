@@ -370,6 +370,23 @@ $$;
 ALTER FUNCTION "public"."prevent_delete_last_organization_member"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_doc_file_paths_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."projects" 
+    WHERE "id" = NEW.project_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_doc_file_paths_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_github_pull_requests_organization_id"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -484,7 +501,8 @@ CREATE TABLE IF NOT EXISTS "public"."doc_file_paths" (
     "is_review_enabled" boolean DEFAULT true NOT NULL,
     "project_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -953,6 +971,10 @@ COMMENT ON TRIGGER "check_last_organization_member" ON "public"."organization_me
 
 
 
+CREATE OR REPLACE TRIGGER "set_doc_file_paths_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."doc_file_paths" FOR EACH ROW EXECUTE FUNCTION "public"."set_doc_file_paths_organization_id"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_github_pull_requests_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."github_pull_requests" FOR EACH ROW EXECUTE FUNCTION "public"."set_github_pull_requests_organization_id"();
 
 
@@ -970,6 +992,11 @@ CREATE OR REPLACE TRIGGER "set_overall_review_knowledge_suggestion_mappings_orga
 
 
 CREATE OR REPLACE TRIGGER "set_project_repository_mappings_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."project_repository_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_project_repository_mappings_organization_id"();
+
+
+
+ALTER TABLE ONLY "public"."doc_file_paths"
+    ADD CONSTRAINT "doc_file_paths_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1143,6 +1170,16 @@ COMMENT ON POLICY "authenticated_users_can_delete_org_projects" ON "public"."pro
 
 
 
+CREATE POLICY "authenticated_users_can_insert_org_doc_file_paths" ON "public"."doc_file_paths" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_doc_file_paths" ON "public"."doc_file_paths" IS 'Authenticated users can insert doc file paths for their organization';
+
+
+
 CREATE POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1170,6 +1207,16 @@ CREATE POLICY "authenticated_users_can_insert_projects" ON "public"."projects" F
 
 
 COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."projects" IS 'Authenticated users can create any project';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_doc_file_paths" ON "public"."doc_file_paths" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_doc_file_paths" ON "public"."doc_file_paths" IS 'Authenticated users can select doc file paths for their organization';
 
 
 
@@ -1257,6 +1304,9 @@ COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."pro
 
 
 
+ALTER TABLE "public"."doc_file_paths" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."github_pull_requests" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1308,6 +1358,10 @@ CREATE POLICY "service_role_can_insert_all_projects" ON "public"."projects" FOR 
 
 
 COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" IS 'Service role can create any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_select_all_doc_file_paths" ON "public"."doc_file_paths" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1574,6 +1628,12 @@ GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p
 GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "anon";
 GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_doc_file_paths_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_doc_file_paths_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_doc_file_paths_organization_id"() TO "service_role";
 
 
 
