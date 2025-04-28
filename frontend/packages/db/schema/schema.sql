@@ -438,6 +438,23 @@ $$;
 ALTER FUNCTION "public"."set_knowledge_suggestions_organization_id"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_migration_pull_request_mappings_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."github_pull_requests" 
+    WHERE "id" = NEW.pull_request_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_migration_pull_request_mappings_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_migrations_organization_id"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -636,7 +653,8 @@ CREATE TABLE IF NOT EXISTS "public"."migration_pull_request_mappings" (
     "migration_id" "uuid" NOT NULL,
     "pull_request_id" "uuid" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -1023,6 +1041,10 @@ CREATE OR REPLACE TRIGGER "set_knowledge_suggestions_organization_id_trigger" BE
 
 
 
+CREATE OR REPLACE TRIGGER "set_migration_pull_request_mappings_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."migration_pull_request_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_migration_pull_request_mappings_organization_id"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_migrations_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."migrations" FOR EACH ROW EXECUTE FUNCTION "public"."set_migrations_organization_id"();
 
 
@@ -1116,6 +1138,11 @@ ALTER TABLE ONLY "public"."migration_pull_request_mappings"
 
 ALTER TABLE ONLY "public"."migration_pull_request_mappings"
     ADD CONSTRAINT "migration_pull_request_mapping_pull_request_id_fkey" FOREIGN KEY ("pull_request_id") REFERENCES "public"."github_pull_requests"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."migration_pull_request_mappings"
+    ADD CONSTRAINT "migration_pull_request_mappings_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1304,6 +1331,16 @@ COMMENT ON POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON 
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_migration_pull_request_mappi" ON "public"."migration_pull_request_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_migration_pull_request_mappi" ON "public"."migration_pull_request_mappings" IS 'Authenticated users can only view mappings belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_migrations" ON "public"."migrations" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1402,6 +1439,9 @@ ALTER TABLE "public"."github_pull_requests" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."knowledge_suggestions" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."migration_pull_request_mappings" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1441,6 +1481,10 @@ CREATE POLICY "service_role_can_insert_all_knowledge_suggestions" ON "public"."k
 
 
 
+CREATE POLICY "service_role_can_insert_all_migration_pull_request_mappings" ON "public"."migration_pull_request_mappings" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_insert_all_migrations" ON "public"."migrations" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
@@ -1470,6 +1514,10 @@ CREATE POLICY "service_role_can_select_all_github_pull_requests" ON "public"."gi
 
 
 CREATE POLICY "service_role_can_select_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_select_all_migration_pull_request_mappings" ON "public"."migration_pull_request_mappings" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1756,6 +1804,12 @@ GRANT ALL ON FUNCTION "public"."set_github_pull_requests_organization_id"() TO "
 GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_knowledge_suggestions_organization_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_migration_pull_request_mappings_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_migration_pull_request_mappings_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_migration_pull_request_mappings_organization_id"() TO "service_role";
 
 
 
