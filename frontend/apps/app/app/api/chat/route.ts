@@ -112,23 +112,17 @@ const convertSchemaToTexts = (schema: SchemaData): Document[] => {
 
 // Create vector store from schema data
 const createVectorStore = async (schemaData: SchemaData) => {
-  try {
-    const documents = convertSchemaToTexts(schemaData)
-    return await MemoryVectorStore.fromDocuments(
-      documents,
-      new OpenAIEmbeddings(),
-    )
-  } catch (error) {
-    Sentry.captureException(error)
-    console.error('Error creating vector store:', error)
-    throw error
-  }
+  const documents = convertSchemaToTexts(schemaData)
+  return await MemoryVectorStore.fromDocuments(
+    documents,
+    new OpenAIEmbeddings(),
+  )
 }
 
 // Create chat chain
 const createChatChain = async (vectorStore: MemoryVectorStore) => {
   const model = new ChatOpenAI({
-    modelName: 'gpt-4',
+    modelName: 'o4-mini-2025-04-16',
     temperature: 0,
   })
 
@@ -170,6 +164,20 @@ Based on the context information, provide a helpful answer to the question.
 export async function POST(request: Request) {
   try {
     const { message, schemaData, history } = await request.json()
+
+    if (!message || typeof message !== 'string' || !message.trim()) {
+      return NextResponse.json(
+        { error: 'Message is required' },
+        { status: 400 },
+      )
+    }
+
+    if (!schemaData || typeof schemaData !== 'object') {
+      return NextResponse.json(
+        { error: 'Valid schema data is required' },
+        { status: 400 },
+      )
+    }
 
     // Create vector store and chain
     const vectorStore = await createVectorStore(schemaData)

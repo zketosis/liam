@@ -42,7 +42,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [])
+  }, [messages])
 
   const handleSendMessage = async (content: string) => {
     // Add user message
