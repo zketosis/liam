@@ -8,12 +8,9 @@ import type { ProjectRepositoryMappingsOverride } from './project_repository_map
 
 export type AppDatabaseOverrides = MergeDeep<
   DatabaseGenerated,
-<<<<<<< HEAD
-  KnowledgeSuggestionsOverride & GithubPullRequestsOverride
-=======
   KnowledgeSuggestionsOverride &
     OverallReviewKnowledgeSuggestionMappingsOverride &
     ProjectRepositoryMappingsOverride &
-    MigrationsOverride
->>>>>>> main
+    MigrationsOverride &
+    GithubPullRequestsOverride
 >
