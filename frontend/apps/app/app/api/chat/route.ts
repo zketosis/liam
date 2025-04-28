@@ -1,3 +1,4 @@
+import { langfuseHandler } from '@/lib/langfuse/langfuseHandler'
 import { AIMessage, HumanMessage } from '@langchain/core/messages'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { ChatOpenAI } from '@langchain/openai'
@@ -147,6 +148,7 @@ const createChatChain = async (
 ) => {
   const model = new ChatOpenAI({
     modelName: 'o4-mini-2025-04-16',
+    callbacks: [langfuseHandler],
   })
 
   // Create a prompt template
@@ -212,11 +214,23 @@ export async function POST(request: Request) {
       )
     : []
 
-  // Generate response
-  const response = await chain.invoke({
-    input: message,
-    chat_history: formattedHistory,
-  })
+  // Generate response with Langfuse tracing
+  const response = await chain.invoke(
+    {
+      input: message,
+      chat_history: formattedHistory,
+    },
+    {
+      callbacks: [langfuseHandler],
+      // Add metadata for better tracing
+      metadata: {
+        endpoint: '/api/chat',
+        method: 'POST',
+        messageLength: message.length,
+        hasHistory: history ? history.length > 0 : false,
+      },
+    },
+  )
 
   return NextResponse.json({
     response: {
