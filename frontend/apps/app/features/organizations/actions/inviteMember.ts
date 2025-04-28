@@ -3,6 +3,7 @@
 import { createClient } from '@/libs/db/server'
 import { revalidatePath } from 'next/cache'
 import * as v from 'valibot'
+import { sendInvitationEmail } from './sendInvitationEmail'
 
 // Define schema for form data validation
 const inviteFormSchema = v.object({
@@ -18,6 +19,7 @@ const invitationResultSchema = v.union([
   v.object({
     success: v.literal(true),
     error: v.null(),
+    invitation_token: v.string(),
   }),
   v.object({
     success: v.literal(false),
@@ -69,7 +71,25 @@ export const inviteMember = async (formData: FormData) => {
     } as const
   }
 
-  // TODO: Send email to user
+  // Type narrowing for result.output
+  if (!result.output.success) {
+    return result.output
+  }
+
+  // Send invitation email
+  const emailResult = await sendInvitationEmail({
+    email,
+    organizationId,
+    invitationToken: result.output.invitation_token,
+  })
+
+  if (!emailResult.success) {
+    return {
+      success: false,
+      error: emailResult.error,
+    } as const
+  }
+
   revalidatePath(
     `/app/organizations/${organizationId}/settings/members`,
     'page',

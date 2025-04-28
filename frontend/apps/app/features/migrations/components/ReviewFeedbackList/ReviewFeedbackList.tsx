@@ -21,21 +21,17 @@ export const ReviewFeedbackList: React.FC<ReviewFeedbackListProps> = ({
   const { feedbacks, updateFeedback } = useReviewFeedbacks()
 
   const handleResolve = async (feedbackId: string, comment: string) => {
-    try {
-      // Call the server action to update the database
-      await resolveReviewFeedback({
-        feedbackId,
-        resolutionComment: comment,
-      })
+    // Call the server action to update the database
+    await resolveReviewFeedback({
+      feedbackId,
+      resolutionComment: comment,
+    })
 
-      // Update the feedback in the shared context for immediate UI update
-      updateFeedback(feedbackId, {
-        resolved_at: new Date().toISOString(),
-        resolution_comment: comment,
-      })
-    } catch (err) {
-      console.error('Error resolving feedback:', err)
-    }
+    // Update the feedback in the shared context for immediate UI update
+    updateFeedback(feedbackId, {
+      resolved_at: new Date().toISOString(),
+      resolution_comment: comment,
+    })
   }
 
   const sortedFeedbacks = [...feedbacks].sort((a, b) => {

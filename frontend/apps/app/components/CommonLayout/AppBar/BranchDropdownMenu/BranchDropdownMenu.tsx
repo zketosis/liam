@@ -1,14 +1,8 @@
-import {
-  DropdownMenuContent,
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuRoot,
-  DropdownMenuTrigger,
-} from '@/components'
+import { DropdownMenuRoot, DropdownMenuTrigger } from '@/components'
 import { ChevronsUpDown } from '@/icons'
 import type { FC } from 'react'
 import styles from './BranchDropdownMenu.module.css'
+import { Content } from './Content'
 import { type Branch, getBranches } from './services/getBranches'
 
 type Props = {
@@ -32,7 +26,11 @@ export const BranchDropdownMenu: FC<Props> = async ({
   return (
     <DropdownMenuRoot>
       <Trigger currentBranch={currentBranch} />
-      <Content currentBranch={currentBranch} branches={branches} />
+      <Content
+        currentBranch={currentBranch}
+        branches={branches}
+        currentProjectId={currentProjectId}
+      />
     </DropdownMenuRoot>
   )
 }
@@ -52,38 +50,5 @@ const Trigger: FC<TriggerProps> = ({ currentBranch }) => {
       </div>
       <ChevronsUpDown className={styles.chevronIcon} />
     </DropdownMenuTrigger>
-  )
-}
-
-type ContentProps = {
-  currentBranch: Branch
-  branches: Branch[]
-}
-
-const Content: FC<ContentProps> = ({ currentBranch, branches }) => {
-  return (
-    <DropdownMenuPortal>
-      <DropdownMenuContent align="start" className={styles.content}>
-        <DropdownMenuRadioGroup value={currentBranch.name}>
-          {branches
-            .sort((a, b) => {
-              // If a is selected, it comes first
-              if (a.name === currentBranch.name) return -1
-              // If b is selected, it comes first
-              if (b.name === currentBranch.name) return 1
-              // Otherwise, maintain original order
-              return 0
-            })
-            .map(({ name }) => (
-              <DropdownMenuRadioItem
-                key={name}
-                value={name}
-                label={name}
-                className={styles.radioItem}
-              />
-            ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenuPortal>
   )
 }

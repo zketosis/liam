@@ -1,5 +1,6 @@
 'use server'
 
+import { setOrganizationIdCookie } from '@/features/organizations/services/setOrganizationIdCookie'
 import { createClient } from '@/libs/db/server'
 import { routeDefinitions } from '@/utils/routes/routeDefinitions'
 import { revalidatePath } from 'next/cache'
@@ -86,18 +87,11 @@ export async function acceptInvitation(formData: FormData) {
   }
   const { organizationId } = result.output
 
+  setOrganizationIdCookie(organizationId)
+
   // Revalidate relevant paths
-  revalidatePath(
-    routeDefinitions['organizations/[organizationId]/projects']({
-      organizationId,
-    }),
-    'page',
-  )
+  revalidatePath(routeDefinitions['projects'], 'page')
 
   // Redirect to the organization projects page
-  redirect(
-    routeDefinitions['organizations/[organizationId]/projects']({
-      organizationId,
-    }),
-  )
+  redirect(routeDefinitions['projects'])
 }

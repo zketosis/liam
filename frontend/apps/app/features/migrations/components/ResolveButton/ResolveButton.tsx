@@ -33,30 +33,17 @@ export const ResolveButton: React.FC<ResolveButtonProps> = ({
   }
 
   const handleResolve = async (comment: string) => {
-    try {
-      setIsLoading(true)
-      setError(null)
+    setIsLoading(true)
+    setError(null)
 
-      try {
-        await resolveReviewFeedback({
-          feedbackId: feedbackId,
-          resolutionComment: comment,
-        })
+    await resolveReviewFeedback({
+      feedbackId: feedbackId,
+      resolutionComment: comment,
+    })
 
-        onResolve(comment)
-        setIsModalOpen(false)
-      } catch (error) {
-        if (error instanceof Error) {
-          throw error
-        }
-        throw new Error('Failed to resolve feedback')
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      console.error('Error resolving feedback:', err)
-    } finally {
-      setIsLoading(false)
-    }
+    onResolve(comment)
+    setIsModalOpen(false)
+    setIsLoading(false)
   }
 
   return (

@@ -11,7 +11,7 @@ import * as Sentry from '@sentry/nextjs'
 import { load } from 'cheerio'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
-import { notFound } from 'next/navigation'
+
 import * as v from 'valibot'
 import ERDViewer from './erdViewer'
 
@@ -42,7 +42,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) return notFound()
+  if (!parsedParams.success) throw new Error('Invalid parameters')
 
   const joinedPath = parsedParams.output.slug.join('/')
 
@@ -82,7 +82,7 @@ export default async function Page({
   searchParams: _searchParams,
 }: PageProps) {
   const parsedParams = v.safeParse(paramsSchema, await params)
-  if (!parsedParams.success) notFound()
+  if (!parsedParams.success) throw new Error('Invalid parameters')
 
   const joinedPath = parsedParams.output.slug.join('/')
 

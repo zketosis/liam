@@ -197,56 +197,51 @@ export const resolveReviewFeedback = async (data: {
   const { feedbackId, resolutionComment } = parsedData.output
   let taskId: string | null = null
 
-  try {
-    const supabase = await createClient()
+  const supabase = await createClient()
 
-    // Get feedback data
-    const feedbackData = await getFeedbackData(supabase, feedbackId)
+  // Get feedback data
+  const feedbackData = await getFeedbackData(supabase, feedbackId)
 
-    // Update feedback as resolved
-    const updatedFeedback = await updateFeedbackAsResolved(
-      supabase,
-      feedbackId,
-      resolutionComment,
-    )
+  // Update feedback as resolved
+  const updatedFeedback = await updateFeedbackAsResolved(
+    supabase,
+    feedbackId,
+    resolutionComment,
+  )
 
-    // Skip knowledge generation for POSITIVE feedback
-    if (updatedFeedback[0].severity === 'POSITIVE') {
-      return { success: true, data: updatedFeedback, taskId: null }
-    }
-
-    // Get complete OverallReview data
-    const completeOverallReview = await getCompleteOverallReview(
-      supabase,
-      feedbackData.overall_review_id,
-    )
-
-    // Format review from feedback
-    let reviewFormatted = formatReviewFromFeedback(updatedFeedback[0])
-
-    // Add snippets to review
-    reviewFormatted = await addSnippetsToReview(
-      supabase,
-      feedbackId,
-      reviewFormatted,
-    )
-
-    // Trigger knowledge generation task
-    const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
-      projectId: completeOverallReview.migration.project_id || '',
-      review: reviewFormatted,
-      title: `Knowledge from resolved feedback #${feedbackId}`,
-      reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
-      overallReview: completeOverallReview,
-      branch: completeOverallReview.branch_name,
-      reviewFeedbackId: feedbackId,
-    })
-
-    taskId = taskHandle.id
-
-    return { success: true, data: updatedFeedback, taskId }
-  } catch (error) {
-    console.error('Error resolving review feedback:', error)
-    throw error
+  // Skip knowledge generation for POSITIVE feedback
+  if (updatedFeedback[0].severity === 'POSITIVE') {
+    return { success: true, data: updatedFeedback, taskId: null }
   }
+
+  // Get complete OverallReview data
+  const completeOverallReview = await getCompleteOverallReview(
+    supabase,
+    feedbackData.overall_review_id,
+  )
+
+  // Format review from feedback
+  let reviewFormatted = formatReviewFromFeedback(updatedFeedback[0])
+
+  // Add snippets to review
+  reviewFormatted = await addSnippetsToReview(
+    supabase,
+    feedbackId,
+    reviewFormatted,
+  )
+
+  // Trigger knowledge generation task
+  const taskHandle = await generateKnowledgeFromFeedbackTask.trigger({
+    projectId: completeOverallReview.migration.project_id || '',
+    review: reviewFormatted,
+    title: `Knowledge from resolved feedback #${feedbackId}`,
+    reasoning: `This knowledge suggestion was automatically created from resolved feedback #${feedbackId}`,
+    overallReview: completeOverallReview,
+    branch: completeOverallReview.branch_name,
+    reviewFeedbackId: feedbackId,
+  })
+
+  taskId = taskHandle.id
+
+  return { success: true, data: updatedFeedback, taskId }
 }
