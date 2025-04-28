@@ -1,6 +1,7 @@
 'use client'
 
 import type { FC } from 'react'
+import ReactMarkdown from 'react-markdown'
 import styles from './ChatMessage.module.css'
 
 export interface ChatMessageProps {
@@ -26,7 +27,13 @@ export const ChatMessage: FC<ChatMessageProps> = ({
       }`}
     >
       <div className={styles.messageContent}>
-        <div className={styles.messageText}>{content}</div>
+        {isUser ? (
+          <div className={styles.messageText}>{content}</div>
+        ) : (
+          <div className={styles.messageText}>
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        )}
         <div className={styles.messageTime}>{formattedTime}</div>
       </div>
     </div>

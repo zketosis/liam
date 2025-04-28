@@ -4,15 +4,15 @@ import { createClient } from '@/libs/db/server'
 import { revalidatePath } from 'next/cache'
 import { object, safeParse, string } from 'valibot'
 
-const RemoveMemberSchema = object({
-  memberId: string(),
+const RemoveInvitationSchema = object({
+  invitationId: string(),
   organizationId: string(),
 })
 
-export async function removeMember(formData: FormData) {
+export async function removeInvitation(formData: FormData) {
   // Use safeParse to validate the form data
-  const result = safeParse(RemoveMemberSchema, {
-    memberId: formData.get('memberId'),
+  const result = safeParse(RemoveInvitationSchema, {
+    invitationId: formData.get('invitationId'),
     organizationId: formData.get('organizationId'),
   })
 
@@ -23,22 +23,20 @@ export async function removeMember(formData: FormData) {
     }
   }
 
-  const { memberId, organizationId } = result.output
-
+  const { invitationId, organizationId } = result.output
   const supabase = await createClient()
 
-  // Delete the organization member
+  // Delete the invitation
   const { error } = await supabase
-    .from('organization_members')
+    .from('invitations')
     .delete()
-    .eq('id', memberId)
-    .eq('organization_id', organizationId)
+    .eq('id', invitationId)
 
   if (error) {
-    console.error('Error removing organization member:', error)
+    console.error('Error removing invitation:', error)
     return {
       success: false,
-      error: error?.message || 'Failed to remove member',
+      error: 'Failed to remove invitation',
     }
   }
 

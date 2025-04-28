@@ -5,6 +5,7 @@ import { Button, Input } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
 import { type FC, type FormEvent, useState } from 'react'
 import { createOrganization } from '../../actions/createOrganizations'
+import { setOrganizationIdCookie } from '../../services/setOrganizationIdCookie'
 import styles from './OrganizationNewPage.module.css'
 
 export const OrganizationNewPage: FC = () => {
@@ -29,6 +30,8 @@ export const OrganizationNewPage: FC = () => {
     const result = await createOrganization(name)
 
     if (result.success) {
+      // Set the organization ID cookie
+      await setOrganizationIdCookie(result.organizationId)
       router.push(urlgen('projects/new'))
     } else {
       setError(

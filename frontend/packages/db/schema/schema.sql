@@ -246,6 +246,7 @@ declare
   v_is_member boolean;
   v_invite_by_user_id uuid;
   v_existing_invite_id uuid;
+  v_new_token uuid;
   v_result jsonb;
 begin
   -- Start transaction
@@ -261,6 +262,7 @@ begin
     ) then
       v_result := jsonb_build_object(
         'success', false,
+        'invitation_token', null,
         'error', 'inviter user does not exist'
       );
       return v_result;
@@ -278,11 +280,14 @@ begin
     if v_is_member then
       v_result := jsonb_build_object(
         'success', false,
+        'invitation_token', null,
         'error', 'this user is already a member of the organization'
       );
       return v_result;
     end if;
     
+    v_new_token := gen_random_uuid();
+
     -- Check if invitation already exists
     select id into v_existing_invite_id
     from invitations
@@ -296,10 +301,14 @@ begin
       set invited_at = current_timestamp,
       expired_at = current_timestamp + interval '7 days',
       invite_by_user_id = v_invite_by_user_id,
-      token = gen_random_uuid()
+      token = v_new_token
       where id = v_existing_invite_id;
       
-      v_result := jsonb_build_object('success', true, 'error', null);
+      v_result := jsonb_build_object(
+        'success', true,
+        'invitation_token', v_new_token,
+        'error', null
+      );
     else
       -- Create new invitation
       insert into invitations (
@@ -307,16 +316,22 @@ begin
         email,
         invited_at,
         expired_at,
-        invite_by_user_id
+        invite_by_user_id,
+        token
       ) values (
         p_organization_id,
         lower(p_email),
         current_timestamp,
         current_timestamp + interval '7 days',
-        v_invite_by_user_id
+        v_invite_by_user_id,
+        v_new_token
       );
       
-      v_result := jsonb_build_object('success', true, 'error', null);
+      v_result := jsonb_build_object(
+        'success', true,
+        'invitation_token', v_new_token,
+        'error', null
+      );
     end if;
     
     -- Commit transaction
@@ -325,6 +340,7 @@ begin
     -- Handle any errors
     v_result := jsonb_build_object(
       'success', false,
+      'invitation_token', null,
       'error', sqlerrm
     );
     return v_result;
@@ -334,6 +350,41 @@ $$;
 
 
 ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."prevent_delete_last_organization_member"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  -- Check if this is the last member in the organization
+  IF (SELECT COUNT(*) FROM organization_members WHERE organization_id = OLD.organization_id) <= 1 THEN
+    RAISE EXCEPTION 'Cannot remove the last member of an organization';
+  END IF;
+
+  -- If not the last member, allow the deletion
+  RETURN OLD;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."prevent_delete_last_organization_member"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_github_pull_requests_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."github_repositories" 
+    WHERE "id" = NEW.repository_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_github_pull_requests_organization_id"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."set_knowledge_suggestions_organization_id"() RETURNS "trigger"
@@ -457,7 +508,8 @@ CREATE TABLE IF NOT EXISTS "public"."github_pull_requests" (
     "pull_number" bigint NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "repository_id" "uuid" NOT NULL
+    "repository_id" "uuid" NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -893,6 +945,18 @@ CREATE UNIQUE INDEX "schema_file_path_project_id_key" ON "public"."schema_file_p
 
 
 
+CREATE OR REPLACE TRIGGER "check_last_organization_member" BEFORE DELETE ON "public"."organization_members" FOR EACH ROW EXECUTE FUNCTION "public"."prevent_delete_last_organization_member"();
+
+
+
+COMMENT ON TRIGGER "check_last_organization_member" ON "public"."organization_members" IS 'Prevents deletion of the last member of an organization to ensure organizations always have at least one member';
+
+
+
+CREATE OR REPLACE TRIGGER "set_github_pull_requests_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."github_pull_requests" FOR EACH ROW EXECUTE FUNCTION "public"."set_github_pull_requests_organization_id"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_knowledge_suggestions_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."knowledge_suggestions" FOR EACH ROW EXECUTE FUNCTION "public"."set_knowledge_suggestions_organization_id"();
 
 
@@ -921,6 +985,11 @@ ALTER TABLE ONLY "public"."github_pull_request_comments"
 
 ALTER TABLE ONLY "public"."github_pull_requests"
     ADD CONSTRAINT "github_pull_request_repository_id_fkey" FOREIGN KEY ("repository_id") REFERENCES "public"."github_repositories"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."github_pull_requests"
+    ADD CONSTRAINT "github_pull_requests_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
@@ -1104,6 +1173,16 @@ COMMENT ON POLICY "authenticated_users_can_insert_projects" ON "public"."project
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_github_pull_requests" ON "public"."github_pull_requests" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_github_pull_requests" ON "public"."github_pull_requests" IS 'Authenticated users can only view pull requests belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1178,6 +1257,9 @@ COMMENT ON POLICY "authenticated_users_can_update_org_projects" ON "public"."pro
 
 
 
+ALTER TABLE "public"."github_pull_requests" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."knowledge_suggestions" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1205,6 +1287,10 @@ COMMENT ON POLICY "service_role_can_delete_all_projects" ON "public"."projects" 
 
 
 
+CREATE POLICY "service_role_can_insert_all_github_pull_requests" ON "public"."github_pull_requests" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
 CREATE POLICY "service_role_can_insert_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
@@ -1222,6 +1308,10 @@ CREATE POLICY "service_role_can_insert_all_projects" ON "public"."projects" FOR 
 
 
 COMMENT ON POLICY "service_role_can_insert_all_projects" ON "public"."projects" IS 'Service role can create any project (for jobs)';
+
+
+
+CREATE POLICY "service_role_can_select_all_github_pull_requests" ON "public"."github_pull_requests" FOR SELECT TO "service_role" USING (true);
 
 
 
@@ -1478,6 +1568,18 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "anon";
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."prevent_delete_last_organization_member"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_github_pull_requests_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_github_pull_requests_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_github_pull_requests_organization_id"() TO "service_role";
 
 
 

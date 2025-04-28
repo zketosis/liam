@@ -146,9 +146,11 @@ export const ClientSearchWrapper: FC<ClientSearchWrapperProps> = ({
               filteredInvites.map((invite) => (
                 <InvitationItem
                   key={invite.id}
+                  id={invite.id}
                   email={invite.email}
                   initial={invite.email.charAt(0).toUpperCase()}
                   avatarColor={getAvatarColor(invite.email)}
+                  organizationId={organizationId}
                 />
               ))
             ) : (
