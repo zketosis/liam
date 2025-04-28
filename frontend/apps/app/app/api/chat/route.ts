@@ -135,6 +135,7 @@ Follow these guidelines:
 3. Share best practices for normalization, indexing, and performance.
 4. When using technical terms, include brief explanations.
 5. Provide only information directly related to the question, avoiding unnecessary details.
+6. Format your responses using markdown for better readability. Use headings, lists, code blocks, and other markdown features as appropriate.
 
 Your goal is to help users understand and optimize their database schemas.
 
@@ -143,7 +144,7 @@ Context information:
 
 Question: {input}
 
-Based on the context information, provide a helpful answer to the question.
+Based on the context information, provide a helpful answer to the question. Remember to format your response using markdown for better readability.
 `)
 
   // Create a document chain
