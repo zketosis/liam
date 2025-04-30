@@ -255,6 +255,7 @@ export type Database = {
           doc_file_path_id: string
           id: string
           knowledge_suggestion_id: string
+          organization_id: string
           updated_at: string
         }
         Insert: {
@@ -262,6 +263,7 @@ export type Database = {
           doc_file_path_id: string
           id?: string
           knowledge_suggestion_id: string
+          organization_id: string
           updated_at: string
         }
         Update: {
@@ -269,6 +271,7 @@ export type Database = {
           doc_file_path_id?: string
           id?: string
           knowledge_suggestion_id?: string
+          organization_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -284,6 +287,13 @@ export type Database = {
             columns: ['knowledge_suggestion_id']
             isOneToOne: false
             referencedRelation: 'knowledge_suggestions'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'knowledge_suggestion_doc_mappings_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
