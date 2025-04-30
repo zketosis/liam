@@ -9,6 +9,8 @@ import {
   DropdownMenuSeparator,
 } from '@/components'
 import { Plus } from '@/icons'
+import { urlgen } from '@/utils/routes'
+import { useRouter } from 'next/navigation'
 import { type FC, useCallback } from 'react'
 import styles from './ProjectsDropdownMenu.module.css'
 import type { Project } from './services/getProject'
@@ -20,9 +22,23 @@ type Props = {
 }
 
 export const Content: FC<Props> = ({ currentProject, projects }) => {
+  const router = useRouter()
+
   const handleClick = useCallback(() => {
-    // TODO: Navigate to /projects/new after organizing page paths
-  }, [])
+    router.push(urlgen('projects/new'))
+  }, [router])
+
+  const handleChangeProject = useCallback(
+    (projectId: string) => {
+      // TODO: Replace the current path's :projectId with the selected project and navigate to that path
+      router.push(
+        urlgen('projects/[projectId]', {
+          projectId,
+        }),
+      )
+    },
+    [router],
+  )
 
   return (
     <DropdownMenuPortal>
@@ -31,7 +47,10 @@ export const Content: FC<Props> = ({ currentProject, projects }) => {
         sideOffset={5}
         className={styles.content}
       >
-        <DropdownMenuRadioGroup value={currentProject.id}>
+        <DropdownMenuRadioGroup
+          value={currentProject.id}
+          onValueChange={handleChangeProject}
+        >
           {projects
             .sort((a, b) => {
               // If a is selected, it comes first

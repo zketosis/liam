@@ -69,136 +69,126 @@ async function generateERDLink({
 export async function postComment(
   payload: PostCommentPayload,
 ): Promise<{ success: boolean; message: string }> {
-  try {
-    const {
-      reviewComment,
-      pullRequestId,
-      repositoryId,
-      projectId,
-      branchName,
-    } = payload
-    const supabase = createClient()
+  const { reviewComment, pullRequestId, repositoryId, projectId, branchName } =
+    payload
+  const supabase = createClient()
 
-    const { data: repository, error: repoError } = await supabase
-      .from('github_repositories')
-      .select('*')
-      .eq('id', repositoryId)
-      .single()
+  const { data: repository, error: repoError } = await supabase
+    .from('github_repositories')
+    .select('*')
+    .eq('id', repositoryId)
+    .single()
 
-    if (repoError || !repository) {
-      throw new Error(
-        `Repository with ID ${repositoryId} not found: ${repoError?.message}`,
-      )
-    }
+  if (repoError || !repository) {
+    throw new Error(
+      `Repository with ID ${repositoryId} not found: ${repoError?.message}`,
+    )
+  }
 
-    const installationId = repository.github_installation_identifier
-    const owner = repository.owner
-    const repo = repository.name
+  const installationId = repository.github_installation_identifier
+  const owner = repository.owner
+  const repo = repository.name
 
-    const { data: prRecord, error: prError } = await supabase
-      .from('github_pull_requests')
-      .select('*')
-      .eq('id', pullRequestId)
-      .single()
+  const { data: prRecord, error: prError } = await supabase
+    .from('github_pull_requests')
+    .select('*')
+    .eq('id', pullRequestId)
+    .single()
 
-    if (prError || !prRecord) {
-      throw new Error(
-        `Pull request with ID ${pullRequestId} not found: ${prError?.message}`,
-      )
-    }
+  if (prError || !prRecord) {
+    throw new Error(
+      `Pull request with ID ${pullRequestId} not found: ${prError?.message}`,
+    )
+  }
 
-    // Get the migration through the mapping table
-    const { data: mappingRecord, error: mappingError } = await supabase
-      .from('migration_pull_request_mappings')
-      .select('migration_id')
-      .eq('pull_request_id', pullRequestId)
-      .maybeSingle()
+  // Get the migration through the mapping table
+  const { data: mappingRecord, error: mappingError } = await supabase
+    .from('migration_pull_request_mappings')
+    .select('migration_id')
+    .eq('pull_request_id', pullRequestId)
+    .maybeSingle()
 
-    if (mappingError || !mappingRecord) {
-      throw new Error(
-        `Migration for Pull request with ID ${pullRequestId} not found`,
-      )
-    }
+  if (mappingError || !mappingRecord) {
+    throw new Error(
+      `Migration for Pull request with ID ${pullRequestId} not found`,
+    )
+  }
 
-    // Fetch the migration using the migration_id from the mapping
-    const { data: migration, error: migrationError } = await supabase
-      .from('migrations')
-      .select('id')
-      .eq('id', mappingRecord.migration_id)
-      .single()
+  // Fetch the migration using the migration_id from the mapping
+  const { data: migration, error: migrationError } = await supabase
+    .from('migrations')
+    .select('id')
+    .eq('id', mappingRecord.migration_id)
+    .single()
 
-    if (migrationError || !migration) {
-      throw new Error(
-        `Migration with ID ${mappingRecord.migration_id} not found: ${migrationError?.message}`,
-      )
-    }
+  if (migrationError || !migration) {
+    throw new Error(
+      `Migration with ID ${mappingRecord.migration_id} not found: ${migrationError?.message}`,
+    )
+  }
 
-    // Fetch comment ID from github_pull_request_comments if exists
-    const { data: commentRecord } = await supabase
-      .from('github_pull_request_comments')
-      .select('github_comment_identifier')
-      .eq('github_pull_request_id', pullRequestId)
-      .maybeSingle()
-    const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodeURIComponent(branchName)}/migrations/${migration.id}`
+  // Fetch comment ID from github_pull_request_comments if exists
+  const { data: commentRecord } = await supabase
+    .from('github_pull_request_comments')
+    .select('github_comment_identifier')
+    .eq('github_pull_request_id', pullRequestId)
+    .maybeSingle()
+  const migrationUrl = `${process.env['NEXT_PUBLIC_BASE_URL']}/app/projects/${projectId}/ref/${encodeURIComponent(branchName)}/migrations/${migration.id}`
 
-    const prDetails = await getPullRequestDetails(
+  const prDetails = await getPullRequestDetails(
+    Number(installationId),
+    owner,
+    repo,
+    Number(prRecord.pull_number),
+  )
+
+  const erdLinkText = await generateERDLink({
+    installationId,
+    owner,
+    repo,
+    pullNumber: prRecord.pull_number,
+    projectId,
+    branchRef: prDetails.head.ref,
+  })
+
+  const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinkText}`
+
+  if (commentRecord?.github_comment_identifier) {
+    await updatePullRequestComment(
+      Number(installationId),
+      owner,
+      repo,
+      Number(commentRecord.github_comment_identifier),
+      fullComment,
+    )
+  } else {
+    const commentResponse = await createPullRequestComment(
       Number(installationId),
       owner,
       repo,
       Number(prRecord.pull_number),
+      fullComment,
     )
 
-    const erdLinkText = await generateERDLink({
-      installationId,
-      owner,
-      repo,
-      pullNumber: prRecord.pull_number,
-      projectId,
-      branchRef: prDetails.head.ref,
-    })
+    const now = new Date().toISOString()
+    const { error: createCommentError } = await supabase
+      .from('github_pull_request_comments')
+      .insert({
+        github_pull_request_id: pullRequestId,
+        github_comment_identifier: commentResponse.id,
+        updated_at: now,
+      })
 
-    const fullComment = `${reviewComment}\n\nMigration URL: ${migrationUrl}${erdLinkText}`
-
-    if (commentRecord?.github_comment_identifier) {
-      await updatePullRequestComment(
-        Number(installationId),
-        owner,
-        repo,
-        Number(commentRecord.github_comment_identifier),
-        fullComment,
+    if (createCommentError) {
+      throw new Error(
+        `Failed to create github_pull_request_comments record: ${createCommentError.message}`,
       )
-    } else {
-      const commentResponse = await createPullRequestComment(
-        Number(installationId),
-        owner,
-        repo,
-        Number(prRecord.pull_number),
-        fullComment,
-      )
-
-      const now = new Date().toISOString()
-      const { error: createCommentError } = await supabase
-        .from('github_pull_request_comments')
-        .insert({
-          github_pull_request_id: pullRequestId,
-          github_comment_identifier: commentResponse.id,
-          updated_at: now,
-        })
-
-      if (createCommentError) {
-        throw new Error(
-          `Failed to create github_pull_request_comments record: ${createCommentError.message}`,
-        )
-      }
     }
+  }
 
-    return {
-      success: true,
-      message: 'Review comment posted successfully',
-    }
-  } catch (error) {
-    console.error('Error posting comment:', error)
-    throw error
+  return {
+    success: true,
+    message: 'Review comment posted successfully',
   }
 }
 

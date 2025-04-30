@@ -11,106 +11,101 @@ import { langfuseLangchainHandler } from './langfuseLangchainHandler'
 export const processGenerateSchemaOverride = async (
   payload: GenerateSchemaOverridePayload,
 ): Promise<SchemaOverrideResult> => {
-  try {
-    const supabase = createClient()
+  const supabase = createClient()
 
-    // Get the overall review from the database with nested relations
-    const { data: overallReview, error } = await supabase
-      .from('overall_reviews')
-      .select(`
-        *,
-        migration:migration_id(
-          id,
-          project_id,
-          migration_pull_request_mappings(
-            pull_request_id,
-            github_pull_requests(
-              id,
-              pull_number,
-              github_repositories(*)
-            )
+  // Get the overall review from the database with nested relations
+  const { data: overallReview, error } = await supabase
+    .from('overall_reviews')
+    .select(`
+      *,
+      migration:migration_id(
+        id,
+        project_id,
+        migration_pull_request_mappings(
+          pull_request_id,
+          github_pull_requests(
+            id,
+            pull_number,
+            github_repositories(*)
           )
         )
-      `)
-      .eq('id', payload.overallReviewId)
-      .single()
-
-    if (error || !overallReview) {
-      throw new Error(
-        `Overall review with ID ${payload.overallReviewId} not found: ${JSON.stringify(error)}`,
       )
-    }
+    `)
+    .eq('id', payload.overallReviewId)
+    .single()
 
-    if (!overallReview.migration) {
-      throw new Error(
-        `Migration not found for overall review ${payload.overallReviewId}`,
-      )
-    }
+  if (error || !overallReview) {
+    throw new Error(
+      `Overall review with ID ${payload.overallReviewId} not found: ${JSON.stringify(error)}`,
+    )
+  }
 
-    const projectId = overallReview.migration.project_id
-    if (!projectId) {
-      throw new Error(
-        `Project not found for migration ${overallReview.migration.id}`,
-      )
-    }
+  if (!overallReview.migration) {
+    throw new Error(
+      `Migration not found for overall review ${payload.overallReviewId}`,
+    )
+  }
 
-    // Get the pull request from the mapping
-    const pullRequestMapping =
-      overallReview.migration.migration_pull_request_mappings[0]
-    if (!pullRequestMapping || !pullRequestMapping.github_pull_requests) {
-      throw new Error(
-        `Pull request not found for migration ${overallReview.migration.id}`,
-      )
-    }
+  const projectId = overallReview.migration.project_id
+  if (!projectId) {
+    throw new Error(
+      `Project not found for migration ${overallReview.migration.id}`,
+    )
+  }
 
-    const pullRequest = pullRequestMapping.github_pull_requests
-    const repositories = pullRequest.github_repositories
-    if (!repositories) {
-      throw new Error(`Repository not found for pull request ${pullRequest.id}`)
-    }
+  // Get the pull request from the mapping
+  const pullRequestMapping =
+    overallReview.migration.migration_pull_request_mappings[0]
+  if (!pullRequestMapping || !pullRequestMapping.github_pull_requests) {
+    throw new Error(
+      `Pull request not found for migration ${overallReview.migration.id}`,
+    )
+  }
 
-    const predefinedRunId = uuidv4()
-    const callbacks = [langfuseLangchainHandler]
+  const pullRequest = pullRequestMapping.github_pull_requests
+  const repositories = pullRequest.github_repositories
+  if (!repositories) {
+    throw new Error(`Repository not found for pull request ${pullRequest.id}`)
+  }
 
-    // Fetch schema information with overrides
-    const repositoryFullName = `${repositories.owner}/${repositories.name}`
-    const { currentSchemaOverride, overriddenSchema } =
-      await fetchSchemaInfoWithOverrides(
-        projectId,
-        overallReview.branch_name,
-        repositoryFullName,
-        repositories.github_installation_identifier,
-      )
+  const predefinedRunId = uuidv4()
+  const callbacks = [langfuseLangchainHandler]
 
-    const schemaOverrideResult = await generateSchemaOverride(
-      overallReview.review_comment || '',
-      callbacks,
-      currentSchemaOverride,
-      predefinedRunId,
-      overriddenSchema,
+  // Fetch schema information with overrides
+  const repositoryFullName = `${repositories.owner}/${repositories.name}`
+  const { currentSchemaOverride, overriddenSchema } =
+    await fetchSchemaInfoWithOverrides(
+      projectId,
+      overallReview.branch_name,
+      repositoryFullName,
+      repositories.github_installation_identifier,
     )
 
-    // If no update is needed, return early with createNeeded: false
-    if (!schemaOverrideResult.updateNeeded) {
-      return {
-        createNeeded: false,
-      }
-    }
+  const schemaOverrideResult = await generateSchemaOverride(
+    overallReview.review_comment || '',
+    callbacks,
+    currentSchemaOverride,
+    predefinedRunId,
+    overriddenSchema,
+  )
 
-    // Return the schema meta along with information needed for createKnowledgeSuggestionTask
+  // If no update is needed, return early with createNeeded: false
+  if (!schemaOverrideResult.updateNeeded) {
     return {
-      createNeeded: true,
-      override: schemaOverrideResult.override,
-      projectId: projectId,
-      pullRequestNumber: Number(pullRequest.pull_number), // Convert bigint to number
-      branchName: overallReview.branch_name, // Get branchName from overallReview
-      title: `Schema meta update from PR #${Number(pullRequest.pull_number)}`,
-      traceId: predefinedRunId,
-      reasoning: schemaOverrideResult.reasoning,
-      overallReviewId: payload.overallReviewId,
+      createNeeded: false,
     }
-  } catch (error) {
-    console.error('Error generating schema meta:', error)
-    throw error
+  }
+
+  // Return the schema meta along with information needed for createKnowledgeSuggestionTask
+  return {
+    createNeeded: true,
+    override: schemaOverrideResult.override,
+    projectId: projectId,
+    pullRequestNumber: Number(pullRequest.pull_number), // Convert bigint to number
+    branchName: overallReview.branch_name, // Get branchName from overallReview
+    title: `Schema meta update from PR #${Number(pullRequest.pull_number)}`,
+    traceId: predefinedRunId,
+    reasoning: schemaOverrideResult.reasoning,
+    overallReviewId: payload.overallReviewId,
   }
 }
