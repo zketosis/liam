@@ -151,10 +151,35 @@ const convertSchemaToText = (schema: SchemaData): string => {
   return schemaText
 }
 
-// Create chat chain with full schema context
-const createChatChain = async (schemaText: string) => {
-  const model = new ChatOpenAI({
+export async function POST(request: Request) {
+  const { message, schemaData, history } = await request.json()
+
+  if (!message || typeof message !== 'string' || !message.trim()) {
+    return NextResponse.json({ error: 'Message is required' }, { status: 400 })
+  }
+
+  if (!schemaData || typeof schemaData !== 'object') {
+    return NextResponse.json(
+      { error: 'Valid schema data is required' },
+      { status: 400 },
+    )
+  }
+
+  // Format chat history for prompt template
+  const formattedChatHistory =
+    history && history.length > 0
+      ? history
+          .map((msg: [string, string]) => `${msg[0]}: ${msg[1]}`)
+          .join('\n')
+      : 'No previous conversation.'
+
+  // Convert schema to text
+  const schemaText = convertSchemaToText(schemaData)
+
+  // Create a streaming model
+  const streamingModel = new ChatOpenAI({
     modelName: 'o4-mini-2025-04-16',
+    streaming: true,
     callbacks: [langfuseHandler],
   })
 
@@ -184,44 +209,16 @@ Question: {input}
 Based on the schema information provided and considering any previous conversation, answer the question thoroughly and accurately.
 `)
 
-  return prompt.pipe(model)
-}
+  // Create streaming chain
+  const streamingChain = prompt.pipe(streamingModel)
 
-export async function POST(request: Request) {
-  const { message, schemaData, history } = await request.json()
-
-  if (!message || typeof message !== 'string' || !message.trim()) {
-    return NextResponse.json({ error: 'Message is required' }, { status: 400 })
-  }
-
-  if (!schemaData || typeof schemaData !== 'object') {
-    return NextResponse.json(
-      { error: 'Valid schema data is required' },
-      { status: 400 },
-    )
-  }
-
-  // Format chat history for prompt template
-  const formattedChatHistory =
-    history && history.length > 0
-      ? history
-          .map((msg: [string, string]) => `${msg[0]}: ${msg[1]}`)
-          .join('\n')
-      : 'No previous conversation.'
-
-  // Convert schema to text and create chain
-  const schemaText = convertSchemaToText(schemaData)
-  const chain = await createChatChain(schemaText)
-
-  // Generate response with Langfuse tracing
-  const response = await chain.invoke(
+  // Generate streaming response
+  const stream = await streamingChain.stream(
     {
       input: message,
       chat_history: formattedChatHistory,
     },
     {
-      callbacks: [langfuseHandler],
-      // Add metadata for better tracing
       metadata: {
         endpoint: '/api/chat',
         method: 'POST',
@@ -231,9 +228,44 @@ export async function POST(request: Request) {
     },
   )
 
-  return NextResponse.json({
-    response: {
-      text: response.content,
+  // Create a TransformStream to convert the LangChain stream to a ReadableStream
+  const encoder = new TextEncoder()
+  const { readable, writable } = new TransformStream()
+  const writer = writable.getWriter()
+
+  // Process the LangChain stream
+  ;(async () => {
+    try {
+      for await (const chunk of stream) {
+        // Convert complex content to string if needed
+        let textContent = ''
+        if (typeof chunk.content === 'string') {
+          textContent = chunk.content
+        } else if (Array.isArray(chunk.content)) {
+          // Handle complex content structure
+          for (const item of chunk.content) {
+            if (typeof item === 'string') {
+              textContent += item
+            } else if (item.type === 'text') {
+              textContent += item.text
+            }
+          }
+        }
+
+        // Write the text content to the stream
+        await writer.write(encoder.encode(textContent))
+      }
+    } catch (error) {
+      console.error('Error processing stream:', error)
+    } finally {
+      await writer.close()
+    }
+  })()
+
+  // Return the streaming response
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
     },
   })
 }
