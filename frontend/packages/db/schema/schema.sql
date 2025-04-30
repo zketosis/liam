@@ -802,7 +802,7 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedback_knowledge_suggestion_mappin
     "knowledge_suggestion_id" "uuid",
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "organization_id" "uuid"
+    "organization_id" "uuid" NOT NULL
 );
 
 
