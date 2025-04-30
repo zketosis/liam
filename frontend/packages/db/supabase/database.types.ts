@@ -39,6 +39,7 @@ export type Database = {
           created_at: string
           id: string
           is_review_enabled: boolean
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -47,6 +48,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_review_enabled?: boolean
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -55,11 +57,19 @@ export type Database = {
           created_at?: string
           id?: string
           is_review_enabled?: boolean
+          organization_id?: string
           path?: string
           project_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: 'doc_file_paths_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'github_doc_file_path_project_id_fkey'
             columns: ['project_id']
@@ -75,6 +85,7 @@ export type Database = {
           github_comment_identifier: number
           github_pull_request_id: string
           id: string
+          organization_id: string
           updated_at: string
         }
         Insert: {
@@ -82,6 +93,7 @@ export type Database = {
           github_comment_identifier: number
           github_pull_request_id: string
           id?: string
+          organization_id: string
           updated_at: string
         }
         Update: {
@@ -89,6 +101,7 @@ export type Database = {
           github_comment_identifier?: number
           github_pull_request_id?: string
           id?: string
+          organization_id?: string
           updated_at?: string
         }
         Relationships: [
@@ -99,12 +112,20 @@ export type Database = {
             referencedRelation: 'github_pull_requests'
             referencedColumns: ['id']
           },
+          {
+            foreignKeyName: 'github_pull_request_comments_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
+          },
         ]
       }
       github_pull_requests: {
         Row: {
           created_at: string
           id: string
+          organization_id: string
           pull_number: number
           repository_id: string
           updated_at: string
@@ -112,6 +133,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          organization_id: string
           pull_number: number
           repository_id: string
           updated_at: string
@@ -119,6 +141,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          organization_id?: string
           pull_number?: number
           repository_id?: string
           updated_at?: string
@@ -129,6 +152,13 @@ export type Database = {
             columns: ['repository_id']
             isOneToOne: false
             referencedRelation: 'github_repositories'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'github_pull_requests_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -339,6 +369,7 @@ export type Database = {
           created_at: string
           id: string
           migration_id: string
+          organization_id: string
           pull_request_id: string
           updated_at: string
         }
@@ -346,6 +377,7 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id: string
+          organization_id: string
           pull_request_id: string
           updated_at: string
         }
@@ -353,6 +385,7 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id?: string
+          organization_id?: string
           pull_request_id?: string
           updated_at?: string
         }
@@ -369,6 +402,13 @@ export type Database = {
             columns: ['pull_request_id']
             isOneToOne: false
             referencedRelation: 'github_pull_requests'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'migration_pull_request_mappings_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -684,6 +724,7 @@ export type Database = {
           created_at: string
           id: string
           knowledge_suggestion_id: string | null
+          organization_id: string
           review_feedback_id: string | null
           updated_at: string
         }
@@ -691,6 +732,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string | null
+          organization_id: string
           review_feedback_id?: string | null
           updated_at: string
         }
@@ -698,6 +740,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string | null
+          organization_id?: string
           review_feedback_id?: string | null
           updated_at?: string
         }
@@ -714,6 +757,13 @@ export type Database = {
             columns: ['review_feedback_id']
             isOneToOne: false
             referencedRelation: 'review_feedbacks'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'review_feedback_knowledge_suggestion_mappings_organization_id_f'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
@@ -805,6 +855,7 @@ export type Database = {
           created_at: string
           format: Database['public']['Enums']['schema_format_enum']
           id: string
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -813,6 +864,7 @@ export type Database = {
           created_at?: string
           format: Database['public']['Enums']['schema_format_enum']
           id?: string
+          organization_id: string
           path: string
           project_id: string
           updated_at: string
@@ -821,6 +873,7 @@ export type Database = {
           created_at?: string
           format?: Database['public']['Enums']['schema_format_enum']
           id?: string
+          organization_id?: string
           path?: string
           project_id?: string
           updated_at?: string
@@ -831,6 +884,13 @@ export type Database = {
             columns: ['project_id']
             isOneToOne: false
             referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'schema_file_paths_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]

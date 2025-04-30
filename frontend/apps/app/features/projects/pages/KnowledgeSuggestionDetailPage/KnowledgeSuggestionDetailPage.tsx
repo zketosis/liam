@@ -1,7 +1,7 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+
 import type { FC } from 'react'
 import { match } from 'ts-pattern'
 import { approveKnowledgeSuggestion } from '../../actions/approveKnowledgeSuggestion'
@@ -55,7 +55,7 @@ async function getKnowledgeSuggestionDetail(
   const suggestion = await getSuggestionWithProject(suggestionId, projectId)
 
   if (!suggestion) {
-    notFound()
+    throw new Error('Knowledge suggestion not found')
   }
 
   return suggestion
