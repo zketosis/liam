@@ -219,6 +219,7 @@ Based on the schema information provided and considering any previous conversati
       chat_history: formattedChatHistory,
     },
     {
+      callbacks: [langfuseHandler],
       metadata: {
         endpoint: '/api/chat',
         method: 'POST',
