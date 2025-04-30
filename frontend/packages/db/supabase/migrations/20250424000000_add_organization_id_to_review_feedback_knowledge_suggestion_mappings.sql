@@ -10,8 +10,8 @@ SET "organization_id" = (
   LIMIT 1
 );
 
-ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" 
-  ALTER COLUMN "organization_id" SET NOT NULL;
+-- ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" 
+--   ALTER COLUMN "organization_id" SET NOT NULL;
 
 ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" 
   ADD CONSTRAINT "review_feedback_knowledge_suggestion_mappings_organization_id_fkey" 

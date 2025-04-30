@@ -527,23 +527,11 @@ CREATE OR REPLACE FUNCTION "public"."set_review_feedback_knowledge_suggestion_ma
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
 BEGIN
-  IF NEW.knowledge_suggestion_id IS NOT NULL THEN
-    NEW.organization_id := (
-      SELECT "organization_id" 
-      FROM "public"."knowledge_suggestions" 
-      WHERE "id" = NEW.knowledge_suggestion_id
-    );
-  ELSIF NEW.review_feedback_id IS NOT NULL THEN
-    NEW.organization_id := (
-      SELECT p."organization_id"
-      FROM "public"."review_feedbacks" rf
-      JOIN "public"."overall_reviews" orv ON rf."overall_review_id" = orv."id"
-      JOIN "public"."projects" p ON orv."project_id" = p."id"
-      WHERE rf."id" = NEW.review_feedback_id
-    );
-  ELSE
-    RAISE EXCEPTION 'Either knowledge_suggestion_id or review_feedback_id must be provided';
-  END IF;
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."knowledge_suggestions" 
+    WHERE "id" = NEW.knowledge_suggestion_id
+  );
   
   RETURN NEW;
 END;
@@ -814,7 +802,7 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedback_knowledge_suggestion_mappin
     "knowledge_suggestion_id" "uuid",
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "organization_id" "uuid" NOT NULL
+    "organization_id" "uuid"
 );
 
 

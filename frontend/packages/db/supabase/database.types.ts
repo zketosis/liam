@@ -724,7 +724,7 @@ export type Database = {
           created_at: string
           id: string
           knowledge_suggestion_id: string | null
-          organization_id: string
+          organization_id: string | null
           review_feedback_id: string | null
           updated_at: string
         }
@@ -732,7 +732,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string | null
-          organization_id: string
+          organization_id?: string | null
           review_feedback_id?: string | null
           updated_at: string
         }
@@ -740,7 +740,7 @@ export type Database = {
           created_at?: string
           id?: string
           knowledge_suggestion_id?: string | null
-          organization_id?: string
+          organization_id?: string | null
           review_feedback_id?: string | null
           updated_at?: string
         }
