@@ -561,6 +561,7 @@ export type Database = {
           created_at: string
           id: string
           migration_id: string
+          organization_id: string
           review_comment: string | null
           reviewed_at: string
           trace_id: string | null
@@ -571,6 +572,7 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id: string
+          organization_id: string
           review_comment?: string | null
           reviewed_at?: string
           trace_id?: string | null
@@ -581,6 +583,7 @@ export type Database = {
           created_at?: string
           id?: string
           migration_id?: string
+          organization_id?: string
           review_comment?: string | null
           reviewed_at?: string
           trace_id?: string | null
@@ -592,6 +595,13 @@ export type Database = {
             columns: ['migration_id']
             isOneToOne: false
             referencedRelation: 'migrations'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'overall_reviews_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
