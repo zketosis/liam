@@ -5,6 +5,9 @@
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@tsconfig/strictest": "2.0.5"
+    "@tsconfig/strictest": "2.0.5",
+    "@typescript-eslint/eslint-plugin": "8.31.1",
+    "@typescript-eslint/parser": "8.31.1",
+    "eslint": "9.25.1"
   }
 }
