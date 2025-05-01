@@ -278,30 +278,21 @@ export const generateSchemaOverride = async (
     func: schemaOverrideRouter,
   })
 
-  try {
-    // Prepare the common inputs
-    const commonInputs = {
-      reviewComment,
-      schema: JSON.stringify(schema, null, 2),
-      currentSchemaOverride: currentSchemaOverride
-        ? JSON.stringify(currentSchemaOverride, null, 2)
-        : '{}',
-      schemaOverrideJsonSchema: JSON.stringify(
-        schemaOverrideJsonSchema,
-        null,
-        2,
-      ),
-      evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
-    }
-
-    // Execute the router chain
-    return await routerChain.invoke(commonInputs, {
-      callbacks,
-      runId,
-      tags: ['generateSchemaOverride'],
-    })
-  } catch (error) {
-    console.error('Error generating schema meta:', error)
-    throw error
+  // Prepare the common inputs
+  const commonInputs = {
+    reviewComment,
+    schema: JSON.stringify(schema, null, 2),
+    currentSchemaOverride: currentSchemaOverride
+      ? JSON.stringify(currentSchemaOverride, null, 2)
+      : '{}',
+    schemaOverrideJsonSchema: JSON.stringify(schemaOverrideJsonSchema, null, 2),
+    evaluationJsonSchema: JSON.stringify(evaluationJsonSchema, null, 2),
   }
+
+  // Execute the router chain
+  return await routerChain.invoke(commonInputs, {
+    callbacks,
+    runId,
+    tags: ['generateSchemaOverride'],
+  })
 }
