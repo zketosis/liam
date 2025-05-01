@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./eslint/index.js": "./eslint/index.js",
-    "./eslint/base.js": "./eslint/base.js"
+    "./eslint/base.js": "./eslint/base.js",
+    "./tsconfig/base.json": "./tsconfig/base.json"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
