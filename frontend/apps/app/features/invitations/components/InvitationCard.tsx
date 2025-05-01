@@ -45,21 +45,21 @@ export function InvitationCard({
         <div className={styles.content}>
           {organizationName && (
             <>
-              <div className={styles.logo}>
-                <LiamLogoMark />
+              <div>
+                <LiamLogoMark width={40} height={40} />
               </div>
 
-              <h1 className={styles.greeting}>
-                [temp components] Hi, {currentUser.email}!
-              </h1>
+              <h1 className={styles.greeting}>Hi, {currentUser.email}!</h1>
 
-              <p className={styles.description}>
-                You've been invited to join {organizationName} organization on
-                Liam Migration.
-                <br />
+              <div className={styles.description}>
+                You've been invited to join{' '}
+                <strong className={styles.organizationName}>
+                  {organizationName}
+                </strong>{' '}
+                organization on Liam Migration.
                 <br />
                 Please accept the invitation below to join.
-              </p>
+              </div>
             </>
           )}
         </div>

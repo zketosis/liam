@@ -1,5 +1,5 @@
 import { urlgen } from '@/utils/routes'
-import { notFound } from 'next/navigation'
+
 import { EmptyProjectsState } from '../../components'
 import styles from './ProjectsPage.module.css'
 import { ServerProjectsDataProvider } from './ServerProjectsDataProvider'
@@ -18,7 +18,7 @@ export async function ProjectsPage({
 
   if (!currentOrganization) {
     console.error('Organization not found')
-    return notFound()
+    throw new Error('Organization not found')
   }
 
   await getUserOrganizations() // Fetch for future use
@@ -33,9 +33,7 @@ export async function ProjectsPage({
             projects={projects}
             createProjectHref={
               currentOrganization
-                ? urlgen('organizations/[organizationId]/projects/new', {
-                    organizationId: currentOrganization.id,
-                  })
+                ? urlgen('projects/new')
                 : urlgen('organizations/new')
             }
           />

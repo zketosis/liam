@@ -14,6 +14,8 @@
     "frontend/packages/db/supabase/database.types.ts",
     // - Script for workaround
     "frontend/apps/app/scripts/install-prisma-internals.mjs",
+    // - Script file which is read from trigger.config.ts
+    "frontend/packages/jobs/src/trigger/jobs.ts",
 
     // TODO: Temporarily ignore issues in the following files. Will be addressed later
     "frontend/packages/db-structure/src/parser.ts",

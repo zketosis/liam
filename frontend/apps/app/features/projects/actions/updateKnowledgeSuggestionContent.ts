@@ -22,21 +22,16 @@ export const updateKnowledgeSuggestionContent = async (formData: FormData) => {
 
   const { suggestionId, content } = parsedData.output
 
-  try {
-    const supabase = await createClient()
+  const supabase = await createClient()
 
-    const { error: updateError } = await supabase
-      .from('knowledge_suggestions')
-      .update({ content, updatedAt: new Date().toISOString() })
-      .eq('id', suggestionId)
+  const { error: updateError } = await supabase
+    .from('knowledge_suggestions')
+    .update({ content, updatedAt: new Date().toISOString() })
+    .eq('id', suggestionId)
 
-    if (updateError) {
-      throw new Error('Failed to update knowledge suggestion content')
-    }
-
-    return { success: true }
-  } catch (error) {
-    console.error('Error updating knowledge suggestion content:', error)
-    throw error
+  if (updateError) {
+    throw new Error('Failed to update knowledge suggestion content')
   }
+
+  return { success: true }
 }
