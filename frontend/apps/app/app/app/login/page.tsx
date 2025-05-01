@@ -1,11 +1,5 @@
-import { login } from './actions'
+import { LoginPage } from '@/features/auths/LoginPage'
 
-export default function LoginPage() {
-  return (
-    <form>
-      <button type="submit" formAction={login}>
-        Log in with GitHub
-      </button>
-    </form>
-  )
+export default async function Page() {
+  return <LoginPage />
 }

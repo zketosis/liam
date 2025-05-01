@@ -48,6 +48,11 @@
 - Improved type safety with proper type definitions and return types for functions.
 - Implemented relationship between overall_reviews and knowledge_suggestions tables using an intermediate mapping table (overall_review_knowledge_suggestion_mappings), allowing users to track and navigate to knowledge_suggestions from the MigrationDetailPage.
 - Enhanced MigrationDetailPage to fetch and display related knowledge_suggestions with proper navigation using the urlgen utility for type-safe route generation.
+- Implemented organization last member protection with a database-level constraint:
+  - Created a PostgreSQL trigger that prevents deleting the last member of an organization
+  - Enhanced error handling in the removeMember server action to provide clear error messages
+  - Added comprehensive test suite for the constraint to verify it works in all scenarios
+  - This ensures data integrity by preventing organizations from having zero members
 
 ## What's Left to Build
 
