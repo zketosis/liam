@@ -1,5 +1,8 @@
 import type { Column, Schema, Table } from '@liam-hq/db-structure'
-import type { SchemaData } from '../../../../../app/api/chat/route'
+import type {
+  SchemaData,
+  TableGroupData,
+} from '../../../../../app/api/chat/route'
 
 // 1. Helper function to adapt columns
 function adaptColumns(columns: Record<string, Column>) {
@@ -100,12 +103,42 @@ function adaptRelationships(
   return adaptedRelationships
 }
 
+// Define a type for table groups based on the schema structure
+interface TableGroupType {
+  name?: string
+  tables?: string[]
+  comment?: string | null
+}
+
+// Helper function to adapt table groups
+function adaptTableGroups(
+  tableGroups: Record<string, TableGroupType> = {},
+): Record<string, TableGroupData> {
+  const adaptedTableGroups: Record<string, TableGroupData> = {}
+
+  for (const [groupId, groupData] of Object.entries(tableGroups)) {
+    adaptedTableGroups[groupId] = {
+      name: groupData.name,
+      tables: groupData.tables,
+      comment: groupData.comment ?? null,
+    }
+  }
+
+  return adaptedTableGroups
+}
+
 // Main function with reduced complexity
 export function adaptSchemaForChatbot(schema: Schema): SchemaData {
+  const typedTableGroups = schema.tableGroups as
+    | Record<string, TableGroupType>
+    | undefined
+
   return {
     tables: adaptTables(schema.tables),
     relationships: adaptRelationships(schema.relationships),
-    tableGroups: schema.tableGroups,
+    tableGroups: typedTableGroups
+      ? adaptTableGroups(typedTableGroups)
+      : undefined,
   }
 }
 

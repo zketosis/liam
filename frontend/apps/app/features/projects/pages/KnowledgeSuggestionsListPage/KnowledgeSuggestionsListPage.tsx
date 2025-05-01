@@ -1,7 +1,7 @@
 import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+
 import type { FC } from 'react'
 import styles from './KnowledgeSuggestionsListPage.module.css'
 
@@ -28,7 +28,7 @@ async function getKnowledgeSuggestions(
 
   if (error) {
     console.error('Error fetching knowledge suggestions:', error)
-    notFound()
+    throw new Error('Failed to fetch knowledge suggestions')
   }
 
   return knowledgeSuggestions || []
