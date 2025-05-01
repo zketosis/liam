@@ -10,6 +10,7 @@ import type { MigrationsOverride } from './migrations'
 import type { OverallReviewKnowledgeSuggestionMappingsOverride } from './overall_review_knowledge_suggestion_mappings'
 import type { OverallReviewsOverride } from './overall_reviews'
 import type { ProjectRepositoryMappingsOverride } from './project_repository_mappings'
+import type { ReviewFeedbackCommentsOverride } from './review_feedback_comments'
 import type { ReviewFeedbackKnowledgeSuggestionMappingsOverride } from './review_feedback_knowledge_suggestion_mappings'
 import type { ReviewFeedbacksOverride } from './review_feedbacks'
 import type { ReviewSuggestionSnippetsOverride } from './review_suggestion_snippets'
@@ -23,6 +24,7 @@ export type AppDatabaseOverrides = MergeDeep<
     OverallReviewKnowledgeSuggestionMappingsOverride &
     OverallReviewsOverride &
     ReviewFeedbacksOverride &
+    ReviewFeedbackCommentsOverride &
     ReviewSuggestionSnippetsOverride &
     GithubPullRequestsOverride &
     MigrationPullRequestMappingsOverride &

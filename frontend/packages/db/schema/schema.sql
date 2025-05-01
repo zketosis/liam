@@ -541,6 +541,23 @@ $$;
 ALTER FUNCTION "public"."set_project_repository_mappings_organization_id"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_review_feedback_comments_organization_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+BEGIN
+  NEW.organization_id := (
+    SELECT "organization_id" 
+    FROM "public"."review_feedbacks" 
+    WHERE "id" = NEW.review_feedback_id
+  );
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."set_review_feedback_comments_organization_id"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
@@ -842,7 +859,8 @@ CREATE TABLE IF NOT EXISTS "public"."review_feedback_comments" (
     "user_id" "uuid" NOT NULL,
     "content" "text" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "organization_id" "uuid" NOT NULL
 );
 
 
@@ -1157,6 +1175,10 @@ CREATE OR REPLACE TRIGGER "set_project_repository_mappings_organization_id_trigg
 
 
 
+CREATE OR REPLACE TRIGGER "set_review_feedback_comments_organization_id_trigger" BEFORE INSERT OR UPDATE ON "public"."review_feedback_comments" FOR EACH ROW EXECUTE FUNCTION "public"."set_review_feedback_comments_organization_id"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_review_feedback_knowledge_suggestion_mappings_organization_" BEFORE INSERT OR UPDATE ON "public"."review_feedback_knowledge_suggestion_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_review_feedback_knowledge_suggestion_mappings_organization_"();
 
 
@@ -1333,6 +1355,11 @@ ALTER TABLE ONLY "public"."review_feedback_comments"
 
 
 
+ALTER TABLE ONLY "public"."review_feedback_comments"
+    ADD CONSTRAINT "review_feedback_comments_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."review_feedback_knowledge_suggestion_mappings"
     ADD CONSTRAINT "review_feedback_knowledge_suggesti_knowledge_suggestion_id_fkey" FOREIGN KEY ("knowledge_suggestion_id") REFERENCES "public"."knowledge_suggestions"("id");
 
@@ -1477,6 +1504,16 @@ CREATE POLICY "authenticated_users_can_insert_org_project_repository_mappings" O
 
 
 COMMENT ON POLICY "authenticated_users_can_insert_org_project_repository_mappings" ON "public"."project_repository_mappings" IS 'Authenticated users can only create project repository mappings in organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_insert_org_review_feedback_comments" ON "public"."review_feedback_comments" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_review_feedback_comments" ON "public"."review_feedback_comments" IS 'Authenticated users can only insert review feedback comments in organizations they are members of';
 
 
 
@@ -1644,6 +1681,16 @@ COMMENT ON POLICY "authenticated_users_can_select_org_projects" ON "public"."pro
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_review_feedback_comments" ON "public"."review_feedback_comments" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_review_feedback_comments" ON "public"."review_feedback_comments" IS 'Authenticated users can only view review feedback comments belonging to organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_review_feedback_knowledge_su" ON "public"."review_feedback_knowledge_suggestion_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1789,6 +1836,9 @@ ALTER TABLE "public"."project_repository_mappings" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."review_feedback_comments" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."review_feedback_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
@@ -2250,6 +2300,12 @@ GRANT ALL ON FUNCTION "public"."set_overall_reviews_organization_id"() TO "servi
 GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "anon";
 GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_project_repository_mappings_organization_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_review_feedback_comments_organization_id"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_review_feedback_comments_organization_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_review_feedback_comments_organization_id"() TO "service_role";
 
 
 
