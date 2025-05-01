@@ -1,7 +1,7 @@
-const tseslint = require('@typescript-eslint/eslint-plugin')
-const tsParser = require('@typescript-eslint/parser')
+import tseslint from '@typescript-eslint/eslint-plugin'
+import tsParser from '@typescript-eslint/parser'
 
-module.exports = [
+export default [
   {
     files: ['**/*.ts', '**/*.tsx'],
     ignores: ['**/trigger.config.ts', '**/vitest.config.ts'],

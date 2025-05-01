@@ -2,9 +2,7 @@
   "name": "@liam-hq/jobs",
   "private": true,
   "version": "0.1.0",
-  "publishConfig": {
-    "access": "restricted"
-  },
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "@langchain/core": "0.3.45",
