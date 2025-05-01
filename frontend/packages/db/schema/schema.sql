@@ -1340,6 +1340,16 @@ COMMENT ON POLICY "authenticated_users_can_delete_org_organization_members" ON "
 
 
 
+CREATE POLICY "authenticated_users_can_delete_org_organizations" ON "public"."organizations" FOR DELETE TO "authenticated" USING (("id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_delete_org_organizations" ON "public"."organizations" IS 'Authenticated users can only delete organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_delete_org_projects" ON "public"."projects" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1423,6 +1433,14 @@ CREATE POLICY "authenticated_users_can_insert_org_schema_file_paths" ON "public"
 
 
 COMMENT ON POLICY "authenticated_users_can_insert_org_schema_file_paths" ON "public"."schema_file_paths" IS 'Authenticated users can only create schema file paths in organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_insert_organizations" ON "public"."organizations" FOR INSERT TO "authenticated" WITH CHECK (true);
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_organizations" ON "public"."organizations" IS 'Authenticated users can create any organization';
 
 
 
@@ -1522,6 +1540,16 @@ COMMENT ON POLICY "authenticated_users_can_select_org_organization_members" ON "
 
 
 
+CREATE POLICY "authenticated_users_can_select_org_organizations" ON "public"."organizations" FOR SELECT TO "authenticated" USING (("id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_organizations" ON "public"."organizations" IS 'Authenticated users can only view organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_select_org_overall_review_knowledge_sug" ON "public"."overall_review_knowledge_suggestion_mappings" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1598,6 +1626,16 @@ COMMENT ON POLICY "authenticated_users_can_update_org_knowledge_suggestions" ON 
 
 
 
+CREATE POLICY "authenticated_users_can_update_org_organizations" ON "public"."organizations" FOR UPDATE TO "authenticated" USING (("id" IN ( SELECT "organization_members"."organization_id"
+   FROM "public"."organization_members"
+  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_update_org_organizations" ON "public"."organizations" IS 'Authenticated users can only update organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_update_org_projects" ON "public"."projects" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"())))) WITH CHECK (("organization_id" IN ( SELECT "organization_members"."organization_id"
@@ -1652,6 +1690,9 @@ ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."organization_members" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."organizations" ENABLE ROW LEVEL SECURITY;
+
+
 ALTER TABLE "public"."overall_review_knowledge_suggestion_mappings" ENABLE ROW LEVEL SECURITY;
 
 
@@ -1675,6 +1716,10 @@ CREATE POLICY "service_role_can_delete_all_invitations" ON "public"."invitations
 
 
 CREATE POLICY "service_role_can_delete_all_knowledge_suggestions" ON "public"."knowledge_suggestions" FOR DELETE TO "service_role" USING (true);
+
+
+
+CREATE POLICY "service_role_can_delete_all_organizations" ON "public"."organizations" FOR DELETE TO "service_role" USING (true);
 
 
 
@@ -1711,6 +1756,10 @@ CREATE POLICY "service_role_can_insert_all_migration_pull_request_mappings" ON "
 
 
 CREATE POLICY "service_role_can_insert_all_migrations" ON "public"."migrations" FOR INSERT TO "service_role" WITH CHECK (true);
+
+
+
+CREATE POLICY "service_role_can_insert_all_organizations" ON "public"."organizations" FOR INSERT TO "service_role" WITH CHECK (true);
 
 
 
@@ -1766,6 +1815,10 @@ CREATE POLICY "service_role_can_select_all_migrations" ON "public"."migrations" 
 
 
 
+CREATE POLICY "service_role_can_select_all_organizations" ON "public"."organizations" FOR SELECT TO "service_role" USING (true);
+
+
+
 CREATE POLICY "service_role_can_select_all_overall_reviews" ON "public"."overall_reviews" FOR SELECT TO "service_role" USING (true);
 
 
@@ -1799,6 +1852,10 @@ CREATE POLICY "service_role_can_update_all_knowledge_suggestions" ON "public"."k
 
 
 CREATE POLICY "service_role_can_update_all_migrations" ON "public"."migrations" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "service_role_can_update_all_organizations" ON "public"."organizations" FOR UPDATE TO "service_role" USING (true) WITH CHECK (true);
 
 
 
