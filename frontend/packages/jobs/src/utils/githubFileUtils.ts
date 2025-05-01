@@ -34,7 +34,6 @@ export const fetchSchemaFileContent = async (
 
   if (!schemaFilePath.format) {
     throw new Error(
-       
       `No format found for schema file path ${schemaFilePath.path}`,
     )
   }

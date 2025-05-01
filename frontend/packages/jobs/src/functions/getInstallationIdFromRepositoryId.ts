@@ -16,6 +16,5 @@ export const getInstallationIdFromRepositoryId = async (
     )
   }
 
-   
   return repository.github_installation_identifier
 }

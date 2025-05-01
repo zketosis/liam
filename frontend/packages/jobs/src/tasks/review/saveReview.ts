@@ -80,7 +80,6 @@ export const processSaveReview = async (
       const reviewFeedback = insertedFeedbacks[index]
       return reviewFeedback
         ? {
-             
             feedback,
             review_feedback_id: reviewFeedback.id,
           }

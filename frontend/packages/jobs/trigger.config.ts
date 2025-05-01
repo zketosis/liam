@@ -41,7 +41,6 @@ const findPrismaWasmFiles = () => {
     files.push(...found)
   }
 
-   
   console.info('Found Prisma WASM files:', files)
 
   return files

@@ -85,7 +85,6 @@ async function getRepositoryFromProjectId(
     )
   }
 
-   
   return projectMapping.github_repositories
 }
 
@@ -105,7 +104,6 @@ async function getSchemaPathForProject(
     )
   }
 
-   
   return data.path
 }
 
