@@ -1,3 +1,4 @@
+-- TODO: Remove anonkey when using RPC in the future
 BEGIN;
 
 ALTER TABLE "public"."github_repositories" ENABLE ROW LEVEL SECURITY;
