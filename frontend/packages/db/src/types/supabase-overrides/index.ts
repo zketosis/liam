@@ -11,6 +11,7 @@ import type { OverallReviewKnowledgeSuggestionMappingsOverride } from './overall
 import type { OverallReviewsOverride } from './overall_reviews'
 import type { ProjectRepositoryMappingsOverride } from './project_repository_mappings'
 import type { ReviewFeedbackKnowledgeSuggestionMappingsOverride } from './review_feedback_knowledge_suggestion_mappings'
+import type { ReviewFeedbacksOverride } from './review_feedbacks'
 import type { SchemaFilePathsOverride } from './schema_file_paths'
 
 export type AppDatabaseOverrides = MergeDeep<
@@ -20,6 +21,7 @@ export type AppDatabaseOverrides = MergeDeep<
     ReviewFeedbackKnowledgeSuggestionMappingsOverride &
     OverallReviewKnowledgeSuggestionMappingsOverride &
     OverallReviewsOverride &
+    ReviewFeedbacksOverride &
     GithubPullRequestsOverride &
     MigrationPullRequestMappingsOverride &
     GithubPullRequestCommentsOverride &
