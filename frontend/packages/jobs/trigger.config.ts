@@ -41,7 +41,7 @@ const findPrismaWasmFiles = () => {
     files.push(...found)
   }
 
-  // eslint-disable-next-line no-console
+   
   console.info('Found Prisma WASM files:', files)
 
   return files

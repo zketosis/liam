@@ -42,13 +42,13 @@ const getRepositoryInfo = async (projectId: string) => {
   if (
     error ||
     !project ||
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     !project.project_repository_mappings?.[0]?.github_repositories
   ) {
     throw new Error('Repository information not found for the project')
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+   
   const repository = project.project_repository_mappings[0].github_repositories
   return {
     owner: repository.owner,
