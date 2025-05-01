@@ -16,5 +16,6 @@ export const getInstallationIdFromRepositoryId = async (
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return repository.github_installation_identifier
 }

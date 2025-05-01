@@ -34,6 +34,7 @@ export const fetchSchemaFileContent = async (
 
   if (!schemaFilePath.format) {
     throw new Error(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       `No format found for schema file path ${schemaFilePath.path}`,
     )
   }

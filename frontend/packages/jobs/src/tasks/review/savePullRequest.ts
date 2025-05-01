@@ -85,6 +85,7 @@ async function getRepositoryFromProjectId(
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return projectMapping.github_repositories
 }
 
@@ -104,6 +105,7 @@ async function getSchemaPathForProject(
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return data.path
 }
 

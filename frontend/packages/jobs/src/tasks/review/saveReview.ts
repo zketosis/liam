@@ -80,6 +80,7 @@ export const processSaveReview = async (
       const reviewFeedback = insertedFeedbacks[index]
       return reviewFeedback
         ? {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             feedback,
             review_feedback_id: reviewFeedback.id,
           }
