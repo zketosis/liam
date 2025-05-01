@@ -1,16 +1,16 @@
 name: Notify Supabase Failure
 
 on:
-  check_run:
+  check_suite:
     types: [completed]
 
 jobs:
   notify_slack:
     runs-on: ubuntu-latest
     if: |
-      github.event.check_run.app.name == 'Supabase' &&
-      github.event.check_run.conclusion == 'failure'
-      # github.event.check_run.check_suite.head_branch == 'main'
+      github.event.check_suite.app.name == 'Supabase' &&
+      github.event.check_suite.conclusion == 'failure'
+      # github.event.check_suite.head_branch == 'main'
     steps:
       - name: Slack Notification for Supabase Failure
         uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
@@ -28,16 +28,16 @@ jobs:
                     "value": "main"
                   },
                   {
-                    "title": "Check Name",
-                    "value": "${{ github.event.check_run.name }}"
+                    "title": "Check Suite App",
+                    "value": "${{ github.event.check_suite.app.name }}"
                   },
                   {
                     "title": "Result",
                     "value": "failure"
                   },
                   {
-                    "title": "Check Run URL",
-                    "value": "${{ github.event.check_run.html_url }}"
+                    "title": "Check Suite URL",
+                    "value": "${{ github.event.check_suite.html_url }}"
                   }
                 ]
               }
