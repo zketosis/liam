@@ -840,6 +840,7 @@ export type Database = {
           created_at: string
           filename: string
           id: string
+          organization_id: string
           review_feedback_id: string
           snippet: string
           updated_at: string
@@ -848,6 +849,7 @@ export type Database = {
           created_at?: string
           filename: string
           id?: string
+          organization_id: string
           review_feedback_id: string
           snippet: string
           updated_at: string
@@ -856,6 +858,7 @@ export type Database = {
           created_at?: string
           filename?: string
           id?: string
+          organization_id?: string
           review_feedback_id?: string
           snippet?: string
           updated_at?: string
@@ -866,6 +869,13 @@ export type Database = {
             columns: ['review_feedback_id']
             isOneToOne: false
             referencedRelation: 'review_feedbacks'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'review_suggestion_snippets_organization_id_fkey'
+            columns: ['organization_id']
+            isOneToOne: false
+            referencedRelation: 'organizations'
             referencedColumns: ['id']
           },
         ]
