@@ -325,8 +325,8 @@ describe(processor, () => {
           name: 'PRIMARY_id',
           columnName: 'id',
         }),
-        users_id_to_posts_user_id: aForeignKeyConstraint({
-          name: 'users_id_to_posts_user_id',
+        fk_posts_user_id: aForeignKeyConstraint({
+          name: 'fk_posts_user_id',
           columnName: 'user_id',
           targetTableName: 'users',
           targetColumnName: 'id',

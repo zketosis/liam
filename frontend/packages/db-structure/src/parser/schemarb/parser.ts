@@ -428,14 +428,15 @@ function extractForeignKeyOptions(
   }
 
   if (relation.name === '') {
-    const relationshipName = defaultRelationshipName(
+    relation.name = defaultRelationshipName(
       relation.primaryTableName,
       relation.primaryColumnName,
       relation.foreignTableName,
       relation.foreignColumnName,
     )
-    relation.name = relationshipName
-    foreignKeyConstraint.name = relationshipName
+  }
+  if (foreignKeyConstraint.name === '') {
+    foreignKeyConstraint.name = `fk_${relation.foreignTableName}_${relation.foreignColumnName}`
   }
 }
 
