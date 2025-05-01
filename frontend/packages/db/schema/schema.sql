@@ -1330,6 +1330,16 @@ CREATE POLICY "authenticated_users_can_delete_org_invitations" ON "public"."invi
 
 
 
+CREATE POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members_1"."organization_id"
+   FROM "public"."organization_members" "organization_members_1"
+  WHERE ("organization_members_1"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only remove members from organizations they are members of';
+
+
+
 CREATE POLICY "authenticated_users_can_delete_org_organizations" ON "public"."organizations" FOR DELETE TO "authenticated" USING (("id" IN ( SELECT "organization_members"."organization_id"
    FROM "public"."organization_members"
   WHERE ("organization_members"."user_id" = "auth"."uid"()))));
@@ -1393,6 +1403,16 @@ CREATE POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "pub
 
 
 COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON "public"."knowledge_suggestions" IS 'Authenticated users can only create knowledge suggestions in organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members_1"."organization_id"
+   FROM "public"."organization_members" "organization_members_1"
+  WHERE ("organization_members_1"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only add members to organizations they are members of';
 
 
 
@@ -1507,6 +1527,16 @@ CREATE POLICY "authenticated_users_can_select_org_migrations" ON "public"."migra
 
 
 COMMENT ON POLICY "authenticated_users_can_select_org_migrations" ON "public"."migrations" IS 'Authenticated users can only view migrations belonging to organizations they are members of';
+
+
+
+CREATE POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members_1"."organization_id"
+   FROM "public"."organization_members" "organization_members_1"
+  WHERE ("organization_members_1"."user_id" = "auth"."uid"()))));
+
+
+
+COMMENT ON POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only view organization members in organizations they are members of';
 
 
 
@@ -1655,6 +1685,9 @@ ALTER TABLE "public"."migration_pull_request_mappings" ENABLE ROW LEVEL SECURITY
 
 
 ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."organization_members" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."organizations" ENABLE ROW LEVEL SECURITY;
