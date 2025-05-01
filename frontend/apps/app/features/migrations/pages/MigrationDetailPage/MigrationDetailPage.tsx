@@ -2,7 +2,7 @@ import { createClient } from '@/libs/db/server'
 import { urlgen } from '@/utils/routes'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+
 import type { FC } from 'react'
 import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
@@ -35,7 +35,7 @@ async function getMigrationContents(migrationId: string) {
 
   if (migrationError || !migration) {
     console.error('Error fetching migration:', migrationError)
-    return notFound()
+    throw new Error('Migration not found')
   }
 
   // Get the related pull request through the mapping table

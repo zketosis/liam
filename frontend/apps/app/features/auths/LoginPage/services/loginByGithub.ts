@@ -19,7 +19,7 @@ function getAuthCallbackUrl({
   return `${url}app/auth/callback/${provider}?next=${encodeURIComponent(next)}`
 }
 
-export async function login(formData: FormData) {
+export async function loginByGithub(formData: FormData) {
   const supabase = await createClient()
 
   // Get the returnTo path from the form data
