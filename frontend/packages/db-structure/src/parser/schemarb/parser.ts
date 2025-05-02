@@ -15,17 +15,30 @@ import {
 } from '@ruby/prism'
 import { type Result, err, ok } from 'neverthrow'
 import type {
+  CheckConstraint,
   Column,
   Columns,
+  Constraint,
+  Constraints,
+  ForeignKeyConstraint,
   ForeignKeyConstraintReferenceOption,
   Index,
   Indexes,
+  PrimaryKeyConstraint,
   Relationship,
   Schema,
   Table,
   Tables,
+  UniqueConstraint,
 } from '../../schema/index.js'
-import { aColumn, aRelationship, aTable, anIndex } from '../../schema/index.js'
+import {
+  aCheckConstraint,
+  aColumn,
+  aForeignKeyConstraint,
+  aRelationship,
+  aTable,
+  anIndex,
+} from '../../schema/index.js'
 import {
   type ProcessError,
   UnexpectedTokenWarningError,
@@ -83,7 +96,9 @@ function extractTableComment(argNodes: Node[]): string | null {
   return null
 }
 
-function extractIdColumn(argNodes: Node[]): Column | null {
+function extractIdColumnAndConstraint(
+  argNodes: Node[],
+): [Column, PrimaryKeyConstraint] | [null, null] {
   const keywordHash = argNodes.find((node) => node instanceof KeywordHashNode)
 
   const idColumn = aColumn({
@@ -93,6 +108,11 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     primary: true,
     unique: true,
   })
+  const idPrimaryKeyConstraint: PrimaryKeyConstraint = {
+    type: 'PRIMARY KEY',
+    name: 'PRIMARY_id',
+    columnName: 'id',
+  }
 
   if (keywordHash) {
     const idAssoc = keywordHash.elements.find(
@@ -103,26 +123,29 @@ function extractIdColumn(argNodes: Node[]): Column | null {
     )
 
     if (idAssoc && idAssoc instanceof AssocNode) {
-      if (idAssoc.value instanceof FalseNode) return null
+      if (idAssoc.value instanceof FalseNode) return [null, null]
       if (
         idAssoc.value instanceof StringNode ||
         idAssoc.value instanceof SymbolNode
       )
         idColumn.type = idAssoc.value.unescaped.value
 
-      return idColumn
+      return [idColumn, idPrimaryKeyConstraint]
     }
   }
 
   // Since 5.1 PostgreSQL adapter uses bigserial type for primary key in default
   // See:https://github.com/rails/rails/blob/v8.0.0/activerecord/lib/active_record/migration/compatibility.rb#L377
   idColumn.type = 'bigserial'
-  return idColumn
+  return [idColumn, idPrimaryKeyConstraint]
 }
 
-function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
+function extractTableDetails(
+  blockNodes: Node[],
+): [Column[], Index[], Constraint[]] {
   const columns: Column[] = []
   const indexes: Index[] = []
+  const constraints: Constraint[] = []
 
   for (const blockNode of blockNodes) {
     if (blockNode instanceof StatementsNode) {
@@ -135,6 +158,14 @@ function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
           if (node.name === 'index') {
             const index = extractIndexDetails(node)
             indexes.push(index)
+            if (index.unique && index.columns[0]) {
+              const uniqueConstraint: UniqueConstraint = {
+                type: 'UNIQUE',
+                name: `UNIQUE_${index.columns[0]}`,
+                columnName: index.columns[0],
+              }
+              constraints.push(uniqueConstraint)
+            }
             continue
           }
 
@@ -145,7 +176,7 @@ function extractTableDetails(blockNodes: Node[]): [Column[], Index[]] {
     }
   }
 
-  return [columns, indexes]
+  return [columns, indexes, constraints]
 }
 
 function extractColumnDetails(node: CallNode): Column {
@@ -278,6 +309,51 @@ function extractRelationshipTableNames(
   return ok([primaryTableName, foreignTableName])
 }
 
+function extractCheckConstraint(
+  argNodes: Node[],
+): Result<
+  { tableName: string; constraint: CheckConstraint },
+  UnexpectedTokenWarningError
+> {
+  const stringNodes = argNodes.filter((node) => node instanceof StringNode)
+  if (stringNodes.length !== 2) {
+    return err(
+      new UnexpectedTokenWarningError(
+        'Check constraint must have one table name and its detail',
+      ),
+    )
+  }
+
+  const [tableName, detail] = stringNodes.map((node): string => {
+    if (node instanceof StringNode) return node.unescaped.value
+    return ''
+  }) as [string, string]
+
+  const constraint = aCheckConstraint({
+    detail,
+  })
+
+  for (const node of argNodes) {
+    if (node instanceof KeywordHashNode) {
+      for (const argElement of node.elements) {
+        if (!(argElement instanceof AssocNode)) continue
+        // @ts-expect-error: unescaped is defined as string but it is actually object
+        const key = argElement.key.unescaped.value
+        const value = argElement.value
+
+        switch (key) {
+          case 'name':
+            if (value instanceof StringNode || value instanceof SymbolNode) {
+              constraint.name = value.unescaped.value
+            }
+        }
+      }
+    }
+  }
+
+  return ok({ tableName, constraint })
+}
+
 function normalizeConstraintName(
   constraint: string,
 ): ForeignKeyConstraintReferenceOption {
@@ -298,6 +374,7 @@ function normalizeConstraintName(
 function extractForeignKeyOptions(
   argNodes: Node[],
   relation: Relationship,
+  foreignKeyConstraint: ForeignKeyConstraint,
 ): void {
   for (const argNode of argNodes) {
     if (argNode instanceof KeywordHashNode) {
@@ -311,25 +388,31 @@ function extractForeignKeyOptions(
           case 'column':
             if (value instanceof StringNode || value instanceof SymbolNode) {
               relation.foreignColumnName = value.unescaped.value
+              foreignKeyConstraint.columnName = value.unescaped.value
             }
             break
           case 'name':
             if (value instanceof StringNode || value instanceof SymbolNode) {
               relation.name = value.unescaped.value
+              foreignKeyConstraint.name = value.unescaped.value
             }
             break
           case 'on_update':
             if (value instanceof SymbolNode) {
-              relation.updateConstraint = normalizeConstraintName(
+              const updateConstraint = normalizeConstraintName(
                 value.unescaped.value,
               )
+              relation.updateConstraint = updateConstraint
+              foreignKeyConstraint.updateConstraint = updateConstraint
             }
             break
           case 'on_delete':
             if (value instanceof SymbolNode) {
-              relation.deleteConstraint = normalizeConstraintName(
+              const deleteConstraint = normalizeConstraintName(
                 value.unescaped.value,
               )
+              relation.deleteConstraint = deleteConstraint
+              foreignKeyConstraint.deleteConstraint = deleteConstraint
             }
             break
         }
@@ -339,7 +422,9 @@ function extractForeignKeyOptions(
 
   // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
   if (relation.foreignColumnName === '') {
-    relation.foreignColumnName = `${singularize(relation.primaryTableName)}_id`
+    const columnName = `${singularize(relation.primaryTableName)}_id`
+    relation.foreignColumnName = columnName
+    foreignKeyConstraint.columnName = columnName
   }
 
   if (relation.name === '') {
@@ -349,6 +434,9 @@ function extractForeignKeyOptions(
       relation.foreignTableName,
       relation.foreignColumnName,
     )
+  }
+  if (foreignKeyConstraint.name === '') {
+    foreignKeyConstraint.name = `fk_${relation.foreignTableName}_${relation.foreignColumnName}`
   }
 }
 
@@ -396,15 +484,21 @@ class SchemaFinder extends Visitor {
 
     const columns: Column[] = []
     const indexes: Index[] = []
+    const constraints: Constraint[] = []
 
-    const idColumn = extractIdColumn(argNodes)
-    if (idColumn) columns.push(idColumn)
+    const [idColumn, idConstraint] = extractIdColumnAndConstraint(argNodes)
+    if (idColumn) {
+      columns.push(idColumn)
+      constraints.push(idConstraint)
+    }
 
     const blockNodes = node.block?.compactChildNodes() || []
-    const [extractColumns, extractIndexes] = extractTableDetails(blockNodes)
+    const [extractColumns, extractIndexes, extractConstraints] =
+      extractTableDetails(blockNodes)
 
     columns.push(...extractColumns)
     indexes.push(...extractIndexes)
+    constraints.push(...extractConstraints)
 
     table.columns = columns.reduce((acc, column) => {
       acc[column.name] = column
@@ -415,6 +509,11 @@ class SchemaFinder extends Visitor {
       acc[index.name] = index
       return acc
     }, {} as Indexes)
+
+    table.constraints = constraints.reduce((acc, constraint) => {
+      acc[constraint.name] = constraint
+      return acc
+    }, {} as Constraints)
 
     this.tables.push(table)
   }
@@ -435,15 +534,42 @@ class SchemaFinder extends Visitor {
       primaryColumnName: 'id',
       foreignTableName: foreignTableName,
     })
+    const foreignKeyConstraint = aForeignKeyConstraint({
+      targetTableName: primaryTableName,
+      targetColumnName: 'id',
+    })
 
-    extractForeignKeyOptions(argNodes, relationship)
+    extractForeignKeyOptions(argNodes, relationship, foreignKeyConstraint)
 
     this.relationships.push(relationship)
+    const foreignTable = this.tables.find(
+      (table) => table.name === foreignTableName,
+    )
+    if (foreignTable) {
+      foreignTable.constraints[foreignKeyConstraint.name] = foreignKeyConstraint
+    }
+  }
+
+  handleAddCheckConstraint(node: CallNode): void {
+    const argNodes = node.arguments_?.compactChildNodes() || []
+
+    const constraintResult = extractCheckConstraint(argNodes)
+    if (constraintResult.isErr()) {
+      this.errors.push(constraintResult.error)
+      return
+    }
+    const { tableName, constraint } = constraintResult.value
+    const table = this.tables.find((table) => table.name === tableName)
+    if (table) {
+      table.constraints[constraint.name] = constraint
+    }
   }
 
   override visitCallNode(node: CallNode): void {
     if (node.name === 'create_table') this.handleCreateTable(node)
     if (node.name === 'add_foreign_key') this.handleAddForeignKey(node)
+    if (node.name === 'add_check_constraint')
+      this.handleAddCheckConstraint(node)
 
     super.visitCallNode(node)
   }
