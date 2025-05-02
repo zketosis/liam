@@ -346,7 +346,6 @@ function extractForeignKeyOptions(
 
   // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
   if (relation.foreignColumnName === '') {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     relation.foreignColumnName = `${singularize(relation.primaryTableName)}_id`
   }
 
