@@ -15,8 +15,8 @@ import {
   type FC,
   createRef,
   useCallback,
-  useState,
   useEffect,
+  useState,
 } from 'react'
 import { AppBar } from './AppBar'
 import styles from './ERDRenderer.module.css'
@@ -94,20 +94,24 @@ export const ERDRenderer: FC<Props> = ({
   }, [])
 
   const useDeviceType = () => {
-    const [isMobile, setIsMobile] = useState(false);  
+    const [isMobile, setIsMobile] = useState(false)
+
     useEffect(() => {
       const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };  
-      handleResize();  
-      window.addEventListener('resize', handleResize);  
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);  
-    return { isMobile, isDesktop: !isMobile };
-  };
+        setIsMobile(window.innerWidth < 768)
+      }
 
-  const { isMobile } = useDeviceType();
-  
+      handleResize()
+
+      window.addEventListener('resize', handleResize)
+
+      return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    return { isMobile, isDesktop: !isMobile }
+  }
+
+  const { isMobile } = useDeviceType()
 
   return (
     <SidebarProvider
@@ -129,7 +133,7 @@ export const ERDRenderer: FC<Props> = ({
               collapsible
               defaultSize={open ? defaultPanelSizes[0] : 0}
               minSize={isMobile ? 40 : 10}
-              maxSize={isMobile ? 80: 30}
+              maxSize={isMobile ? 80 : 30}
               ref={leftPanelRef}
               isResizing={isResizing}
             >
