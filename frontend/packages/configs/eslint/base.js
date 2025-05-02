@@ -13,7 +13,7 @@ export function createBaseConfig(options = {}) {
   return [
     {
       files: ['**/*.ts', '**/*.tsx'],
-      ignores: ['**/trigger.config.ts', '**/vitest.config.ts'],
+      ignores: ['**/trigger.config.ts', '**/vitest.config.ts', '**/dist/**'],
       plugins: {
         '@typescript-eslint': tseslint,
       },
