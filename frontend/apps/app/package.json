@@ -2,6 +2,7 @@
   "name": "@liam-hq/app",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "dependencies": {
     "@codemirror/commands": "6.8.1",
     "@codemirror/lang-yaml": "6.1.2",

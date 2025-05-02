@@ -2,6 +2,7 @@
   "name": "@liam-hq/prompt-test",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "main": "src/index.ts",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
