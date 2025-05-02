@@ -7,4 +7,17 @@ export default [
   {
     ignores: ['dist/**'],
   },
+  {
+    files: ['src/parser/schemarb/parser.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
+  {
+    files: ['src/parser/sql/postgresql/parser.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
 ]

@@ -5,9 +5,7 @@ import Module from 'pg-query-emscripten'
 
 export const parse = async (str: string): Promise<ParseResult> => {
   const pgQuery = await new Module()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const result = pgQuery.parse(str)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return result
 }
 
