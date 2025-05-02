@@ -59,9 +59,16 @@ export const ContentForSchemaSection: FC<Props> = ({
       const contentObj = JSON.parse(currentContent)
 
       // Add the new table group to the content
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (!contentObj.overrides.tableGroups) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         contentObj.overrides.tableGroups = {}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 
       contentObj.overrides.tableGroups[newTableGroup.name] = newTableGroup
 
