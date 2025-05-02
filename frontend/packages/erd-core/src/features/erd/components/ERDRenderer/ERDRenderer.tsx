@@ -16,6 +16,7 @@ import {
   createRef,
   useCallback,
   useState,
+  useEffect,
 } from 'react'
 import { AppBar } from './AppBar'
 import styles from './ERDRenderer.module.css'
@@ -92,6 +93,22 @@ export const ERDRenderer: FC<Props> = ({
     document.cookie = `${PANEL_LAYOUT_COOKIE_NAME}=${JSON.stringify(sizes)}; path=/; max-age=${COOKIE_MAX_AGE}`
   }, [])
 
+  const useDeviceType = () => {
+    const [isMobile, setIsMobile] = useState(false);  
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };  
+      handleResize();  
+      window.addEventListener('resize', handleResize);  
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);  
+    return { isMobile, isDesktop: !isMobile };
+  };
+
+  const { isMobile } = useDeviceType();
+  
+
   return (
     <SidebarProvider
       className={styles.wrapper}
@@ -111,8 +128,8 @@ export const ERDRenderer: FC<Props> = ({
             <ResizablePanel
               collapsible
               defaultSize={open ? defaultPanelSizes[0] : 0}
-              minSize={10}
-              maxSize={30}
+              minSize={isMobile ? 40 : 10}
+              maxSize={isMobile ? 80: 30}
               ref={leftPanelRef}
               isResizing={isResizing}
             >
