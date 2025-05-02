@@ -276,6 +276,7 @@ function extractRelationshipTableNames(
 
   const [foreignTableName, primaryTableName] = stringNodes.map(
     (node): string => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (node instanceof StringNode) return node.unescaped.value
       return ''
     },
