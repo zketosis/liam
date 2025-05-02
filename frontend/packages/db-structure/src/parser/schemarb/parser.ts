@@ -77,6 +77,8 @@ function extractTableComment(argNodes: Node[]): string | null {
 
     if (commentAssoc && commentAssoc instanceof AssocNode) {
       // @ts-expect-error: unescaped is defined as string but it is actually object
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return commentAssoc.value.unescaped.value
     }
   }
@@ -193,7 +195,9 @@ function extractIndexDetails(node: CallNode): Index {
 
 function extractColumnOptions(hashNode: KeywordHashNode, column: Column): void {
   for (const argElement of hashNode.elements) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!(argElement instanceof AssocNode)) continue
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     // @ts-expect-error: unescaped is defined as string but it is actually object
     const key = argElement.key.unescaped.value
     const value = argElement.value
@@ -213,28 +217,36 @@ function extractColumnOptions(hashNode: KeywordHashNode, column: Column): void {
         }
         break
       case 'unique':
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         column.unique = value instanceof TrueNode
         break
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       case 'comment':
         // @ts-expect-error: unescaped is defined as string but it is actually object
         column.comment = value.unescaped.value
         break
     }
   }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 }
 
 function extractIndexOptions(hashNode: KeywordHashNode, index: Index): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   for (const argElement of hashNode.elements) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!(argElement instanceof AssocNode)) continue
     // @ts-expect-error: unescaped is defined as string but it is actually object
     const key = argElement.key.unescaped.value
     const value = argElement.value
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     switch (key) {
       case 'name':
         // @ts-expect-error: unescaped is defined as string but it is actually object
         index.name = value.unescaped.value
         break
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       case 'unique':
         index.unique = value instanceof TrueNode
         break
@@ -292,12 +304,14 @@ function normalizeConstraintName(
       return 'SET_NULL'
     default:
       return 'NO_ACTION'
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   }
 }
 
 function extractForeignKeyOptions(
   argNodes: Node[],
   relation: Relationship,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 ): void {
   for (const argNode of argNodes) {
     if (argNode instanceof KeywordHashNode) {
