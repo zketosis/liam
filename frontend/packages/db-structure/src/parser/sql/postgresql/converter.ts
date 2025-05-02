@@ -35,6 +35,10 @@ function isStringNode(node: Node | undefined): node is { String: PgString } {
   )
 }
 
+function isConstraintNode(node: Node): node is { Constraint: Constraint } {
+  return (node as { Constraint: Constraint }).Constraint !== undefined
+}
+
 // ON UPDATE or ON DELETE subclauses for foreign key
 // see: https://github.com/launchql/pgsql-parser/blob/pgsql-parser%4013.16.0/packages/deparser/src/deparser.ts#L3101-L3141
 function getConstraintAction(
@@ -54,6 +58,48 @@ function getConstraintAction(
     default:
       return 'NO_ACTION' // Default to 'NO_ACTION' for unknown or missing values
   }
+}
+
+/**
+ * Extract default value from constraints
+ */
+function extractDefaultValueFromConstraints(
+  constraints: Node[] | undefined,
+): string | number | boolean | null {
+  if (!constraints) return null
+
+  const constraintNodes = constraints.filter(isConstraintNode)
+  for (const c of constraintNodes) {
+    const constraint = (c as { Constraint: Constraint }).Constraint
+
+    // Skip if not a default constraint or missing required properties
+    if (
+      constraint.contype !== 'CONSTR_DEFAULT' ||
+      !constraint.raw_expr ||
+      !('A_Const' in constraint.raw_expr)
+    ) {
+      continue
+    }
+
+    const aConst = constraint.raw_expr.A_Const
+
+    // Extract string value
+    if ('sval' in aConst && 'sval' in aConst.sval) {
+      return aConst.sval.sval
+    }
+
+    // Extract integer value
+    if ('ival' in aConst && 'ival' in aConst.ival) {
+      return aConst.ival.ival
+    }
+
+    // Extract boolean value
+    if ('boolval' in aConst && 'boolval' in aConst.boolval) {
+      return aConst.boolval.boolval
+    }
+  }
+
+  return null
 }
 
 const constraintToRelationship = (
@@ -107,10 +153,6 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
   const tableGroups: Record<string, TableGroup> = {}
   const errors: ProcessError[] = []
 
-  function isConstraintNode(node: Node): node is { Constraint: Constraint } {
-    return (node as { Constraint: Constraint }).Constraint !== undefined
-  }
-
   function isCreateStmt(stmt: Node): stmt is { CreateStmt: CreateStmt } {
     return 'CreateStmt' in stmt
   }
@@ -129,92 +171,196 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     return 'AlterTableStmt' in stmt
   }
 
-  function handleCreateStmt(createStmt: CreateStmt) {
-    if (!createStmt || !createStmt.relation || !createStmt.tableElts) return
+  /**
+   * Extract column type from type name
+   */
+  function extractColumnType(typeName: { names?: Node[] } | undefined): string {
+    return (
+      typeName?.names
+        ?.filter(isStringNode)
+        .map((n) => n.String.sval)
+        .join('') || ''
+    )
+  }
 
-    const tableName = createStmt.relation.relname
-    if (!tableName) return
+  /**
+   * Check if a column is a primary key
+   */
+  function isPrimaryKey(constraints: Node[] | undefined): boolean {
+    return (
+      constraints
+        ?.filter(isConstraintNode)
+        .some((c) => c.Constraint.contype === 'CONSTR_PRIMARY') || false
+    )
+  }
 
-    const columns: Columns = {}
-    for (const elt of createStmt.tableElts) {
-      if ('ColumnDef' in elt) {
-        const colDef = elt.ColumnDef
-        if (colDef.colname === undefined) continue
+  /**
+   * Check if a column is unique
+   */
+  function isUnique(constraints: Node[] | undefined): boolean {
+    return (
+      constraints
+        ?.filter(isConstraintNode)
+        .some((c) =>
+          ['CONSTR_UNIQUE', 'CONSTR_PRIMARY'].includes(
+            c.Constraint.contype ?? '',
+          ),
+        ) || false
+    )
+  }
 
-        columns[colDef.colname] = {
-          name: colDef.colname,
-          type:
-            colDef.typeName?.names
-              ?.filter(isStringNode)
-              .map((n) => n.String.sval)
-              .join('') || '',
-          default:
-            colDef.constraints
-              ?.filter(isConstraintNode)
-              .reduce<string | number | boolean | null>((defaultValue, c) => {
-                const constraint = c.Constraint
-                if (
-                  constraint.contype !== 'CONSTR_DEFAULT' ||
-                  !constraint.raw_expr ||
-                  !('A_Const' in constraint.raw_expr)
-                )
-                  return defaultValue
+  /**
+   * Check if a column is not null
+   */
+  function isNotNull(constraints: Node[] | undefined): boolean {
+    return (
+      constraints
+        ?.filter(isConstraintNode)
+        .some((c) => c.Constraint.contype === 'CONSTR_NOTNULL') ||
+      // If primary key, it's not null
+      isPrimaryKey(constraints) ||
+      false
+    )
+  }
 
-                const aConst = constraint.raw_expr.A_Const
-                if ('sval' in aConst && 'sval' in aConst.sval)
-                  return aConst.sval.sval
-                if ('ival' in aConst && 'ival' in aConst.ival)
-                  return aConst.ival.ival
-                if ('boolval' in aConst && 'boolval' in aConst.boolval)
-                  return aConst.boolval.boolval
+  /**
+   * Column definition type
+   */
+  interface ColumnDef {
+    colname?: string
+    typeName?: { names?: Node[] }
+    constraints?: Node[]
+  }
 
-                return defaultValue
-              }, null) || null,
-          check: null, // TODO
-          primary:
-            colDef.constraints
-              ?.filter(isConstraintNode)
-              .some((c) => c.Constraint.contype === 'CONSTR_PRIMARY') || false,
-          unique:
-            colDef.constraints
-              ?.filter(isConstraintNode)
-              .some((c) =>
-                ['CONSTR_UNIQUE', 'CONSTR_PRIMARY'].includes(
-                  c.Constraint.contype ?? '',
-                ),
-              ) || false,
-          notNull:
-            colDef.constraints
-              ?.filter(isConstraintNode)
-              .some((c) => c.Constraint.contype === 'CONSTR_NOTNULL') ||
-            // If primary key, it's not null
-            colDef.constraints
-              ?.filter(isConstraintNode)
-              .some((c) => c.Constraint.contype === 'CONSTR_PRIMARY') ||
-            false,
-          comment: null, // TODO
-        }
+  /**
+   * Column type
+   */
+  interface Column {
+    name: string
+    type: string
+    default: string | number | boolean | null
+    check: string | null
+    primary: boolean
+    unique: boolean
+    notNull: boolean
+    comment: string | null
+  }
 
-        for (const constraint of (colDef.constraints ?? []).filter(
-          isConstraintNode,
-        )) {
-          const relResult = constraintToRelationship(
-            tableName,
-            colDef.colname,
-            constraint.Constraint,
-          )
-          if (relResult.isErr()) {
-            errors.push(relResult.error)
-            continue
-          }
-          if (relResult.value === undefined) continue
-          const relationship = relResult.value
-
-          relationships[relationship.name] = relationship
-        }
+  /**
+   * Process a column definition
+   */
+  function processColumnDef(
+    colDef: ColumnDef,
+    tableName: string,
+  ): {
+    column: [string, Column]
+    relationships: Relationship[]
+    errors: ProcessError[]
+  } {
+    const columnName = colDef.colname
+    if (columnName === undefined) {
+      // Return an empty column with default values
+      return {
+        column: [
+          '',
+          {
+            name: '',
+            type: '',
+            default: null,
+            check: null,
+            primary: false,
+            unique: false,
+            notNull: false,
+            comment: null,
+          },
+        ],
+        relationships: [],
+        errors: [],
       }
     }
 
+    const columnErrors: ProcessError[] = []
+    const columnRelationships: Relationship[] = []
+
+    // Create column object
+    const column = {
+      name: columnName,
+      type: extractColumnType(colDef.typeName),
+      default: extractDefaultValueFromConstraints(colDef.constraints) || null,
+      check: null, // TODO
+      primary: isPrimaryKey(colDef.constraints),
+      unique: isUnique(colDef.constraints),
+      notNull: isNotNull(colDef.constraints),
+      comment: null, // TODO
+    }
+
+    // Process relationships from constraints
+    for (const constraint of (colDef.constraints ?? []).filter(
+      isConstraintNode,
+    )) {
+      const relResult = constraintToRelationship(
+        tableName,
+        columnName,
+        constraint.Constraint,
+      )
+
+      if (relResult.isErr()) {
+        columnErrors.push(relResult.error)
+        continue
+      }
+
+      if (relResult.value !== undefined) {
+        columnRelationships.push(relResult.value)
+      }
+    }
+
+    return {
+      column: [columnName, column],
+      relationships: columnRelationships,
+      errors: columnErrors,
+    }
+  }
+
+  /**
+   * Process table elements
+   */
+  function processTableElements(
+    tableElts: Node[],
+    tableName: string,
+  ): {
+    columns: Columns
+    tableRelationships: Relationship[]
+    tableErrors: ProcessError[]
+  } {
+    const columns: Columns = {}
+    const tableRelationships: Relationship[] = []
+    const tableErrors: ProcessError[] = []
+
+    // Process each column definition
+    for (const elt of tableElts) {
+      if ('ColumnDef' in elt) {
+        const {
+          column,
+          relationships: colRelationships,
+          errors: colErrors,
+        } = processColumnDef(elt.ColumnDef, tableName)
+
+        if (column[0]) {
+          columns[column[0]] = column[1]
+        }
+
+        tableRelationships.push(...colRelationships)
+        tableErrors.push(...colErrors)
+      }
+    }
+
+    return { columns, tableRelationships, tableErrors }
+  }
+
+  /**
+   * Create a table object
+   */
+  function createTableObject(tableName: string, columns: Columns): void {
     tables[tableName] = {
       name: tableName,
       columns,
@@ -224,7 +370,51 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     }
   }
 
-  function handleIndexStmt(indexStmt: IndexStmt) {
+  /**
+   * Handle CREATE TABLE statement
+   */
+  function handleCreateStmt(createStmt: CreateStmt): void {
+    // Validate required fields
+    if (!createStmt || !createStmt.relation || !createStmt.tableElts) return
+
+    const tableName = createStmt.relation.relname
+    if (!tableName) return
+
+    // Process table elements
+    const { columns, tableRelationships, tableErrors } = processTableElements(
+      createStmt.tableElts,
+      tableName,
+    )
+
+    // Create table object
+    createTableObject(tableName, columns)
+
+    // Add relationships and errors
+    for (const relationship of tableRelationships) {
+      relationships[relationship.name] = relationship
+    }
+
+    errors.push(...tableErrors)
+  }
+
+  /**
+   * Process index parameters
+   */
+  function processIndexParams(indexParams: Node[]): string[] {
+    return indexParams
+      .map((param) => {
+        if ('IndexElem' in param) {
+          return param.IndexElem.name
+        }
+        return undefined
+      })
+      .filter((name): name is string => name !== undefined)
+  }
+
+  /**
+   * Handle CREATE INDEX statement
+   */
+  function handleIndexStmt(indexStmt: IndexStmt): void {
     if (
       !indexStmt ||
       !indexStmt.idxname ||
@@ -236,14 +426,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     const indexName = indexStmt.idxname
     const tableName = indexStmt.relation.relname
     const unique = indexStmt.unique !== undefined
-    const columns = indexStmt.indexParams
-      .map((param) => {
-        if ('IndexElem' in param) {
-          return param.IndexElem.name
-        }
-        return undefined
-      })
-      .filter((name): name is string => name !== undefined)
+    const columns = processIndexParams(indexStmt.indexParams)
     const type = indexStmt.accessMethod ?? ''
 
     if (tableName) {
@@ -265,103 +448,198 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     }
   }
 
-  function handleCommentStmt(commentStmt: CommentStmt) {
+  /**
+   * Extract string value from a node
+   */
+  function extractStringValue(item: Node): string | null {
+    return 'String' in item &&
+      typeof item.String === 'object' &&
+      item.String !== null &&
+      'sval' in item.String
+      ? item.String.sval
+      : null
+  }
+
+  /**
+   * Process table comment
+   */
+  function processTableComment(tableName: string, comment: string): void {
+    if (!tables[tableName]) return
+    tables[tableName].comment = comment
+  }
+
+  /**
+   * Process column comment
+   */
+  function processColumnComment(
+    tableName: string,
+    columnName: string,
+    comment: string,
+  ): void {
+    if (!tables[tableName]) return
+    if (!tables[tableName].columns[columnName]) return
+    tables[tableName].columns[columnName].comment = comment
+  }
+
+  /**
+   * Extract list items from a comment statement
+   */
+  function extractCommentListItems(
+    commentStmt: CommentStmt,
+  ): { list: Node[]; comment: string } | null {
+    // Validate object node
+    const objectNode = commentStmt.object
+    if (!objectNode) return null
+
+    // Check if object is a list
+    const isList = (stmt: Node): stmt is { List: List } => 'List' in stmt
+    if (!isList(objectNode)) return null
+
+    // Get comment text
+    const comment = commentStmt.comment
+    if (!comment) return null
+
+    // Get list items
+    const list = objectNode.List.items || []
+    if (list.length === 0) return null
+
+    return { list, comment }
+  }
+
+  /**
+   * Handle table comment
+   */
+  function handleTableComment(list: Node[], comment: string): void {
+    const last1 = list[list.length - 1]
+    if (!last1) return
+
+    const tableName = extractStringValue(last1)
+    if (!tableName) return
+
+    processTableComment(tableName, comment)
+  }
+
+  /**
+   * Handle column comment
+   */
+  function handleColumnComment(list: Node[], comment: string): void {
+    const last1 = list[list.length - 1]
+    const last2 = list[list.length - 2]
+    if (!last1 || !last2) return
+
+    const tableName = extractStringValue(last2)
+    if (!tableName) return
+
+    const columnName = extractStringValue(last1)
+    if (!columnName) return
+
+    processColumnComment(tableName, columnName, comment)
+  }
+
+  /**
+   * Handle COMMENT statement
+   */
+  function handleCommentStmt(commentStmt: CommentStmt): void {
+    // Skip if not a table or column comment
     if (
       commentStmt.objtype !== 'OBJECT_TABLE' &&
       commentStmt.objtype !== 'OBJECT_COLUMN'
     )
       return
-    const objectNode = commentStmt.object
-    if (!objectNode) return
-    const isList = (stmt: Node): stmt is { List: List } => 'List' in stmt
-    if (!isList(objectNode)) return
 
-    const comment = commentStmt.comment
-    if (!comment) return
+    // Extract list items and comment
+    const result = extractCommentListItems(commentStmt)
+    if (!result) return
 
-    const extractStringValue = (item: Node): string | null =>
-      'String' in item &&
-      typeof item.String === 'object' &&
-      item.String !== null &&
-      'sval' in item.String
-        ? item.String.sval
-        : null
-
-    const list = objectNode.List.items || []
-    const last1 = list[list.length - 1]
-    const last2 = list[list.length - 2]
-    if (!last1) return
-
-    switch (commentStmt.objtype) {
-      case 'OBJECT_TABLE': {
-        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
-        // `COMMENT ON TABLE <scope_name>.<table_name> IS '<comment>';`
-        // or
-        // `COMMENT ON TABLE <table_name> IS '<comment>';`
-        const tableName = extractStringValue(last1)
-        if (!tableName) return
-        if (!tables[tableName]) return
-        tables[tableName].comment = comment
-        return
-      }
-      case 'OBJECT_COLUMN': {
-        // Supports both of the following formats, but currently ignores the validity of `scope_name` values:
-        // `COMMENT ON COLUMN <scope_name>.<table_name>.<column_name> IS '<comment>';`
-        // or
-        // `COMMENT ON COLUMN <table_name>.<column_name> IS '<comment>';`
-        if (!last2) return
-        const tableName = extractStringValue(last2)
-        if (!tableName) return
-        if (!tables[tableName]) return
-        const columnName = extractStringValue(last1)
-        if (!columnName) return
-        if (!tables[tableName].columns[columnName]) return
-        tables[tableName].columns[columnName].comment = comment
-        return
-      }
-      default:
-      // NOTE: unexpected, but do nothing for now.
+    // Process based on object type
+    if (commentStmt.objtype === 'OBJECT_TABLE') {
+      handleTableComment(result.list, result.comment)
+    } else if (commentStmt.objtype === 'OBJECT_COLUMN') {
+      handleColumnComment(result.list, result.comment)
     }
   }
 
-  function handleAlterTableStmt(alterTableStmt: AlterTableStmt) {
+  /**
+   * Process a foreign key constraint
+   */
+  function processForeignKeyConstraint(
+    foreignTableName: string,
+    constraint: { Constraint: Constraint },
+  ): void {
+    const foreignColumnName =
+      constraint.Constraint.fk_attrs?.[0] &&
+      isStringNode(constraint.Constraint.fk_attrs[0])
+        ? constraint.Constraint.fk_attrs[0].String.sval
+        : undefined
+
+    if (foreignColumnName === undefined) return
+
+    const relResult = constraintToRelationship(
+      foreignTableName,
+      foreignColumnName,
+      constraint.Constraint,
+    )
+
+    if (relResult.isErr()) {
+      errors.push(relResult.error)
+      return
+    }
+
+    if (relResult.value === undefined) return
+
+    const relationship = relResult.value
+    relationships[relationship.name] = relationship
+  }
+
+  /**
+   * ALTER TABLE command type
+   */
+  interface AlterTableCmd {
+    subtype: string
+    def?: Node
+  }
+
+  /**
+   * Process an ALTER TABLE command
+   */
+  function processAlterTableCommand(
+    cmd: { AlterTableCmd?: AlterTableCmd },
+    foreignTableName: string,
+  ): void {
+    if (!('AlterTableCmd' in cmd)) return
+
+    const alterTableCmd = cmd.AlterTableCmd
+
+    // Only process ADD CONSTRAINT commands
+    if (alterTableCmd.subtype !== 'AT_AddConstraint') return
+
+    const constraint = alterTableCmd.def
+    if (!constraint || !isConstraintNode(constraint)) return
+
+    processForeignKeyConstraint(foreignTableName, constraint)
+  }
+
+  /**
+   * Handle ALTER TABLE statement
+   */
+  function handleAlterTableStmt(alterTableStmt: AlterTableStmt): void {
+    // Validate required fields
     if (!alterTableStmt || !alterTableStmt.relation || !alterTableStmt.cmds)
       return
 
     const foreignTableName = alterTableStmt.relation.relname
     if (!foreignTableName) return
 
+    // Process each command
     for (const cmd of alterTableStmt.cmds) {
-      if (!('AlterTableCmd' in cmd)) continue
-
-      const alterTableCmd = cmd.AlterTableCmd
-      if (alterTableCmd.subtype === 'AT_AddConstraint') {
-        const constraint = alterTableCmd.def
-        if (!constraint || !isConstraintNode(constraint)) continue
-        const foreignColumnName =
-          constraint.Constraint.fk_attrs?.[0] &&
-          isStringNode(constraint.Constraint.fk_attrs[0])
-            ? constraint.Constraint.fk_attrs[0].String.sval
-            : undefined
-        if (foreignColumnName === undefined) continue
-
-        const relResult = constraintToRelationship(
-          foreignTableName,
-          foreignColumnName,
-          constraint.Constraint,
-        )
-        if (relResult.isErr()) {
-          errors.push(relResult.error)
-          continue
-        }
-        if (relResult.value === undefined) continue
-        const relationship = relResult.value
-
-        relationships[relationship.name] = relationship
-      }
+      processAlterTableCommand(
+        cmd as { AlterTableCmd?: AlterTableCmd },
+        foreignTableName,
+      )
     }
   }
 
+  // Process all statements
   for (const statement of stmts) {
     if (statement?.stmt === undefined) continue
 

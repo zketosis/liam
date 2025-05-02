@@ -1,3 +1,4 @@
+import type { RawStmt } from '@pgsql/types'
 import type { Schema } from '../../../schema/index.js'
 import { type ProcessError, UnexpectedTokenWarningError } from '../../errors.js'
 import type { Processor } from '../../types.js'
@@ -5,6 +6,93 @@ import { convertToSchema } from './converter.js'
 import { mergeSchemas } from './mergeSchemas.js'
 import { parse } from './parser.js'
 import { processSQLInChunks } from './processSQLInChunks.js'
+
+/**
+ * Handles parse errors and returns offset information
+ */
+function handleParseError(parseError: { message: string; cursorpos: number }): [
+  number | null,
+  number | null,
+  ProcessError[],
+] {
+  const errors: ProcessError[] = [
+    new UnexpectedTokenWarningError(parseError.message),
+  ]
+  const retryOffset = parseError.cursorpos
+  return [retryOffset, null, errors]
+}
+
+/**
+ * Processes the last statement and determines if it's complete
+ */
+function processLastStatement(
+  stmts: RawStmt[],
+): [boolean, number | null, number | null] {
+  let isLastStatementComplete = true
+  let readOffset: number | null = null
+  let retryOffset: number | null = null
+
+  if (stmts.length > 0) {
+    const lastStmt = stmts[stmts.length - 1]
+    if (lastStmt?.stmt_len === undefined) {
+      isLastStatementComplete = false
+      if (lastStmt?.stmt_location === undefined) {
+        retryOffset = 0 // no error, but the statement is not complete
+      } else {
+        readOffset = lastStmt.stmt_location - 1
+      }
+    }
+  }
+
+  return [isLastStatementComplete, readOffset, retryOffset]
+}
+
+/**
+ * Processes a single SQL chunk
+ */
+async function processChunk(
+  chunk: string,
+  schema: Schema,
+  parseErrors: ProcessError[],
+): Promise<[number | null, number | null, ProcessError[]]> {
+  let readOffset: number | null = null
+  let retryOffset: number | null = null
+  const errors: ProcessError[] = []
+
+  const { parse_tree, error: parseError } = await parse(chunk)
+
+  if (parse_tree.stmts.length > 0 && parseError !== null) {
+    throw new Error(
+      'UnexpectedCondition. parse_tree.stmts.length > 0 && parseError !== null',
+    )
+  }
+
+  if (parseError !== null) {
+    return handleParseError(parseError)
+  }
+
+  const [isLastStatementComplete, lastReadOffset, lastRetryOffset] =
+    processLastStatement(parse_tree.stmts)
+
+  readOffset = lastReadOffset
+  retryOffset = lastRetryOffset
+
+  if (retryOffset !== null) {
+    return [retryOffset, readOffset, errors]
+  }
+
+  const { value: convertedSchema, errors: conversionErrors } = convertToSchema(
+    isLastStatementComplete ? parse_tree.stmts : parse_tree.stmts.slice(0, -1),
+  )
+
+  if (conversionErrors !== null) {
+    parseErrors.push(...conversionErrors)
+  }
+
+  mergeSchemas(schema, convertedSchema)
+
+  return [retryOffset, readOffset, errors]
+}
 
 /**
  * Processes SQL statements and constructs a schema.
@@ -25,58 +113,7 @@ export const processor: Processor = async (sql: string) => {
   const parseErrors: ProcessError[] = []
 
   const errors = await processSQLInChunks(sql, CHUNK_SIZE, async (chunk) => {
-    // Offset markers for chunk processing control:
-    // - readOffset: Tracks the position after the last complete statement,
-    //   used when a statement is partially processed and needs continuation
-    // - retryOffset: Indicates where parsing failed and/or should be retried
-    //   with a different chunk size (used in shrinking/expanding modes)
-    let readOffset: number | null = null
-    let retryOffset: number | null = null
-    const errors: ProcessError[] = []
-
-    const { parse_tree, error: parseError } = await parse(chunk)
-
-    if (parse_tree.stmts.length > 0 && parseError !== null) {
-      throw new Error(
-        'UnexpectedCondition. parse_tree.stmts.length > 0 && parseError !== null',
-      )
-    }
-
-    if (parseError !== null) {
-      errors.push(new UnexpectedTokenWarningError(parseError.message))
-      retryOffset = parseError.cursorpos
-      return [retryOffset, readOffset, errors]
-    }
-
-    let isLastStatementComplete = true
-    const statementCount = parse_tree.stmts.length
-
-    if (statementCount > 0) {
-      const lastStmt = parse_tree.stmts[statementCount - 1]
-      if (lastStmt?.stmt_len === undefined) {
-        isLastStatementComplete = false
-        if (lastStmt?.stmt_location === undefined) {
-          retryOffset = 0 // no error, but the statement is not complete
-          return [retryOffset, readOffset, errors]
-        }
-        readOffset = lastStmt?.stmt_location - 1
-      }
-    }
-
-    const { value: convertedSchema, errors: conversionErrors } =
-      convertToSchema(
-        isLastStatementComplete
-          ? parse_tree.stmts
-          : parse_tree.stmts.slice(0, -1),
-      )
-
-    if (conversionErrors !== null) {
-      parseErrors.push(...conversionErrors)
-    }
-
-    mergeSchemas(schema, convertedSchema)
-
-    return [retryOffset, readOffset, errors]
+    return processChunk(chunk, schema, parseErrors)
   })
 
   return { value: schema, errors: parseErrors.concat(errors) }
