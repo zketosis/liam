@@ -180,6 +180,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@liam-hq/configs':
+        specifier: workspace:*
+        version: link:../../packages/configs
       '@octokit/openapi-types':
         specifier: 25.0.0
         version: 25.0.0
@@ -204,6 +207,9 @@ importers:
       esbuild:
         specifier: 0.25.2
         version: 0.25.2
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       typed-css-modules:
         specifier: 0.9.1
         version: 0.9.1
@@ -268,6 +274,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@liam-hq/configs':
+        specifier: workspace:*
+        version: link:../../packages/configs
       '@tailwindcss/postcss':
         specifier: 4.1.4
         version: 4.1.4
@@ -283,6 +292,9 @@ importers:
       '@types/react-dom':
         specifier: '18'
         version: 18.3.6(@types/react@18.3.20)
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       postcss:
         specifier: 8.5.3
         version: 8.5.3
@@ -365,6 +377,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@liam-hq/configs':
+        specifier: workspace:*
+        version: link:../configs
       '@rollup/plugin-node-resolve':
         specifier: 16.0.1
         version: 16.0.1(rollup@4.40.0)
@@ -386,6 +401,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: 4.4.1
         version: 4.4.1(vite@6.3.4(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       rollup:
         specifier: 4.40.0
         version: 4.40.0
@@ -441,6 +459,9 @@ importers:
       '@liam-hq/configs':
         specifier: workspace:*
         version: link:../configs
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       supabase:
         specifier: 2.22.3
         version: 2.22.3
@@ -487,6 +508,9 @@ importers:
       '@types/node':
         specifier: 22.15.2
         version: 22.15.2
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       json-refs:
         specifier: 3.0.15
         version: 3.0.15
@@ -514,6 +538,9 @@ importers:
       '@types/node':
         specifier: 22.15.2
         version: 22.15.2
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -560,6 +587,9 @@ importers:
       '@types/react':
         specifier: '18'
         version: 18.3.20
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       typed-css-modules:
         specifier: 0.9.1
         version: 0.9.1
@@ -607,6 +637,9 @@ importers:
       '@types/node':
         specifier: 22.15.2
         version: 22.15.2
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -716,6 +749,9 @@ importers:
       dotenv:
         specifier: 16.5.0
         version: 16.5.0
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       langfuse:
         specifier: 3.37.2
         version: 3.37.2
@@ -789,6 +825,9 @@ importers:
       '@types/react':
         specifier: '18'
         version: 18.3.20
+      eslint:
+        specifier: 9.25.1
+        version: 9.25.1(jiti@2.4.2)
       typed-css-modules:
         specifier: 0.9.1
         version: 0.9.1
