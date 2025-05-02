@@ -1,7 +1,7 @@
 {
-  "extends": "../../packages/configs/tsconfig/base.json",
-  "compilerOptions": {
-    "baseUrl": "."
-  },
-  "include": ["src/**/*", "vite-plugins/**/*", "vite.config.ts"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
