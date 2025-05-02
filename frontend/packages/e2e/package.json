@@ -7,13 +7,16 @@
     "@liam-hq/configs": "workspace:*",
     "@playwright/test": "1.51.1",
     "@types/node": "22.15.2",
+    "eslint": "9.25.1",
     "typescript": "5.8.3"
   },
   "scripts": {
     "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
+    "fmt:eslint": "eslint --fix .",
     "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
+    "lint:eslint": "eslint .",
     "test:e2e": "playwright test"
   }
 }

@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@liam-hq/configs": "workspace:*",
     "@octokit/openapi-types": "25.0.0",
     "@prisma/nextjs-monorepo-workaround-plugin": "6.6.0",
     "@types/diff": "7.0.2",
@@ -56,6 +57,7 @@
     "@types/react": "18",
     "@types/react-dom": "18",
     "esbuild": "0.25.2",
+    "eslint": "9.25.1",
     "typed-css-modules": "0.9.1",
     "typescript": "5.8.3",
     "vitest": "3.1.2"
@@ -67,10 +69,12 @@
     "dev:next": "next dev --port 3001",
     "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
+    "fmt:eslint": "eslint --fix .",
     "gen": "concurrently \"pnpm:gen:*\"",
     "gen:css": "tcm -p '!(node_modules|.next|.trigger|.turbo)/**/*.module.css'",
     "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
+    "lint:eslint": "eslint .",
     "lint:tsc": "tsc --noEmit",
     "postinstall": "cp ../../packages/db-structure/node_modules/@ruby/prism/src/prism.wasm prism.wasm",
     "start": "next start",

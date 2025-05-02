@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@liam-hq/configs": "workspace:*",
     "@rollup/plugin-node-resolve": "16.0.1",
     "@rollup/plugin-typescript": "12.1.2",
     "@types/glob": "8.1.0",
@@ -44,6 +45,7 @@
     "@types/react": "18",
     "@types/react-dom": "18",
     "@vitejs/plugin-react": "4.4.1",
+    "eslint": "9.25.1",
     "rollup": "4.40.0",
     "rollup-plugin-execute": "1.1.1",
     "typed-css-modules": "0.9.1",
@@ -63,10 +65,12 @@
     "dev:css": "tcm src --watch",
     "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
+    "fmt:eslint": "eslint --fix .",
     "gen": "concurrently \"pnpm:gen:*\"",
     "gen:css": "tcm src",
     "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
+    "lint:eslint": "eslint .",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest run"
   },
