@@ -24,7 +24,6 @@ const nextConfig: NextConfig = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (Array.isArray(config.externals)) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals.push(
         '@prisma/debug',
         '@prisma/engines',
@@ -49,6 +48,7 @@ const nextConfig: NextConfig = {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/debug'] = '@prisma/debug'
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -82,11 +82,11 @@ const nextConfig: NextConfig = {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         '@prisma/schema-files-loader'
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     config.plugins.push({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       // biome-ignore lint/suspicious/noExplicitAny: webpack types are incomplete so we need to use any here
       apply: (compiler: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         compiler.hooks.afterEmit.tap('InstallPrismaInternals', () => {
           execSync('node scripts/install-prisma-internals.mjs', {
             stdio: 'inherit',
@@ -95,6 +95,7 @@ const nextConfig: NextConfig = {
         })
       },
     })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     config.plugins = [...config.plugins, new PrismaPlugin()]
 
     return config

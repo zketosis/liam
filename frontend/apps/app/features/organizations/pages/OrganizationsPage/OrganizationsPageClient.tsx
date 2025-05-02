@@ -21,6 +21,7 @@ export function OrganizationsPageClient() {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         description: toastData.description,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         status: toastData.status,
       })
       // Remove the stored data after displaying

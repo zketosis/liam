@@ -69,7 +69,6 @@ export const ContentForSchemaSection: FC<Props> = ({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-
       contentObj.overrides.tableGroups[newTableGroup.name] = newTableGroup
 
       // Update the content
