@@ -2,11 +2,11 @@
 
 
 ## Summary
-* 1060 MIT
-* 116 Apache 2.0
-* 77 ISC
-* 29 New BSD
-* 22 Simplified BSD
+* 1100 MIT
+* 126 Apache 2.0
+* 78 ISC
+* 30 New BSD
+* 23 Simplified BSD
 * 9 Mozilla Public License 2.0
 * 5 BlueOak-1.0.0
 * 3 MIT OR Apache-2.0
@@ -802,6 +802,105 @@ Apache-2 manually approved
 
 
 
+<a name="@eslint-community/eslint-utils"></a>
+### @eslint-community/eslint-utils v4.6.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@eslint-community/regexpp"></a>
+### @eslint-community/regexpp v4.12.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@eslint/config-array"></a>
+### @eslint/config-array v0.20.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@eslint/config-helpers"></a>
+### @eslint/config-helpers v0.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@eslint/core"></a>
+### @eslint/core v0.13.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@eslint/eslintrc"></a>
+### @eslint/eslintrc v3.3.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@eslint/js"></a>
+### @eslint/js v9.25.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@eslint/object-schema"></a>
+### @eslint/object-schema v2.1.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@eslint/plugin-kit"></a>
+### @eslint/plugin-kit v0.2.8
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
 <a name="@floating-ui/core"></a>
 ### @floating-ui/core v1.6.9
 #### 
@@ -881,6 +980,50 @@ Apache-2 manually approved
 
 <a name="@grpc/proto-loader"></a>
 ### @grpc/proto-loader v0.7.13
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@humanfs/core"></a>
+### @humanfs/core v0.19.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@humanfs/node"></a>
+### @humanfs/node v0.16.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@humanwhocodes/module-importer"></a>
+### @humanwhocodes/module-importer v1.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="@humanwhocodes/retry"></a>
+### @humanwhocodes/retry v0.3.1
 #### 
 
 ##### Paths
@@ -2244,7 +2387,7 @@ LGPL-3.0-or-later permitted
 
 
 <a name="@playwright/test"></a>
-### @playwright/test v1.51.1
+### @playwright/test v1.52.0
 #### 
 
 ##### Paths
@@ -3024,6 +3167,17 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@react-email/render"></a>
+### @react-email/render v1.0.6
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@rive-app/canvas"></a>
 ### @rive-app/canvas v2.27.0
 #### 
@@ -3114,6 +3268,17 @@ LGPL-3.0-or-later permitted
 
 <a name="@ruby/prism"></a>
 ### @ruby/prism v1.4.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@selderee/plugin-htmlparser2"></a>
+### @selderee/plugin-htmlparser2 v0.11.0
 #### 
 
 ##### Paths
@@ -4245,6 +4410,94 @@ LGPL-3.0-or-later permitted
 
 
 
+<a name="@typescript-eslint/eslint-plugin"></a>
+### @typescript-eslint/eslint-plugin v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/parser"></a>
+### @typescript-eslint/parser v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/scope-manager"></a>
+### @typescript-eslint/scope-manager v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/type-utils"></a>
+### @typescript-eslint/type-utils v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/types"></a>
+### @typescript-eslint/types v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/typescript-estree"></a>
+### @typescript-eslint/typescript-estree v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/utils"></a>
+### @typescript-eslint/utils v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="@typescript-eslint/visitor-keys"></a>
+### @typescript-eslint/visitor-keys v8.31.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="@ungap/structured-clone"></a>
 ### @ungap/structured-clone v1.3.0
 #### 
@@ -4877,7 +5130,7 @@ Unknown manually approved
 
 
 <a name="ajv"></a>
-### ajv v8.6.3
+### ajv v6.12.6
 #### 
 
 ##### Paths
@@ -6431,6 +6684,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="deep-is"></a>
+### deep-is v0.1.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="deepmerge"></a>
 ### deepmerge v4.3.1
 #### 
@@ -7102,8 +7366,41 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="eslint"></a>
+### eslint v9.25.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="eslint-scope"></a>
 ### eslint-scope v5.1.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
+<a name="eslint-visitor-keys"></a>
+### eslint-visitor-keys v3.4.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a> permitted
+
+
+
+<a name="espree"></a>
+### espree v10.3.0
 #### 
 
 ##### Paths
@@ -7121,6 +7418,17 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/bsd-license">Simplified BSD</a> permitted
+
+
+
+<a name="esquery"></a>
+### esquery v1.6.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/BSD-3-Clause">New BSD</a> permitted
 
 
 
@@ -7455,7 +7763,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="fast-deep-equal"></a>
-### fast-deep-equal v3.1.3
+### fast-deep-equal v2.0.1
 #### 
 
 ##### Paths
@@ -7467,6 +7775,28 @@ BlueOak-1.0.0 permitted
 
 <a name="fast-glob"></a>
 ### fast-glob v3.3.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="fast-json-stable-stringify"></a>
+### fast-json-stable-stringify v2.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="fast-levenshtein"></a>
+### fast-levenshtein v2.0.6
 #### 
 
 ##### Paths
@@ -7564,6 +7894,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="file-entry-cache"></a>
+### file-entry-cache v8.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="file-uri-to-path"></a>
 ### file-uri-to-path v1.0.0
 #### 
@@ -7627,6 +7968,28 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="flat-cache"></a>
+### flat-cache v4.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="flatted"></a>
+### flatted v3.3.3
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://en.wikipedia.org/wiki/ISC_license">ISC</a> permitted
 
 
 
@@ -8059,6 +8422,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="graphemer"></a>
+### graphemer v1.4.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="graphlib"></a>
 ### graphlib v2.1.8
 #### 
@@ -8246,6 +8620,28 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="html-to-text"></a>
+### html-to-text v9.0.5
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="html-url-attributes"></a>
+### html-url-attributes v3.0.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="html-void-elements"></a>
 ### html-void-elements v3.0.0
 #### 
@@ -8258,7 +8654,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="htmlparser2"></a>
-### htmlparser2 v9.1.0
+### htmlparser2 v8.0.2
 #### 
 
 ##### Paths
@@ -9039,7 +9435,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="js-tiktoken"></a>
-### js-tiktoken v1.0.19
+### js-tiktoken v1.0.20
 #### 
 
 ##### Paths
@@ -9084,6 +9480,17 @@ BlueOak-1.0.0 permitted
 
 <a name="jsesc"></a>
 ### jsesc v3.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="json-buffer"></a>
+### json-buffer v3.0.1
 #### 
 
 ##### Paths
@@ -9149,7 +9556,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="json-schema-traverse"></a>
-### json-schema-traverse v1.0.0
+### json-schema-traverse v0.4.1
 #### 
 
 ##### Paths
@@ -9161,6 +9568,17 @@ BlueOak-1.0.0 permitted
 
 <a name="json-stable-stringify"></a>
 ### json-stable-stringify v1.2.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="json-stable-stringify-without-jsonify"></a>
+### json-stable-stringify-without-jsonify v1.0.1
 #### 
 
 ##### Paths
@@ -9229,6 +9647,17 @@ Public Domain manually approved
 
 
 
+<a name="keyv"></a>
+### keyv v4.5.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="kind-of"></a>
 ### kind-of v6.0.3
 #### 
@@ -9274,7 +9703,7 @@ Public Domain manually approved
 
 
 <a name="langchain"></a>
-### langchain v0.3.21
+### langchain v0.3.24
 #### 
 
 ##### Paths
@@ -9318,7 +9747,29 @@ Public Domain manually approved
 
 
 <a name="langsmith"></a>
-### langsmith v0.3.16
+### langsmith v0.3.21
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="leac"></a>
+### leac v0.6.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="levn"></a>
+### levn v0.4.1
 #### 
 
 ##### Paths
@@ -10472,6 +10923,17 @@ Public Domain manually approved
 
 
 
+<a name="natural-compare"></a>
+### natural-compare v1.4.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="negotiator"></a>
 ### negotiator v1.0.0
 #### 
@@ -10868,6 +11330,17 @@ Public Domain manually approved
 
 
 
+<a name="optionator"></a>
+### optionator v0.9.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="ora"></a>
 ### ora v4.1.1
 #### 
@@ -11154,6 +11627,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="parseley"></a>
+### parseley v0.12.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="parseurl"></a>
 ### parseurl v1.3.3
 #### 
@@ -11363,6 +11847,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="peberminta"></a>
+### peberminta v0.9.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="pend"></a>
 ### pend v1.2.0
 #### 
@@ -11485,7 +11980,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="playwright"></a>
-### playwright v1.51.1
+### playwright v1.52.0
 #### 
 
 ##### Paths
@@ -11496,7 +11991,7 @@ BlueOak-1.0.0 permitted
 
 
 <a name="playwright-core"></a>
-### playwright-core v1.51.1
+### playwright-core v1.52.0
 #### 
 
 ##### Paths
@@ -11629,6 +12124,17 @@ BlueOak-1.0.0 permitted
 
 <a name="postgres-interval"></a>
 ### postgres-interval v1.2.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="prelude-ls"></a>
+### prelude-ls v1.2.1
 #### 
 
 ##### Paths
@@ -11924,6 +12430,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="react-markdown"></a>
+### react-markdown v10.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="react-medium-image-zoom"></a>
 ### react-medium-image-zoom v5.2.14
 #### 
@@ -11932,6 +12449,17 @@ BlueOak-1.0.0 permitted
 * /home/runner/work/liam/liam
 
 <a href="http://opensource.org/licenses/BSD-3-Clause">New BSD</a> permitted
+
+
+
+<a name="react-promise-suspense"></a>
+### react-promise-suspense v0.3.4
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
 
 
 
@@ -12254,6 +12782,17 @@ BlueOak-1.0.0 permitted
 
 
 
+<a name="resend"></a>
+### resend v4.4.1
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="resolve"></a>
 ### resolve v1.22.8
 #### 
@@ -12487,6 +13026,17 @@ BlueOak-1.0.0 permitted
 
 <a name="section-matter"></a>
 ### section-matter v1.0.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="selderee"></a>
+### selderee v0.11.0
 #### 
 
 ##### Paths
@@ -13622,6 +14172,17 @@ Unknown manually approved
 
 
 
+<a name="ts-api-utils"></a>
+### ts-api-utils v2.1.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
 <a name="ts-morph"></a>
 ### ts-morph v12.0.0
 #### 
@@ -13723,6 +14284,17 @@ Unknown manually approved
 
 <a name="turbo-linux-64"></a>
 ### turbo-linux-64 v2.5.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="type-check"></a>
+### type-check v0.4.0
 #### 
 
 ##### Paths
@@ -14427,6 +14999,17 @@ Unknown manually approved
 
 <a name="why-is-node-running"></a>
 ### why-is-node-running v2.3.0
+#### 
+
+##### Paths
+* /home/runner/work/liam/liam
+
+<a href="http://opensource.org/licenses/mit-license">MIT</a> permitted
+
+
+
+<a name="word-wrap"></a>
+### word-wrap v1.2.5
 #### 
 
 ##### Paths
