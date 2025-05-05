@@ -12,6 +12,9 @@ type TableColumnProps = {
   handleId: string
   isSource: boolean
   targetCardinality?: CardinalityType | undefined
+  isHovered?: boolean
+  isSelectedTable?: boolean
+  releatedColumns: string[]
 }
 
 export const TableColumn: FC<TableColumnProps> = ({
@@ -19,9 +22,28 @@ export const TableColumn: FC<TableColumnProps> = ({
   handleId,
   isSource,
   targetCardinality,
+  isHovered,
+  isSelectedTable,
+  releatedColumns,
 }) => {
+  const getTableColumnBackgroundColor = () => {
+    if (isSelectedTable && releatedColumns.includes(column.name)) {
+      return '#22392f'
+    }
+    if (isHovered) {
+      return '#434546'
+    }
+    return undefined
+  }
+
   return (
-    <li key={column.name} className={styles.columnWrapper}>
+    <li
+      key={column.name}
+      className={styles.columnWrapper}
+      style={{
+        backgroundColor: getTableColumnBackgroundColor(),
+      }}
+    >
       {column.primary && (
         <KeyRound
           width={16}

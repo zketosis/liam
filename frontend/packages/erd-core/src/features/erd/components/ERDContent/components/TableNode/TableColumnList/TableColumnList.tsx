@@ -1,7 +1,7 @@
 import type { TableNodeData } from '@/features/erd/types'
 import { columnHandleId } from '@/features/erd/utils'
 import type { Column } from '@liam-hq/db-structure'
-import type { FC } from 'react'
+import { type FC, useState } from 'react'
 import { TableColumn } from './TableColumn'
 
 type TableColumnListProps = {
@@ -23,6 +23,21 @@ const shouldDisplayColumn = (
 }
 
 export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
+  const [hoveredColumn, setHoveredColumn] = useState<string | null>(null)
+
+  const getReleatedColumn = () => {
+    const keys = Object.keys(data.targetColumnCardinalities || {})
+    const releatedColumns =
+      hoveredColumn && keys.includes(hoveredColumn)
+        ? [hoveredColumn]
+        : [
+            ...keys,
+            ...(data.sourceColumnName ? [data.sourceColumnName] : []),
+          ].filter(Boolean)
+
+    return releatedColumns
+  }
+
   return (
     <ul>
       {Object.values(data.table.columns).map((column) => {
@@ -35,13 +50,29 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
         const isSource = data.sourceColumnName === column.name
 
         return (
-          <TableColumn
+          <div
             key={column.name}
-            column={column}
-            handleId={handleId}
-            isSource={isSource}
-            targetCardinality={data.targetColumnCardinalities?.[column.name]}
-          />
+            onMouseEnter={() => setHoveredColumn(column.name)}
+            onMouseLeave={() => setHoveredColumn(null)}
+            style={{
+              backgroundColor: getReleatedColumn().includes(column.name)
+                ? '#22392f'
+                : hoveredColumn === column.name
+                  ? '#434546'
+                  : '',
+            }}
+          >
+            <TableColumn
+              key={column.name}
+              column={column}
+              handleId={handleId}
+              isSource={isSource}
+              targetCardinality={data.targetColumnCardinalities?.[column.name]}
+              isHovered={hoveredColumn === column.name}
+              isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
+              releatedColumns={getReleatedColumn()}
+            />
+          </div>
         )
       })}
     </ul>
