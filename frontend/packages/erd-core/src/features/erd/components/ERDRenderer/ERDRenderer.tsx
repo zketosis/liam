@@ -15,13 +15,13 @@ import {
   type FC,
   createRef,
   useCallback,
-  useEffect,
   useState,
 } from 'react'
 import { AppBar } from './AppBar'
 import styles from './ERDRenderer.module.css'
 import '@/styles/globals.css'
 import { toggleLogEvent } from '@/features/gtm/utils'
+import { useIsTouchDevice } from '@/hooks'
 import { useVersion } from '@/providers'
 import { useSchemaStore, useUserEditingStore } from '@/stores'
 import { convertSchemaToNodes } from '../../utils'
@@ -93,25 +93,7 @@ export const ERDRenderer: FC<Props> = ({
     document.cookie = `${PANEL_LAYOUT_COOKIE_NAME}=${JSON.stringify(sizes)}; path=/; max-age=${COOKIE_MAX_AGE}`
   }, [])
 
-  const useDeviceType = () => {
-    const [isMobile, setIsMobile] = useState(false)
-
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768)
-      }
-
-      handleResize()
-
-      window.addEventListener('resize', handleResize)
-
-      return () => window.removeEventListener('resize', handleResize)
-    }, [])
-
-    return { isMobile, isDesktop: !isMobile }
-  }
-
-  const { isMobile } = useDeviceType()
+  const isMobile = useIsTouchDevice()
 
   return (
     <SidebarProvider
