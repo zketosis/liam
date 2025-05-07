@@ -13,6 +13,7 @@ export type {
   Relationships,
   Index,
   Indexes,
+  Constraint,
   Constraints,
   PrimaryKeyConstraint,
   ForeignKeyConstraint,
@@ -27,7 +28,11 @@ export {
   aTable,
   aSchema,
   anIndex,
+  aPrimaryKeyConstraint,
   aRelationship,
+  aUniqueConstraint,
+  aForeignKeyConstraint,
+  aCheckConstraint,
 } from './factories.js'
 export {
   overrideSchema,

@@ -1,10 +1,14 @@
 import type {
+  CheckConstraint,
   Column,
+  ForeignKeyConstraint,
   Index,
+  PrimaryKeyConstraint,
   Relationship,
   Schema,
   Table,
   Tables,
+  UniqueConstraint,
 } from './schema.js'
 
 export const aColumn = (override?: Partial<Column>): Column => ({
@@ -39,6 +43,46 @@ export const anIndex = (override?: Partial<Index>): Index => ({
   unique: false,
   columns: [],
   type: '',
+  ...override,
+})
+
+export const aPrimaryKeyConstraint = (
+  override?: Partial<PrimaryKeyConstraint>,
+): PrimaryKeyConstraint => ({
+  type: 'PRIMARY KEY',
+  name: '',
+  columnName: '',
+  ...override,
+})
+
+export const aForeignKeyConstraint = (
+  override?: Partial<ForeignKeyConstraint>,
+): ForeignKeyConstraint => ({
+  type: 'FOREIGN KEY',
+  name: '',
+  columnName: '',
+  targetTableName: '',
+  targetColumnName: '',
+  updateConstraint: 'NO_ACTION',
+  deleteConstraint: 'NO_ACTION',
+  ...override,
+})
+
+export const aUniqueConstraint = (
+  override?: Partial<UniqueConstraint>,
+): UniqueConstraint => ({
+  type: 'UNIQUE',
+  name: '',
+  columnName: '',
+  ...override,
+})
+
+export const aCheckConstraint = (
+  override?: Partial<CheckConstraint>,
+): CheckConstraint => ({
+  type: 'CHECK',
+  name: '',
+  detail: '',
   ...override,
 })
 
