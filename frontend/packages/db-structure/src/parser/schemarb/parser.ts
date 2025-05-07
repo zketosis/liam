@@ -140,6 +140,68 @@ function extractIdColumnAndConstraint(
   return [idColumn, idPrimaryKeyConstraint]
 }
 
+/**
+ * Process a call node and extract column, index, or constraint details
+ */
+function processCallNode(
+  node: CallNode,
+  columns: Column[],
+  indexes: Index[],
+  constraints: Constraint[],
+): void {
+  // Only process nodes with receiver 't'
+  if (
+    !(
+      node.receiver instanceof LocalVariableReadNode &&
+      node.receiver.name === 't'
+    )
+  ) {
+    return
+  }
+
+  // Process index nodes
+  if (node.name === 'index') {
+    const index = extractIndexDetails(node)
+    indexes.push(index)
+
+    // Add unique constraint if index is unique
+    if (index.unique && index.columns[0]) {
+      const uniqueConstraint: UniqueConstraint = {
+        type: 'UNIQUE',
+        name: `UNIQUE_${index.columns[0]}`,
+        columnName: index.columns[0],
+      }
+      constraints.push(uniqueConstraint)
+    }
+    return
+  }
+
+  // Process column nodes
+  const column = extractColumnDetails(node)
+  if (column.name) {
+    columns.push(column)
+  }
+}
+
+/**
+ * Process a statement node and extract details from its child nodes
+ */
+function processStatementNode(
+  statementNode: StatementsNode,
+  columns: Column[],
+  indexes: Index[],
+  constraints: Constraint[],
+): void {
+  for (const node of statementNode.compactChildNodes()) {
+    if (node instanceof CallNode) {
+      processCallNode(node, columns, indexes, constraints)
+    }
+  }
+}
+
+/**
+ * Extract table details from block nodes
+ */
 function extractTableDetails(
   blockNodes: Node[],
 ): [Column[], Index[], Constraint[]] {
@@ -147,32 +209,10 @@ function extractTableDetails(
   const indexes: Index[] = []
   const constraints: Constraint[] = []
 
+  // Process each block node
   for (const blockNode of blockNodes) {
     if (blockNode instanceof StatementsNode) {
-      for (const node of blockNode.compactChildNodes()) {
-        if (
-          node instanceof CallNode &&
-          node.receiver instanceof LocalVariableReadNode &&
-          node.receiver.name === 't'
-        ) {
-          if (node.name === 'index') {
-            const index = extractIndexDetails(node)
-            indexes.push(index)
-            if (index.unique && index.columns[0]) {
-              const uniqueConstraint: UniqueConstraint = {
-                type: 'UNIQUE',
-                name: `UNIQUE_${index.columns[0]}`,
-                columnName: index.columns[0],
-              }
-              constraints.push(uniqueConstraint)
-            }
-            continue
-          }
-
-          const column = extractColumnDetails(node)
-          if (column.name) columns.push(column)
-        }
-      }
+      processStatementNode(blockNode, columns, indexes, constraints)
     }
   }
 
@@ -309,14 +349,61 @@ function extractRelationshipTableNames(
   return ok([primaryTableName, foreignTableName])
 }
 
+/**
+ * Extract string values from nodes
+ */
+function extractStringValues(
+  nodes: Node[],
+): Result<string[], UnexpectedTokenWarningError> {
+  const stringNodes = nodes.filter((node) => node instanceof StringNode)
+
+  const values = stringNodes.map((node): string => {
+    if (node instanceof StringNode) return node.unescaped.value
+    return ''
+  })
+
+  return ok(values)
+}
+
+/**
+ * Extract constraint name from options
+ */
+function extractConstraintName(node: KeywordHashNode): string | null {
+  for (const argElement of node.elements) {
+    if (!(argElement instanceof AssocNode)) continue
+
+    // @ts-expect-error: unescaped is defined as string but it is actually object
+    const key = argElement.key.unescaped.value
+    const value = argElement.value
+
+    if (
+      key === 'name' &&
+      (value instanceof StringNode || value instanceof SymbolNode)
+    ) {
+      return value.unescaped.value
+    }
+  }
+
+  return null
+}
+
+/**
+ * Extract check constraint details
+ */
 function extractCheckConstraint(
   argNodes: Node[],
 ): Result<
   { tableName: string; constraint: CheckConstraint },
   UnexpectedTokenWarningError
 > {
-  const stringNodes = argNodes.filter((node) => node instanceof StringNode)
-  if (stringNodes.length !== 2) {
+  // Extract string values (table name and constraint detail)
+  const stringValuesResult = extractStringValues(argNodes)
+  if (stringValuesResult.isErr()) {
+    return err(stringValuesResult.error)
+  }
+
+  const stringValues = stringValuesResult.value
+  if (stringValues.length !== 2) {
     return err(
       new UnexpectedTokenWarningError(
         'Check constraint must have one table name and its detail',
@@ -324,29 +411,19 @@ function extractCheckConstraint(
     )
   }
 
-  const [tableName, detail] = stringNodes.map((node): string => {
-    if (node instanceof StringNode) return node.unescaped.value
-    return ''
-  }) as [string, string]
+  const [tableName, detail] = stringValues as [string, string]
 
+  // Create constraint with detail
   const constraint = aCheckConstraint({
     detail,
   })
 
+  // Extract constraint name from options if present
   for (const node of argNodes) {
     if (node instanceof KeywordHashNode) {
-      for (const argElement of node.elements) {
-        if (!(argElement instanceof AssocNode)) continue
-        // @ts-expect-error: unescaped is defined as string but it is actually object
-        const key = argElement.key.unescaped.value
-        const value = argElement.value
-
-        switch (key) {
-          case 'name':
-            if (value instanceof StringNode || value instanceof SymbolNode) {
-              constraint.name = value.unescaped.value
-            }
-        }
+      const name = extractConstraintName(node)
+      if (name) {
+        constraint.name = name
       }
     }
   }
@@ -371,55 +448,71 @@ function normalizeConstraintName(
   }
 }
 
-function extractForeignKeyOptions(
-  argNodes: Node[],
+/**
+ * Process a single option for a foreign key
+ */
+function processForeignKeyOption(
+  key: string,
+  value: Node,
   relation: Relationship,
   foreignKeyConstraint: ForeignKeyConstraint,
 ): void {
-  for (const argNode of argNodes) {
-    if (argNode instanceof KeywordHashNode) {
-      for (const argElement of argNode.elements) {
-        if (!(argElement instanceof AssocNode)) continue
-        // @ts-expect-error: unescaped is defined as string but it is actually object
-        const key = argElement.key.unescaped.value
-        const value = argElement.value
-
-        switch (key) {
-          case 'column':
-            if (value instanceof StringNode || value instanceof SymbolNode) {
-              relation.foreignColumnName = value.unescaped.value
-              foreignKeyConstraint.columnName = value.unescaped.value
-            }
-            break
-          case 'name':
-            if (value instanceof StringNode || value instanceof SymbolNode) {
-              relation.name = value.unescaped.value
-              foreignKeyConstraint.name = value.unescaped.value
-            }
-            break
-          case 'on_update':
-            if (value instanceof SymbolNode) {
-              const updateConstraint = normalizeConstraintName(
-                value.unescaped.value,
-              )
-              relation.updateConstraint = updateConstraint
-              foreignKeyConstraint.updateConstraint = updateConstraint
-            }
-            break
-          case 'on_delete':
-            if (value instanceof SymbolNode) {
-              const deleteConstraint = normalizeConstraintName(
-                value.unescaped.value,
-              )
-              relation.deleteConstraint = deleteConstraint
-              foreignKeyConstraint.deleteConstraint = deleteConstraint
-            }
-            break
-        }
+  switch (key) {
+    case 'column':
+      if (value instanceof StringNode || value instanceof SymbolNode) {
+        relation.foreignColumnName = value.unescaped.value
+        foreignKeyConstraint.columnName = value.unescaped.value
       }
-    }
+      break
+    case 'name':
+      if (value instanceof StringNode || value instanceof SymbolNode) {
+        relation.name = value.unescaped.value
+        foreignKeyConstraint.name = value.unescaped.value
+      }
+      break
+    case 'on_update':
+      if (value instanceof SymbolNode) {
+        const updateConstraint = normalizeConstraintName(value.unescaped.value)
+        relation.updateConstraint = updateConstraint
+        foreignKeyConstraint.updateConstraint = updateConstraint
+      }
+      break
+    case 'on_delete':
+      if (value instanceof SymbolNode) {
+        const deleteConstraint = normalizeConstraintName(value.unescaped.value)
+        relation.deleteConstraint = deleteConstraint
+        foreignKeyConstraint.deleteConstraint = deleteConstraint
+      }
+      break
   }
+}
 
+/**
+ * Process options from a keyword hash node
+ */
+function processKeywordHashNode(
+  hashNode: KeywordHashNode,
+  relation: Relationship,
+  foreignKeyConstraint: ForeignKeyConstraint,
+): void {
+  for (const argElement of hashNode.elements) {
+    if (!(argElement instanceof AssocNode)) continue
+
+    // @ts-expect-error: unescaped is defined as string but it is actually object
+    const key = argElement.key.unescaped.value
+    const value = argElement.value
+
+    processForeignKeyOption(key, value, relation, foreignKeyConstraint)
+  }
+}
+
+/**
+ * Set default values for foreign key options
+ */
+function setDefaultForeignKeyValues(
+  relation: Relationship,
+  foreignKeyConstraint: ForeignKeyConstraint,
+): void {
   // ref: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_foreign_key
   if (relation.foreignColumnName === '') {
     const columnName = `${singularize(relation.primaryTableName)}_id`
@@ -435,9 +528,29 @@ function extractForeignKeyOptions(
       relation.foreignColumnName,
     )
   }
+
   if (foreignKeyConstraint.name === '') {
     foreignKeyConstraint.name = `fk_${relation.foreignTableName}_${relation.foreignColumnName}`
   }
+}
+
+/**
+ * Extract foreign key options from argument nodes
+ */
+function extractForeignKeyOptions(
+  argNodes: Node[],
+  relation: Relationship,
+  foreignKeyConstraint: ForeignKeyConstraint,
+): void {
+  // Process options from keyword hash nodes
+  for (const argNode of argNodes) {
+    if (argNode instanceof KeywordHashNode) {
+      processKeywordHashNode(argNode, relation, foreignKeyConstraint)
+    }
+  }
+
+  // Set default values for any unspecified options
+  setDefaultForeignKeyValues(relation, foreignKeyConstraint)
 }
 
 class SchemaFinder extends Visitor {

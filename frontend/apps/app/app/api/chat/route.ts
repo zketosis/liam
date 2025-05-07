@@ -234,26 +234,47 @@ Based on the schema information provided and considering any previous conversati
   const { readable, writable } = new TransformStream()
   const writer = writable.getWriter()
 
-  // Process the LangChain stream
-  ;(async () => {
+  // Define types for content processing
+  type ContentItem = string | { type: string; text: string } | unknown
+
+  // Extract content processing to a separate function
+  const extractTextContent = (
+    content: string | ContentItem[] | unknown,
+  ): string => {
+    if (typeof content === 'string') {
+      return content
+    }
+
+    if (!Array.isArray(content)) {
+      return ''
+    }
+
+    // Process array content
+    return content.reduce((text, item) => {
+      if (typeof item === 'string') {
+        return text + item
+      }
+
+      if (
+        item &&
+        typeof item === 'object' &&
+        'type' in item &&
+        item.type === 'text' &&
+        'text' in item &&
+        typeof item.text === 'string'
+      ) {
+        return text + item.text
+      }
+
+      return text
+    }, '')
+  }
+
+  // Main stream processing function - simplified
+  const processStream = async () => {
     try {
       for await (const chunk of stream) {
-        // Convert complex content to string if needed
-        let textContent = ''
-        if (typeof chunk.content === 'string') {
-          textContent = chunk.content
-        } else if (Array.isArray(chunk.content)) {
-          // Handle complex content structure
-          for (const item of chunk.content) {
-            if (typeof item === 'string') {
-              textContent += item
-            } else if (item.type === 'text') {
-              textContent += item.text
-            }
-          }
-        }
-
-        // Write the text content to the stream
+        const textContent = extractTextContent(chunk.content)
         await writer.write(encoder.encode(textContent))
       }
     } catch (error) {
@@ -261,7 +282,10 @@ Based on the schema information provided and considering any previous conversati
     } finally {
       await writer.close()
     }
-  })()
+  }
+
+  // Execute the processing function
+  processStream()
 
   // Return the streaming response
   return new Response(readable, {
