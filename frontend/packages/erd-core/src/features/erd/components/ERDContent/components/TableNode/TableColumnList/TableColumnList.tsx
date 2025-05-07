@@ -1,7 +1,8 @@
 import type { TableNodeData } from '@/features/erd/types'
 import { columnHandleId } from '@/features/erd/utils'
+import { updateHoverColumn, useUserEditingStore } from '@/stores'
 import type { Column } from '@liam-hq/db-structure'
-import { type FC, useState } from 'react'
+import type { FC } from 'react'
 import { TableColumn } from './TableColumn'
 
 type TableColumnListProps = {
@@ -23,13 +24,24 @@ const shouldDisplayColumn = (
 }
 
 export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
-  const [hoveredColumn, setHoveredColumn] = useState<string | null>(null)
+  const { hoverInfo } = useUserEditingStore()
+  const keys = Object.keys(data.targetColumnCardinalities || {})
+  const totalKeys = [
+    ...keys,
+    ...(data.sourceColumnName ? [data.sourceColumnName] : []),
+  ].filter(Boolean)
 
+  const hoverHandle = (tableName: string, columnName: string) => {
+    updateHoverColumn({
+      tableName: tableName,
+      columnName: columnName,
+      columnType: !!totalKeys.includes(columnName),
+    })
+  }
   const getReleatedColumn = () => {
-    const keys = Object.keys(data.targetColumnCardinalities || {})
     const releatedColumns =
-      hoveredColumn && keys.includes(hoveredColumn)
-        ? [hoveredColumn]
+      hoverInfo.columnName && keys.includes(hoverInfo.columnName)
+        ? [hoverInfo.columnName]
         : [
             ...keys,
             ...(data.sourceColumnName ? [data.sourceColumnName] : []),
@@ -52,12 +64,18 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
         return (
           <div
             key={column.name}
-            onMouseEnter={() => setHoveredColumn(column.name)}
-            onMouseLeave={() => setHoveredColumn(null)}
+            onMouseEnter={() => hoverHandle(data.table.name, column.name)}
+            onMouseLeave={() =>
+              updateHoverColumn({
+                tableName: undefined,
+                columnName: undefined,
+                columnType: false,
+              })
+            }
             style={{
               backgroundColor: getReleatedColumn().includes(column.name)
                 ? '#22392f'
-                : hoveredColumn === column.name
+                : hoverInfo.columnName === column.name
                   ? '#434546'
                   : '',
             }}
@@ -68,7 +86,10 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
               handleId={handleId}
               isSource={isSource}
               targetCardinality={data.targetColumnCardinalities?.[column.name]}
-              isHovered={hoveredColumn === column.name}
+              isHovered={
+                hoverInfo.tableName === data.table.name &&
+                hoverInfo.columnName === column.name
+              }
               isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
               releatedColumns={getReleatedColumn()}
             />

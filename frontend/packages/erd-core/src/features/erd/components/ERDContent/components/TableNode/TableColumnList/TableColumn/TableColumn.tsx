@@ -26,13 +26,17 @@ export const TableColumn: FC<TableColumnProps> = ({
   isSelectedTable,
   releatedColumns,
 }) => {
+  const isRelated = releatedColumns.includes(column.name)
+  const isSelectedOrHovered = (isSelectedTable || isHovered) && isRelated
+  const isHoveredUnselected = isHovered && !isRelated
+
   return (
     <li
       key={column.name}
       className={`
         ${styles.columnWrapper}
-        ${isSelectedTable && releatedColumns.includes(column.name) ? styles.selectedColumn : ''}
-        ${isHovered ? styles.hoveredColumn : ''}
+        ${isSelectedOrHovered ? styles.selectedColumn : ''}
+        ${isHoveredUnselected ? styles.hoveredColumn : ''}
       `}
     >
       {column.primary && (

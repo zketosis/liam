@@ -1,6 +1,12 @@
 import type { ShowMode } from '@/schemas/showMode'
 import { userEditingStore } from './store'
 
+type HoverInfo = {
+  tableName: string | undefined
+  columnName: string | undefined
+  columnType: boolean
+}
+
 export const updateIsPopstateInProgress = (isPopstateInProgress: boolean) => {
   userEditingStore.isPopstateInProgress = isPopstateInProgress
 }
@@ -11,6 +17,10 @@ export const updateActiveTableName = (tableName: string | undefined) => {
 
 export const updateShowMode = (showMode: ShowMode) => {
   userEditingStore.showMode = showMode
+}
+
+export const updateHoverColumn = (hoverInfo: HoverInfo) => {
+  userEditingStore.hoverInfo = hoverInfo
 }
 
 export const toggleHiddenNodeId = (nodeId: string) => {

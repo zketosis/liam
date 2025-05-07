@@ -9,6 +9,11 @@ type UserEditingStore = {
     tableName: string | undefined
   }
   showMode: ShowMode
+  hoverInfo: {
+    tableName: string | undefined
+    columnName: string | undefined
+    columnType: boolean
+  }
   hiddenNodeIds: Set<string>
   isPopstateInProgress: boolean
   isTableGroupEditMode: boolean
@@ -19,6 +24,11 @@ export const userEditingStore = proxy<UserEditingStore>({
     tableName: undefined,
   },
   showMode: 'TABLE_NAME',
+  hoverInfo: {
+    tableName: undefined,
+    columnName: undefined,
+    columnType: false,
+  },
   hiddenNodeIds: proxySet<string>(),
   isPopstateInProgress: false,
   isTableGroupEditMode: false,
