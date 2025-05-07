@@ -26,23 +26,14 @@ export const TableColumn: FC<TableColumnProps> = ({
   isSelectedTable,
   releatedColumns,
 }) => {
-  const getTableColumnBackgroundColor = () => {
-    if (isSelectedTable && releatedColumns.includes(column.name)) {
-      return '#22392f'
-    }
-    if (isHovered) {
-      return '#434546'
-    }
-    return undefined
-  }
-
   return (
     <li
       key={column.name}
-      className={styles.columnWrapper}
-      style={{
-        backgroundColor: getTableColumnBackgroundColor(),
-      }}
+      className={`
+        ${styles.columnWrapper}
+        ${isSelectedTable && releatedColumns.includes(column.name) ? styles.selectedColumn : ''}
+        ${isHovered ? styles.hoveredColumn : ''}
+      `}
     >
       {column.primary && (
         <KeyRound

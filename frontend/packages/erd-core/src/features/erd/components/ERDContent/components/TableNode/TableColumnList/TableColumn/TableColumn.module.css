@@ -1,4 +1,7 @@
 .columnWrapper {
+  --bg-selected: #22392f;
+  --bg-hover: #434546;
+
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -15,6 +18,14 @@
 .columnWrapper:last-child {
   border-bottom-left-radius: var(--border-radius-md);
   border-bottom-right-radius: var(--border-radius-md);
+}
+
+.columnWrapper.selectedColumn {
+  background-color: var(--bg-selected);
+}
+
+.columnWrapper.hoveredColumn {
+  background-color: var(--bg-hover);
 }
 
 .primaryKeyIcon {
