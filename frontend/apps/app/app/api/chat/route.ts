@@ -169,14 +169,10 @@ export async function POST(request: Request) {
   const formattedChatHistory =
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     history && history.length > 0
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        history
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      ? history
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           .map((msg: [string, string]) => `${msg[0]}: ${msg[1]}`)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           .join('\n')
       : 'No previous conversation.'
 
@@ -228,12 +224,11 @@ Based on the schema information provided and considering any previous conversati
     {
       callbacks: [langfuseHandler],
       metadata: {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         endpoint: '/api/chat',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         method: 'POST',
         messageLength: message.length,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         hasHistory: history ? history.length > 0 : false,
       },
     },

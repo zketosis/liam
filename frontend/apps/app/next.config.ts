@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
   },
   webpack: (config) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (Array.isArray(config.externals)) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals.push(
@@ -34,54 +33,34 @@ const nextConfig: NextConfig = {
         '@prisma/internals',
         '@prisma/prisma-schema-wasm',
         '@prisma/schema-files-loader',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       )
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/debug'] = '@prisma/debug'
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/engines'] = '@prisma/engines'
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/engines-version'] = '@prisma/engines-version'
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/fetch-engine'] = '@prisma/fetch-engine'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/generator-helper'] = '@prisma/generator-helper'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/get-platform'] = '@prisma/get-platform'
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/internals'] = '@prisma/internals'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/prisma-schema-wasm'] =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         '@prisma/prisma-schema-wasm'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/schema-files-loader'] =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         '@prisma/schema-files-loader'
     }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     config.plugins.push({
       // biome-ignore lint/suspicious/noExplicitAny: webpack types are incomplete so we need to use any here
@@ -95,6 +74,7 @@ const nextConfig: NextConfig = {
         })
       },
     })
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     config.plugins = [...config.plugins, new PrismaPlugin()]
 

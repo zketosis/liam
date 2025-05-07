@@ -13,14 +13,11 @@ export function OrganizationsPageClient() {
       const toastData = JSON.parse(storedToast)
       toast({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         title: toastData.title,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         description: toastData.description,
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         status: toastData.status,
       })
