@@ -19,7 +19,7 @@
     "typescript": "5.8.3"
   },
   "scripts": {
-    "build": "storybook build",
+    "build": "mkdir -p public && mkdir -p .storybook/public && storybook build",
     "dev": "storybook dev -p 6006"
   }
 }
