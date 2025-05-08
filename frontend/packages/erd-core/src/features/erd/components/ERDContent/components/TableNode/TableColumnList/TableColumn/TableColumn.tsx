@@ -36,7 +36,7 @@ export const TableColumn: FC<TableColumnProps> = ({
       className={clsx(
         styles.columnWrapper,
         isSelectedOrHovered ? styles.selectedColumn : '',
-        isHoveredUnselected ? styles.hoveredColumn : ''
+        isHoveredUnselected ? styles.hoveredColumn : '',
       )}
     >
       {column.primary && (

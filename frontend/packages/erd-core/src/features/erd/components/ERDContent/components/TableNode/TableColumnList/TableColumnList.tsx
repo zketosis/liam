@@ -41,11 +41,12 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
         return (
           <div
             key={column.name}
-            onMouseEnter={() => 
+            onMouseEnter={() =>
               updateHoverColumn({
                 tableName: data.table.name,
                 columnName: column.name,
-                columnType: isSource || !!targetColumnCardinalities?.[column.name],
+                columnType:
+                  isSource || !!targetColumnCardinalities?.[column.name],
               })
             }
             onMouseLeave={() =>
@@ -68,9 +69,9 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
               }
               isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
               isRelated={
-                (hoverInfo.columnName && 
-                 (targetColumnCardinalities?.[hoverInfo.columnName] || 
-                  data.sourceColumnName === hoverInfo.columnName))
+                hoverInfo.columnName &&
+                 (targetColumnCardinalities?.[hoverInfo.columnName] ||
+                  data.sourceColumnName === hoverInfo.columnName)
                   ? hoverInfo.columnName === column.name
                   : isSource || !!targetColumnCardinalities?.[column.name]
               }
