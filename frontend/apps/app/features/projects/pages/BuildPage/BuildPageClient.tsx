@@ -50,12 +50,6 @@ const BuildPageClient: FC<ClientProps> = ({
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.headerContent}>
-          <h1 className={styles.title}>Build</h1>
-        </div>
-      </div>
-
       <div className={styles.content}>
         <div className={styles.columns}>
           <div className={styles.chatSection}>
