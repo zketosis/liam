@@ -7,10 +7,10 @@ This directory contains the Storybook setup for the Liam project, a tool for dev
 To start Storybook locally, run:
 
 ```bash
-cd frontend/apps/storybook
+cd frontend/internal-packages/storybook
 pnpm storybook
 # or
-cd frontend/apps/storybook
+cd frontend/internal-packages/storybook
 npx storybook dev -p 6006
 ```
 
@@ -21,10 +21,10 @@ This will start Storybook on port 6006. You can access it at http://localhost:60
 To build a static version of Storybook, run:
 
 ```bash
-cd frontend/apps/storybook
+cd frontend/internal-packages/storybook
 pnpm build
 # or
-cd frontend/apps/storybook
+cd frontend/internal-packages/storybook
 npx storybook build
 ```
 
