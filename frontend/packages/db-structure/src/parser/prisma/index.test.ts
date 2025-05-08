@@ -583,8 +583,8 @@ describe(_processor, () => {
           USER
           ADMIN
         }
-      `);
-    
+      `)
+
       const expectedTables = aSchema({
         tables: {
           users: aTable({
@@ -679,8 +679,8 @@ describe(_processor, () => {
             },
           }),
         },
-      });
-    
+      })
+
       expectedTables['relationships'] = {
         postsTousers: aRelationship({
           name: 'postsTousers',
@@ -689,11 +689,10 @@ describe(_processor, () => {
           primaryColumnName: '_id',
           primaryTableName: 'users',
         }),
-      };
-    
-      expect(value).toEqual(expectedTables);
-    });
-    
+      }
+
+      expect(value).toEqual(expectedTables)
+    })
 
     it('relationship (implicit many-to-many)', async () => {
       const { value } = await processor(`
