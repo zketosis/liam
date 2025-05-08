@@ -133,3 +133,9 @@
     :why: Compatible with Apache-2.0 license. See https://opensource.org/license/Zlib
     :versions: []
     :when: 2025-05-08 05:22:54.982520000 Z
+- - :permit
+  - Artistic-2.0
+  - :who: OSPO @masutaka
+    :why: Compatible with Apache-2.0 license. See https://opensource.org/license/artistic-2-0
+    :versions: []
+    :when: 2025-05-08 05:24:20.998252000 Z
