@@ -6,12 +6,12 @@
     "@changesets/cli": "2.29.2",
     "@changesets/get-github-info": "0.6.0",
     "@changesets/types": "6.1.0",
-    "@turbo/gen": "2.5.0",
+    "@turbo/gen": "2.5.1",
     "@types/node": "22.15.2",
     "concurrently": "9.1.2",
     "knip": "5.50.5",
     "syncpack": "13.0.3",
-    "turbo": "2.5.0",
+    "turbo": "2.5.1",
     "typescript": "5.8.3",
     "vercel": "41.6.2"
   },
@@ -48,7 +48,7 @@
     }
   },
   "resolutions": {
-    "esbuild": "0.25.2",
+    "esbuild": "0.25.3",
     "path-to-regexp": "8.2.0",
     "undici": "7.8.0"
   }

@@ -5,11 +5,7 @@ ALTER TABLE "public"."organizations" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "authenticated_users_can_select_org_organizations" 
   ON "public"."organizations" 
   FOR SELECT TO "authenticated" 
-  USING ((id IN ( 
-    SELECT "organization_members"."organization_id"
-    FROM "public"."organization_members"
-    WHERE ("organization_members"."user_id" = "auth"."uid"())
-  )));
+  USING (true);
 
 COMMENT ON POLICY "authenticated_users_can_select_org_organizations" 
   ON "public"."organizations" 
