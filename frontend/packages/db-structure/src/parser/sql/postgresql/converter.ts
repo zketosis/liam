@@ -11,6 +11,7 @@ import type {
 } from '@pgsql/types'
 import { type Result, err, ok } from 'neverthrow'
 import type {
+  CheckConstraint,
   Columns,
   Constraint,
   Constraints,
@@ -165,8 +166,54 @@ const constraintToRelationshipAndForeignKeyConstraint = (
   return ok([relationship, foreignKeyConstraint])
 }
 
+const constraintToCheckConstraint = (
+  columnName: string | undefined,
+  constraint: PgConstraint,
+  rawSql: string,
+): Result<CheckConstraint, UnexpectedTokenWarningError> => {
+  if (constraint.contype !== 'CONSTR_CHECK') {
+    return err(
+      new UnexpectedTokenWarningError('contype "CONSTR_CHECK" is expected'),
+    )
+  }
+
+  if (constraint.location === undefined) {
+    return err(new UnexpectedTokenWarningError('Invalid check constraint'))
+  }
+  let openParenthesesCount = 0
+  let startLocation: number | undefined = undefined
+  let endLocation: number | undefined = undefined
+  for (let i = constraint.location; i < rawSql.length; i++) {
+    if (rawSql[i] === '(') {
+      openParenthesesCount++
+      if (startLocation === undefined) startLocation = i
+    } else if (rawSql[i] === ')') {
+      openParenthesesCount--
+      if (openParenthesesCount === 0) {
+        endLocation = i
+        break
+      }
+    }
+  }
+
+  if (startLocation === undefined || endLocation === undefined) {
+    return err(new UnexpectedTokenWarningError('Invalid check constraint'))
+  }
+
+  const checkConstraint: CheckConstraint = {
+    name: constraint.conname ?? `CHECK_${columnName}`,
+    type: 'CHECK',
+    detail: `CHECK ${rawSql.slice(startLocation, endLocation + 1)}`,
+  }
+
+  return ok(checkConstraint)
+}
+
 // Transform function for AST to Schema
-export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
+export const convertToSchema = (
+  stmts: RawStmt[],
+  rawSql: string,
+): ProcessResult => {
   const tables: Record<string, Table> = {}
   const relationships: Record<string, Relationship> = {}
   const tableGroups: Record<string, TableGroup> = {}
@@ -356,6 +403,19 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
         const [relationship, foreignKeyConstraint] = relResult.value
         columnRelationships.push(relationship)
         constraints.push([foreignKeyConstraint.name, foreignKeyConstraint])
+      } else if (constraint.Constraint.contype === 'CONSTR_CHECK') {
+        const relResult = constraintToCheckConstraint(
+          columnName,
+          constraint.Constraint,
+          rawSql,
+        )
+
+        if (relResult.isErr()) {
+          errors.push(relResult.error)
+          continue
+        }
+        const checkConstraint = relResult.value
+        constraints.push([checkConstraint.name, checkConstraint])
       }
     }
 
@@ -648,6 +708,26 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
   }
 
   /**
+   * Process a check constraint
+   */
+  function processCheckConstraint(
+    foreignTableName: string,
+    constraint: PgConstraint,
+  ): void {
+    const relResult = constraintToCheckConstraint(undefined, constraint, rawSql)
+
+    if (relResult.isErr()) {
+      errors.push(relResult.error)
+      return
+    }
+
+    const table = tables[foreignTableName]
+    if (table) {
+      table.constraints[relResult.value.name] = relResult.value
+    }
+  }
+
+  /**
    * ALTER TABLE command type
    */
   interface AlterTableCmd {
@@ -666,14 +746,17 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
 
     const alterTableCmd = cmd.AlterTableCmd
 
-    // Only process ADD CONSTRAINT commands
-    if (alterTableCmd.subtype !== 'AT_AddConstraint') return
+    if (alterTableCmd.subtype !== 'AT_AddConstraint')
+      // Only process ADD CONSTRAINT commands
+      return
 
     const constraint = alterTableCmd.def
     if (!constraint || !isConstraintNode(constraint)) return
 
     if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
       processForeignKeyConstraint(foreignTableName, constraint.Constraint)
+    } else if (constraint.Constraint.contype === 'CONSTR_CHECK') {
+      processCheckConstraint(foreignTableName, constraint.Constraint)
     }
   }
 

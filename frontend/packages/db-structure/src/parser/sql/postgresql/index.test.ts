@@ -255,6 +255,29 @@ describe(processor, () => {
         },
       })
     })
+
+    it('check constraint', async () => {
+      const { value } = await processor(/* sql */ `
+        CREATE TABLE products (
+            id SERIAL PRIMARY KEY,
+            name text,
+            price numeric CHECK (price > 0)
+        );
+      `)
+
+      expect(value.tables['products']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        CHECK_price: {
+          name: 'CHECK_price',
+          type: 'CHECK',
+          detail: 'CHECK (price > 0)',
+        },
+      })
+    })
   })
 
   describe('should parse ALTER TABLE statement correctly', () => {
@@ -357,6 +380,32 @@ describe(processor, () => {
           targetColumnName: 'id',
           updateConstraint: 'RESTRICT',
           deleteConstraint: 'CASCADE',
+        },
+      })
+    })
+
+    it('check constraint', async () => {
+      const { value } = await processor(/* sql */ `
+        CREATE TABLE products (
+            id SERIAL PRIMARY KEY,
+            name text,
+            price numeric
+        );
+
+        ALTER TABLE products
+        ADD CONSTRAINT price_check_is_positive CHECK (price > 0);
+      `)
+
+      expect(value.tables['products']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        price_check_is_positive: {
+          name: 'price_check_is_positive',
+          type: 'CHECK',
+          detail: 'CHECK (price > 0)',
         },
       })
     })
