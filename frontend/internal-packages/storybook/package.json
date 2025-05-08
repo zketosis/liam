@@ -20,7 +20,6 @@
   },
   "scripts": {
     "build": "storybook build",
-    "dev": "storybook dev -p 6006",
-    "storybook": "storybook dev -p 6006"
+    "dev": "storybook dev -p 6006"
   }
 }
