@@ -110,7 +110,9 @@ const constraintToRelationship = (
   constraint: PgConstraint,
 ): Result<Relationship | undefined, UnexpectedTokenWarningError> => {
   if (constraint.contype !== 'CONSTR_FOREIGN') {
-    return ok(undefined)
+    return err(
+      new UnexpectedTokenWarningError('contype "CONSTR_FOREIGN" is expected'),
+    )
   }
 
   const primaryTableName = constraint.pktable?.relname
@@ -324,19 +326,21 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     for (const constraint of (colDef.constraints ?? []).filter(
       isConstraintNode,
     )) {
-      const relResult = constraintToRelationship(
-        tableName,
-        columnName,
-        constraint.Constraint,
-      )
+      if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
+        const relResult = constraintToRelationship(
+          tableName,
+          columnName,
+          constraint.Constraint,
+        )
 
-      if (relResult.isErr()) {
-        columnErrors.push(relResult.error)
-        continue
-      }
+        if (relResult.isErr()) {
+          columnErrors.push(relResult.error)
+          continue
+        }
 
-      if (relResult.value !== undefined) {
-        columnRelationships.push(relResult.value)
+        if (relResult.value !== undefined) {
+          columnRelationships.push(relResult.value)
+        }
       }
     }
 
