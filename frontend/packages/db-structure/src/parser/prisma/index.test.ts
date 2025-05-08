@@ -587,12 +587,12 @@ describe(_processor, () => {
 
       const expectedTables = aSchema({
         tables: {
-          users: aTable({
-            name: 'users',
+          User: aTable({
+            name: 'User',
             columns: {
               _id: aColumn({
                 name: '_id',
-                type: 'bigserial',
+                type: 'serial',
                 default: 'autoincrement()',
                 notNull: true,
                 primary: true,
@@ -606,19 +606,19 @@ describe(_processor, () => {
               }),
               role: aColumn({
                 name: 'role',
-                type: 'text',
+                type: 'Role',
                 notNull: true,
-                default: "'USER'",
+                default: "USER",
               }),
             },
             indexes: {
-              users_pkey: anIndex({
-                name: 'users_pkey',
+              User_pkey: anIndex({
+                name: 'User_pkey',
                 columns: ['_id'],
                 unique: true,
               }),
-              users_raw_email_address_key: anIndex({
-                name: 'users_raw_email_address_key',
+              User_raw_email_address_key: anIndex({
+                name: 'User_raw_email_address_key',
                 columns: ['raw_email_address'],
                 unique: true,
               }),
@@ -636,12 +636,12 @@ describe(_processor, () => {
               },
             },
           }),
-          posts: aTable({
-            name: 'posts',
+          Post: aTable({
+            name: 'Post',
             columns: {
               id: aColumn({
                 name: 'id',
-                type: 'bigserial',
+                type: 'serial',
                 default: 'autoincrement()',
                 notNull: true,
                 primary: true,
@@ -649,14 +649,14 @@ describe(_processor, () => {
               }),
               raw_user_id: aColumn({
                 name: 'raw_user_id',
-                type: 'bigint',
+                type: 'integer',
                 notNull: true,
                 unique: false,
               }),
             },
             indexes: {
-              posts_pkey: anIndex({
-                name: 'posts_pkey',
+              Post_pkey: anIndex({
+                name: 'Post_pkey',
                 columns: ['id'],
                 unique: true,
               }),
@@ -667,11 +667,11 @@ describe(_processor, () => {
                 name: 'PRIMARY_id',
                 columnName: 'id',
               },
-              postsTousers: {
+              PostToUser: {
                 type: 'FOREIGN KEY',
-                name: 'postsTousers',
+                name: 'PostToUser',
                 columnName: 'raw_user_id',
-                targetTableName: 'users',
+                targetTableName: 'User',
                 targetColumnName: '_id',
                 updateConstraint: 'NO_ACTION',
                 deleteConstraint: 'NO_ACTION',
@@ -682,12 +682,12 @@ describe(_processor, () => {
       })
 
       expectedTables['relationships'] = {
-        postsTousers: aRelationship({
-          name: 'postsTousers',
+        PostToUser: aRelationship({
+          name: 'PostToUser',
           foreignColumnName: 'raw_user_id',
-          foreignTableName: 'posts',
+          foreignTableName: 'Post',
           primaryColumnName: '_id',
-          primaryTableName: 'users',
+          primaryTableName: 'User',
         }),
       }
 
