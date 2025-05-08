@@ -1,14 +1,7 @@
 import { createClient } from '@/libs/db/server'
-import { getFileContent } from '@liam-hq/github'
 import { parse } from '@liam-hq/db-structure/parser'
-import type { ERDSchema } from '@/features/schemas/components/Chatbot/utils'
+import { getFileContent } from '@liam-hq/github'
 import { BuildPageClient } from './BuildPageClient'
-
-type ErrorObject = {
-  name: string
-  message: string
-  instruction?: string
-}
 
 type Props = {
   projectId: string
@@ -60,28 +53,24 @@ export async function BuildPage({ projectId, branchOrCommit }: Props) {
   const githubSchemaFilePath = await getGithubSchemaFilePath(projectId)
   const repository = await getGithubRepositoryInfo(projectId)
   const repositoryFullName = `${repository.owner}/${repository.name}`
-  
+
   const { content } = await getFileContent(
     repositoryFullName,
     githubSchemaFilePath.path,
     branchOrCommit,
     Number(repository.github_installation_identifier),
   )
-  
+
   const { value: schema, errors } =
     content !== null && githubSchemaFilePath.format !== undefined
       ? await parse(content, githubSchemaFilePath.format)
       : { value: undefined, errors: [] }
-  
+
   if (!schema) {
     throw new Error('Schema could not be parsed')
   }
-  
+
   return (
-    <BuildPageClient 
-      schema={schema} 
-      errors={errors || []} 
-      tableGroups={{}} 
-    />
+    <BuildPageClient schema={schema} errors={errors || []} tableGroups={{}} />
   )
 }
