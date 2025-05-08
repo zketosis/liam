@@ -352,6 +352,22 @@ $$;
 ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."is_current_user_org_member"("_org" "uuid") RETURNS boolean
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.organization_members om
+    WHERE om.organization_id = _org
+      AND om.user_id = auth.uid()
+  );
+$$;
+
+
+ALTER FUNCTION "public"."is_current_user_org_member"("_org" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."prevent_delete_last_organization_member"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -1411,13 +1427,11 @@ CREATE POLICY "authenticated_users_can_delete_org_invitations" ON "public"."invi
 
 
 
-CREATE POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members_1"."organization_id"
-   FROM "public"."organization_members" "organization_members_1"
-  WHERE ("organization_members_1"."user_id" = "auth"."uid"()))));
+CREATE POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" FOR DELETE TO "authenticated" USING ("public"."is_current_user_org_member"("organization_id"));
 
 
 
-COMMENT ON POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only remove members from organizations they are members of';
+COMMENT ON POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only remove members from organizations they belong to';
 
 
 
@@ -1487,13 +1501,11 @@ COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON 
 
 
 
-CREATE POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "organization_members_1"."organization_id"
-   FROM "public"."organization_members" "organization_members_1"
-  WHERE ("organization_members_1"."user_id" = "auth"."uid"()))));
+CREATE POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" FOR INSERT TO "authenticated" WITH CHECK ((("user_id" = "auth"."uid"()) OR "public"."is_current_user_org_member"("organization_id")));
 
 
 
-COMMENT ON POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only add members to organizations they are members of';
+COMMENT ON POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can add themselves to any organization or add members to organizations they belong to';
 
 
 
@@ -1621,19 +1633,15 @@ COMMENT ON POLICY "authenticated_users_can_select_org_migrations" ON "public"."m
 
 
 
-CREATE POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" FOR SELECT TO "authenticated" USING (("organization_id" IN ( SELECT "organization_members_1"."organization_id"
-   FROM "public"."organization_members" "organization_members_1"
-  WHERE ("organization_members_1"."user_id" = "auth"."uid"()))));
+CREATE POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" FOR SELECT TO "authenticated" USING ("public"."is_current_user_org_member"("organization_id"));
 
 
 
-COMMENT ON POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only view organization members in organizations they are members of';
+COMMENT ON POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" IS 'Authenticated users can only view members of organizations they belong to';
 
 
 
-CREATE POLICY "authenticated_users_can_select_org_organizations" ON "public"."organizations" FOR SELECT TO "authenticated" USING (("id" IN ( SELECT "organization_members"."organization_id"
-   FROM "public"."organization_members"
-  WHERE ("organization_members"."user_id" = "auth"."uid"()))));
+CREATE POLICY "authenticated_users_can_select_org_organizations" ON "public"."organizations" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -2234,6 +2242,13 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") TO "service_role";
 
 
 
