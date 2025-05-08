@@ -14,6 +14,7 @@ import type {
   Columns,
   Constraint,
   Constraints,
+  ForeignKeyConstraint,
   ForeignKeyConstraintReferenceOption,
   Relationship,
   Table,
@@ -104,11 +105,14 @@ function extractDefaultValueFromConstraints(
   return null
 }
 
-const constraintToRelationship = (
+const constraintToRelationshipAndForeignKeyConstraint = (
   foreignTableName: string,
   foreignColumnName: string,
   constraint: PgConstraint,
-): Result<Relationship | undefined, UnexpectedTokenWarningError> => {
+): Result<
+  [Relationship, ForeignKeyConstraint],
+  UnexpectedTokenWarningError
+> => {
   if (constraint.contype !== 'CONSTR_FOREIGN') {
     return err(
       new UnexpectedTokenWarningError('contype "CONSTR_FOREIGN" is expected'),
@@ -138,7 +142,7 @@ const constraintToRelationship = (
   const deleteConstraint = getConstraintAction(constraint.fk_del_action)
   const cardinality = 'ONE_TO_MANY'
 
-  return ok({
+  const relationship: Relationship = {
     name,
     primaryTableName,
     primaryColumnName,
@@ -147,7 +151,18 @@ const constraintToRelationship = (
     cardinality,
     updateConstraint,
     deleteConstraint,
-  })
+  }
+  const foreignKeyConstraint: ForeignKeyConstraint = {
+    type: 'FOREIGN KEY',
+    name,
+    columnName: foreignColumnName,
+    targetTableName: primaryTableName,
+    targetColumnName: primaryColumnName,
+    updateConstraint,
+    deleteConstraint,
+  }
+
+  return ok([relationship, foreignKeyConstraint])
 }
 
 // Transform function for AST to Schema
@@ -327,7 +342,7 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
       isConstraintNode,
     )) {
       if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
-        const relResult = constraintToRelationship(
+        const relResult = constraintToRelationshipAndForeignKeyConstraint(
           tableName,
           columnName,
           constraint.Constraint,
@@ -338,9 +353,9 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
           continue
         }
 
-        if (relResult.value !== undefined) {
-          columnRelationships.push(relResult.value)
-        }
+        const [relationship, foreignKeyConstraint] = relResult.value
+        columnRelationships.push(relationship)
+        constraints.push([foreignKeyConstraint.name, foreignKeyConstraint])
       }
     }
 
@@ -603,20 +618,19 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
    */
   function processForeignKeyConstraint(
     foreignTableName: string,
-    constraint: { Constraint: PgConstraint },
+    constraint: PgConstraint,
   ): void {
     const foreignColumnName =
-      constraint.Constraint.fk_attrs?.[0] &&
-      isStringNode(constraint.Constraint.fk_attrs[0])
-        ? constraint.Constraint.fk_attrs[0].String.sval
+      constraint.fk_attrs?.[0] && isStringNode(constraint.fk_attrs[0])
+        ? constraint.fk_attrs[0].String.sval
         : undefined
 
     if (foreignColumnName === undefined) return
 
-    const relResult = constraintToRelationship(
+    const relResult = constraintToRelationshipAndForeignKeyConstraint(
       foreignTableName,
       foreignColumnName,
-      constraint.Constraint,
+      constraint,
     )
 
     if (relResult.isErr()) {
@@ -624,10 +638,13 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
       return
     }
 
-    if (relResult.value === undefined) return
+    const [relationship, foreignKeyConstraint] = relResult.value
 
-    const relationship = relResult.value
     relationships[relationship.name] = relationship
+    const table = tables[foreignTableName]
+    if (table) {
+      table.constraints[foreignKeyConstraint.name] = foreignKeyConstraint
+    }
   }
 
   /**
@@ -655,7 +672,9 @@ export const convertToSchema = (stmts: RawStmt[]): ProcessResult => {
     const constraint = alterTableCmd.def
     if (!constraint || !isConstraintNode(constraint)) return
 
-    processForeignKeyConstraint(foreignTableName, constraint)
+    if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
+      processForeignKeyConstraint(foreignTableName, constraint.Constraint)
+    }
   }
 
   /**

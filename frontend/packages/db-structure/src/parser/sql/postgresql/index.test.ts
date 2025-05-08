@@ -203,6 +203,22 @@ describe(processor, () => {
           'users_id_to_posts_user_id',
         ),
       )
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        users_id_to_posts_user_id: {
+          name: 'users_id_to_posts_user_id',
+          type: 'FOREIGN KEY',
+          columnName: 'user_id',
+          targetColumnName: 'id',
+          targetTableName: 'users',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      })
     })
 
     it('foreign key (one-to-one)', async () => {
@@ -217,6 +233,27 @@ describe(processor, () => {
       expect(value.relationships).toEqual(
         parserTestCases['foreign key (one-to-one)'](keyName),
       )
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        UNIQUE_user_id: {
+          name: 'UNIQUE_user_id',
+          type: 'UNIQUE',
+          columnName: 'user_id',
+        },
+        users_id_to_posts_user_id: {
+          name: 'users_id_to_posts_user_id',
+          type: 'FOREIGN KEY',
+          columnName: 'user_id',
+          targetColumnName: 'id',
+          targetTableName: 'users',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      })
     })
   })
 
@@ -224,6 +261,11 @@ describe(processor, () => {
     it('foreign key (one-to-many)', async () => {
       const keyName = 'fk_posts_user_id'
       const { value } = await processor(/* sql */ `
+        CREATE TABLE posts (
+            id SERIAL PRIMARY KEY,
+            user_id INT NOT NULL
+        );
+
         ALTER TABLE posts
         ADD CONSTRAINT ${keyName} FOREIGN KEY (user_id) REFERENCES users(id);
       `)
@@ -231,6 +273,22 @@ describe(processor, () => {
       expect(value.relationships).toEqual(
         parserTestCases['foreign key (one-to-many)'](keyName),
       )
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        fk_posts_user_id: {
+          name: 'fk_posts_user_id',
+          type: 'FOREIGN KEY',
+          columnName: 'user_id',
+          targetTableName: 'users',
+          targetColumnName: 'id',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      })
     })
 
     it('foreign key (one-to-one)', async () => {
@@ -248,6 +306,27 @@ describe(processor, () => {
       expect(value.relationships).toEqual(
         parserTestCases['foreign key (one-to-one)'](keyName),
       )
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        UNIQUE_user_id: {
+          name: 'UNIQUE_user_id',
+          type: 'UNIQUE',
+          columnName: 'user_id',
+        },
+        users_id_to_posts_user_id: {
+          name: 'users_id_to_posts_user_id',
+          type: 'FOREIGN KEY',
+          columnName: 'user_id',
+          targetTableName: 'users',
+          targetColumnName: 'id',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
+        },
+      })
     })
 
     it('foreign key with action', async () => {
@@ -264,6 +343,22 @@ describe(processor, () => {
       expect(value.relationships).toEqual(
         parserTestCases['foreign key with action'],
       )
+      expect(value.tables['posts']?.constraints).toEqual({
+        PRIMARY_id: {
+          name: 'PRIMARY_id',
+          type: 'PRIMARY KEY',
+          columnName: 'id',
+        },
+        fk_posts_user_id: {
+          name: 'fk_posts_user_id',
+          type: 'FOREIGN KEY',
+          columnName: 'user_id',
+          targetTableName: 'users',
+          targetColumnName: 'id',
+          updateConstraint: 'RESTRICT',
+          deleteConstraint: 'CASCADE',
+        },
+      })
     })
   })
 
