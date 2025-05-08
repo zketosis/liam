@@ -3,8 +3,8 @@ import type { StorybookConfig } from '@storybook/nextjs'
 
 const config: StorybookConfig = {
   stories: [
-    '../app/**/*.stories.@(js|jsx|ts|tsx)',
-    '../components/**/*.stories.@(js|jsx|ts|tsx)',
+    '../../../apps/app/components/**/*.stories.@(js|jsx|ts|tsx)',
+    '../../../packages/ui/src/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
     '@storybook/addon-links',
@@ -25,7 +25,7 @@ const config: StorybookConfig = {
         ...config.resolve.alias,
         '@': path.resolve(__dirname, '../'),
         // Redirect imports of langfuseWeb to our mock implementation
-        '../lib/langfuseWeb': path.resolve(__dirname, './langfuseWeb.mock.ts'),
+        '../../../apps/app/lib/langfuseWeb': path.resolve(__dirname, './langfuseWeb.mock.ts'),
       }
     }
     return config

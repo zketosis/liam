@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "turbo build",
+    "build-storybook": "turbo build --filter=@liam-hq/storybook",
     "create-env-files": "([ -f .env ] || touch .env) && ([ -f .env.local ] || touch .env.local)",
     "deploy:jobs": "turbo deploy --filter=@liam-hq/jobs",
     "dev": "turbo dev",
@@ -32,6 +33,7 @@
     "prebuild": "pnpm create-env-files",
     "prelint": "pnpm create-env-files",
     "release": "pnpm build && pnpm changeset publish",
+    "storybook": "turbo storybook --filter=@liam-hq/storybook",
     "test:e2e": "turbo test:e2e",
     "test:prompt": "turbo test:prompt",
     "test:turbo": "turbo test",

@@ -1,6 +1,24 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "storybook": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "@liam-hq/storybook#storybook": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static"]
+    },
+    "@liam-hq/storybook#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static"]
+    },
     "build": {
       "dependsOn": ["^build", "gen"],
       "outputs": ["dist", "dist-cli"],
