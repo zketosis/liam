@@ -17,7 +17,6 @@
   },
   "scripts": {
     "build": "turbo build",
-    "build-storybook": "turbo build --filter=@liam-hq/storybook",
     "create-env-files": "([ -f .env ] || touch .env) && ([ -f .env.local ] || touch .env.local)",
     "deploy:jobs": "turbo deploy --filter=@liam-hq/jobs",
     "dev": "turbo dev",
