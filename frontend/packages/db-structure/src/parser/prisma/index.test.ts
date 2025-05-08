@@ -608,7 +608,7 @@ describe(_processor, () => {
                 name: 'role',
                 type: 'Role',
                 notNull: true,
-                default: "USER",
+                default: 'USER',
               }),
             },
             indexes: {
