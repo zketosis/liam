@@ -32,7 +32,6 @@
     "prebuild": "pnpm create-env-files",
     "prelint": "pnpm create-env-files",
     "release": "pnpm build && pnpm changeset publish",
-    "storybook": "turbo storybook --filter=@liam-hq/storybook",
     "test:e2e": "turbo test:e2e",
     "test:prompt": "turbo test:prompt",
     "test:turbo": "turbo test",
