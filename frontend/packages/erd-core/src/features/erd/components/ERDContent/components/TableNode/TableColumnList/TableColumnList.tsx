@@ -24,7 +24,7 @@ const shouldDisplayColumn = (
 }
 
 export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
-  const { hoverInfo } = useUserEditingStore()  
+  const { hoverInfo } = useUserEditingStore()
 
   return (
     <ul>
