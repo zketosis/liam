@@ -24,31 +24,7 @@ const shouldDisplayColumn = (
 }
 
 export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
-  const { hoverInfo } = useUserEditingStore()
-  const keys = Object.keys(data.targetColumnCardinalities || {})
-  const totalKeys = [
-    ...keys,
-    ...(data.sourceColumnName ? [data.sourceColumnName] : []),
-  ].filter(Boolean)
-
-  const hoverHandle = (tableName: string, columnName: string) => {
-    updateHoverColumn({
-      tableName: tableName,
-      columnName: columnName,
-      columnType: !!totalKeys.includes(columnName),
-    })
-  }
-  const getReleatedColumn = () => {
-    const releatedColumns =
-      hoverInfo.columnName && keys.includes(hoverInfo.columnName)
-        ? [hoverInfo.columnName]
-        : [
-            ...keys,
-            ...(data.sourceColumnName ? [data.sourceColumnName] : []),
-          ].filter(Boolean)
-
-    return releatedColumns
-  }
+  const { hoverInfo } = useUserEditingStore()  
 
   return (
     <ul>
@@ -60,11 +36,18 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
         }
         const handleId = columnHandleId(data.table.name, column.name)
         const isSource = data.sourceColumnName === column.name
+        const targetColumnCardinalities = data.targetColumnCardinalities
 
         return (
           <div
             key={column.name}
-            onMouseEnter={() => hoverHandle(data.table.name, column.name)}
+            onMouseEnter={() => 
+              updateHoverColumn({
+                tableName: data.table.name,
+                columnName: column.name,
+                columnType: isSource || !!targetColumnCardinalities?.[column.name],
+              })
+            }
             onMouseLeave={() =>
               updateHoverColumn({
                 tableName: undefined,
@@ -72,26 +55,25 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
                 columnType: false,
               })
             }
-            style={{
-              backgroundColor: getReleatedColumn().includes(column.name)
-                ? '#22392f'
-                : hoverInfo.columnName === column.name
-                  ? '#434546'
-                  : '',
-            }}
           >
             <TableColumn
               key={column.name}
               column={column}
               handleId={handleId}
               isSource={isSource}
-              targetCardinality={data.targetColumnCardinalities?.[column.name]}
+              targetCardinality={targetColumnCardinalities?.[column.name]}
               isHovered={
                 hoverInfo.tableName === data.table.name &&
                 hoverInfo.columnName === column.name
               }
               isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
-              releatedColumns={getReleatedColumn()}
+              isRelated={
+                (hoverInfo.columnName && 
+                 (targetColumnCardinalities?.[hoverInfo.columnName] || 
+                  data.sourceColumnName === hoverInfo.columnName))
+                  ? hoverInfo.columnName === column.name
+                  : isSource || !!targetColumnCardinalities?.[column.name]
+              }
             />
           </div>
         )

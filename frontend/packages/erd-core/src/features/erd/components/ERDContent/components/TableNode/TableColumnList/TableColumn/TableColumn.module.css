@@ -1,7 +1,4 @@
 .columnWrapper {
-  --bg-selected: #22392f;
-  --bg-hover: #434546;
-
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -21,11 +18,11 @@
 }
 
 .columnWrapper.selectedColumn {
-  background-color: var(--bg-selected);
+  background-color: var(--table-column-selected);
 }
 
 .columnWrapper.hoveredColumn {
-  background-color: var(--bg-hover);
+  background-color: var(--table-column-hover);
 }
 
 .primaryKeyIcon {

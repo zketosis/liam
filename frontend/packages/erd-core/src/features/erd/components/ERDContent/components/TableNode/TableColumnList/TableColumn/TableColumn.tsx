@@ -4,6 +4,7 @@ import type {
 } from '@liam-hq/db-structure'
 import { DiamondFillIcon, DiamondIcon, KeyRound, Link } from '@liam-hq/ui'
 import { Handle, Position } from '@xyflow/react'
+import clsx from 'clsx'
 import type { FC } from 'react'
 import styles from './TableColumn.module.css'
 
@@ -14,7 +15,7 @@ type TableColumnProps = {
   targetCardinality?: CardinalityType | undefined
   isHovered?: boolean
   isSelectedTable?: boolean
-  releatedColumns: string[]
+  isRelated?: boolean
 }
 
 export const TableColumn: FC<TableColumnProps> = ({
@@ -24,20 +25,19 @@ export const TableColumn: FC<TableColumnProps> = ({
   targetCardinality,
   isHovered,
   isSelectedTable,
-  releatedColumns,
+  isRelated,
 }) => {
-  const isRelated = releatedColumns.includes(column.name)
   const isSelectedOrHovered = (isSelectedTable || isHovered) && isRelated
   const isHoveredUnselected = isHovered && !isRelated
 
   return (
     <li
       key={column.name}
-      className={`
-        ${styles.columnWrapper}
-        ${isSelectedOrHovered ? styles.selectedColumn : ''}
-        ${isHoveredUnselected ? styles.hoveredColumn : ''}
-      `}
+      className={clsx(
+        styles.columnWrapper,
+        isSelectedOrHovered ? styles.selectedColumn : '',
+        isHoveredUnselected ? styles.hoveredColumn : ''
+      )}
     >
       {column.primary && (
         <KeyRound
