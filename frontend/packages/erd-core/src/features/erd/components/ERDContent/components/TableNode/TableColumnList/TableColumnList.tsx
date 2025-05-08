@@ -70,7 +70,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
               isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
               isRelated={
                 hoverInfo.columnName &&
-                 (targetColumnCardinalities?.[hoverInfo.columnName] ||
+                (targetColumnCardinalities?.[hoverInfo.columnName] ||
                   data.sourceColumnName === hoverInfo.columnName)
                   ? hoverInfo.columnName === column.name
                   : isSource || !!targetColumnCardinalities?.[column.name]
