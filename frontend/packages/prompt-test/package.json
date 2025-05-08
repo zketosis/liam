@@ -9,6 +9,7 @@
     "@liam-hq/configs": "workspace:*",
     "@liam-hq/jobs": "workspace:*",
     "dotenv": "16.5.0",
+    "eslint": "9.25.1",
     "langfuse": "3.37.2",
     "langfuse-langchain": "3.37.2",
     "tsx": "4.19.3",
@@ -18,8 +19,10 @@
   "scripts": {
     "fmt": "concurrently \"pnpm:fmt:*\"",
     "fmt:biome": "biome check --write --unsafe .",
+    "fmt:eslint": "eslint --fix .",
     "lint": "concurrently \"pnpm:lint:*\"",
     "lint:biome": "biome check .",
+    "lint:eslint": "eslint .",
     "lint:tsc": "tsc --noEmit",
     "test": "tsx src/index.ts",
     "test:prompt": "pnpm test",
