@@ -970,6 +970,10 @@ export type Database = {
         Args: { p_email: string; p_organization_id: string }
         Returns: Json
       }
+      is_current_user_org_member: {
+        Args: { _org: string }
+        Returns: boolean
+      }
       sync_existing_users: {
         Args: Record<PropertyKey, never>
         Returns: undefined

@@ -1,64 +1,48 @@
 import type { DMMF } from '@prisma/generator-helper'
 
-// ref: https://www.prisma.io/docs/orm/reference/prisma-schema-reference#model-field-scalar-types
-export function convertToPostgresColumnType(
-  type: string,
-  nativeType: DMMF.Field['nativeType'],
+// Helper function to handle autoincrement types
+function getAutoincrementType(typeName: string): string {
+  switch (typeName) {
+    case 'Int':
+      return 'serial'
+    case 'SmallInt':
+      return 'smallserial'
+    case 'BigInt':
+      return 'bigserial'
+    default:
+      return typeName.toLowerCase()
+  }
+}
+
+// Helper function to handle native types
+function handleNativeType(
+  nativeTypeName: string,
+  nativeTypeArgs: readonly string[],
   defaultValue: DMMF.Field['default'] | null,
 ): string {
-  if (nativeType) {
-    const [nativeTypeName, nativeTypeArgs] = nativeType
-
-    // If the default value includes 'autoincrement()', return the appropriate serial type
-    if (
-      typeof defaultValue === 'string' &&
-      defaultValue.includes('autoincrement()')
-    ) {
-      switch (nativeTypeName) {
-        case 'Int':
-          return 'serial'
-        case 'SmallInt':
-          return 'smallserial'
-        case 'BigInt':
-          return 'bigserial'
-        default:
-          return nativeTypeName.toLowerCase()
-      }
-    }
-
-    // If nativeType has arguments, format it as 'type(args)'
-    // For example, when `price Decimal @db.Decimal(10, 2)`, type should be Decimal(10, 2)
-    if (nativeTypeArgs.length > 0) {
-      return `${nativeTypeName.toLowerCase()}(${nativeTypeArgs.join(',')})`
-    }
-
-    // Special case for 'DoublePrecision' to return 'double precision' with a space
-    if (nativeTypeName === 'DoublePrecision') {
-      return 'double precision'
-    }
-    return nativeTypeName.toLowerCase()
-  }
-
-  // If nativeType is not provided, use the Prisma field type to determine the PostgreSQL column type
+  // Check for autoincrement
   if (
     typeof defaultValue === 'string' &&
     defaultValue.includes('autoincrement()')
   ) {
-    switch (type) {
-      case 'Int':
-        return 'serial'
-      case 'BigInt':
-        return 'bigserial'
-      default:
-        return type.toLowerCase()
-    }
+    return getAutoincrementType(nativeTypeName)
   }
 
-  // Special case for 'uuid' default value
-  if (typeof defaultValue === 'string' && defaultValue.includes('uuid')) {
-    return 'uuid'
+  // Handle type with arguments
+  if (nativeTypeArgs.length > 0) {
+    return `${nativeTypeName.toLowerCase()}(${nativeTypeArgs.join(',')})`
   }
 
+  // Special case for DoublePrecision
+  if (nativeTypeName === 'DoublePrecision') {
+    return 'double precision'
+  }
+
+  return nativeTypeName.toLowerCase()
+}
+
+// Helper function to map Prisma types to PostgreSQL types
+function mapPrismaTypeToPostgres(type: string): string {
   switch (type) {
     case 'String':
       return 'text'
@@ -81,4 +65,33 @@ export function convertToPostgresColumnType(
     default:
       return type
   }
+}
+
+// ref: https://www.prisma.io/docs/orm/reference/prisma-schema-reference#model-field-scalar-types
+export function convertToPostgresColumnType(
+  type: string,
+  nativeType: DMMF.Field['nativeType'],
+  defaultValue: DMMF.Field['default'] | null,
+): string {
+  // If native type is provided, use it
+  if (nativeType) {
+    const [nativeTypeName, nativeTypeArgs] = nativeType
+    return handleNativeType(nativeTypeName, nativeTypeArgs, defaultValue)
+  }
+
+  // Handle autoincrement without native type
+  if (
+    typeof defaultValue === 'string' &&
+    defaultValue.includes('autoincrement()')
+  ) {
+    return getAutoincrementType(type)
+  }
+
+  // Special case for uuid default value
+  if (typeof defaultValue === 'string' && defaultValue.includes('uuid')) {
+    return 'uuid'
+  }
+
+  // Map Prisma type to PostgreSQL type
+  return mapPrismaTypeToPostgres(type)
 }

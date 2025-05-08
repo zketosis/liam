@@ -75,10 +75,415 @@ function normalizeConstraintName(
   }
 }
 
+/**
+ * Extract unique column names from constraints
+ */
+function extractUniqueColumnNames(
+  constraints:
+    | Array<{
+        type: string
+        name: string
+        columns?: string[]
+        def: string
+        referenced_table?: string
+        referenced_columns?: string[]
+      }>
+    | undefined,
+): Set<string> {
+  const uniqueColumns: string[] = []
+
+  if (constraints) {
+    const uniqueConstraints = constraints.filter(
+      (constraint) =>
+        constraint.type === 'UNIQUE' && constraint.columns?.length === 1,
+    )
+
+    for (const constraint of uniqueConstraints) {
+      if (constraint.columns?.[0]) {
+        uniqueColumns.push(constraint.columns[0])
+      }
+    }
+  }
+
+  return new Set(uniqueColumns)
+}
+
+/**
+ * Extract primary key column names from constraints
+ */
+function extractPrimaryKeyColumnNames(
+  constraints:
+    | Array<{
+        type: string
+        name: string
+        columns?: string[]
+        def: string
+        referenced_table?: string
+        referenced_columns?: string[]
+      }>
+    | undefined,
+): Set<string> {
+  const primaryKeyColumns: string[] = []
+
+  if (constraints) {
+    const primaryKeyConstraints = constraints.filter(
+      (constraint) => constraint.type === 'PRIMARY KEY',
+    )
+
+    for (const constraint of primaryKeyConstraints) {
+      if (constraint.columns) {
+        primaryKeyColumns.push(...constraint.columns)
+      }
+    }
+  }
+
+  return new Set(primaryKeyColumns)
+}
+
+/**
+ * Process columns for a table
+ */
+function processColumns(
+  tblsColumns: Array<{
+    name: string
+    type: string
+    nullable: boolean
+    default?: string | null
+    comment?: string | null
+  }>,
+  uniqueColumnNames: Set<string>,
+  primaryKeyColumnNames: Set<string>,
+): Columns {
+  const columns: Columns = {}
+
+  for (const tblsColumn of tblsColumns) {
+    const defaultValue = extractDefaultValue(tblsColumn.default)
+
+    columns[tblsColumn.name] = aColumn({
+      name: tblsColumn.name,
+      type: tblsColumn.type,
+      notNull: !tblsColumn.nullable,
+      default: defaultValue,
+      primary: primaryKeyColumnNames.has(tblsColumn.name),
+      comment: tblsColumn.comment ?? null,
+      unique: uniqueColumnNames.has(tblsColumn.name),
+    })
+  }
+
+  return columns
+}
+
+/**
+ * Process a PRIMARY KEY constraint
+ */
+function processPrimaryKeyConstraint(constraint: {
+  type: string
+  name: string
+  columns?: string[]
+  def: string
+  referenced_table?: string
+  referenced_columns?: string[]
+}): [string, Constraints[string]] | null {
+  if (
+    constraint.type === 'PRIMARY KEY' &&
+    constraint.columns?.length === 1 &&
+    constraint.columns?.[0]
+  ) {
+    return [
+      constraint.name,
+      {
+        type: 'PRIMARY KEY',
+        name: constraint.name,
+        columnName: constraint.columns[0],
+      },
+    ]
+  }
+
+  return null
+}
+
+/**
+ * Process a FOREIGN KEY constraint
+ */
+function processForeignKeyConstraint(constraint: {
+  type: string
+  name: string
+  columns?: string[]
+  def: string
+  referenced_table?: string
+  referenced_columns?: string[]
+}): [string, Constraints[string]] | null {
+  if (
+    constraint.type === 'FOREIGN KEY' &&
+    constraint.columns?.length === 1 &&
+    constraint.columns[0] &&
+    constraint.referenced_columns?.length === 1 &&
+    constraint.referenced_columns[0] &&
+    constraint.referenced_table
+  ) {
+    const { updateConstraint, deleteConstraint } = extractForeignKeyActions(
+      constraint.def,
+    )
+
+    return [
+      constraint.name,
+      {
+        type: 'FOREIGN KEY',
+        name: constraint.name,
+        columnName: constraint.columns[0],
+        targetTableName: constraint.referenced_table,
+        targetColumnName: constraint.referenced_columns[0],
+        updateConstraint,
+        deleteConstraint,
+      },
+    ]
+  }
+
+  return null
+}
+
+/**
+ * Process a UNIQUE constraint
+ */
+function processUniqueConstraint(constraint: {
+  type: string
+  name: string
+  columns?: string[]
+  def: string
+  referenced_table?: string
+  referenced_columns?: string[]
+}): [string, Constraints[string]] | null {
+  if (
+    constraint.type === 'UNIQUE' &&
+    constraint.columns?.length === 1 &&
+    constraint.columns[0]
+  ) {
+    return [
+      constraint.name,
+      {
+        type: 'UNIQUE',
+        name: constraint.name,
+        columnName: constraint.columns[0],
+      },
+    ]
+  }
+
+  return null
+}
+
+/**
+ * Process a CHECK constraint
+ */
+function processCheckConstraint(constraint: {
+  type: string
+  name: string
+  columns?: string[]
+  def: string
+  referenced_table?: string
+  referenced_columns?: string[]
+}): [string, Constraints[string]] | null {
+  if (constraint.type === 'CHECK') {
+    return [
+      constraint.name,
+      {
+        type: 'CHECK',
+        name: constraint.name,
+        detail: constraint.def,
+      },
+    ]
+  }
+
+  return null
+}
+
+/**
+ * Process constraints for a table
+ */
+function processConstraints(
+  tblsConstraints:
+    | Array<{
+        type: string
+        name: string
+        columns?: string[]
+        def: string
+        referenced_table?: string
+        referenced_columns?: string[]
+      }>
+    | undefined,
+): Constraints {
+  const constraints: Constraints = {}
+
+  if (!tblsConstraints) {
+    return constraints
+  }
+
+  for (const constraint of tblsConstraints) {
+    let result: [string, Constraints[string]] | null = null
+
+    // Process different constraint types
+    if (constraint.type === 'PRIMARY KEY') {
+      result = processPrimaryKeyConstraint(constraint)
+    } else if (constraint.type === 'FOREIGN KEY') {
+      result = processForeignKeyConstraint(constraint)
+    } else if (constraint.type === 'UNIQUE') {
+      result = processUniqueConstraint(constraint)
+    } else if (constraint.type === 'CHECK') {
+      result = processCheckConstraint(constraint)
+    }
+
+    // Add constraint to the collection if valid
+    if (result) {
+      constraints[result[0]] = result[1]
+    }
+  }
+
+  return constraints
+}
+
+/**
+ * Process indexes for a table
+ */
+function processIndexes(
+  tblsIndexes:
+    | Array<{
+        name: string
+        def: string
+        columns: string[]
+      }>
+    | undefined,
+): Indexes {
+  const indexes: Indexes = {}
+
+  if (!tblsIndexes) {
+    return indexes
+  }
+
+  for (const tblsIndex of tblsIndexes) {
+    indexes[tblsIndex.name] = anIndex({
+      name: tblsIndex.name,
+      columns: tblsIndex.columns,
+      unique: tblsIndex.def.toLowerCase().includes('unique'),
+      type: tblsIndex.def.toLocaleLowerCase().match(/using\s+(\w+)/)?.[1] || '',
+    })
+  }
+
+  return indexes
+}
+
+/**
+ * Process a single table
+ */
+function processTable(tblsTable: {
+  name: string
+  columns: Array<{
+    name: string
+    type: string
+    nullable: boolean
+    default?: string | null
+    comment?: string | null
+  }>
+  constraints?: Array<{
+    type: string
+    name: string
+    columns?: string[]
+    def: string
+    referenced_table?: string
+    referenced_columns?: string[]
+  }>
+  indexes?: Array<{
+    name: string
+    def: string
+    columns: string[]
+  }>
+  comment?: string | null
+}): [string, Tables[string]] {
+  // Extract column metadata
+  const uniqueColumnNames = extractUniqueColumnNames(tblsTable.constraints)
+  const primaryKeyColumnNames = extractPrimaryKeyColumnNames(
+    tblsTable.constraints,
+  )
+
+  // Process table components
+  const columns = processColumns(
+    tblsTable.columns,
+    uniqueColumnNames,
+    primaryKeyColumnNames,
+  )
+  const constraints = processConstraints(tblsTable.constraints)
+  const indexes = processIndexes(tblsTable.indexes)
+
+  // Create the table
+  return [
+    tblsTable.name,
+    aTable({
+      name: tblsTable.name,
+      columns,
+      indexes,
+      constraints,
+      comment: tblsTable.comment ?? null,
+    }),
+  ]
+}
+
+/**
+ * Process relationships from relations
+ */
+function processRelationships(
+  relations:
+    | Array<{
+        table: string
+        columns: string[]
+        parent_table: string
+        parent_columns: string[]
+        def: string
+        cardinality?: string
+      }>
+    | undefined,
+): Record<string, Relationship> {
+  const relationships: Record<string, Relationship> = {}
+
+  if (!relations) {
+    return relationships
+  }
+
+  for (const relation of relations) {
+    if (!relation.parent_columns[0] || !relation.columns[0]) {
+      continue
+    }
+
+    const name = defaultRelationshipName(
+      relation.parent_table,
+      relation.parent_columns[0],
+      relation.table,
+      relation.columns[0],
+    )
+
+    const actions = extractForeignKeyActions(relation.def)
+
+    relationships[name] = aRelationship({
+      name,
+      primaryTableName: relation.parent_table,
+      primaryColumnName: relation.parent_columns[0],
+      foreignTableName: relation.table,
+      foreignColumnName: relation.columns[0],
+      cardinality: extractCardinality(relation.cardinality ?? ''),
+      deleteConstraint: actions.deleteConstraint,
+      updateConstraint: actions.updateConstraint,
+    })
+  }
+
+  return relationships
+}
+
+/**
+ * Main function to parse a tbls schema
+ */
 async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
+  // Parse the schema
   const parsedSchema = JSON.parse(schemaString)
   const result = schema.safeParse(parsedSchema)
 
+  // Handle invalid schema
   if (!result.success) {
     return {
       value: {
@@ -90,151 +495,59 @@ async function parseTblsSchema(schemaString: string): Promise<ProcessResult> {
     }
   }
 
+  // Initialize collections
   const tables: Tables = {}
-  const relationships: Record<string, Relationship> = {}
   const tableGroups: Record<string, TableGroup> = {}
   const errors: Error[] = []
 
+  // Define compatible types for type assertions
+  type CompatibleTable = {
+    name: string
+    columns: Array<{
+      name: string
+      type: string
+      nullable: boolean
+      default?: string | null
+      comment?: string | null
+    }>
+    constraints?: Array<{
+      type: string
+      name: string
+      columns?: string[]
+      def: string
+      referenced_table?: string
+      referenced_columns?: string[]
+    }>
+    indexes?: Array<{
+      name: string
+      def: string
+      columns: string[]
+    }>
+    comment?: string | null
+  }
+
+  type CompatibleRelation = {
+    table: string
+    columns: string[]
+    parent_table: string
+    parent_columns: string[]
+    def: string
+    cardinality?: string
+  }
+
+  // Process tables
   for (const tblsTable of result.data.tables) {
-    const columns: Columns = {}
-    const indexes: Indexes = {}
-    const constraints: Constraints = {}
-
-    const uniqueColumnNames = new Set(
-      tblsTable.constraints
-        ?.filter(
-          (constraint) =>
-            constraint.type === 'UNIQUE' && constraint.columns?.length === 1,
-        )
-        .map((constraint) => constraint.columns?.[0]),
-    )
-
-    const primaryKeyColumnNames = new Set(
-      tblsTable.constraints
-        ?.filter((constraint) => constraint.type === 'PRIMARY KEY')
-        .flatMap((constraint) => constraint.columns ?? []),
-    )
-
-    for (const tblsColumn of tblsTable.columns) {
-      const defaultValue = extractDefaultValue(tblsColumn.default)
-
-      columns[tblsColumn.name] = aColumn({
-        name: tblsColumn.name,
-        type: tblsColumn.type,
-        notNull: !tblsColumn.nullable,
-        default: defaultValue,
-        primary: primaryKeyColumnNames.has(tblsColumn.name),
-        comment: tblsColumn.comment ?? null,
-        unique: uniqueColumnNames.has(tblsColumn.name),
-      })
-    }
-
-    if (tblsTable.constraints) {
-      for (const constraint of tblsTable.constraints) {
-        if (
-          constraint.type === 'PRIMARY KEY' &&
-          constraint.columns?.length === 1 &&
-          constraint.columns?.[0]
-        ) {
-          constraints[constraint.name] = {
-            type: 'PRIMARY KEY',
-            name: constraint.name,
-            columnName: constraint.columns[0],
-          }
-        }
-
-        if (
-          constraint.type === 'FOREIGN KEY' &&
-          constraint.columns?.length === 1 &&
-          constraint.columns[0] &&
-          constraint.referenced_columns?.length === 1 &&
-          constraint.referenced_columns[0] &&
-          constraint.referenced_table
-        ) {
-          const { updateConstraint, deleteConstraint } =
-            extractForeignKeyActions(constraint.def)
-          constraints[constraint.name] = {
-            type: 'FOREIGN KEY',
-            name: constraint.name,
-            columnName: constraint.columns[0],
-            targetTableName: constraint.referenced_table,
-            targetColumnName: constraint.referenced_columns[0],
-            updateConstraint,
-            deleteConstraint,
-          }
-        }
-
-        if (
-          constraint.type === 'UNIQUE' &&
-          constraint.columns?.length === 1 &&
-          constraint.columns[0]
-        ) {
-          constraints[constraint.name] = {
-            type: 'UNIQUE',
-            name: constraint.name,
-            columnName: constraint.columns[0],
-          }
-        }
-
-        if (constraint.type === 'CHECK') {
-          constraints[constraint.name] = {
-            type: 'CHECK',
-            name: constraint.name,
-            detail: constraint.def,
-          }
-        }
-      }
-    }
-
-    if (tblsTable.indexes) {
-      for (const tblsIndex of tblsTable.indexes) {
-        indexes[tblsIndex.name] = anIndex({
-          name: tblsIndex.name,
-          columns: tblsIndex.columns,
-          unique: tblsIndex.def.toLowerCase().includes('unique'),
-          type:
-            tblsIndex.def.toLocaleLowerCase().match(/using\s+(\w+)/)?.[1] || '',
-        })
-      }
-    }
-
-    tables[tblsTable.name] = aTable({
-      name: tblsTable.name,
-      columns,
-      indexes,
-      constraints,
-      comment: tblsTable.comment ?? null,
-    })
+    // Use type assertion with a specific type
+    const [tableName, table] = processTable(tblsTable as CompatibleTable)
+    tables[tableName] = table
   }
 
-  if (result.data.relations) {
-    for (const relation of result.data.relations) {
-      if (!relation.parent_columns[0] || !relation.columns[0]) {
-        continue
-      }
+  // Process relationships
+  const relationships = processRelationships(
+    result.data.relations as CompatibleRelation[],
+  )
 
-      const name = defaultRelationshipName(
-        relation.parent_table,
-        relation.parent_columns[0],
-        relation.table,
-        relation.columns[0],
-      )
-
-      const actions = extractForeignKeyActions(relation.def)
-
-      relationships[name] = aRelationship({
-        name,
-        primaryTableName: relation.parent_table,
-        primaryColumnName: relation.parent_columns[0],
-        foreignTableName: relation.table,
-        foreignColumnName: relation.columns[0],
-        cardinality: extractCardinality(relation.cardinality ?? ''),
-        deleteConstraint: actions.deleteConstraint,
-        updateConstraint: actions.updateConstraint,
-      })
-    }
-  }
-
+  // Return the schema
   return {
     value: {
       tables,
