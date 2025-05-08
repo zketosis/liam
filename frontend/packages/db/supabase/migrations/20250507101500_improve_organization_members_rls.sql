@@ -4,23 +4,23 @@ DROP POLICY IF EXISTS "authenticated_users_can_insert_org_organization_members" 
 DROP POLICY IF EXISTS "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members";
 DROP POLICY IF EXISTS "authenticated_users_can_select_org_organization_members" ON "public"."organization_members";
 
-CREATE OR REPLACE FUNCTION is_org_member(_user uuid, _org uuid)
+CREATE OR REPLACE FUNCTION is_current_user_org_member(_org uuid)
 RETURNS boolean
 LANGUAGE sql
 SECURITY DEFINER
-SET search_path = public, pg_temp
+SET search_path = public
 AS $$
   SELECT EXISTS (
     SELECT 1
     FROM public.organization_members om
     WHERE om.organization_id = _org
-      AND om.user_id = _user
+      AND om.user_id = auth.uid()
   );
 $$;
 
-ALTER FUNCTION is_org_member(uuid, uuid) OWNER TO postgres;
-REVOKE ALL ON FUNCTION is_org_member(uuid, uuid) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION is_org_member(uuid, uuid) TO authenticated;
+ALTER FUNCTION is_current_user_org_member(uuid) OWNER TO postgres;
+REVOKE ALL ON FUNCTION is_current_user_org_member(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION is_current_user_org_member(uuid) TO authenticated;
 
 CREATE POLICY "authenticated_users_can_insert_org_organization_members"
   ON "public"."organization_members"
@@ -28,18 +28,18 @@ CREATE POLICY "authenticated_users_can_insert_org_organization_members"
   WITH CHECK (
     (user_id = auth.uid()) 
     OR 
-    is_org_member(auth.uid(), organization_id)
+    is_current_user_org_member(organization_id)
   );
 
 CREATE POLICY "authenticated_users_can_delete_org_organization_members"
   ON "public"."organization_members"
   FOR DELETE TO "authenticated"
-  USING (is_org_member(auth.uid(), organization_id));
+  USING (is_current_user_org_member(organization_id));
 
 CREATE POLICY "authenticated_users_can_select_org_organization_members"
   ON "public"."organization_members"
   FOR SELECT TO "authenticated"
-  USING (is_org_member(auth.uid(), organization_id));
+  USING (is_current_user_org_member(organization_id));
 
 COMMENT ON POLICY "authenticated_users_can_insert_org_organization_members" 
   ON "public"."organization_members" 

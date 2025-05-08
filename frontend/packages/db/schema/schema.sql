@@ -352,6 +352,22 @@ $$;
 ALTER FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."is_current_user_org_member"("_org" "uuid") RETURNS boolean
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.organization_members om
+    WHERE om.organization_id = _org
+      AND om.user_id = auth.uid()
+  );
+$$;
+
+
+ALTER FUNCTION "public"."is_current_user_org_member"("_org" "uuid") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."prevent_delete_last_organization_member"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -1411,7 +1427,7 @@ CREATE POLICY "authenticated_users_can_delete_org_invitations" ON "public"."invi
 
 
 
-CREATE POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" FOR DELETE TO "authenticated" USING (is_org_member(auth.uid(), organization_id));
+CREATE POLICY "authenticated_users_can_delete_org_organization_members" ON "public"."organization_members" FOR DELETE TO "authenticated" USING ("public"."is_current_user_org_member"("organization_id"));
 
 
 
@@ -1485,32 +1501,7 @@ COMMENT ON POLICY "authenticated_users_can_insert_org_knowledge_suggestions" ON 
 
 
 
-CREATE OR REPLACE FUNCTION is_org_member(_user uuid, _org uuid)
-RETURNS boolean
-LANGUAGE sql
-SECURITY DEFINER
-SET search_path = public, pg_temp
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM public.organization_members om
-    WHERE om.organization_id = _org
-      AND om.user_id = _user
-  );
-$$;
-
-ALTER FUNCTION is_org_member(uuid, uuid) OWNER TO postgres;
-REVOKE ALL ON FUNCTION is_org_member(uuid, uuid) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION is_org_member(uuid, uuid) TO authenticated;
-
-
-
-CREATE POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" FOR INSERT TO "authenticated" WITH CHECK (
-  -- Allow users to add themselves to any organization
-  (user_id = auth.uid()) 
-  OR 
-  is_org_member(auth.uid(), organization_id)
-);
+CREATE POLICY "authenticated_users_can_insert_org_organization_members" ON "public"."organization_members" FOR INSERT TO "authenticated" WITH CHECK ((("user_id" = "auth"."uid"()) OR "public"."is_current_user_org_member"("organization_id")));
 
 
 
@@ -1642,7 +1633,7 @@ COMMENT ON POLICY "authenticated_users_can_select_org_migrations" ON "public"."m
 
 
 
-CREATE POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" FOR SELECT TO "authenticated" USING (is_org_member(auth.uid(), organization_id));
+CREATE POLICY "authenticated_users_can_select_org_organization_members" ON "public"."organization_members" FOR SELECT TO "authenticated" USING ("public"."is_current_user_org_member"("organization_id"));
 
 
 
@@ -2251,6 +2242,13 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."invite_organization_member"("p_email" "text", "p_organization_id" "uuid") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."is_current_user_org_member"("_org" "uuid") TO "service_role";
 
 
 
