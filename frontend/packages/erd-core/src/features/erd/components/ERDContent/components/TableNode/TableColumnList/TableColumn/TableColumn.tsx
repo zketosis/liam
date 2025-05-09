@@ -14,8 +14,7 @@ type TableColumnProps = {
   isSource: boolean
   targetCardinality?: CardinalityType | undefined
   isHovered?: boolean
-  isSelectedTable?: boolean
-  isRelated?: boolean
+  isHighlightedTable?: boolean
 }
 
 export const TableColumn: FC<TableColumnProps> = ({
@@ -23,17 +22,13 @@ export const TableColumn: FC<TableColumnProps> = ({
   handleId,
   isSource,
   targetCardinality,
-  isHovered,
-  isSelectedTable,
-  isRelated,
+  isHighlightedTable,
 }) => {
   return (
     <li
       key={column.name}
       className={clsx(styles.columnWrapper, {
-        [styles.hoveredRelatedColumn]: (isSelectedTable && isHovered) && isRelated,
-        [styles.highlightRelatedColumn]: (isSelectedTable && !isHovered) && isRelated,
-        [styles.hoveredColumn]: isHovered && !isRelated,
+        [styles.highlightRelatedColumn]: isHighlightedTable && (isSource || !!targetCardinality),
       })}
     >
       {column.primary && (

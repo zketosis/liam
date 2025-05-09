@@ -17,12 +17,16 @@
   border-bottom-right-radius: var(--border-radius-md);
 }
 
-.columnWrapper.selectedColumn {
-  background-color: var(--table-column-selected);
+.columnWrapper:hover {
+  background-color: var(--pane-background-hover);
 }
 
-.columnWrapper.hoveredColumn {
-  background-color: var(--table-column-hover);
+.columnWrapper.highlightRelatedColumn {
+  background-color: var(--primary-overlay-10);
+}
+
+.columnWrapper.highlightRelatedColumn:hover {
+  background-color: var(--primary-overlay-15);
 }
 
 .primaryKeyIcon {

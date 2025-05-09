@@ -79,8 +79,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({
                 hoverInfo.tableName === data.table.name &&
                 hoverInfo.columnName === column.name
               }
-              isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
-              isRelated={isRelated}
+              isHighlightedTable={data.isHighlighted || data.isActiveHighlighted}
             />
           </div>
         )
