@@ -1,5 +1,5 @@
 import type { PageProps } from '@/app/types'
-import { branchOrCommitSchema } from '@/utils/routes'
+import { branchOrCommitSchema } from '@/libs/routes'
 
 import * as v from 'valibot'
 import { DocsListPage } from './DocsListPage'

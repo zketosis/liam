@@ -4,7 +4,7 @@ import {
   deleteOrganizationAction,
   updateOrganizationAction,
 } from '@/features/organizations/actions/organizationClientActions'
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import { Button, Input, useToast } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
