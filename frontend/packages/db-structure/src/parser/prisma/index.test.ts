@@ -562,7 +562,7 @@ describe(_processor, () => {
 
     it('@@map', async () => {
       const { value } = await processor(`
-        model User {
+        model users {
           id    Int     @id @default(autoincrement()) @map("_id")
           posts Post[]
           email String  @unique @map("raw_email_address")
@@ -571,7 +571,7 @@ describe(_processor, () => {
           @@map("users")
         }
     
-        model Post {
+        model posts {
           id     Int   @id @default(autoincrement())
           user   User  @relation(fields: [userId], references: [id])
           userId Int   @map("raw_user_id")
@@ -588,7 +588,7 @@ describe(_processor, () => {
       const expectedTables = aSchema({
         tables: {
           User: aTable({
-            name: 'User',
+            name: 'users',
             columns: {
               _id: aColumn({
                 name: '_id',
@@ -618,7 +618,7 @@ describe(_processor, () => {
                 unique: true,
               }),
               User_raw_email_address_key: anIndex({
-                name: 'User_raw_email_address_key',
+                name: 'users_raw_email_address_key',
                 columns: ['raw_email_address'],
                 unique: true,
               }),
@@ -637,7 +637,7 @@ describe(_processor, () => {
             },
           }),
           Post: aTable({
-            name: 'Post',
+            name: 'posts',
             columns: {
               id: aColumn({
                 name: 'id',
@@ -656,7 +656,7 @@ describe(_processor, () => {
             },
             indexes: {
               Post_pkey: anIndex({
-                name: 'Post_pkey',
+                name: 'posts_pkey',
                 columns: ['id'],
                 unique: true,
               }),
@@ -667,11 +667,11 @@ describe(_processor, () => {
                 name: 'PRIMARY_id',
                 columnName: 'id',
               },
-              PostToUser: {
+              postsTousers: {
                 type: 'FOREIGN KEY',
-                name: 'PostToUser',
+                name: 'postsTousers',
                 columnName: 'raw_user_id',
-                targetTableName: 'User',
+                targetTableName: 'users',
                 targetColumnName: '_id',
                 updateConstraint: 'NO_ACTION',
                 deleteConstraint: 'NO_ACTION',
@@ -682,12 +682,12 @@ describe(_processor, () => {
       })
 
       expectedTables['relationships'] = {
-        PostToUser: aRelationship({
-          name: 'PostToUser',
+        postsTousers: aRelationship({
+          name: 'postsTousers',
           foreignColumnName: 'raw_user_id',
-          foreignTableName: 'Post',
+          foreignTableName: 'posts',
           primaryColumnName: '_id',
-          primaryTableName: 'User',
+          primaryTableName: 'users',
         }),
       }
 
