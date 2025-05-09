@@ -5,14 +5,13 @@ import { NewThreadButton } from './NewThreadButton'
 // Define the component props type
 type NewThreadButtonProps = ComponentProps<typeof NewThreadButton>
 
-const meta: Meta<typeof NewThreadButton> = {
-  title: 'Components/Chat/NewThreadButton',
+const meta = {
   component: NewThreadButton,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
-}
+} satisfies Meta<typeof NewThreadButton>
 
 export default meta
 type Story = StoryObj<NewThreadButtonProps>
