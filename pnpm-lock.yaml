@@ -651,6 +651,9 @@ importers:
 
   frontend/packages/figma-to-css-variables:
     dependencies:
+      dotenv:
+        specifier: 16.5.0
+        version: 16.5.0
       style-dictionary:
         specifier: 4.4.0
         version: 4.4.0
