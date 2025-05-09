@@ -1,5 +1,5 @@
 import { createClient } from '@/libs/db/server'
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
 import Link from 'next/link'
 

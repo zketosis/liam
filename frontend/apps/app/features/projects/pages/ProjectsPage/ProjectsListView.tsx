@@ -1,6 +1,6 @@
 'use client'
 
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import Link from 'next/link'
 import { useState } from 'react'

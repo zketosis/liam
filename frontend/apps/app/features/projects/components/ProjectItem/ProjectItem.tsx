@@ -1,4 +1,4 @@
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import type { Tables } from '@liam-hq/db/supabase/database.types'
 import { GithubLogo } from '@liam-hq/ui'
 import Link from 'next/link'
