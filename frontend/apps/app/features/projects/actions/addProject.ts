@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/libs/db/server'
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import { redirect } from 'next/navigation'
 
 export const addProject = async (formData: FormData) => {

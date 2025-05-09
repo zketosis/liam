@@ -1,5 +1,5 @@
 import { createClient } from '@/libs/db/server'
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import Link from 'next/link'
 
 import styles from './BranchDetailPage.module.css'
