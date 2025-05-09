@@ -564,7 +564,7 @@ describe(_processor, () => {
       const { value } = await processor(`
         model users {
           id    Int     @id @default(autoincrement()) @map("_id")
-          posts Post[]
+          posts posts[]
           email String  @unique @map("raw_email_address")
           role  Role    @default(USER)
     
@@ -573,7 +573,7 @@ describe(_processor, () => {
     
         model posts {
           id     Int   @id @default(autoincrement())
-          user   User  @relation(fields: [userId], references: [id])
+          user   users  @relation(fields: [userId], references: [id])
           userId Int   @map("raw_user_id")
     
           @@map("posts")
