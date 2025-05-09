@@ -1,4 +1,4 @@
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import Link from 'next/link'
 import { getDocFilePaths } from './getDocFilePaths'
 

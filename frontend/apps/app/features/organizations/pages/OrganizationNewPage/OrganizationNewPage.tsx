@@ -1,6 +1,6 @@
 'use client'
 
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import { Button, Input } from '@liam-hq/ui'
 import { useRouter } from 'next/navigation'
 import { type FC, type FormEvent, useState } from 'react'
