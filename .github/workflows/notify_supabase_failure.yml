@@ -14,7 +14,7 @@ jobs:
         env:
           INCOMING_WEBHOOK_URL: ${{ secrets.SLACK_CLI_CI_WEBHOOK_URL }}
         with:
-          text: "Supabase Preview Deployment Failure"
+          text: "Supabase Deployment Failure"
           attachments: |
             [
               {
@@ -34,7 +34,7 @@ jobs:
                   },
                   {
                     "title": "Check Suite URL",
-                    "value": "${{ github.event.check_suite.html_url }}"
+                    "value": "${{ github.event.check_suite.check_runs_url }}"
                   }
                 ]
               }
