@@ -99,7 +99,7 @@ Follow these rules when you write code:
 ├─ **app**                 # Next.js routing files only
 │  ├─ page.tsx             # thin wrapper → just `<XxxPage />`
 │  ├─ layout.tsx           # global layout, no page logic
-│  └─ api/route.ts         # Route Handlers & Server Actions
+│  └─ api/route.ts         # Route Handlers
 ├─ **components**          # UI packages (pages & reusable widgets)
 │  ├─ *XxxPage/*           # one package per screen (not reused)
 │  └─ *SomeWidget/*        # reusable across screens
