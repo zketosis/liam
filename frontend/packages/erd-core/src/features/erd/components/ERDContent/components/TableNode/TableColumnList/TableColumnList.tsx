@@ -12,7 +12,7 @@ type TableColumnListProps = {
   onTableColumnMouseEnter: (
     event: React.MouseEvent,
     hoverInfo?: HoverInfo,
-  ) => void;
+  ) => void
 }
 
 const shouldDisplayColumn = (
@@ -47,7 +47,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter, onTabl
           <div
             key={column.name}
             onMouseEnter={(e) => {
-              const hoveredInfo = {                
+              const hoveredInfo = { 
                 tableName: data.table.name,
                 columnName: column.name,
                 columnType:
@@ -55,8 +55,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter, onTabl
               }
               onTableColumnMouseEnter(e, hoveredInfo)
               updateHoverColumn(hoveredInfo)
-            }
-            }
+            }}
             onMouseLeave={() =>
               updateHoverColumn({
                 tableName: undefined,

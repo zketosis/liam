@@ -10,10 +10,10 @@ import {
 import type { NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
 import type { FC } from 'react'
+import type { HoverInfo } from '../../ERDContent'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
 import styles from './TableNode.module.css'
-import type { HoverInfo } from '../../ERDContent'
 
 type Props = NodeProps<TableNodeType>
 
@@ -22,7 +22,10 @@ export const TableNode: FC<Props> = ({ data }) => {
   const showMode = data.showMode ?? _showMode
   const name = data?.table?.name
 
-  const handleTableNodeHoverEvent = (event: React.MouseEvent, hoverInfo?: HoverInfo ) => {
+  const handleTableNodeHoverEvent = (
+    event: React.MouseEvent,
+    hoverInfo?: HoverInfo,
+  ) => {
     data.onTableColumnMouseEnter(event, {id: hoverInfo?.tableName}, hoverInfo)
   }
 
@@ -42,9 +45,18 @@ export const TableNode: FC<Props> = ({ data }) => {
             }
           >
             <TableHeader data={data} />
-            {showMode === 'ALL_FIELDS' && <TableColumnList data={data} onTableColumnMouseEnter={handleTableNodeHoverEvent}/>}
+            {showMode === 'ALL_FIELDS' && (
+              <TableColumnList 
+                data={data}
+                onTableColumnMouseEnter={handleTableNodeHoverEvent}
+              />
+            )}
             {showMode === 'KEY_ONLY' && (
-              <TableColumnList data={data} filter="KEY_ONLY" onTableColumnMouseEnter={handleTableNodeHoverEvent}/>
+              <TableColumnList 
+                data={data}
+                filter="KEY_ONLY"
+                onTableColumnMouseEnter={handleTableNodeHoverEvent}
+              />
             )}
           </div>
         </TooltipTrigger>

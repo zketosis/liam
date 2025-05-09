@@ -182,14 +182,15 @@ export const ERDContentInner: FC<Props> = ({
 
   const panOnDrag = [1, 2]
 
-  const nodeWithEvent = nodes.map((node: Node): Node => ({
-    ...node,
-    data: {
-      ...node.data,
-      onTableColumnMouseEnter: handleMouseEnterNode,
-      // onNodeMouseLeave: handleMouseLeaveNode,
-    },
-  }))
+  const nodeWithEvent = nodes.map(
+    (node: Node): Node => ({
+      ...node,
+      data: {
+          ...node.data,
+        onTableColumnMouseEnter: handleMouseEnterNode,
+      },
+    }),
+  )
 
   return (
     <div

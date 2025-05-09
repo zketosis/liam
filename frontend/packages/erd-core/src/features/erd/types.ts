@@ -16,7 +16,7 @@ export type TableNodeData = {
     event: React.MouseEvent,
     node: { id: string | undefined },
     hoverInfo?: HoverInfo | undefined,
-  ) => void;
+  ) => void
 }
 
 export type TableNodeType = Node<TableNodeData, 'table'>
