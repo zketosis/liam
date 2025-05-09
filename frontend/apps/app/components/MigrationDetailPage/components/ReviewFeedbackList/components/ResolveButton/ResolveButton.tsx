@@ -3,8 +3,8 @@
 import { Button } from '@liam-hq/ui'
 import type React from 'react'
 import { useState } from 'react'
-import { resolveReviewFeedback } from '../../actions/resolveReviewFeedback'
-import { ResolutionCommentModal } from '../ResolutionCommentModal/ResolutionCommentModal'
+import { resolveReviewFeedback } from '../../../../actions/resolveReviewFeedback'
+import { ResolutionCommentModal } from './ResolutionCommentModal'
 import styles from './ResolveButton.module.css'
 
 interface ResolveButtonProps {

@@ -2,13 +2,13 @@
 
 import { clsx } from 'clsx'
 import type React from 'react'
-import { CopyButton } from '../../../../components/CopyButton/CopyButton'
 import { resolveReviewFeedback } from '../../actions/resolveReviewFeedback'
 import { useReviewFeedbacks } from '../../contexts/ReviewFeedbackContext'
 import { formatReviewFeedback } from '../../utils/formatReviewFeedback'
-import { ResolveButton } from '../ResolveButton/ResolveButton'
-import { ReviewFeedbackComments } from '../ReviewFeedbackComments'
+import { CopyButton } from '../CopyButton'
 import styles from './ReviewFeedbackList.module.css'
+import { ResolveButton } from './components/ResolveButton'
+import { ReviewFeedbackComments } from './components/ReviewFeedbackComments'
 
 interface ReviewFeedbackListProps {
   containerClassName?: string

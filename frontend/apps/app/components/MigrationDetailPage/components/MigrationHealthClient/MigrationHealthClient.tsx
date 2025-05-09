@@ -1,9 +1,9 @@
 'use client'
 
 import { useReviewFeedbacks } from '../../contexts/ReviewFeedbackContext'
-import { calculateScoresFromIssues } from '../../utils/calculateScores'
-import { RadarChart } from '../RadarChart/RadarChart'
 import styles from './MigrationHealthClient.module.css'
+import { RadarChart } from './components/RadarChart'
+import { calculateScoresFromIssues } from './utils/calculateScores'
 
 type MigrationHealthClientProps = {
   className?: string

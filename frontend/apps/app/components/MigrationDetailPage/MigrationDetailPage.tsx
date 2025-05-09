@@ -4,13 +4,13 @@ import { getPullRequestDetails, getPullRequestFiles } from '@liam-hq/github'
 import Link from 'next/link'
 
 import type { FC } from 'react'
-import { CopyButton } from '../../../../components/CopyButton/CopyButton'
-import { UserFeedbackClient } from '../../../../components/UserFeedbackClient'
-import { MigrationHealthClient } from '../../components/MigrationHealthClient/MigrationHealthClient'
-import { ReviewFeedbackList } from '../../components/ReviewFeedbackList/ReviewFeedbackList'
-import { ReviewFeedbackProvider } from '../../contexts/ReviewFeedbackContext'
-import { formatAllReviewFeedbacks } from '../../utils/formatReviewFeedback'
 import styles from './MigrationDetailPage.module.css'
+import { CopyButton } from './components/CopyButton'
+import { MigrationHealthClient } from './components/MigrationHealthClient'
+import { ReviewFeedbackList } from './components/ReviewFeedbackList'
+import { UserFeedbackClient } from './components/UserFeedbackClient'
+import { ReviewFeedbackProvider } from './contexts/ReviewFeedbackContext'
+import { formatAllReviewFeedbacks } from './utils/formatReviewFeedback'
 
 type Props = {
   migrationId: string

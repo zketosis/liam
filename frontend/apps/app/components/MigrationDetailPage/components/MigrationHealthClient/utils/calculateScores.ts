@@ -1,6 +1,6 @@
 'use client'
 
-import type { CategoryEnum } from '../components/RadarChart/RadarChart'
+import type { CategoryEnum } from '../components/RadarChart'
 
 type ReviewFeedbackForScore = {
   category: string

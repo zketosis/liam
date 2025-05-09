@@ -3,8 +3,8 @@
 import { Button } from '@liam-hq/ui'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
-import { addReviewFeedbackComment } from '../../../actions/reviewFeedbackComments'
 import styles from './CommentForm.module.css'
+import { addReviewFeedbackComment } from './actions/addReviewFeedbackComment'
 
 interface CommentFormProps {
   reviewFeedbackId: string

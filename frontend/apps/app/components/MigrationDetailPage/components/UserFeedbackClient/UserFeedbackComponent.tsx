@@ -1,7 +1,7 @@
 'use client'
 
+import { getLangfuseWeb } from '@/libs/langfuse/langfuseWeb'
 import { useState } from 'react'
-import { getLangfuseWeb } from '../libs/langfuse/langfuseWeb'
 import styles from './UserFeedbackComponent.module.css'
 
 type UserFeedbackComponentProps = {

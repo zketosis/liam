@@ -1,9 +1,11 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import type { CommentWithUser } from '../../../actions/reviewFeedbackComments'
-import { getReviewFeedbackComments } from '../../../actions/reviewFeedbackComments'
 import styles from './CommentList.module.css'
+import {
+  type CommentWithUser,
+  getReviewFeedbackComments,
+} from './actions/getReviewFeedbackComments'
 
 interface CommentListProps {
   reviewFeedbackId: string
