@@ -28,7 +28,11 @@ const shouldDisplayColumn = (
   return true
 }
 
-export const TableColumnList: FC<TableColumnListProps> = ({ data, filter, onTableColumnMouseEnter }) => {
+export const TableColumnList: FC<TableColumnListProps> =({
+  data,
+  filter,
+  onTableColumnMouseEnter,
+}) => {
   const { hoverInfo } = useUserEditingStore()
 
   return (
@@ -47,7 +51,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter, onTabl
           <div
             key={column.name}
             onMouseEnter={(e) => {
-              const hoveredInfo = { 
+              const hoveredInfo = {
                 tableName: data.table.name,
                 columnName: column.name,
                 columnType:

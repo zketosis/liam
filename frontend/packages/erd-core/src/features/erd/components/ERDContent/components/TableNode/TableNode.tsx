@@ -26,7 +26,7 @@ export const TableNode: FC<Props> = ({ data }) => {
     event: React.MouseEvent,
     hoverInfo?: HoverInfo,
   ) => {
-    data.onTableColumnMouseEnter(event, {id: hoverInfo?.tableName}, hoverInfo)
+    data.onTableColumnMouseEnter(event, { id: hoverInfo?.tableName }, hoverInfo)
   }
 
   return (
@@ -46,13 +46,13 @@ export const TableNode: FC<Props> = ({ data }) => {
           >
             <TableHeader data={data} />
             {showMode === 'ALL_FIELDS' && (
-              <TableColumnList 
+              <TableColumnList
                 data={data}
                 onTableColumnMouseEnter={handleTableNodeHoverEvent}
               />
             )}
             {showMode === 'KEY_ONLY' && (
-              <TableColumnList 
+              <TableColumnList
                 data={data}
                 filter="KEY_ONLY"
                 onTableColumnMouseEnter={handleTableNodeHoverEvent}
