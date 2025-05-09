@@ -27,17 +27,13 @@ export const TableColumn: FC<TableColumnProps> = ({
   isSelectedTable,
   isRelated,
 }) => {
-  const isSelectedOrHovered = (isSelectedTable || isHovered) && isRelated
-  const isHoveredUnselected = isHovered && !isRelated
-
   return (
     <li
       key={column.name}
-      className={clsx(
-        styles.columnWrapper,
-        isSelectedOrHovered ? styles.selectedColumn : '',
-        isHoveredUnselected ? styles.hoveredColumn : '',
-      )}
+      className={clsx(styles.columnWrapper, {
+        [styles.selectedColumn]: (isSelectedTable || isHovered) && isRelated,
+        [styles.hoveredColumn]: isHovered && !isRelated,
+      })}
     >
       {column.primary && (
         <KeyRound
