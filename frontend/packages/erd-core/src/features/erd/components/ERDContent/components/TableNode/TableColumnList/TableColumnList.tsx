@@ -2,7 +2,7 @@ import type { TableNodeData } from '@/features/erd/types'
 import { columnHandleId } from '@/features/erd/utils'
 import { updateHoverColumn, useUserEditingStore } from '@/stores'
 import type { Column } from '@liam-hq/db-structure'
-import type { FC } from 'react'
+import React, { type FC } from 'react';
 import type { HoverInfo } from '../../../ERDContent'
 import { TableColumn } from './TableColumn'
 
@@ -28,7 +28,7 @@ const shouldDisplayColumn = (
   return true
 }
 
-export const TableColumnList: FC<TableColumnListProps> =({
+export const TableColumnList: FC<TableColumnListProps> = ({
   data,
   filter,
   onTableColumnMouseEnter,

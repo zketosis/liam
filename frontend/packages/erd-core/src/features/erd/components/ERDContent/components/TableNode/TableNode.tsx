@@ -9,7 +9,7 @@ import {
 } from '@liam-hq/ui'
 import type { NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
-import type { FC } from 'react'
+import React, { type FC } from 'react';
 import type { HoverInfo } from '../../ERDContent'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
