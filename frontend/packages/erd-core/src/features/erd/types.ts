@@ -1,7 +1,7 @@
 import type { ShowMode } from '@/schemas/showMode/types'
 import type { Cardinality, Table } from '@liam-hq/db-structure'
-import React from 'react';
 import type { Node } from '@xyflow/react'
+import React from 'react'
 import type { HoverInfo } from './components'
 
 export type TableNodeData = {

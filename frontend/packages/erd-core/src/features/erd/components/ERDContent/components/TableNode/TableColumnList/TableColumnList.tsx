@@ -2,7 +2,8 @@ import type { TableNodeData } from '@/features/erd/types'
 import { columnHandleId } from '@/features/erd/utils'
 import { updateHoverColumn, useUserEditingStore } from '@/stores'
 import type { Column } from '@liam-hq/db-structure'
-import React, { type FC } from 'react';
+import React from 'react'
+import type { FC } from 'react'
 import type { HoverInfo } from '../../../ERDContent'
 import { TableColumn } from './TableColumn'
 
