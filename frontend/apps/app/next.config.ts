@@ -20,7 +20,9 @@ const nextConfig: NextConfig = {
     domains: ['avatars.githubusercontent.com'],
   },
   webpack: (config) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (Array.isArray(config.externals)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals.push(
         '@prisma/debug',
         '@prisma/engines',
@@ -33,21 +35,37 @@ const nextConfig: NextConfig = {
         '@prisma/schema-files-loader',
       )
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/debug'] = '@prisma/debug'
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/engines'] = '@prisma/engines'
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/engines-version'] = '@prisma/engines-version'
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/fetch-engine'] = '@prisma/fetch-engine'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/generator-helper'] = '@prisma/generator-helper'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/get-platform'] = '@prisma/get-platform'
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/internals'] = '@prisma/internals'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/prisma-schema-wasm'] =
         '@prisma/prisma-schema-wasm'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       config.externals['@prisma/schema-files-loader'] =
         '@prisma/schema-files-loader'
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     config.plugins.push({
       // biome-ignore lint/suspicious/noExplicitAny: webpack types are incomplete so we need to use any here
       apply: (compiler: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         compiler.hooks.afterEmit.tap('InstallPrismaInternals', () => {
           execSync('node scripts/install-prisma-internals.mjs', {
             stdio: 'inherit',
@@ -56,6 +74,8 @@ const nextConfig: NextConfig = {
         })
       },
     })
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     config.plugins = [...config.plugins, new PrismaPlugin()]
 
     return config

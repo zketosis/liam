@@ -1,3 +1,4 @@
+import { includeIgnoreFile } from '@eslint/compat'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 
@@ -8,19 +9,26 @@ import tsParser from '@typescript-eslint/parser'
  * @returns {Array} ESLint configuration array
  */
 export function createBaseConfig(options = {}) {
-  const { tsconfigPath = './tsconfig.json' } = options
+  const { tsconfigPath = './tsconfig.json', gitignorePath } = options
 
   return [
+    includeIgnoreFile(gitignorePath),
     {
       files: ['**/*.ts', '**/*.tsx'],
-      ignores: ['**/trigger.config.ts', '**/vitest.config.ts'],
+      ignores: [
+        '**/trigger.config.ts',
+        '**/vitest.config.ts',
+        '**/dist/**',
+        '**/.trigger/**',
+        '**/app/.well-known/**',
+      ],
       plugins: {
         '@typescript-eslint': tseslint,
       },
       languageOptions: {
         parser: tsParser,
         parserOptions: {
-          project: tsconfigPath,
+          projectService: tsconfigPath,
           ecmaVersion: 2022,
           sourceType: 'module',
         },

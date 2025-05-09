@@ -167,9 +167,12 @@ export async function POST(request: Request) {
 
   // Format chat history for prompt template
   const formattedChatHistory =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     history && history.length > 0
       ? history
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           .map((msg: [string, string]) => `${msg[0]}: ${msg[1]}`)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           .join('\n')
       : 'No previous conversation.'
 
@@ -222,8 +225,10 @@ Based on the schema information provided and considering any previous conversati
       callbacks: [langfuseHandler],
       metadata: {
         endpoint: '/api/chat',
+
         method: 'POST',
         messageLength: message.length,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         hasHistory: history ? history.length > 0 : false,
       },
     },
@@ -259,10 +264,13 @@ Based on the schema information provided and considering any previous conversati
         item &&
         typeof item === 'object' &&
         'type' in item &&
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         item.type === 'text' &&
         'text' in item &&
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         typeof item.text === 'string'
       ) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         return text + item.text
       }
 
