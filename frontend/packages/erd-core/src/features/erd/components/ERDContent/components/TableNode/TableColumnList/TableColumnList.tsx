@@ -3,11 +3,16 @@ import { columnHandleId } from '@/features/erd/utils'
 import { updateHoverColumn, useUserEditingStore } from '@/stores'
 import type { Column } from '@liam-hq/db-structure'
 import type { FC } from 'react'
+import type { HoverInfo } from '../../../ERDContent'
 import { TableColumn } from './TableColumn'
 
 type TableColumnListProps = {
   data: TableNodeData
   filter?: 'KEY_ONLY'
+  onTableColumnMouseEnter: (
+    event: React.MouseEvent,
+    hoverInfo?: HoverInfo,
+  ) => void;
 }
 
 const shouldDisplayColumn = (
@@ -23,7 +28,7 @@ const shouldDisplayColumn = (
   return true
 }
 
-export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
+export const TableColumnList: FC<TableColumnListProps> = ({ data, filter, onTableColumnMouseEnter }) => {
   const { hoverInfo } = useUserEditingStore()
 
   return (
@@ -41,13 +46,16 @@ export const TableColumnList: FC<TableColumnListProps> = ({ data, filter }) => {
         return (
           <div
             key={column.name}
-            onMouseEnter={() =>
-              updateHoverColumn({
+            onMouseEnter={(e) => {
+              const hoveredInfo = {                
                 tableName: data.table.name,
                 columnName: column.name,
                 columnType:
                   isSource || !!targetColumnCardinalities?.[column.name],
-              })
+              }
+              onTableColumnMouseEnter(e, hoveredInfo)
+              updateHoverColumn(hoveredInfo)
+            }
             }
             onMouseLeave={() =>
               updateHoverColumn({

@@ -1,6 +1,7 @@
 import type { ShowMode } from '@/schemas/showMode/types'
 import type { Cardinality, Table } from '@liam-hq/db-structure'
 import type { Node } from '@xyflow/react'
+import type { HoverInfo } from './components'
 
 export type TableNodeData = {
   table: Table
@@ -11,6 +12,11 @@ export type TableNodeData = {
     | Record<string, Cardinality | undefined>
     | undefined
   showMode?: ShowMode | undefined
+  onTableColumnMouseEnter: (
+    event: React.MouseEvent,
+    node: { id: string | undefined },
+    hoverInfo?: HoverInfo | undefined,
+  ) => void;
 }
 
 export type TableNodeType = Node<TableNodeData, 'table'>

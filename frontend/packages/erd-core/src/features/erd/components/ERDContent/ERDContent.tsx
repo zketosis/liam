@@ -18,7 +18,7 @@ import {
   useNodesState,
 } from '@xyflow/react'
 import clsx from 'clsx'
-import { type FC, useCallback, useEffect } from 'react'
+import { type FC, useCallback } from 'react'
 import { highlightNodesAndEdges, isTableNode } from '../../utils'
 import styles from './ERDContent.module.css'
 import { ERDContentProvider, useERDContentContext } from './ERDContentContext'
@@ -51,7 +51,7 @@ type Props = {
   onAddTableGroup?: ((props: TableGroup) => void) | undefined
 }
 
-type HoverInfo = {
+export type HoverInfo = {
   tableName: string | undefined
   columnName: string | undefined
   columnType: boolean
@@ -77,37 +77,10 @@ export const ERDContentInner: FC<Props> = ({
   const {
     state: { loading },
   } = useERDContentContext()
-  const { isTableGroupEditMode, hoverInfo } = useUserEditingStore()
+  const { isTableGroupEditMode } = useUserEditingStore()
   const { tableName: activeTableName } = useUserEditingActiveStore()
 
   const { selectTable, deselectTable } = useTableSelection()
-
-  useEffect(() => {
-    updateNodesAndEdges(hoverInfo)
-  }, [hoverInfo])
-
-  const updateNodesAndEdges = (hoverInfo: HoverInfo) => {
-    const filteredEdges =
-      hoverInfo.columnName !== undefined && hoverInfo.columnType
-        ? _edges.filter((edge) => {
-            if (hoverInfo.columnName === 'id') {
-              const edgSourceId = `${hoverInfo.tableName}_id`
-              return edge.id.includes(edgSourceId)
-            }
-            return edge.targetHandle?.split('-')[1] === hoverInfo.columnName
-          })
-        : _edges
-    const { edges: updatedEdges } = highlightNodesAndEdges(
-      nodes,
-      filteredEdges,
-      {
-        activeTableName,
-        hoverTableName: hoverInfo.tableName,
-      },
-    )
-
-    setEdges(updatedEdges)
-  }
 
   useInitialAutoLayout({
     nodes,
@@ -151,9 +124,20 @@ export const ERDContentInner: FC<Props> = ({
   }, [deselectTable])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
-    (_, { id }) => {
+    (_e, { id }, hoverInfo?: HoverInfo) => {
+      const filteredEdges =
+        hoverInfo?.columnName !== undefined && hoverInfo.columnType
+          ? _edges.filter((edge) => {
+              if (hoverInfo.columnName === 'id') {
+                const edgSourceId = `${hoverInfo.tableName}_id`
+                return edge.id.includes(edgSourceId)
+              }
+              return edge.targetHandle?.split('-')[1] === hoverInfo.columnName
+            })
+          : _edges
+
       const { nodes: updatedNodes, edges: updatedEdges } =
-        highlightNodesAndEdges(nodes, edges, {
+        highlightNodesAndEdges(nodes, filteredEdges, {
           activeTableName,
           hoverTableName: id,
         })
@@ -198,6 +182,15 @@ export const ERDContentInner: FC<Props> = ({
 
   const panOnDrag = [1, 2]
 
+  const nodeWithEvent = nodes.map((node: Node): Node => ({
+    ...node,
+    data: {
+      ...node.data,
+      onTableColumnMouseEnter: handleMouseEnterNode,
+      // onNodeMouseLeave: handleMouseLeaveNode,
+    },
+  }))
+
   return (
     <div
       className={clsx(
@@ -210,7 +203,7 @@ export const ERDContentInner: FC<Props> = ({
       <ReactFlow
         ref={containerRef}
         colorMode="dark"
-        nodes={nodes}
+        nodes={nodeWithEvent}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
