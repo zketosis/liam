@@ -13,7 +13,6 @@ type TableColumnProps = {
   handleId: string
   isSource: boolean
   targetCardinality?: CardinalityType | undefined
-  isHovered?: boolean
   isHighlightedTable?: boolean
 }
 

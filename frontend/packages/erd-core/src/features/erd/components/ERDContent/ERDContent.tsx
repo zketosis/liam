@@ -47,14 +47,7 @@ type Props = {
   nodes: Node[]
   edges: Edge[]
   displayArea: DisplayArea
-  hoverColumn?: string | undefined
   onAddTableGroup?: ((props: TableGroup) => void) | undefined
-}
-
-export type HoverInfo = {
-  tableName: string | undefined
-  columnName: string | undefined
-  columnType: boolean
 }
 
 export const ERDContentInner: FC<Props> = ({
@@ -124,28 +117,20 @@ export const ERDContentInner: FC<Props> = ({
   }, [deselectTable])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
-    (_e, { id }, hoverInfo?: HoverInfo) => {
-      const filteredEdges =
-        hoverInfo?.columnName !== undefined && hoverInfo.columnType
-          ? _edges.filter((edge) => {
-              if (hoverInfo.columnName === 'id') {
-                const edgSourceId = `${hoverInfo.tableName}_id`
-                return edge.id.includes(edgSourceId)
-              }
-              return edge.targetHandle?.split('-')[1] === hoverInfo.columnName
-            })
-          : _edges
-
-      const { nodes: updatedNodes, edges: updatedEdges } =
-        highlightNodesAndEdges(nodes, filteredEdges, {
+    (_e, { id }) => {
+      const { nodes: updatedNodes, edges: updatedEdges } = highlightNodesAndEdges(
+        nodes,
+        edges,
+        {
           activeTableName,
           hoverTableName: id,
-        })
+        },
+      )
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [_edges, nodes, setNodes, setEdges, activeTableName],
+    [edges, nodes, setNodes, setEdges, activeTableName],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(() => {
@@ -182,15 +167,6 @@ export const ERDContentInner: FC<Props> = ({
 
   const panOnDrag = [1, 2]
 
-  const nodeWithEvent = nodes.map(
-    (node: Node): Node => ({
-      ...node,
-      data: {
-        ...node.data,
-        onTableColumnMouseEnter: handleMouseEnterNode,
-      },
-    }),
-  )
 
   return (
     <div
@@ -204,7 +180,7 @@ export const ERDContentInner: FC<Props> = ({
       <ReactFlow
         ref={containerRef}
         colorMode="dark"
-        nodes={nodeWithEvent}
+        nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
