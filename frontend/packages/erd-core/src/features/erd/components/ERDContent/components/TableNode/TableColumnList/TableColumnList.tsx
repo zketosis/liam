@@ -47,6 +47,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({
         const handleId = columnHandleId(data.table.name, column.name)
         const isSource = data.sourceColumnName === column.name
         const targetColumnCardinalities = data.targetColumnCardinalities
+        const isRelated = isSource || !!targetColumnCardinalities?.[column.name]
 
         return (
           <div
@@ -55,8 +56,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({
               const hoveredInfo = {
                 tableName: data.table.name,
                 columnName: column.name,
-                columnType:
-                  isSource || !!targetColumnCardinalities?.[column.name],
+                columnType: isRelated,
               }
               onTableColumnMouseEnter(e, hoveredInfo)
               updateHoverColumn(hoveredInfo)
@@ -80,13 +80,7 @@ export const TableColumnList: FC<TableColumnListProps> = ({
                 hoverInfo.columnName === column.name
               }
               isSelectedTable={data.isHighlighted || data.isActiveHighlighted}
-              isRelated={
-                hoverInfo.columnName &&
-                (targetColumnCardinalities?.[hoverInfo.columnName] ||
-                  data.sourceColumnName === hoverInfo.columnName)
-                  ? hoverInfo.columnName === column.name
-                  : isSource || !!targetColumnCardinalities?.[column.name]
-              }
+              isRelated={isRelated}
             />
           </div>
         )

@@ -31,7 +31,8 @@ export const TableColumn: FC<TableColumnProps> = ({
     <li
       key={column.name}
       className={clsx(styles.columnWrapper, {
-        [styles.selectedColumn]: (isSelectedTable || isHovered) && isRelated,
+        [styles.hoveredRelatedColumn]: (isSelectedTable && isHovered) && isRelated,
+        [styles.highlightRelatedColumn]: (isSelectedTable && !isHovered) && isRelated,
         [styles.hoveredColumn]: isHovered && !isRelated,
       })}
     >
