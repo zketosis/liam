@@ -9,7 +9,6 @@ import {
 } from '@liam-hq/ui'
 import type { NodeProps } from '@xyflow/react'
 import clsx from 'clsx'
-import type React from 'react'
 import type { FC } from 'react'
 import { TableColumnList } from './TableColumnList'
 import { TableHeader } from './TableHeader'
@@ -38,12 +37,9 @@ export const TableNode: FC<Props> = ({ data }) => {
             }
           >
             <TableHeader data={data} />
-            {showMode === 'ALL_FIELDS' && (<TableColumnList data={data}/>)}
+            {showMode === 'ALL_FIELDS' && <TableColumnList data={data} />}
             {showMode === 'KEY_ONLY' && (
-              <TableColumnList
-                data={data}
-                filter="KEY_ONLY"
-              />
+              <TableColumnList data={data} filter="KEY_ONLY" />
             )}
           </div>
         </TooltipTrigger>

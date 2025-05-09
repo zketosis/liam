@@ -117,15 +117,12 @@ export const ERDContentInner: FC<Props> = ({
   }, [deselectTable])
 
   const handleMouseEnterNode: NodeMouseHandler<Node> = useCallback(
-    (_e, { id }) => {
-      const { nodes: updatedNodes, edges: updatedEdges } = highlightNodesAndEdges(
-        nodes,
-        edges,
-        {
+    (_, { id }) => {
+      const { nodes: updatedNodes, edges: updatedEdges } =
+        highlightNodesAndEdges(nodes, edges, {
           activeTableName,
           hoverTableName: id,
-        },
-      )
+        })
 
       setEdges(updatedEdges)
       setNodes(updatedNodes)
@@ -166,7 +163,6 @@ export const ERDContentInner: FC<Props> = ({
   )
 
   const panOnDrag = [1, 2]
-
 
   return (
     <div
