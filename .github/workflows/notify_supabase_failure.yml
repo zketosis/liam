@@ -7,8 +7,7 @@ on:
 jobs:
   notify_slack:
     runs-on: ubuntu-latest
-    if: github.event.check_suite.app.name == 'Supabase' && github.event.check_suite.conclusion == 'failure'
-    # TODO: Add github.event.check_suite.head_branch == 'main'
+    if: github.event.check_suite.app.name == 'Supabase' && github.event.check_suite.conclusion == 'failure' && github.event.check_suite.head_branch == 'main'
     steps:
       - name: Slack Notification for Supabase Failure
         uses: tokorom/action-slack-incoming-webhook@d57bf1eb618f3dae9509afefa70d5774ad3d42bf # v1.3.0
