@@ -8,10 +8,6 @@ type NewThreadButtonProps = ComponentProps<typeof NewThreadButton>
 const meta = {
   component: NewThreadButton,
   title: 'Components/Chat/NewThreadButton',
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
 } satisfies Meta<typeof NewThreadButton>
 
 export default meta
