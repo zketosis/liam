@@ -127,14 +127,14 @@ export const ERDContentInner: FC<Props> = ({
     (_e, { id }, hoverInfo?: HoverInfo) => {
       const filteredEdges =
         hoverInfo?.columnName !== undefined && hoverInfo.columnType
-          ? edges.filter((edge) => {
+          ? _edges.filter((edge) => {
               if (hoverInfo.columnName === 'id') {
                 const edgSourceId = `${hoverInfo.tableName}_id`
                 return edge.id.includes(edgSourceId)
               }
               return edge.targetHandle?.split('-')[1] === hoverInfo.columnName
             })
-          : edges
+          : _edges
 
       const { nodes: updatedNodes, edges: updatedEdges } =
         highlightNodesAndEdges(nodes, filteredEdges, {
@@ -145,7 +145,7 @@ export const ERDContentInner: FC<Props> = ({
       setEdges(updatedEdges)
       setNodes(updatedNodes)
     },
-    [edges, nodes, setNodes, setEdges, activeTableName],
+    [_edges, nodes, setNodes, setEdges, activeTableName],
   )
 
   const handleMouseLeaveNode: NodeMouseHandler<Node> = useCallback(() => {

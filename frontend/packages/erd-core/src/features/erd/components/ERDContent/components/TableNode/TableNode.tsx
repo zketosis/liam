@@ -27,7 +27,7 @@ export const TableNode: FC<Props> = ({ data }) => {
     event: React.MouseEvent,
     hoverInfo?: HoverInfo,
   ) => {
-    data.onTableColumnMouseEnter(event, { id: hoverInfo?.tableName }, hoverInfo)
+    data.onTableColumnMouseEnter?.(event, { id: hoverInfo?.tableName }, hoverInfo)
   }
 
   return (

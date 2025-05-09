@@ -13,7 +13,7 @@ export type TableNodeData = {
     | Record<string, Cardinality | undefined>
     | undefined
   showMode?: ShowMode | undefined
-  onTableColumnMouseEnter: (
+  onTableColumnMouseEnter?: (
     event: React.MouseEvent,
     node: { id: string | undefined },
     hoverInfo?: HoverInfo | undefined,
