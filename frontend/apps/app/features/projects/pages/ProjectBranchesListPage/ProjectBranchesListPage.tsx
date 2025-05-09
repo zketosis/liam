@@ -3,7 +3,7 @@ import { getRepositoryBranches } from '@liam-hq/github'
 import Link from 'next/link'
 
 import type { FC } from 'react'
-import { urlgen } from '../../../../utils/routes/urlgen'
+import { urlgen } from '../../../../libs/routes/urlgen'
 import styles from './ProjectBranchesListPage.module.css'
 
 type Props = {

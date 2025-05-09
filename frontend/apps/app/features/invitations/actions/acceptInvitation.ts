@@ -2,7 +2,7 @@
 
 import { setOrganizationIdCookie } from '@/features/organizations/services/setOrganizationIdCookie'
 import { createClient } from '@/libs/db/server'
-import { routeDefinitions } from '@/utils/routes/routeDefinitions'
+import { routeDefinitions } from '@/libs/routes/routeDefinitions'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import * as v from 'valibot'

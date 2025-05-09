@@ -1,4 +1,4 @@
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 
 import { EmptyProjectsState } from '../../components'
 import styles from './ProjectsPage.module.css'

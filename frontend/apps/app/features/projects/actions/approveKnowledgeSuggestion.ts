@@ -2,7 +2,7 @@
 
 import { createClient } from '@/libs/db/server'
 import type { SupabaseClient } from '@/libs/db/server'
-import { urlgen } from '@/utils/routes'
+import { urlgen } from '@/libs/routes'
 import { createOrUpdateFileContent } from '@liam-hq/github'
 import { redirect } from 'next/navigation'
 import * as v from 'valibot'
