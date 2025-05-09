@@ -1,0 +1,142 @@
+.container {
+  display: flex;
+  padding: 0 32px 0 0;
+  justify-content: center;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.avatarContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  flex: 0 0 24px;
+  padding-top: var(--spacing-1half);
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.messageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
+  border-radius: var(--border-radius-base);
+  padding: var(--spacing-2) var(--spacing-3);
+  width: 100%;
+}
+
+.messageWrapperBuild {
+  background-color: var(--agent-build-5);
+  border: 1px solid var(--agent-build-5);
+}
+
+.messageWrapperAsk {
+  background-color: var(--agent-ask-5);
+  border: 1px solid var(--agent-ask-5);
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.messageText {
+  font-family: var(--main-font);
+  font-weight: 400;
+  font-size: var(--font-size-4);
+  line-height: 1.8em;
+  color: var(--global-body-text);
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+.messageText pre,
+.messageText code {
+  max-width: 100%;
+  overflow-x: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  display: block;
+}
+
+.messageText pre {
+  padding: var(--spacing-1);
+  margin: var(--spacing-1) 0;
+}
+
+.messageText code {
+  font-family: var(--main-font, monospace);
+  font-size: var(--font-size-4);
+}
+
+.messageTime {
+  font-family: var(--main-font);
+  font-weight: 400;
+  font-size: var(--font-size-2);
+  line-height: 1.6em;
+  text-align: right;
+  color: var(--color-white-alpha-40);
+}
+
+.messageWrapper.generatingContainer {
+  padding: 0 var(--spacing-3);
+  min-height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.generatingText {
+  font-family: var(--main-font);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.8em;
+  color: var(--color-white-alpha-60);
+  width: auto;
+  position: relative;
+  display: inline-block;
+}
+
+.generatingText::after {
+  content: '';
+  display: inline-flex;
+  width: 0;
+  animation: dots 1.5s infinite steps(4, end);
+  overflow: hidden;
+  vertical-align: baseline;
+  line-height: 1.8em;
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: '';
+    width: 0;
+  }
+  40% {
+    content: '.';
+    width: 1ch;
+  }
+  60% {
+    content: '..';
+    width: 2ch;
+  }
+  80%,
+  100% {
+    content: '...';
+    width: 3ch;
+  }
+}
