@@ -612,12 +612,12 @@ describe(_processor, () => {
               }),
             },
             indexes: {
-              User_pkey: anIndex({
-                name: 'User_pkey',
+              users_pkey: anIndex({
+                name: 'users_pkey',
                 columns: ['_id'],
                 unique: true,
               }),
-              User_raw_email_address_key: anIndex({
+              users_raw_email_address_key: anIndex({
                 name: 'users_raw_email_address_key',
                 columns: ['raw_email_address'],
                 unique: true,
@@ -655,7 +655,7 @@ describe(_processor, () => {
               }),
             },
             indexes: {
-              Post_pkey: anIndex({
+              posts_pkey: anIndex({
                 name: 'posts_pkey',
                 columns: ['id'],
                 unique: true,
