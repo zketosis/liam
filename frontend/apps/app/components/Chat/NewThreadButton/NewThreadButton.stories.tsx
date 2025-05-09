@@ -7,6 +7,7 @@ type NewThreadButtonProps = ComponentProps<typeof NewThreadButton>
 
 const meta = {
   component: NewThreadButton,
+  title: 'Components/Chat/NewThreadButton',
   parameters: {
     layout: 'centered',
   },
