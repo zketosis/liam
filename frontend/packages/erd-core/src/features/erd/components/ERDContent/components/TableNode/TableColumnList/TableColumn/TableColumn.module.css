@@ -10,6 +10,7 @@
   line-height: normal;
   border-bottom: 1px solid var(--node-border);
   position: relative;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .columnWrapper:last-child {
@@ -23,6 +24,7 @@
 
 .columnWrapper.highlightRelatedColumn {
   background-color: var(--primary-overlay-10);
+  transition: background-color 0.3s ease-in-out;
 }
 
 .columnWrapper.highlightRelatedColumn:hover {
