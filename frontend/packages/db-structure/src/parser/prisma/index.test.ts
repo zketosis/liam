@@ -587,7 +587,7 @@ describe(_processor, () => {
 
       const expectedTables = aSchema({
         tables: {
-          User: aTable({
+          users: aTable({
             name: 'users',
             columns: {
               _id: aColumn({
@@ -636,7 +636,7 @@ describe(_processor, () => {
               },
             },
           }),
-          Post: aTable({
+          posts: aTable({
             name: 'posts',
             columns: {
               id: aColumn({
