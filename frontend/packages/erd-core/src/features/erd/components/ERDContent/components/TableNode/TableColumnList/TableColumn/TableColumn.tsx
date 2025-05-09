@@ -28,7 +28,8 @@ export const TableColumn: FC<TableColumnProps> = ({
     <li
       key={column.name}
       className={clsx(styles.columnWrapper, {
-        [styles.highlightRelatedColumn]: isHighlightedTable && (isSource || !!targetCardinality),
+        [styles.highlightRelatedColumn]:
+          isHighlightedTable && (isSource || !!targetCardinality),
       })}
     >
       {column.primary && (
