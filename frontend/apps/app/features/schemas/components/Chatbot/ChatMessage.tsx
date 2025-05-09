@@ -1,6 +1,6 @@
 'use client'
 
-import { UserMessage } from '@/components/Chat/UserMessage/UserMessage'
+import { UserMessage } from '@/components/Chat/UserMessage'
 import type { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
