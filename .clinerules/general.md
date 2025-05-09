@@ -104,8 +104,9 @@ Follow these rules when you write code:
 │  ├─ *XxxPage/*           # one package per screen (not reused)
 │  └─ *SomeWidget/*        # reusable across screens
 │     ├─ index.ts          # public surface (named exports only)
-│     ├─ \*.tsx             # component code
+│     ├─ \*.tsx            # component code
 │     ├─ hooks/            # local, page‑scoped hooks
+│     ├─ stories/          # Story files for Storybook
 │     ├─ services/         # data‑shape mappers, fetch helpers
 │     └─ actions/          # Next 13 Server Actions used by the package
 ├─ **hooks**               # cross‑screen custom hooks
