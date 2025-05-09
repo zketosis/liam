@@ -652,8 +652,8 @@ importers:
   frontend/packages/figma-to-css-variables:
     dependencies:
       style-dictionary:
-        specifier: 4.3.3
-        version: 4.3.3
+        specifier: 4.4.0
+        version: 4.4.0
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -9321,8 +9321,8 @@ packages:
     resolution: {integrity: sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==}
     engines: {node: '>=14.16'}
 
-  style-dictionary@4.3.3:
-    resolution: {integrity: sha512-93ISASYmvGdKOvNHFaOZ+mVsCNQdoZzhSEq7JINE0BjMoE8zUzkwFyGDUBnfmXayHq/F4B4MCWmtjqjgHAYthw==}
+  style-dictionary@4.4.0:
+    resolution: {integrity: sha512-+xU0IA1StzqAqFs/QtXkK+XJa7wpS4X5H+JQccRKsRCElgeLGocFU1U/UMvMUylKFw6vwGV+Y/a2wb2pm5rFFQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -20400,7 +20400,7 @@ snapshots:
 
   strip-json-comments@5.0.1: {}
 
-  style-dictionary@4.3.3:
+  style-dictionary@4.4.0:
     dependencies:
       '@bundled-es-modules/deepmerge': 4.3.1
       '@bundled-es-modules/glob': 10.4.2
