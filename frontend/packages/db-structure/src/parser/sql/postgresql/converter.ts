@@ -180,13 +180,13 @@ const constraintToCheckConstraint = (
   if (constraint.location === undefined) {
     return err(new UnexpectedTokenWarningError('Invalid check constraint'))
   }
+
   let openParenthesesCount = 0
-  let startLocation: number | undefined = undefined
+  const startLocation = rawSql.indexOf('(', constraint.location)
   let endLocation: number | undefined = undefined
-  for (let i = constraint.location; i < rawSql.length; i++) {
+  for (let i = startLocation; i < rawSql.length; i++) {
     if (rawSql[i] === '(') {
       openParenthesesCount++
-      if (startLocation === undefined) startLocation = i
     } else if (rawSql[i] === ')') {
       openParenthesesCount--
       if (openParenthesesCount === 0) {
@@ -311,6 +311,55 @@ export const convertToSchema = (
     comment: string | null
   }
 
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+  function processRelationshipsAndConstraints(
+    tableName: string,
+    columnName: string,
+    _constraints: Node[],
+  ): {
+    relationships: Relationship[]
+    constraints: Constraint[]
+    columnErrors: ProcessError[]
+  } {
+    const relationships: Relationship[] = []
+    const constraints: Constraint[] = []
+    const columnErrors: ProcessError[] = []
+
+    for (const constraint of _constraints.filter(isConstraintNode)) {
+      if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
+        const relResult = constraintToRelationshipAndForeignKeyConstraint(
+          tableName,
+          columnName,
+          constraint.Constraint,
+        )
+
+        if (relResult.isErr()) {
+          columnErrors.push(relResult.error)
+          continue
+        }
+
+        const [relationship, foreignKeyConstraint] = relResult.value
+        relationships.push(relationship)
+        constraints.push(foreignKeyConstraint)
+      } else if (constraint.Constraint.contype === 'CONSTR_CHECK') {
+        const relResult = constraintToCheckConstraint(
+          columnName,
+          constraint.Constraint,
+          rawSql,
+        )
+
+        if (relResult.isErr()) {
+          errors.push(relResult.error)
+          continue
+        }
+        const checkConstraint = relResult.value
+        constraints.push(checkConstraint)
+      }
+    }
+
+    return { relationships, constraints, columnErrors }
+  }
+
   /**
    * Process a column definition
    */
@@ -319,7 +368,7 @@ export const convertToSchema = (
     tableName: string,
   ): {
     column: [string, Column]
-    constraints: [string, Constraint][]
+    constraints: Constraint[]
     relationships: Relationship[]
     errors: ProcessError[]
   } {
@@ -346,8 +395,12 @@ export const convertToSchema = (
       }
     }
 
-    const columnErrors: ProcessError[] = []
-    const columnRelationships: Relationship[] = []
+    const { constraints, relationships, columnErrors } =
+      processRelationshipsAndConstraints(
+        tableName,
+        columnName,
+        colDef.constraints ?? [],
+      )
 
     // Create column object
     const column = {
@@ -361,68 +414,26 @@ export const convertToSchema = (
       comment: null, // TODO
     }
 
-    const constraints: [string, Constraint][] = []
     if (isPrimaryKey(colDef.constraints)) {
       const constraintName = `PRIMARY_${columnName}`
-      constraints.push([
-        constraintName,
-        {
-          name: constraintName,
-          type: 'PRIMARY KEY',
-          columnName,
-        },
-      ])
+      constraints.push({
+        name: constraintName,
+        type: 'PRIMARY KEY',
+        columnName,
+      })
     } else if (isUnique(colDef.constraints)) {
       const constraintName = `UNIQUE_${columnName}`
-      constraints.push([
-        constraintName,
-        {
-          name: constraintName,
-          type: 'UNIQUE',
-          columnName,
-        },
-      ])
-    }
-
-    // Process relationships from constraints
-    for (const constraint of (colDef.constraints ?? []).filter(
-      isConstraintNode,
-    )) {
-      if (constraint.Constraint.contype === 'CONSTR_FOREIGN') {
-        const relResult = constraintToRelationshipAndForeignKeyConstraint(
-          tableName,
-          columnName,
-          constraint.Constraint,
-        )
-
-        if (relResult.isErr()) {
-          columnErrors.push(relResult.error)
-          continue
-        }
-
-        const [relationship, foreignKeyConstraint] = relResult.value
-        columnRelationships.push(relationship)
-        constraints.push([foreignKeyConstraint.name, foreignKeyConstraint])
-      } else if (constraint.Constraint.contype === 'CONSTR_CHECK') {
-        const relResult = constraintToCheckConstraint(
-          columnName,
-          constraint.Constraint,
-          rawSql,
-        )
-
-        if (relResult.isErr()) {
-          errors.push(relResult.error)
-          continue
-        }
-        const checkConstraint = relResult.value
-        constraints.push([checkConstraint.name, checkConstraint])
-      }
+      constraints.push({
+        name: constraintName,
+        type: 'UNIQUE',
+        columnName,
+      })
     }
 
     return {
       column: [columnName, column],
       constraints,
-      relationships: columnRelationships,
+      relationships,
       errors: columnErrors,
     }
   }
@@ -458,8 +469,8 @@ export const convertToSchema = (
           columns[column[0]] = column[1]
         }
 
-        for (const [name, constraint] of columnConstraints) {
-          constraints[name] = constraint
+        for (const constraint of columnConstraints) {
+          constraints[constraint.name] = constraint
         }
         tableRelationships.push(...colRelationships)
         tableErrors.push(...colErrors)
