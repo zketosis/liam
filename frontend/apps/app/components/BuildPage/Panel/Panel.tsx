@@ -1,17 +1,19 @@
 'use client'
 
 import type { SchemaData } from '@/app/api/chat/route'
+import { TabsContent, TabsList, TabsRoot, TabsTrigger } from '@/components'
 import { Chat } from '@/components/Chat'
-import { ChatbotButton } from '@/components/ChatbotButton'
 import { ERDRenderer } from '@/features'
 import { useTableGroups } from '@/hooks'
 import { VersionProvider } from '@/providers'
 import { versionSchema } from '@/schemas'
 import { initSchemaStore } from '@/stores'
 import type { Schema, TableGroup } from '@liam-hq/db-structure'
-import { type FC, useEffect, useState } from 'react'
+import { type FC, useEffect } from 'react'
 import * as v from 'valibot'
 import styles from './Panel.module.css'
+import { SchemaEditor } from './SchemaEditor'
+import { TablesList } from './TablesList'
 
 type ErrorObject = {
   name: string
@@ -32,12 +34,10 @@ export const Panel: FC<Props> = ({
   tableGroups: initialTableGroups = {},
   adaptedSchema,
 }) => {
-  const [isSchemaDataReady, setSchemaDataReady] = useState(false)
   const { tableGroups, addTableGroup } = useTableGroups(initialTableGroups)
 
   useEffect(() => {
     initSchemaStore(schema)
-    setSchemaDataReady(true)
   }, [schema])
 
   const versionData = {
@@ -51,27 +51,46 @@ export const Panel: FC<Props> = ({
 
   return (
     <div className={styles.container}>
-      <div className={styles.content}>
-        <Chat schemaData={adaptedSchema} />
-        <div className={styles.columns}>
-          <div className={styles.chatSection}>
-            {isSchemaDataReady && (
-              <ChatbotButton schemaData={schema} tableGroups={tableGroups} />
-            )}
-          </div>
-
-          <div className={styles.erdSection}>
-            <VersionProvider version={version}>
-              <ERDRenderer
-                defaultSidebarOpen={false}
-                defaultPanelSizes={[20, 80]}
-                errorObjects={errors}
-                tableGroups={tableGroups}
-                onAddTableGroup={addTableGroup}
-              />
-            </VersionProvider>
-          </div>
+      <div className={styles.columns}>
+        <div className={styles.chatSection}>
+          <Chat schemaData={adaptedSchema} />
         </div>
+        <TabsRoot defaultValue="schema" className={styles.tabsRoot}>
+          <TabsList className={styles.tabsList}>
+            <TabsTrigger value="schema" className={styles.tabsTrigger}>
+              Schema
+            </TabsTrigger>
+            <TabsTrigger value="tables" className={styles.tabsTrigger}>
+              Tables
+            </TabsTrigger>
+            <TabsTrigger value="erd" className={styles.tabsTrigger}>
+              ERD
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="schema" className={styles.tabsContent}>
+            <div className={styles.editorSection}>
+              <SchemaEditor initialDoc={JSON.stringify(schema, null, 2)} />
+            </div>
+          </TabsContent>
+          <TabsContent value="tables" className={styles.tabsContent}>
+            <div className={styles.tablesSection}>
+              <TablesList schema={schema} tableGroups={tableGroups} />
+            </div>
+          </TabsContent>
+          <TabsContent value="erd" className={styles.tabsContent}>
+            <div className={styles.erdSection}>
+              <VersionProvider version={version}>
+                <ERDRenderer
+                  defaultSidebarOpen={false}
+                  defaultPanelSizes={[20, 80]}
+                  errorObjects={errors}
+                  tableGroups={tableGroups}
+                  onAddTableGroup={addTableGroup}
+                />
+              </VersionProvider>
+            </div>
+          </TabsContent>
+        </TabsRoot>
       </div>
     </div>
   )
