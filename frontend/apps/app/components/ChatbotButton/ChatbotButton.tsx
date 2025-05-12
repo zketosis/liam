@@ -1,6 +1,7 @@
 'use client'
 
 import type { TableGroupData } from '@/app/api/chat/route'
+import { adaptSchemaForChatbot } from '@/features/chats/services'
 import type { Schema } from '@liam-hq/db-structure'
 import { Button } from '@liam-hq/ui'
 import { MessageCircleIcon } from 'lucide-react'
@@ -8,7 +9,6 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import styles from './ChatbotButton.module.css'
 import { ChatbotDialog } from './components/ChatbotDialog'
-import { adaptSchemaForChatbot } from './utils'
 
 interface ChatbotButtonProps {
   schemaData: Schema

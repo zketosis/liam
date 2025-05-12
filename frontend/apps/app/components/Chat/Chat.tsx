@@ -1,32 +1,18 @@
 'use client'
 
-import { ChatInput } from '@/components/ChatInput'
-import { ChatMessage, type ChatMessageProps } from '@/components/ChatMessage'
-import {
-  ModalContent,
-  ModalOverlay,
-  ModalPortal,
-  ModalRoot,
-  ModalTitle,
-} from '@liam-hq/ui'
+import type { SchemaData, TableGroupData } from '@/app/api/chat/route'
 import type { FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import type { SchemaData, TableGroupData } from '../../../../app/api/chat/route'
-import styles from './ChatbotDialog.module.css'
+import { ChatInput } from '../ChatInput'
+import { ChatMessage, type ChatMessageProps } from '../ChatMessage'
+import styles from './Chat.module.css'
 
-interface ChatbotDialogProps {
-  isOpen: boolean
-  onClose: () => void
+interface Props {
   schemaData: SchemaData
   tableGroups?: Record<string, TableGroupData>
 }
 
-export const ChatbotDialog: FC<ChatbotDialogProps> = ({
-  isOpen,
-  onClose,
-  schemaData,
-  tableGroups,
-}) => {
+export const Chat: FC<Props> = ({ schemaData, tableGroups }) => {
   const [messages, setMessages] = useState<
     (ChatMessageProps & { id: string })[]
   >([
@@ -168,32 +154,26 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
   }
 
   return (
-    <ModalRoot open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <ModalPortal>
-        <ModalOverlay />
-        <ModalContent className={styles.dialog}>
-          <ModalTitle>Schema Chatbot</ModalTitle>
-          <div className={styles.messagesContainer}>
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                content={message.content}
-                isUser={message.isUser}
-                timestamp={message.timestamp}
-              />
-            ))}
-            {isLoading && (
-              <div className={styles.loadingIndicator}>
-                <div className={styles.loadingDot} />
-                <div className={styles.loadingDot} />
-                <div className={styles.loadingDot} />
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+    <div className={styles.wrapper}>
+      <div className={styles.messagesContainer}>
+        {messages.map((message) => (
+          <ChatMessage
+            key={message.id}
+            content={message.content}
+            isUser={message.isUser}
+            timestamp={message.timestamp}
+          />
+        ))}
+        {isLoading && (
+          <div className={styles.loadingIndicator}>
+            <div className={styles.loadingDot} />
+            <div className={styles.loadingDot} />
+            <div className={styles.loadingDot} />
           </div>
-          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
-        </ModalContent>
-      </ModalPortal>
-    </ModalRoot>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+      <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+    </div>
   )
 }
