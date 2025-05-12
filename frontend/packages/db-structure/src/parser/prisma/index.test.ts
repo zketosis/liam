@@ -562,18 +562,18 @@ describe(_processor, () => {
 
     it('@@map', async () => {
       const { value } = await processor(`
-        model users {
+        model User {
           id    Int     @id @default(autoincrement()) @map("_id")
-          posts posts[]
+          posts Post[]
           email String  @unique @map("raw_email_address")
           role  Role    @default(USER)
     
           @@map("users")
         }
     
-        model posts {
+        model Post {
           id     Int   @id @default(autoincrement())
-          user   users  @relation(fields: [userId], references: [id])
+          user   User  @relation(fields: [userId], references: [id])
           userId Int   @map("raw_user_id")
     
           @@map("posts")
