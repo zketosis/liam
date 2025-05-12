@@ -20,13 +20,10 @@
     "frontend/apps/app/scripts/install-prisma-internals.mjs",
     // - Script file which is read from trigger.config.ts
     "frontend/packages/jobs/src/trigger/jobs.ts",
-
-    // TODO: Temporarily ignore issues in the following files. Will be addressed later
-    "frontend/packages/cli/vite-plugins/remove-import-wasi.ts",
-    "frontend/packages/cli/vite-plugins/set-env.ts",
-    "frontend/packages/ui/src/components/Toast/types.ts",
-    "frontend/apps/docs/components/CopyButton/CopyButton.tsx",
-    "frontend/apps/docs/app/docs/sitemap.ts"
+    // - Next.js special files
+    "frontend/apps/docs/app/docs/sitemap.ts",
+    "frontend/apps/app/next.config.ts",
+    "frontend/apps/docs/next.config.mjs"
   ],
 
   // TODO: Review ignoreDependencies configuration later
