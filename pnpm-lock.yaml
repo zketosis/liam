@@ -368,7 +368,7 @@ importers:
         version: 8.6.12(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))
       '@storybook/nextjs':
         specifier: 8.6.12
-        version: 8.6.12(next@15.3.1(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(type-fest@4.40.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)
+        version: 8.6.12(next@15.3.1(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(type-fest@4.40.1)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)
       '@storybook/react':
         specifier: 8.6.12
         version: 8.6.12(@storybook/test@8.6.12(storybook@8.6.12(prettier@3.5.3)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(typescript@5.8.3)
@@ -515,8 +515,8 @@ importers:
         specifier: 2.22.10
         version: 2.22.10
       type-fest:
-        specifier: 4.40.0
-        version: 4.40.0
+        specifier: 4.40.1
+        version: 4.40.1
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -9723,8 +9723,8 @@ packages:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
 
-  type-fest@4.40.0:
-    resolution: {integrity: sha512-ABHZ2/tS2JkvH1PEjxFDTUWC8dB5OsIGZP4IFLhR293GqT5Y5qB1WwL2kMPYhQW9DVgVD8Hd7I8gjwPIf5GFkw==}
+  type-fest@4.40.1:
+    resolution: {integrity: sha512-9YvLNnORDpI+vghLU/Nf+zSv0kL47KbVJ1o3sKgoTefl6i+zebxbiDQWoe/oWWqPhIgQdRZRT1KA9sCPL810SA==}
     engines: {node: '>=16'}
 
   type-is@2.0.1:
@@ -12712,7 +12712,7 @@ snapshots:
     dependencies:
       playwright: 1.52.0
 
-  '@pmmmwh/react-refresh-webpack-plugin@0.5.16(react-refresh@0.14.2)(type-fest@4.40.0)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)':
+  '@pmmmwh/react-refresh-webpack-plugin@0.5.16(react-refresh@0.14.2)(type-fest@4.40.1)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)':
     dependencies:
       ansi-html: 0.0.9
       core-js-pure: 3.42.0
@@ -12724,7 +12724,7 @@ snapshots:
       source-map: 0.7.4
       webpack: 5.99.8
     optionalDependencies:
-      type-fest: 4.40.0
+      type-fest: 4.40.1
       webpack-hot-middleware: 2.26.1
 
   '@polka/url@1.0.0-next.29':
@@ -14152,7 +14152,7 @@ snapshots:
     dependencies:
       storybook: 8.6.12(prettier@3.5.3)
 
-  '@storybook/nextjs@8.6.12(next@15.3.1(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(type-fest@4.40.0)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)':
+  '@storybook/nextjs@8.6.12(next@15.3.1(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(type-fest@4.40.1)(typescript@5.8.3)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)':
     dependencies:
       '@babel/core': 7.27.1
       '@babel/plugin-syntax-bigint': 7.8.3(@babel/core@7.27.1)
@@ -14167,7 +14167,7 @@ snapshots:
       '@babel/preset-react': 7.27.1(@babel/core@7.27.1)
       '@babel/preset-typescript': 7.27.1(@babel/core@7.27.1)
       '@babel/runtime': 7.27.1
-      '@pmmmwh/react-refresh-webpack-plugin': 0.5.16(react-refresh@0.14.2)(type-fest@4.40.0)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)
+      '@pmmmwh/react-refresh-webpack-plugin': 0.5.16(react-refresh@0.14.2)(type-fest@4.40.1)(webpack-hot-middleware@2.26.1)(webpack@5.99.8)
       '@storybook/builder-webpack5': 8.6.12(storybook@8.6.12(prettier@3.5.3))(typescript@5.8.3)
       '@storybook/preset-react-webpack': 8.6.12(@storybook/test@8.6.12(storybook@8.6.12(prettier@3.5.3)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(typescript@5.8.3)
       '@storybook/react': 8.6.12(@storybook/test@8.6.12(storybook@8.6.12(prettier@3.5.3)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.12(prettier@3.5.3))(typescript@5.8.3)
@@ -20850,7 +20850,7 @@ snapshots:
 
   type-fest@2.19.0: {}
 
-  type-fest@4.40.0: {}
+  type-fest@4.40.1: {}
 
   type-is@2.0.1:
     dependencies:
