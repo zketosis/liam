@@ -2,7 +2,11 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
   // Entry files are the starting point for Knip to find more source files and external dependencies
-  "entry": ["frontend/packages/cli/bin/cli.ts"],
+  "entry": [
+    "frontend/packages/cli/bin/cli.ts",
+    "frontend/apps/app/instrumentation-client.ts",
+    "frontend/apps/docs/instrumentation-client.ts"
+  ],
 
   // Files to ignore when analyzing
   "ignore": [
