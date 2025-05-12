@@ -573,8 +573,8 @@ describe(_processor, () => {
     
         model Post {
           id     Int   @id @default(autoincrement())
-          user   User  @relation(fields: [userId], references: [id])
-          userId Int   @map("raw_user_id")
+          user   User  @relation(fields: [user_id], references: [id])
+          user_id Int   @map("raw_user_id")
     
           @@map("posts")
         }
@@ -667,9 +667,9 @@ describe(_processor, () => {
                 name: 'PRIMARY_id',
                 columnName: 'id',
               },
-              postsTousers: {
+              PostToUser: {
                 type: 'FOREIGN KEY',
-                name: 'postsTousers',
+                name: 'PostToUser',
                 columnName: 'raw_user_id',
                 targetTableName: 'users',
                 targetColumnName: '_id',
@@ -682,12 +682,15 @@ describe(_processor, () => {
       })
 
       expectedTables['relationships'] = {
-        postsTousers: aRelationship({
-          name: 'postsTousers',
-          foreignColumnName: 'raw_user_id',
-          foreignTableName: 'posts',
-          primaryColumnName: '_id',
+        PostToUser: aRelationship({
+          name: 'PostToUser',
           primaryTableName: 'users',
+          primaryColumnName: '_id',
+          foreignTableName: 'posts',
+          foreignColumnName: 'raw_user_id',
+          cardinality: 'ONE_TO_MANY',
+          updateConstraint: 'NO_ACTION',
+          deleteConstraint: 'NO_ACTION',
         }),
       }
 
