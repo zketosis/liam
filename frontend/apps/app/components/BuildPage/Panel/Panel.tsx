@@ -1,15 +1,17 @@
 'use client'
 
+import type { SchemaData } from '@/app/api/chat/route'
+import { Chat } from '@/components/Chat'
 import { ChatbotButton } from '@/components/ChatbotButton'
 import { ERDRenderer } from '@/features'
 import { useTableGroups } from '@/hooks'
 import { VersionProvider } from '@/providers'
 import { versionSchema } from '@/schemas'
 import { initSchemaStore } from '@/stores'
-import type { Schema } from '@liam-hq/db-structure'
+import type { Schema, TableGroup } from '@liam-hq/db-structure'
 import { type FC, useEffect, useState } from 'react'
 import * as v from 'valibot'
-import styles from './BuildPage.module.css'
+import styles from './Panel.module.css'
 
 type ErrorObject = {
   name: string
@@ -17,19 +19,18 @@ type ErrorObject = {
   instruction?: string
 }
 
-type ClientProps = {
+type Props = {
   schema: Schema
   errors: ErrorObject[]
-  tableGroups: Record<
-    string,
-    { name: string; tables: string[]; comment: string | null }
-  >
+  tableGroups: Record<string, TableGroup>
+  adaptedSchema: SchemaData
 }
 
-const BuildPageClient: FC<ClientProps> = ({
+export const Panel: FC<Props> = ({
   schema,
   errors,
   tableGroups: initialTableGroups = {},
+  adaptedSchema,
 }) => {
   const [isSchemaDataReady, setSchemaDataReady] = useState(false)
   const { tableGroups, addTableGroup } = useTableGroups(initialTableGroups)
@@ -51,6 +52,7 @@ const BuildPageClient: FC<ClientProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.content}>
+        <Chat schemaData={adaptedSchema} />
         <div className={styles.columns}>
           <div className={styles.chatSection}>
             {isSchemaDataReady && (
@@ -74,5 +76,3 @@ const BuildPageClient: FC<ClientProps> = ({
     </div>
   )
 }
-
-export { BuildPageClient }
