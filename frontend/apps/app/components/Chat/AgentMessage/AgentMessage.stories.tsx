@@ -1,7 +1,6 @@
-import { syntaxCodeTagProps, syntaxCustomStyle } from '@liam-hq/ui'
+import { syntaxCodeTagProps, syntaxCustomStyle, syntaxTheme } from '@liam-hq/ui'
 import type { Meta, StoryObj } from '@storybook/react'
-import type { ComponentProps } from 'react'
-import type React from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import remarkGfm from 'remark-gfm'
@@ -10,15 +9,12 @@ import { AgentMessage } from './AgentMessage'
 // Define the component props type
 type AgentMessageProps = ComponentProps<typeof AgentMessage>
 
-// Use an empty object for the style prop to avoid type errors
-const emptyStyle = {}
-
 // Define CodeProps interface for markdown code blocks
-interface CodeProps extends React.HTMLAttributes<HTMLElement> {
+type CodeProps = ComponentProps<'code'> & {
   node?: unknown
   inline?: boolean
-  // Additional props that might be passed by react-markdown
-  // Omitting ref as it's causing type compatibility issues
+  className?: string
+  children?: ReactNode
 }
 
 const meta = {
@@ -428,18 +424,17 @@ export const BuildWithMarkdown: Story = {
         remarkPlugins={[remarkGfm]}
         components={{
           code(props: CodeProps) {
-            const { children, className, node, ...rest } = props
+            const { children, className, ...rest } = props
             const match = /language-(\w+)/.exec(className || '')
             const isInline = !match && !className
 
             return !isInline && match ? (
               <SyntaxHighlighter
-                style={emptyStyle}
+                style={syntaxTheme}
                 language={match[1]}
                 PreTag="div"
                 customStyle={syntaxCustomStyle}
                 codeTagProps={syntaxCodeTagProps}
-                {...rest}
               >
                 {String(children).replace(/\n$/, '')}
               </SyntaxHighlighter>
@@ -467,18 +462,17 @@ export const AskWithMarkdown: Story = {
         remarkPlugins={[remarkGfm]}
         components={{
           code(props: CodeProps) {
-            const { children, className, node, ...rest } = props
+            const { children, className, ...rest } = props
             const match = /language-(\w+)/.exec(className || '')
             const isInline = !match && !className
 
             return !isInline && match ? (
               <SyntaxHighlighter
-                style={emptyStyle}
+                style={syntaxTheme}
                 language={match[1]}
                 PreTag="div"
                 customStyle={syntaxCustomStyle}
                 codeTagProps={syntaxCodeTagProps}
-                {...rest}
               >
                 {String(children).replace(/\n$/, '')}
               </SyntaxHighlighter>
