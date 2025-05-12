@@ -180,11 +180,7 @@ function processTables(
   const tables: Record<string, Table> = {}
 
   for (const model of models) {
-    if (model.dbName) {
-      tables[model.dbName] = processModel(model, tableFieldRenaming)
-    } else {
-      tables[model.name] = processModel(model, tableFieldRenaming)
-    }
+    tables[model.dbName || model.name] = processModel(model, tableFieldRenaming)
   }
 
   return tables
