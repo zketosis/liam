@@ -64,15 +64,10 @@ function buildFieldRenamingMap(
   for (const model of models) {
     for (const field of model.fields) {
       if (field.dbName) {
-        if (model.dbName) {
-          const fieldConversions = tableFieldRenaming[model.dbName] ?? {}
-          fieldConversions[field.name] = field.dbName
-          tableFieldRenaming[model.dbName] = fieldConversions
-        } else {
-          const fieldConversions = tableFieldRenaming[model.name] ?? {}
-          fieldConversions[field.name] = field.dbName
-          tableFieldRenaming[model.name] = fieldConversions
-        }
+        const tableName = model.dbName || model.name
+        const fieldConversions = tableFieldRenaming[tableName] ?? {}
+        fieldConversions[field.name] = field.dbName
+        tableFieldRenaming[tableName] = fieldConversions
       }
     }
   }
@@ -97,13 +92,8 @@ function processModelField(
 
   const defaultValue = extractDefaultValue(field)
 
-  let fieldName = ''
-
-  if (model.dbName) {
-    fieldName = tableFieldRenaming[model.dbName]?.[field.name] ?? field.name
-  } else {
-    fieldName = tableFieldRenaming[model.name]?.[field.name] ?? field.name
-  }
+  const fieldName =
+    tableFieldRenaming[model.dbName || model.name]?.[field.name] ?? field.name
 
   const column = {
     name: fieldName,
@@ -172,7 +162,7 @@ function processModel(
   }
 
   return {
-    name: model.dbName ? model.dbName : model.name,
+    name: model.dbName || model.name,
     columns,
     comment: model.documentation ?? null,
     indexes: {},
@@ -208,8 +198,7 @@ function getPrimaryTableNameByType(
   fieldType: string,
   models: readonly DMMF.Model[],
 ) {
-  const filtedModel = models.filter((model) => model.name === fieldType)
-  return filtedModel[0]?.dbName || filtedModel[0]?.name
+  return models.find((model) => model.name === fieldType)?.dbName ?? fieldType
 }
 
 /**
@@ -247,7 +236,7 @@ function processRelationshipField(
         name: field.relationName,
         primaryTableName: primaryTableName || field.type,
         primaryColumnName,
-        foreignTableName: model.dbName ? model.dbName : model.name,
+        foreignTableName: model.dbName || model.name,
         foreignColumnName,
         cardinality: existingRelationship?.cardinality ?? 'ONE_TO_MANY',
         updateConstraint: 'NO_ACTION',
@@ -388,18 +377,15 @@ function processIndexes(
   tableFieldRenaming: Record<string, Record<string, string>>,
 ): void {
   const updatedIndexes = indexes.map((index) => {
-    const filtedModel = models.filter((model) => model.name === index.model)
-    if (filtedModel.length) {
-      const updatedModel = filtedModel[0]?.dbName || filtedModel[0]?.name
-      const updatedIndex = {
-        model: updatedModel || '',
-        type: index.type,
-        isDefinedOnField: index.isDefinedOnField,
-        fields: index.fields,
-      }
-      return updatedIndex
-    }
-    return index
+    const model = models.find((m) => m.name === index.model)
+    return model
+      ? {
+          model: model.dbName ?? model.name,
+          type: index.type,
+          isDefinedOnField: index.isDefinedOnField,
+          fields: index.fields,
+        }
+      : index
   })
 
   for (const index of updatedIndexes) {
