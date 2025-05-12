@@ -2,7 +2,10 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
   // Entry files are the starting point for Knip to find more source files and external dependencies
-  "entry": ["frontend/packages/cli/bin/cli.ts"],
+  "entry": [
+    "frontend/packages/cli/bin/cli.ts",
+    "frontend/apps/docs/app/docs/sitemap.ts"
+  ],
 
   // Files to ignore when analyzing
   "ignore": [
@@ -16,12 +19,7 @@
     "frontend/apps/app/scripts/install-prisma-internals.mjs",
     // - Script file which is read from trigger.config.ts
     "frontend/packages/jobs/src/trigger/jobs.ts",
-
-    // TODO: Temporarily ignore issues in the following files. Will be addressed later
-    "frontend/packages/cli/vite-plugins/remove-import-wasi.ts",
-    "frontend/packages/cli/vite-plugins/set-env.ts",
-    "frontend/packages/ui/src/components/Toast/types.ts",
-    "frontend/apps/docs/components/CopyButton/CopyButton.tsx",
+    // - Next.js special files
     "frontend/apps/docs/app/docs/sitemap.ts"
   ],
 
