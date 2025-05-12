@@ -36,8 +36,8 @@ importers:
         specifier: 5.50.5
         version: 5.50.5(@types/node@22.15.2)(typescript@5.8.3)
       syncpack:
-        specifier: 13.0.3
-        version: 13.0.3(typescript@5.8.3)
+        specifier: 13.0.4
+        version: 13.0.4(typescript@5.8.3)
       turbo:
         specifier: 2.5.1
         version: 2.5.1
@@ -1717,12 +1717,6 @@ packages:
   '@edge-runtime/vm@3.2.0':
     resolution: {integrity: sha512-0dEVyRLM/lG4gp1R/Ik5bfPl/1wX00xFwd5KcNH602tzBa09oF7pbTKETEhR1GjZ75K6OJnYFu8II2dyMhONMw==}
     engines: {node: '>=16'}
-
-  '@effect/schema@0.75.5':
-    resolution: {integrity: sha512-TQInulTVCuF+9EIbJpyLP6dvxbQJMphrnRqgexm/Ze39rSjfhJuufF7XvU3SxTgg3HnL7B/kpORTJbHhlE6thw==}
-    deprecated: this package has been merged into the main effect package
-    peerDependencies:
-      effect: ^3.9.2
 
   '@electric-sql/client@1.0.0-beta.1':
     resolution: {integrity: sha512-Ei9jN3pDoGzc+a/bGqnB5ajb52IvSv7/n2btuyzUlcOHIR2kM9fqtYTJXPwZYKLkGZlHWlpHgWyRtrinkP2nHg==}
@@ -9394,8 +9388,8 @@ packages:
   swap-case@1.1.2:
     resolution: {integrity: sha512-BAmWG6/bx8syfc6qXPprof3Mn5vQgf5dwdUNJhsNqU9WdPt5P+ES/wQ5bxfijy8zwZgZZHslC3iAsxsuQMCzJQ==}
 
-  syncpack@13.0.3:
-    resolution: {integrity: sha512-ZKrdDVmOUBWeaTVaxRnfwtqBJ5rMzMo7Lfdp04wtORwHEcvrq6M+NzCwS4PPIhTucD005wD8wumy90Ucz3lwXg==}
+  syncpack@13.0.4:
+    resolution: {integrity: sha512-kJ9VlRxNCsBD5pJAE29oXeBYbPLhEySQmK4HdpsLv81I6fcDDW17xeJqMwiU3H7/woAVsbgq25DJNS8BeiN5+w==}
     engines: {node: '>=18.18.0'}
     hasBin: true
 
@@ -11406,11 +11400,6 @@ snapshots:
   '@edge-runtime/vm@3.2.0':
     dependencies:
       '@edge-runtime/primitives': 4.1.0
-
-  '@effect/schema@0.75.5(effect@3.14.19)':
-    dependencies:
-      effect: 3.14.19
-      fast-check: 3.23.2
 
   '@electric-sql/client@1.0.0-beta.1':
     optionalDependencies:
@@ -20492,9 +20481,8 @@ snapshots:
       lower-case: 1.1.4
       upper-case: 1.1.3
 
-  syncpack@13.0.3(typescript@5.8.3):
+  syncpack@13.0.4(typescript@5.8.3):
     dependencies:
-      '@effect/schema': 0.75.5(effect@3.14.19)
       chalk: 5.4.1
       chalk-template: 1.1.0
       commander: 13.1.0

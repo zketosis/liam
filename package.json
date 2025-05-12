@@ -10,7 +10,7 @@
     "@types/node": "22.15.2",
     "concurrently": "9.1.2",
     "knip": "5.50.5",
-    "syncpack": "13.0.3",
+    "syncpack": "13.0.4",
     "turbo": "2.5.1",
     "typescript": "5.8.3",
     "vercel": "41.6.2"
