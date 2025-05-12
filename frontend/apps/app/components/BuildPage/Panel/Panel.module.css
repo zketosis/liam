@@ -78,6 +78,7 @@
 .erdSection {
   position: relative;
   overflow: hidden;
+  height: 100%;
 }
 
 .tablesSection {
