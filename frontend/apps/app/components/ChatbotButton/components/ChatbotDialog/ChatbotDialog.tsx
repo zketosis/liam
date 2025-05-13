@@ -180,15 +180,13 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
                 content={message.content}
                 isUser={message.isUser}
                 timestamp={message.timestamp}
+                isGenerating={
+                  isLoading &&
+                  message.id.startsWith('ai-') &&
+                  !message.timestamp
+                }
               />
             ))}
-            {isLoading && (
-              <div className={styles.loadingIndicator}>
-                <div className={styles.loadingDot} />
-                <div className={styles.loadingDot} />
-                <div className={styles.loadingDot} />
-              </div>
-            )}
             <div ref={messagesEndRef} />
           </div>
           <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
