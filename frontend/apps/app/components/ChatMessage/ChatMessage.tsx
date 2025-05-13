@@ -93,11 +93,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
   ) : null
 
   return (
-    <div
-      className={`${styles.messageContainer} ${
-        isUser ? styles.userMessage : styles.botMessage
-      }`}
-    >
+    <div className={styles.messageContainer}>
       {isUser ? (
         <UserMessage
           content={content}

@@ -41,6 +41,10 @@ type AgentMessageProps = {
    */
   time?: string
   /**
+   * The name of the agent to display
+   */
+  agentName?: string
+  /**
    * Optional children to render below the message
    */
   children?: ReactNode
@@ -51,6 +55,7 @@ export const AgentMessage: FC<AgentMessageProps> = ({
   state = 'default',
   message = '',
   time = '',
+  agentName,
   children,
 }) => {
   const isGenerating = state === 'generating'
@@ -61,22 +66,20 @@ export const AgentMessage: FC<AgentMessageProps> = ({
     <div className={styles.container}>
       <div className={styles.avatarContainer}>
         {isAsk ? <AskAgent /> : <BuildAgent />}
+        <span className={styles.agentName}>
+          {agentName || (isAsk ? 'Ask Agent' : 'Build Agent')}
+        </span>
+        {time && <span className={styles.messageTime}>{time}</span>}
       </div>
       <div className={styles.contentContainer}>
         {isGenerating ? (
           <div
-            className={`${styles.messageWrapper} ${
-              isAsk ? styles.messageWrapperAsk : styles.messageWrapperBuild
-            } ${styles.generatingContainer}`}
+            className={`${styles.messageWrapper} ${styles.generatingContainer}`}
           >
             <span className={styles.generatingText}>Generating</span>
           </div>
         ) : (
-          <div
-            className={`${styles.messageWrapper} ${
-              isAsk ? styles.messageWrapperAsk : styles.messageWrapperBuild
-            }`}
-          >
+          <div className={`${styles.messageWrapper}`}>
             <div className={styles.messageContent}>
               <span className={styles.messageText}>
                 {typeof message === 'string' ? (
@@ -113,7 +116,6 @@ export const AgentMessage: FC<AgentMessageProps> = ({
                   message
                 )}
               </span>
-              {time && <span className={styles.messageTime}>{time}</span>}
             </div>
           </div>
         )}

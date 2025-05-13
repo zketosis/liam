@@ -36,6 +36,7 @@ export const BuildDefault: Story = {
     message:
       'We would like to make a proposal for the implementation of a chat UI. First, please allow me to check the current structure of the schema page.',
     time: '12:10',
+    agentName: 'Build Agent',
   },
 }
 
@@ -46,6 +47,27 @@ export const AskDefault: Story = {
     message:
       'We would like to make a proposal for the implementation of a chat UI. First, please allow me to check the current structure of the schema page.',
     time: '12:10',
+    agentName: 'Ask Agent',
+  },
+}
+
+export const BuildWithCustomName: Story = {
+  args: {
+    agent: 'build',
+    state: 'default',
+    message: 'This is a message from a build agent with a custom name.',
+    time: '12:20',
+    agentName: 'Custom Build Agent',
+  },
+}
+
+export const AskWithCustomName: Story = {
+  args: {
+    agent: 'ask',
+    state: 'default',
+    message: 'This is a message from an ask agent with a custom name.',
+    time: '12:20',
+    agentName: 'Custom Ask Agent',
   },
 }
 

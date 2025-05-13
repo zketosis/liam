@@ -1,47 +1,32 @@
 .container {
   display: flex;
-  padding: 0 32px 0 0;
-  justify-content: center;
-  gap: var(--spacing-2);
+  flex-direction: column;
   width: 100%;
+  gap: var(--spacing-1);
 }
 
 .avatarContainer {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  min-width: 24px;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
   min-height: 24px;
-  flex: 0 0 24px;
-  padding-top: var(--spacing-1half);
+  gap: var(--spacing-1);
 }
 
 .contentContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: var(--spacing-2);
   width: 100%;
+  gap: var(--spacing-2);
 }
 
 .messageWrapper {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  align-self: stretch;
-  border-radius: var(--border-radius-base);
-  padding: var(--spacing-2) var(--spacing-3);
   width: 100%;
-}
-
-.messageWrapperBuild {
-  background-color: var(--agent-build-5);
-  border: 1px solid var(--agent-build-5);
-}
-
-.messageWrapperAsk {
-  background-color: var(--agent-ask-5);
-  border: 1px solid var(--agent-ask-5);
+  max-width: 100%;
 }
 
 .messageContent {
@@ -49,6 +34,7 @@
   flex-direction: column;
   gap: var(--spacing-2);
   width: 100%;
+  max-width: 100%;
 }
 
 .messageText {
@@ -58,6 +44,7 @@
   line-height: 1.8em;
   color: var(--global-body-text);
   width: 100%;
+  max-width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -217,6 +204,7 @@
   max-width: 100%;
   position: relative;
   overflow-x: auto;
+  border-radius: var(--border-radius-base);
 }
 
 /* Add a subtle scrollbar for code blocks that overflow */
@@ -297,9 +285,9 @@
   border-spacing: 0;
   border-collapse: separate;
   display: block;
-  width: max-content;
+  width: 100%;
   max-width: 100%;
-  overflow: auto;
+  overflow-x: auto;
   margin-bottom: var(--spacing-3);
   border: 1px solid var(--global-border);
   border-radius: var(--border-radius-base);
@@ -467,21 +455,30 @@
   top: 0.25em;
 }
 
+.agentName {
+  font-family: var(--main-font);
+  font-weight: 500;
+  font-size: var(--font-size-3);
+  line-height: 1.6;
+  color: var(--global-body-text);
+  margin-left: var(--spacing-1);
+}
+
 .messageTime {
   font-family: var(--main-font);
   font-weight: 400;
   font-size: var(--font-size-2);
   line-height: 1.6em;
-  text-align: right;
-  color: var(--color-white-alpha-40);
+  text-align: left;
+  color: var(--overlay-50);
+  margin-left: var(--spacing-1);
 }
 
 .messageWrapper.generatingContainer {
-  padding: 0 var(--spacing-3);
   min-height: 39px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .generatingText {
@@ -489,7 +486,7 @@
   font-weight: 400;
   font-size: 13px;
   line-height: 1.8em;
-  color: var(--color-white-alpha-60);
+  color: var(--overlay-60);
   width: auto;
   position: relative;
   display: inline-block;
