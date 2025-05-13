@@ -522,8 +522,8 @@ importers:
         specifier: 9.25.1
         version: 9.25.1(jiti@2.4.2)
       supabase:
-        specifier: 2.22.10
-        version: 2.22.10
+        specifier: 2.22.11
+        version: 2.22.11
       type-fest:
         specifier: 4.40.1
         version: 4.40.1
@@ -9440,8 +9440,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.22.10:
-    resolution: {integrity: sha512-ODTmSB6LV/lCTY/YDMFDvWWOXliLpuTA7+pTTuXqh7NT9kSgo6L5bC+7HQjAovOnUe/IJgWO/nrV/4jWCgrjTQ==}
+  supabase@2.22.11:
+    resolution: {integrity: sha512-TbIEi+3wUFeb5qhVGfvsO4ORBAEqNEkSvH7NJqpUM+SJ00S1DNRzBc9Sttmq48oPu0A41HZoK+EOwG5klGGOGA==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -20613,7 +20613,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.27.1
 
-  supabase@2.22.10:
+  supabase@2.22.11:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6
