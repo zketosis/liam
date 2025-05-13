@@ -1,6 +1,5 @@
 'use client'
 
-import type { SchemaData } from '@/app/api/chat/route'
 import { TabsContent, TabsList, TabsRoot, TabsTrigger } from '@/components'
 import { Chat } from '@/components/Chat'
 import { ERDRenderer } from '@/features'
@@ -25,14 +24,12 @@ type Props = {
   schema: Schema
   errors: ErrorObject[]
   tableGroups: Record<string, TableGroup>
-  adaptedSchema: SchemaData
 }
 
 export const Panel: FC<Props> = ({
   schema,
   errors,
   tableGroups: initialTableGroups = {},
-  adaptedSchema,
 }) => {
   const { tableGroups, addTableGroup } = useTableGroups(initialTableGroups)
 
@@ -53,7 +50,7 @@ export const Panel: FC<Props> = ({
     <div className={styles.container}>
       <div className={styles.columns}>
         <div className={styles.chatSection}>
-          <Chat schemaData={adaptedSchema} />
+          <Chat schemaData={schema} />
         </div>
         <TabsRoot defaultValue="schema" className={styles.tabsRoot}>
           <TabsList className={styles.tabsList}>
