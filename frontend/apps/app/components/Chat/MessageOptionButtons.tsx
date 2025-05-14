@@ -63,6 +63,13 @@ export const MessageOptionButtons: FC<MessageOptionButtonsProps> = ({
     selectedOptionId ? [selectedOptionId] : [],
   )
 
+  // Keep internal state in sync with prop changes
+  useEffect(() => {
+    if (selectedOptionId) {
+      setSelectedIds([selectedOptionId]);
+    }
+  }, [selectedOptionId]);
+
   const handleOptionClick = useCallback(
     (optionId: string) => (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault()
