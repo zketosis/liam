@@ -5,15 +5,6 @@ import { SendButton } from './SendButton'
 const meta = {
   component: SendButton,
   title: 'Components/Chat/ChatInput/SendButton',
-  parameters: {
-    backgrounds: {
-      default: 'dark',
-      values: [
-        { name: 'dark', value: '#141616' },
-        { name: 'light', value: '#f8f8f8' },
-      ],
-    },
-  },
 } satisfies Meta<typeof SendButton>
 
 export default meta
