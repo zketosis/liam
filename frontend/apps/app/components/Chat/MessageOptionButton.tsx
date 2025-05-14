@@ -28,10 +28,6 @@ export interface MessageOptionButtonProps {
    * Callback function when the button is clicked
    */
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void
-  /**
-   * Optional CSS class name to apply to the button
-   */
-  className?: string
 }
 
 /**
@@ -43,7 +39,6 @@ export const MessageOptionButton: FC<MessageOptionButtonProps> = ({
   isSelected = false,
   isDisabled = false,
   onClick,
-  className = '',
 }) => {
   const handleClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -96,7 +91,7 @@ export const MessageOptionButton: FC<MessageOptionButtonProps> = ({
         )}
       </div>
       <button
-        className={`${styles.optionButton} ${agentClass} ${selectedClass} ${className}`}
+        className={`${styles.optionButton} ${agentClass} ${selectedClass}`}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         disabled={isDisabled}
