@@ -42,10 +42,6 @@ interface MessageOptionButtonsProps {
    * Callback function when an option is selected
    */
   onSelect?: (optionId: string, selected: boolean) => void
-  /**
-   * Optional CSS class name to apply to the container
-   */
-  className?: string
 }
 
 /**
@@ -57,7 +53,6 @@ export const MessageOptionButtons: FC<MessageOptionButtonsProps> = ({
   selectedOptionId,
   multiSelect = false,
   onSelect,
-  className = '',
 }) => {
   const [selectedIds, setSelectedIds] = useState<string[]>(
     selectedOptionId ? [selectedOptionId] : [],
@@ -103,7 +98,7 @@ export const MessageOptionButtons: FC<MessageOptionButtonsProps> = ({
   )
 
   return (
-    <div className={`${styles.optionsContainer} ${className}`}>
+    <div className={styles.optionsContainer}>
       {options.map((option) => {
         const isSelected = selectedIds.includes(option.id)
         // Disable options that are not selected or are explicitly disabled
