@@ -25,14 +25,14 @@ export const SendButton: FC<SendButtonProps> = ({
 }) => {
   return (
     <TooltipProvider>
-      <TooltipRoot open={hasContent ? undefined : false}>
+      <TooltipRoot open={hasContent && !disabled ? undefined : false}>
         <TooltipTrigger asChild>
           <Button
             type="submit"
             disabled={!hasContent || disabled}
             className={clsx(
               styles.sendButton,
-              hasContent ? styles.canSend : styles.default,
+              hasContent && !disabled ? styles.canSend : styles.default,
             )}
             data-loading={hasContent && disabled ? 'true' : undefined}
             onClick={onClick}
@@ -40,7 +40,7 @@ export const SendButton: FC<SendButtonProps> = ({
             <CornerDownLeft size={12} />
           </Button>
         </TooltipTrigger>
-        {hasContent && (
+        {hasContent && !disabled && (
           <TooltipPortal>
             <TooltipContent side="top" sideOffset={4}>
               Send

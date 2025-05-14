@@ -102,7 +102,7 @@ export const ChatInput: FC<ChatInputProps> = ({
           <SendButton
             hasContent={hasContent}
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || error}
           />
         )}
       </form>
