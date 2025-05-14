@@ -60,7 +60,9 @@ export const MessageOptionButton: FC<MessageOptionButtonProps> = ({
         event.preventDefault()
         if (!isDisabled && onClick) {
           // Call onClick directly without casting the event
-          onClick(new MouseEvent('click') as unknown as MouseEvent<HTMLButtonElement>)
+          onClick(
+            new MouseEvent('click') as unknown as MouseEvent<HTMLButtonElement>,
+          )
         }
       }
     },

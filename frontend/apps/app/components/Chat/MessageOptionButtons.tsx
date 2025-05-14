@@ -1,7 +1,7 @@
 'use client'
 
 import type { FC, MouseEvent } from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { AgentType } from './AgentMessage/AgentMessage'
 import { MessageOptionButton } from './MessageOptionButton'
 import styles from './MessageOptionButton.module.css'
@@ -66,9 +66,9 @@ export const MessageOptionButtons: FC<MessageOptionButtonsProps> = ({
   // Keep internal state in sync with prop changes
   useEffect(() => {
     if (selectedOptionId) {
-      setSelectedIds([selectedOptionId]);
+      setSelectedIds([selectedOptionId])
     }
-  }, [selectedOptionId]);
+  }, [selectedOptionId])
 
   const handleOptionClick = useCallback(
     (optionId: string) => (event: MouseEvent<HTMLButtonElement>) => {
