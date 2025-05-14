@@ -59,7 +59,8 @@ export const MessageOptionButton: FC<MessageOptionButtonProps> = ({
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
         if (!isDisabled && onClick) {
-          onClick(event as unknown as MouseEvent<HTMLButtonElement>)
+          // Call onClick directly without casting the event
+          onClick(new MouseEvent('click') as unknown as MouseEvent<HTMLButtonElement>)
         }
       }
     },
