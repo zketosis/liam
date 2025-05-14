@@ -97,3 +97,36 @@ export const OptionButtonsGroupAsk = () => (
   </div>
 )
 OptionButtonsGroupAsk.storyName = 'MessageOptionButtons - Ask'
+
+// Multi-select MessageOptionButtons examples
+export const OptionButtonsGroupMultiSelect = () => (
+  <div style={{ width: '400px' }}>
+    <MessageOptionButtons
+      options={[
+        { id: '1', text: 'Option 1: Database design' },
+        { id: '2', text: 'Option 2: API implementation' },
+        { id: '3', text: 'Option 3: UI components' },
+      ]}
+      agentType="build"
+      multiSelect={true}
+    />
+  </div>
+)
+OptionButtonsGroupMultiSelect.storyName =
+  'MessageOptionButtons - Build Multi Select'
+
+export const OptionButtonsGroupAskMultiSelect = () => (
+  <div style={{ width: '400px' }}>
+    <MessageOptionButtons
+      options={[
+        { id: '1', text: 'Option 1: Performance optimization' },
+        { id: '2', text: 'Option 2: Security measures' },
+        { id: '3', text: 'Option 3: Accessibility improvements' },
+      ]}
+      agentType="ask"
+      multiSelect={true}
+    />
+  </div>
+)
+OptionButtonsGroupAskMultiSelect.storyName =
+  'MessageOptionButtons - Ask Multi Select'

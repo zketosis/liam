@@ -547,3 +547,45 @@ export const AskWithOptions: Story = {
     children: <MessageOptionButtons options={sampleOptions} agentType="ask" />,
   },
 }
+
+export const BuildWithMultiSelectOptions: Story = {
+  args: {
+    agent: 'build',
+    state: 'default',
+    message: 'Please select multiple options that apply:',
+    time: '12:35',
+    agentName: 'Build Agent',
+    children: (
+      <MessageOptionButtons
+        options={[
+          { id: 'option1', text: 'Option 1: Database design' },
+          { id: 'option2', text: 'Option 2: API implementation' },
+          { id: 'option3', text: 'Option 3: UI components' },
+        ]}
+        agentType="build"
+        multiSelect={true}
+      />
+    ),
+  },
+}
+
+export const AskWithMultiSelectOptions: Story = {
+  args: {
+    agent: 'ask',
+    state: 'default',
+    message: 'Please select multiple options that apply:',
+    time: '12:35',
+    agentName: 'Ask Agent',
+    children: (
+      <MessageOptionButtons
+        options={[
+          { id: 'option1', text: 'Option 1: Performance optimization' },
+          { id: 'option2', text: 'Option 2: Security measures' },
+          { id: 'option3', text: 'Option 3: Accessibility improvements' },
+        ]}
+        agentType="ask"
+        multiSelect={true}
+      />
+    ),
+  },
+}

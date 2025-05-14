@@ -100,8 +100,10 @@ export const MessageOptionButtons: FC<MessageOptionButtonsProps> = ({
       {options.map((option) => {
         const isSelected = selectedIds.includes(option.id)
         // Disable options that are not selected or are explicitly disabled
+        // In multi-select mode, only disable if explicitly set as disabled
         const isDisabled =
-          option.disabled || (selectedIds.length > 0 && !isSelected)
+          option.disabled ||
+          (!multiSelect && selectedIds.length > 0 && !isSelected)
 
         return (
           <MessageOptionButton
