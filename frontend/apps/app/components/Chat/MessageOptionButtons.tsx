@@ -1,0 +1,119 @@
+'use client'
+
+import type { FC, MouseEvent } from 'react'
+import { useCallback, useState } from 'react'
+import type { AgentType } from './AgentMessage/AgentMessage'
+import { MessageOptionButton } from './MessageOptionButton'
+import styles from './MessageOptionButton.module.css'
+
+export interface MessageOption {
+  /**
+   * Unique identifier for the option
+   */
+  id: string
+  /**
+   * The text content to display in the button
+   */
+  text: string
+  /**
+   * Whether the option is disabled
+   */
+  disabled?: boolean
+}
+
+interface MessageOptionButtonsProps {
+  /**
+   * The list of options to display
+   */
+  options: MessageOption[]
+  /**
+   * The agent type that determines the color theme
+   */
+  agentType: AgentType
+  /**
+   * The ID of the selected option
+   */
+  selectedOptionId?: string
+  /**
+   * Whether to allow multiple selections
+   */
+  multiSelect?: boolean
+  /**
+   * Callback function when an option is selected
+   */
+  onSelect?: (optionId: string, selected: boolean) => void
+  /**
+   * Optional CSS class name to apply to the container
+   */
+  className?: string
+}
+
+/**
+ * A component that renders a list of message options
+ */
+export const MessageOptionButtons: FC<MessageOptionButtonsProps> = ({
+  options,
+  agentType,
+  selectedOptionId,
+  multiSelect = false,
+  onSelect,
+  className = '',
+}) => {
+  const [selectedIds, setSelectedIds] = useState<string[]>(
+    selectedOptionId ? [selectedOptionId] : [],
+  )
+
+  const handleOptionClick = useCallback(
+    (optionId: string) => (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+
+      if (multiSelect) {
+        // For multi-select, toggle the selection
+        setSelectedIds((prev) => {
+          const isSelected = prev.includes(optionId)
+          const newSelectedIds = isSelected
+            ? prev.filter((id) => id !== optionId)
+            : [...prev, optionId]
+
+          if (onSelect) {
+            onSelect(optionId, !isSelected)
+          }
+
+          return newSelectedIds
+        })
+      } else {
+        // For single-select, replace the selection
+        const isSelected = selectedIds.includes(optionId)
+        if (!isSelected) {
+          setSelectedIds([optionId])
+          if (onSelect) {
+            onSelect(optionId, true)
+          }
+        }
+      }
+    },
+    [multiSelect, onSelect, selectedIds],
+  )
+
+  return (
+    <div className={`${styles.optionsContainer} ${className}`}>
+      {options.map((option) => {
+        const isSelected = selectedIds.includes(option.id)
+        // Disable options that are not selected or are explicitly disabled
+        const isDisabled =
+          option.disabled || (selectedIds.length > 0 && !isSelected)
+
+        return (
+          <MessageOptionButton
+            key={option.id}
+            text={option.text}
+            agentType={agentType}
+            isSelected={isSelected}
+            isDisabled={isDisabled}
+            onClick={isDisabled ? undefined : handleOptionClick(option.id)}
+          />
+        )
+      })}
+    </div>
+  )
+}
