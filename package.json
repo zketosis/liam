@@ -13,7 +13,7 @@
     "syncpack": "13.0.4",
     "turbo": "2.5.3",
     "typescript": "5.8.3",
-    "vercel": "41.6.2"
+    "vercel": "41.7.0"
   },
   "scripts": {
     "build": "turbo build",
@@ -45,7 +45,8 @@
       "supabase"
     ],
     "overrides": {
-      "node-gtts": "workspace:*"
+      "node-gtts": "workspace:*",
+      "prismjs": "1.30.0"
     }
   },
   "resolutions": {

@@ -8,7 +8,6 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import styles from './ChatbotButton.module.css'
 import { ChatbotDialog } from './components/ChatbotDialog'
-import { adaptSchemaForChatbot } from './utils'
 
 interface ChatbotButtonProps {
   schemaData: Schema
@@ -19,7 +18,6 @@ export const ChatbotButton: FC<ChatbotButtonProps> = ({
   schemaData,
   tableGroups,
 }) => {
-  const adaptedSchema = adaptSchemaForChatbot(schemaData)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
@@ -35,7 +33,7 @@ export const ChatbotButton: FC<ChatbotButtonProps> = ({
       <ChatbotDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        schemaData={adaptedSchema}
+        schemaData={schemaData}
         tableGroups={tableGroups}
       />
     </>

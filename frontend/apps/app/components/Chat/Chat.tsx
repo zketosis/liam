@@ -1,33 +1,19 @@
 'use client'
 
-import { ChatInput } from '@/components/ChatInput'
-import { ChatMessage, type ChatMessageProps } from '@/components/ChatMessage'
+import type { TableGroupData } from '@/app/api/chat/route'
 import type { Schema } from '@liam-hq/db-structure'
-import {
-  ModalContent,
-  ModalOverlay,
-  ModalPortal,
-  ModalRoot,
-  ModalTitle,
-} from '@liam-hq/ui'
 import type { FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import type { TableGroupData } from '../../../../app/api/chat/route'
-import styles from './ChatbotDialog.module.css'
+import { ChatInput } from '../ChatInput'
+import { ChatMessage, type ChatMessageProps } from '../ChatMessage'
+import styles from './Chat.module.css'
 
-interface ChatbotDialogProps {
-  isOpen: boolean
-  onClose: () => void
+interface Props {
   schemaData: Schema
   tableGroups?: Record<string, TableGroupData>
 }
 
-export const ChatbotDialog: FC<ChatbotDialogProps> = ({
-  isOpen,
-  onClose,
-  schemaData,
-  tableGroups,
-}) => {
+export const Chat: FC<Props> = ({ schemaData, tableGroups }) => {
   const [messages, setMessages] = useState<
     (ChatMessageProps & { id: string })[]
   >([
@@ -37,6 +23,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
         'Hello! Feel free to ask questions about your schema or consult about database design.',
       isUser: false,
       timestamp: new Date(),
+      isGenerating: false, // Explicitly set to false for consistency
     },
   ])
   const [isLoading, setIsLoading] = useState(false)
@@ -54,6 +41,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
       content,
       isUser: true,
       timestamp: new Date(),
+      isGenerating: false, // Explicitly set to false for consistency
     }
     setMessages((prev) => [...prev, userMessage])
     setIsLoading(true)
@@ -67,6 +55,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
         content: '',
         isUser: false,
         // No timestamp during streaming
+        isGenerating: true, // Mark as generating
       },
     ])
 
@@ -107,11 +96,16 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
         const { done, value } = await reader.read()
 
         if (done) {
-          // Streaming is complete, add timestamp
+          // Streaming is complete, add timestamp and remove isGenerating
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === aiMessageId
-                ? { ...msg, content: accumulatedContent, timestamp: new Date() }
+                ? {
+                    ...msg,
+                    content: accumulatedContent,
+                    timestamp: new Date(),
+                    isGenerating: false, // Remove generating state when complete
+                  }
                 : msg,
             ),
           )
@@ -123,10 +117,11 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
         accumulatedContent += chunk
 
         // Update the AI message with the accumulated content (without timestamp)
+        // Keep isGenerating: true during streaming
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === aiMessageId
-              ? { ...msg, content: accumulatedContent }
+              ? { ...msg, content: accumulatedContent, isGenerating: true }
               : msg,
           ),
         )
@@ -142,12 +137,13 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
         const aiMessageIndex = prev.findIndex((msg) => msg.id.startsWith('ai-'))
 
         if (aiMessageIndex >= 0 && prev[aiMessageIndex].content === '') {
-          // Update the existing empty message with error and add timestamp
+          // Update the existing empty message with error, add timestamp, and remove generating state
           const updatedMessages = [...prev]
           updatedMessages[aiMessageIndex] = {
             ...updatedMessages[aiMessageIndex],
             content: 'Sorry, an error occurred. Please try again.',
             timestamp: new Date(),
+            isGenerating: false, // Remove generating state on error
           }
           return updatedMessages
         }
@@ -160,6 +156,7 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
             content: 'Sorry, an error occurred. Please try again.',
             isUser: false,
             timestamp: new Date(),
+            isGenerating: false, // Ensure error message is not in generating state
           },
         ]
       })
@@ -169,30 +166,27 @@ export const ChatbotDialog: FC<ChatbotDialogProps> = ({
   }
 
   return (
-    <ModalRoot open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <ModalPortal>
-        <ModalOverlay />
-        <ModalContent className={styles.dialog}>
-          <ModalTitle>Schema Chatbot</ModalTitle>
-          <div className={styles.messagesContainer}>
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                content={message.content}
-                isUser={message.isUser}
-                timestamp={message.timestamp}
-                isGenerating={
-                  isLoading &&
-                  message.id.startsWith('ai-') &&
-                  !message.timestamp
-                }
-              />
-            ))}
-            <div ref={messagesEndRef} />
+    <div className={styles.wrapper}>
+      <div className={styles.messagesContainer}>
+        {messages.map((message) => (
+          <ChatMessage
+            key={message.id}
+            content={message.content}
+            isUser={message.isUser}
+            timestamp={message.timestamp}
+            isGenerating={message.isGenerating}
+          />
+        ))}
+        {isLoading && (
+          <div className={styles.loadingIndicator}>
+            <div className={styles.loadingDot} />
+            <div className={styles.loadingDot} />
+            <div className={styles.loadingDot} />
           </div>
-          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
-        </ModalContent>
-      </ModalPortal>
-    </ModalRoot>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+      <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+    </div>
   )
 }

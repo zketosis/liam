@@ -1,62 +1,38 @@
 import { mastra } from '@/lib/mastra'
+import type { Schema, TableGroup } from '@liam-hq/db-structure'
 import * as Sentry from '@sentry/nextjs'
 import { NextResponse } from 'next/server'
 
-// Define types for schema data
-export interface ColumnData {
-  type?: string
-  nullable?: boolean
-  description?: string
-}
-
-export interface TableData {
-  description?: string
-  columns?: Record<string, ColumnData>
-  primaryKey?: {
-    columns?: string[]
-  }
-}
-
-export interface RelationshipData {
-  fromTable: string
-  fromColumn: string
-  toTable: string
-  toColumn: string
-  type?: string
-}
-
-export interface TableGroupData {
-  name?: string
-  tables?: string[]
-  comment?: string | null
-}
-
-export interface SchemaData {
-  tables?: Record<string, TableData>
-  relationships?: Record<string, RelationshipData>
-  tableGroups?: Record<string, TableGroupData>
-}
+// Export TableGroupData type for compatibility
+export type TableGroupData = TableGroup
 
 // Convert table data to text document
-const tableToDocument = (tableName: string, tableData: TableData): string => {
+const tableToDocument = (
+  tableName: string,
+  tableData: Schema['tables'][string],
+): string => {
   // Table description
-  const tableDescription = `Table: ${tableName}\nDescription: ${tableData.description || 'No description'}\n`
+  const tableDescription = `Table: ${tableName}\nDescription: ${tableData.comment || 'No description'}\n`
 
   // Columns information
   let columnsText = 'Columns:\n'
   if (tableData.columns) {
     for (const [columnName, columnData] of Object.entries(tableData.columns)) {
-      columnsText += `- ${columnName}: ${columnData.type || 'unknown type'} ${columnData.nullable ? '(nullable)' : '(not nullable)'}\n`
-      if (columnData.description) {
-        columnsText += `  Description: ${columnData.description}\n`
+      columnsText += `- ${columnName}: ${columnData.type || 'unknown type'} ${!columnData.notNull ? '(nullable)' : '(not nullable)'}\n`
+      if (columnData.comment) {
+        columnsText += `  Description: ${columnData.comment}\n`
       }
     }
   }
 
   // Primary key information
   let primaryKeyText = ''
-  if (tableData.primaryKey?.columns) {
-    primaryKeyText = `Primary Key: ${tableData.primaryKey.columns.join(', ')}\n`
+  const primaryKeyColumns = Object.entries(tableData.columns || {})
+    .filter(([_, column]) => column.primary)
+    .map(([name]) => name)
+
+  if (primaryKeyColumns.length > 0) {
+    primaryKeyText = `Primary Key: ${primaryKeyColumns.join(', ')}\n`
   }
 
   // Combine all information
@@ -66,19 +42,19 @@ const tableToDocument = (tableName: string, tableData: TableData): string => {
 // Convert relationship data to text document
 const relationshipToDocument = (
   relationshipName: string,
-  relationshipData: RelationshipData,
+  relationshipData: Schema['relationships'][string],
 ): string => {
   return `Relationship: ${relationshipName}
-From Table: ${relationshipData.fromTable}
-From Column: ${relationshipData.fromColumn}
-To Table: ${relationshipData.toTable}
-To Column: ${relationshipData.toColumn}
-Type: ${relationshipData.type || 'unknown'}\n`
+From Table: ${relationshipData.primaryTableName}
+From Column: ${relationshipData.primaryColumnName}
+To Table: ${relationshipData.foreignTableName}
+To Column: ${relationshipData.foreignColumnName}
+Type: ${relationshipData.cardinality || 'unknown'}\n`
 }
 
 // Convert table groups to text document
 const tableGroupsToText = (
-  tableGroups: Record<string, TableGroupData> | undefined,
+  tableGroups: Schema['tableGroups'] | undefined,
 ): string => {
   if (!tableGroups) return ''
 
@@ -102,7 +78,7 @@ const tableGroupsToText = (
 }
 
 // Convert schema data to text format
-const convertSchemaToText = (schema: SchemaData): string => {
+const convertSchemaToText = (schema: Schema): string => {
   let schemaText = 'FULL DATABASE SCHEMA:\n\n'
 
   // Process tables
