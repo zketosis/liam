@@ -13,7 +13,6 @@ import * as v from 'valibot'
 import styles from './Panel.module.css'
 import { SchemaEditor } from './SchemaEditor'
 import { TablesList } from './TablesList'
-import { DiffTablesList } from './TablesList/DiffTablesList'
 import { AFTER } from './after'
 import { BEFORE } from './before'
 
@@ -55,16 +54,13 @@ export const Panel: FC<Props> = ({
         <div className={styles.chatSection}>
           <Chat schemaData={schema} />
         </div>
-        <TabsRoot defaultValue="schema" className={styles.tabsRoot}>
+        <TabsRoot defaultValue="tables" className={styles.tabsRoot}>
           <TabsList className={styles.tabsList}>
             <TabsTrigger value="schema" className={styles.tabsTrigger}>
               Schema
             </TabsTrigger>
             <TabsTrigger value="tables" className={styles.tabsTrigger}>
               Tables
-            </TabsTrigger>
-            <TabsTrigger value="tables-diff" className={styles.tabsTrigger}>
-              Tables Diff
             </TabsTrigger>
             <TabsTrigger value="erd" className={styles.tabsTrigger}>
               ERD
@@ -77,15 +73,9 @@ export const Panel: FC<Props> = ({
           </TabsContent>
           <TabsContent value="tables" className={styles.tabsContent}>
             <div className={styles.tablesSection}>
-              <TablesList schema={schema} tableGroups={tableGroups} />
-            </div>
-          </TabsContent>
-          <TabsContent value="tables-diff" className={styles.tabsContent}>
-            <div className={styles.tablesSection}>
-              <DiffTablesList
+              <TablesList
                 before={BEFORE as unknown as Schema}
                 after={AFTER as unknown as Schema}
-                tableGroups={tableGroups}
               />
             </div>
           </TabsContent>
