@@ -142,6 +142,6 @@
 - - :approve
   - "@mastra/core"
   - :who: Liam @FunamaYukina
-  - :why: The license is Elastic-2.0. This is not an OSS license, so to be on the safe side, we'll approve it on a package-by-package basis.
+    :why: The license is Elastic-2.0. This is not an OSS license, so to be on the safe side, we'll approve it on a package-by-package basis.
     :versions: []
     :when: 2025-05-13 00:30:00.632489000 Z
