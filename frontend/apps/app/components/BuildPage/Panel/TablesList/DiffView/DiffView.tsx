@@ -9,7 +9,15 @@ type Props = {
 }
 
 export const DiffView: FC<Props> = ({ before, after }) => {
-  const allTables = Object.values({ ...before.tables, ...after.tables })
+  const allTableIds = [
+    ...new Set([
+      ...Object.keys(before.tables || {}),
+      ...Object.keys(after.tables || {}),
+    ]),
+  ]
+  const allTables = allTableIds.map(
+    (id) => before.tables[id] || after.tables[id],
+  )
   const diff = buildSchemaDiff(before, after)
 
   return (
